@@ -1820,13 +1820,20 @@ body {
 .faq-summary {
   display: grid;
   grid-template-columns: 44px 1fr 44px;
-  align-items: center;
-  gap: 8px;
-  min-height: 74px;
-  padding-block: 14px;
+  /* Baseline-ish rather than centred: with the question now up to 27px and
+     the number at 13px, centring hung the number in the middle of a two-line
+     question. `start` plus a nudge puts it on the question's first line. */
+  align-items: start;
+  gap: 14px;
+  min-height: 96px;
+  padding-block: clamp(22px, 2.4vw, 30px);
   cursor: pointer;
   list-style: none;
 }
+/* Optical alignment. The cap height of 27px Bodoni sits a few pixels below
+   the top of its line box; 13px Inter sits higher in its own. Measured at
+   1440 rather than eyeballed: 6px puts the two on the same optical line. */
+.faq-n, .faq-icon { margin-top: 6px; }
 .faq-summary::-webkit-details-marker { display: none; }
 
 /* Hover used to be `opacity: .68` on the whole row, which fades the question
@@ -1880,31 +1887,69 @@ body {
 /* An open row keeps the rule, at rest rather than on hover: the row you are
    reading stays underlined while you read it. */
 .faq-row[open] .faq-summary::after { transform: scaleX(1); transform-origin: left center; }
+
+/* And it is marked in the margin. A hairline grows down the left edge of the
+   whole open row — question and answer together — so the thing you opened is
+   legible as one block even when the answer runs past the fold. It grows from
+   the top rather than fading in, which is the same gesture as the rule that
+   draws along the foot, turned ninety degrees. scaleY, so it costs no layout.
+   Decorative and inert: the open state is already carried by <details>. */
+.faq-row { position: relative; }
+.faq-row::before {
+  content: "";
+  position: absolute;
+  left: -18px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--bb-black);
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 620ms var(--bb-ease);
+}
+.faq-row[open]::before { transform: scaleY(1); }
+@media (max-width: 767px) { .faq-row::before { left: -10px; } }
 /* The ring is drawn just inside the row, so it is not clipped by the rules. */
 .faq-summary:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
 
 @media (min-width: 640px) { .faq-summary { grid-template-columns: 56px 1fr 56px; } }
 
+/* The number grew with the question. At 9px beside 27px Bodoni it read as a
+   footnote that had drifted into the wrong column; at 13px it is a margin
+   number, which is what an index has. Tabular so eight of them form a true
+   vertical edge rather than a ragged one. */
 .faq-n {
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   color: var(--bb-grey-dark);
   font-variant-numeric: tabular-nums;
   transition: color var(--bb-dur-quick) var(--bb-ease);
 }
 
-/* Inter, not Bodoni. The editorial serif belongs to the heading; the
-   questions are utility, and the contrast between the two is the point. */
+/* Bodoni, and large.
+   This used to be Inter at 15px, on the argument that the heading owns the
+   editorial serif and the questions are utility. The client's read on the
+   result was that it looked generic and unprofessional, and they are right
+   about what it was doing: eight lines of 15px UI text under a 66px Bodoni
+   heading is a support-centre list sitting under a fashion masthead, and the
+   contrast that was supposed to be the point just made the questions look
+   like the part nobody designed.
+
+   Set in the same face as the heading at a third of its size, the list reads
+   as an index — which is what it is. The answers stay in Inter: the serif
+   carries the question, the grotesk carries the prose, and the hierarchy is
+   between the two rather than between the section and its own contents. */
 .faq-q {
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: -0.005em;
-  color: var(--bb-black-soft);
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-size: clamp(19px, 2.1vw, 27px);
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  color: var(--bb-black);
+  text-wrap: balance;
 }
-@media (min-width: 640px) { .faq-q { font-size: 16px; } }
 
 /* Rests at grey-dark rather than full black. At full black the plus carried
    the same weight as the question beside it, and eight of them down the right
@@ -1924,14 +1969,19 @@ body {
 .faq-row[open] .faq-n { color: var(--bb-black-soft); }
 
 /* Answers sit under the QUESTION column, not the number — the grid holds. */
+/* The answer hangs under the QUESTION column, not the number — so its left
+   edge has to clear the number column AND the gap between them. The gap grew
+   from 8px to 14px when the rows opened up, and left at 44 the answers sat
+   6px proud of every question above them: close enough to look like a mistake
+   rather than an indent. */
 .faq-answer {
-  padding: 0 44px 26px 44px;
+  padding: 0 58px 30px 58px;
   max-width: 680px;
-  font-size: 14px;
-  line-height: 1.7;
+  font-size: 15px;
+  line-height: 1.72;
   color: var(--bb-grey-dark);
 }
-@media (min-width: 640px) { .faq-answer { padding-left: 56px; padding-right: 56px; } }
+@media (min-width: 640px) { .faq-answer { padding-left: 70px; padding-right: 70px; } }
 
 .faq-pending {
   margin-top: 10px;
