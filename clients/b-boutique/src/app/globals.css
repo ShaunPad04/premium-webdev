@@ -3061,3 +3061,171 @@ body {
     }
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HEADER MENU — the Clothing categories
+   ══════════════════════════════════════════════════════════════════════════
+
+   A disclosure, not a button. CLOTHING stays a real link to /clothing; the
+   panel opens on pointer and on :focus-within, so a keyboard user tabs to the
+   trigger, the panel opens, and the next Tab walks into it. Tabbing out closes
+   it. The only script is Escape.
+
+   Everything below is transitions rather than keyframes, because the pointer
+   can leave and re-enter faster than the animation runs and a transition
+   retargets from wherever it is while a keyframe restarts from zero. */
+
+.nav-item { position: relative; }
+
+/* The panel is 8px below the trigger, and the wrapper's top padding covers
+   that gap. Without it the pointer crosses 8px of nothing on the way down,
+   :hover drops, and the panel closes under the cursor — the single most common
+   way a menu like this feels broken. */
+.nav-menu-wrap {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  padding-top: 22px;
+  transform: translateX(-50%);
+  /* Inert until it opens, so it can never intercept a click on the page
+     behind it. */
+  pointer-events: none;
+}
+
+.nav-menu {
+  min-width: 210px;
+  padding: 14px 0;
+  background: rgba(5, 5, 5, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  /* Square and hairline, like everything else. The header is the one place on
+     this site with a blur, and it is a fixed element, which is the only place
+     a backdrop-filter belongs. */
+  border: 1px solid var(--bb-dark-border);
+
+  opacity: 0;
+  /* Never scale(0) — nothing in the world appears out of nothing. 0.97 and a
+     6px rise reads as the panel arriving from the trigger. */
+  transform: scale(0.97) translateY(-6px);
+  transform-origin: top center;
+
+  /* Exit is faster than enter: the user has already decided to leave, and a
+     slow dismissal is the part that feels sluggish. Named properties, never
+     `all`. */
+  transition:
+    opacity 130ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 130ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Gated behind a real pointer: on a touch screen :hover fires on tap and the
+   panel would open under the finger that was trying to follow the link. */
+@media (hover: hover) and (pointer: fine) {
+  .nav-item.has-menu:hover .nav-menu-wrap { pointer-events: auto; }
+  .nav-item.has-menu:hover .nav-menu {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    /* 180ms in. Under the 300ms ceiling, and ease-out so the movement is
+       visible immediately — the moment the eye is actually watching. */
+    transition:
+      opacity 180ms cubic-bezier(0.23, 1, 0.32, 1),
+      transform 180ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+}
+
+.nav-item.has-menu:focus-within .nav-menu-wrap { pointer-events: auto; }
+.nav-item.has-menu:focus-within .nav-menu {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition:
+    opacity 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* The items cascade in behind the panel. 34ms apart: enough to read as a
+   cascade, short enough that the last item is in at 170ms and the whole
+   thing still lands inside the panel's own 180ms. */
+.nav-menu-item {
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 120ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-item.has-menu:hover .nav-menu-item {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 200ms cubic-bezier(0.23, 1, 0.32, 1) calc(var(--i, 0) * 34ms),
+      transform 200ms cubic-bezier(0.23, 1, 0.32, 1) calc(var(--i, 0) * 34ms);
+  }
+}
+
+.nav-item.has-menu:focus-within .nav-menu-item {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 200ms cubic-bezier(0.23, 1, 0.32, 1) calc(var(--i, 0) * 34ms),
+    transform 200ms cubic-bezier(0.23, 1, 0.32, 1) calc(var(--i, 0) * 34ms);
+}
+
+.nav-menu-link {
+  display: block;
+  padding: 9px 22px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+  transition: color 160ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-menu-link:hover { color: var(--bb-white); transform: translateX(4px); }
+}
+.nav-menu-link:focus-visible {
+  color: var(--bb-white);
+  outline: 2px solid currentColor;
+  outline-offset: -3px;
+}
+
+/* The last row is the way out to the whole page, so it is separated by the
+   same hairline the rest of the site separates things with. */
+.nav-menu-item:last-child {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--bb-dark-border);
+}
+.nav-menu-item:last-child .nav-menu-link { color: var(--bb-grey-mid); }
+
+/* Reduced motion keeps the fade — it is what tells you the panel arrived —
+   and drops every movement, including the stagger, which is decoration. */
+@media (prefers-reduced-motion: reduce) {
+  .nav-menu,
+  .nav-menu-item,
+  .nav-menu-link {
+    transform: none !important;
+    transition-property: opacity, color;
+    transition-duration: 120ms;
+    transition-delay: 0ms;
+  }
+}
+
+/* An anchored category card must clear the fixed header. */
+.cat-card { scroll-margin-top: 120px; }
+
+/* Escape. Placed after both open rules and at the same specificity, so source
+   order decides and this wins. See the note in Nav.tsx about why closing needs
+   state at all: focus returns to the trigger, and the trigger is inside the
+   element :focus-within is watching. */
+.nav-item.has-menu[data-dismissed] .nav-menu {
+  opacity: 0;
+  transform: scale(0.97) translateY(-6px);
+  transition:
+    opacity 130ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 130ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.nav-item.has-menu[data-dismissed] .nav-menu-wrap { pointer-events: none; }
+.nav-item.has-menu[data-dismissed] .nav-menu-item { opacity: 0; transform: translateY(-4px); }

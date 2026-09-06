@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 import { PRIMARY } from "@/lib/nav";
 import { CornerMenu } from "./CornerMenu";
@@ -58,8 +59,15 @@ export function Nav() {
 
       <div className="relative flex h-[72px] items-center justify-between px-[18px] sm:px-6 lg:px-8">
         {/* LEFT — the wordmark, small. The giant one lives in the footer. */}
-        <a
-          /* "/#top", not "#top".
+        <Link
+          /* next/link rather than <a>, because the href now starts with a
+             slash and this is real routing rather than a same-page anchor.
+             Next's own lint rule flagged it the moment "#top" became "/#top":
+             an <a> to an internal route does a full document load, throwing
+             away the client cache and re-running every entrance on the page
+             it lands on.
+
+             "/#top", not "#top".
              A bare fragment means "a section of whatever page you are on", and
              #top is the hero — which exists on the home page and nowhere else.
              So on /clothing, /accessories, /about and /contact the wordmark was
@@ -74,7 +82,7 @@ export function Nav() {
           className="display shrink-0 py-3 text-[20px] leading-none tracking-[-0.02em] lg:text-[21px]"
         >
           B Boutique
-        </a>
+        </Link>
 
         {/* CENTRE */}
         <nav
@@ -93,16 +101,20 @@ export function Nav() {
               button starting at 775, so 18px of clearance instead of 8. At
               1440 the gap goes 46px -> 40px, which is the price. */}
           <ul className="flex items-center" style={{ gap: "clamp(22px, 2.8vw, 50px)" }}>
-            {PRIMARY.map((item) => (
-              <li key={item.label}>
-                <a
-                  href={item.href}
-                  className="nav-link nav-link--bar text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
+            {PRIMARY.map((item) =>
+              "menu" in item && item.menu ? (
+                <NavMenuItem key={item.label} item={item} />
+              ) : (
+                <li key={item.label} className="nav-item">
+                  <a
+                    href={item.href}
+                    className="nav-link nav-link--bar text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ),
+            )}
           </ul>
         </nav>
 
@@ -132,5 +144,70 @@ export function Nav() {
         </div>
       </div>
     </header>
+  );
+}
+
+/* One header item with a menu under it.
+ *
+ * The panel is opened by CSS — :hover for a real pointer, :focus-within for a
+ * keyboard — so opening costs no state and cannot drift out of step with the
+ * DOM. Exactly one thing needs JavaScript, and it is the reason this is a
+ * component rather than four lines in the map above.
+ *
+ * ── Why Escape needs state ────────────────────────────────────────────────
+ * Escape should close the panel and leave focus on the trigger, which is what
+ * a keyboard user expects and where they want to carry on from. But the
+ * trigger is inside the element :focus-within is watching, so focus landing
+ * back on it re-opens the panel immediately — measured, not assumed: the first
+ * version of this returned focus to the trigger and the panel's opacity was
+ * still 1 afterwards.
+ *
+ * So Escape sets `dismissed`, which overrides both open rules, and anything
+ * that means the user has moved on clears it again: the pointer leaving or
+ * arriving, or focus leaving the item entirely. The panel can never be stuck
+ * shut. */
+function NavMenuItem({
+  item,
+}: {
+  item: { label: string; href: string; menu: readonly { label: string; href: string }[] };
+}) {
+  const [dismissed, setDismissed] = useState(false);
+  const trigger = useRef<HTMLAnchorElement>(null);
+
+  return (
+    <li
+      className="nav-item has-menu"
+      data-dismissed={dismissed || undefined}
+      onPointerEnter={() => setDismissed(false)}
+      onPointerLeave={() => setDismissed(false)}
+      onBlurCapture={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDismissed(false);
+      }}
+      onKeyDown={(e) => {
+        if (e.key !== "Escape") return;
+        setDismissed(true);
+        trigger.current?.focus();
+      }}
+    >
+      <a
+        ref={trigger}
+        href={item.href}
+        className="nav-link nav-link--bar text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
+      >
+        {item.label}
+      </a>
+
+      <div className="nav-menu-wrap">
+        <ul className="nav-menu" aria-label={`${item.label} categories`}>
+          {item.menu.map((sub, i) => (
+            <li key={sub.href} className="nav-menu-item" style={{ "--i": i } as React.CSSProperties}>
+              <a href={sub.href} className="nav-menu-link">
+                {sub.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </li>
   );
 }

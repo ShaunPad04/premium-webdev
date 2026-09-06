@@ -106,9 +106,25 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
  *  Nothing was taken out. Brands still points at the home page's brand rail,
  *  which is where the logos are; it is "/#brands" rather than "#brands" for
  *  the reason given above MENU — the header is on five routes now. */
+/** What hangs under a header item that has a menu.
+ *
+ *  Every href resolves to something that exists: the five slugs are the ids
+ *  CategoryGrid puts on its cards, so each one lands on that category on
+ *  /clothing rather than at the top of the page. There is no per-category
+ *  route to point at — see the note in CategoryGrid about why the cards
+ *  themselves are not links — so an anchor is the honest destination. */
+export const CLOTHING_MENU = [
+  { label: "Jackets", href: "/clothing#jackets" },
+  { label: "Trousers", href: "/clothing#trousers" },
+  { label: "Dresses", href: "/clothing#dresses" },
+  { label: "Tops", href: "/clothing#tops" },
+  { label: "Knitwear", href: "/clothing#knitwear" },
+  { label: "View all clothing", href: "/clothing" },
+] as const;
+
 export const PRIMARY = [
   { label: "New In", href: "/#new-in" },
-  { label: "Clothing", href: "/clothing" },
+  { label: "Clothing", href: "/clothing", menu: CLOTHING_MENU },
   { label: "Accessories", href: "/accessories" },
   { label: "Brands", href: "/#brands" },
   { label: "About", href: "/about" },

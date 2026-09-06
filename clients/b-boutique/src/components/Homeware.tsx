@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ImageSlot } from "./ImageSlot";
 
 /* Homeware — the pacing change.
@@ -41,12 +42,12 @@ export function Homeware() {
             here because someone liked it — not because a category needed
             filling.
           </p>
-          <a href="/#visit" className="hw-cta">
+          <Link href="/#visit" className="hw-cta">
             Explore homeware{" "}
             <span className="hw-cta-arrow" aria-hidden="true">
               &rarr;
             </span>
-          </a>
+          </Link>
         </div>
 
         <div className="hw-media">

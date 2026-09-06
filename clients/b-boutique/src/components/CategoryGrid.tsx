@@ -39,7 +39,16 @@ export function CategoryGrid({
   return (
     <ul className="cat-grid">
       {cards.map((card, i) => (
-        <li key={card.slug} className="cat-card" style={{ "--i": i } as React.CSSProperties}>
+        /* The slug is the anchor the header's Clothing menu points at, so
+           /clothing#knitwear lands on the card rather than at the top of the
+           page. scroll-margin-top in globals.css keeps it clear of the fixed
+           header. */
+        <li
+          key={card.slug}
+          id={card.slug}
+          className="cat-card"
+          style={{ "--i": i } as React.CSSProperties}
+        >
           <div className="cat-media">
             {card.image ? (
               <Image

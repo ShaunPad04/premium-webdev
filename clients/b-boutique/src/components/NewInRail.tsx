@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { newIn } from "@/lib/shop";
@@ -314,9 +315,9 @@ export function NewInRail() {
 
       <p className="newin-foot">
         Stock changes weekly and sells in the shop, not online.{" "}
-        <a href="/#visit" className="newin-viewall">
+        <Link href="/#visit" className="newin-viewall">
           View all new in <span className="newin-viewall-arrow" aria-hidden="true">&rarr;</span>
-        </a>
+        </Link>
       </p>
     </section>
   );
