@@ -4,7 +4,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
-import { ProductGrid } from "@/components/ProductGrid";
+import { ShopSearch } from "@/components/ShopSearch";
 import { Visit } from "@/components/Visit";
 import { catalogueIsDemo, products } from "@/lib/catalogue";
 
@@ -41,8 +41,8 @@ export default function ShopPage() {
                 In this week.
               </h2>
               <p className="page-lede">
-                {products.length} pieces. Everything is one of one or close to
-                it, so what sells does not come back.
+                Everything is one of one or close to it, so what sells does not
+                come back. Search the rails, or scroll them.
               </p>
               {catalogueIsDemo ? (
                 <p className="page-pending">
@@ -51,7 +51,7 @@ export default function ShopPage() {
                 </p>
               ) : null}
             </div>
-            <ProductGrid items={products} idPrefix="shop" />
+            <ShopSearch items={products} />
           </div>
         </section>
 

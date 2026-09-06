@@ -3308,6 +3308,178 @@ body {
   .prod-link:hover .prod-media > * { transform: none; }
 }
 
+/* ── Shop search ───────────────────────────────────────────────────────────
+   A field on a cream page, not a chrome search bar. One rule at the bottom of
+   the field and nothing else: the shop's own contact form is drawn this way
+   (.cf-input), and two different input treatments on one site read as two
+   sites. */
+.find {
+  display: grid;
+  gap: 10px;
+  margin-bottom: clamp(28px, 3.4vw, 46px);
+  /* Wide enough to type a phrase into, short enough that it does not read as
+     the page's main event. The grid below it is what people came for. */
+  max-width: 460px;
+  /* The header is 72px and the field is a jump target from it (/shop#find),
+     so landing on it must not park it under the bar. */
+  scroll-margin-top: 108px;
+}
+
+.find-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+
+.find-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--bb-light-border);
+  transition: border-color var(--bb-dur-quick) var(--bb-ease);
+}
+.find-field:hover { border-bottom-color: rgba(10, 10, 10, 0.34); }
+/* The rule under the whole field responds to the input inside it, rather than
+   the input growing a second border of its own inside the first. */
+.find-field:has(.find-input:focus-visible) {
+  border-bottom-color: var(--bb-black);
+  box-shadow: 0 1px 0 0 currentColor;
+}
+
+.find-icon {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  color: var(--bb-grey-dark);
+}
+
+.find-input {
+  flex: 1 1 auto;
+  /* A flex item defaults to min-width:auto and will refuse to shrink below
+     its own content — the same thing that put 115px of horizontal overflow on
+     the home page. */
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 11px 0;
+  font: inherit;
+  font-size: 16px; /* never below 16: iOS zooms the page on focus otherwise */
+  line-height: 1.5;
+  color: var(--bb-black);
+  border-radius: 0;
+}
+.find-input::placeholder { color: var(--bb-grey-dark); }
+.find-input:focus-visible { outline: none; }
+/* Safari draws its own clear button inside type="search"; there is a real,
+   labelled one beside it, and two is a control that appears to do the job
+   twice. */
+.find-input::-webkit-search-cancel-button { display: none; }
+
+.find-clear {
+  flex: none;
+  /* The padding is the touch area and the negative margin keeps the rule
+     under the field where it was. Measured, not assumed: 12px of padding on a
+     10px word gave a 44x39 button — wide enough and 5px short. 15px gets the
+     height to 45. */
+  padding: 15px 2px;
+  margin: -15px 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+  cursor: pointer;
+  transition: color var(--bb-dur-quick) var(--bb-ease);
+}
+.find-clear:hover { color: var(--bb-black); }
+.find-clear:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+.find-count {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Nothing found ─────────────────────────────────────────────────────────
+   Deliberately not a shrug. An empty result is the point at which a shop
+   loses somebody, so it carries the phone number and a way back into stock
+   that exists. */
+.find-empty {
+  max-width: 560px;
+  /* .find already carries its own margin-bottom, so a matching pad here
+     stacked to 90px of nothing between the count line and the answer.
+     Measured and halved. */
+  padding: clamp(4px, 0.8vw, 12px) 0 clamp(12px, 1.6vw, 20px);
+}
+
+.find-empty-lede {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1.25;
+  color: var(--bb-black);
+}
+.find-empty-lede strong { font-weight: inherit; font-style: italic; }
+
+.find-empty-body {
+  margin-top: 14px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(10, 10, 10, 0.72);
+}
+.find-empty-tel {
+  color: var(--bb-black);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+.find-sugg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+.find-sugg-btn {
+  background: none;
+  border: 1px solid var(--bb-light-border);
+  padding: 9px 14px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bb-black);
+  cursor: pointer;
+  transition:
+    background var(--bb-dur-quick) var(--bb-ease),
+    color var(--bb-dur-quick) var(--bb-ease),
+    border-color var(--bb-dur-quick) var(--bb-ease);
+}
+.find-sugg-btn:hover {
+  background: var(--bb-black);
+  color: var(--bb-white);
+  border-color: var(--bb-black);
+}
+.find-sugg-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+.find-empty-alt {
+  margin-top: 20px;
+  font-size: 13px;
+  color: rgba(10, 10, 10, 0.72);
+}
+.find-empty-alt a {
+  color: var(--bb-black);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ── The product page ──────────────────────────────────────────────────────
    Photograph on one side, everything you can do on the other. The media is
    full-bleed to the edge of the page rather than sitting in the gutter: it is

@@ -50,7 +50,7 @@ costs a review cycle and risks undoing a deliberate fix.
 |---|---|---|
 | 1 | **Bodoni Moda + Inter.** | The reference board's Playfair Display + Montserrat annotation is not the source of truth. The prompt and the approved visual are. |
 | 2 | ~~**The hero philosophy copy wraps naturally.**~~ **SUPERSEDED 2026-09-05: the hero philosophy line is removed.** | The client asked for it to be taken off the hero. The hero is now the photograph alone — the categories and SCROLL followed on 2026-09-06, see row 5. The words are not lost — they are the manifesto in `PointOfView.tsx`, section 01, verbatim, which is the only place they now appear as a statement. **Do not put them back on the hero**, and do not remove them from PointOfView. The original wrapping decision is kept above only so nobody re-litigates it if the line ever returns somewhere. |
-| 3 | ~~**SEARCH and BAG (0) are inert `<span>`s.**~~ **PARTLY SUPERSEDED 2026-09-06: BAG is real.** | The rule said to swap in a real control "the day either becomes real". The bag became real when the shop was built, so BAG is an `<a>` to `/bag` with a live count and no aria-hidden. **SEARCH is unchanged and stays an inert span** — there is still no search index, and announcing a control that does nothing is worse than not announcing it. Still never fake cart state, checkout or a search backend. |
+| 3 | ~~**SEARCH and BAG (0) are inert `<span>`s.**~~ **FULLY SUPERSEDED 2026-09-06: both are real.** | The rule said to swap in a real control "the day either becomes real". BAG became real when the shop was built and is an `<a>` to `/bag` with a live count. SEARCH became real later the same day: `/shop` carries a field that filters the catalogue (`lib/search.ts`, `ShopSearch.tsx`), so the header's SEARCH is now a `next/link` to `/shop#find` with no aria-hidden. Neither span remains. The underlying rule is what is locked, not the spans: **never fake cart state, checkout, or a search that finds things the shop does not have.** |
 | 4 | **`LocalTime.tsx` stays.** | Unused since the header lost the Cleethorpes clock. Unrelated code is not deleted as a side effect of other work. |
 | 5 | ~~**The mobile hero category placement stays.**~~ **SUPERSEDED 2026-09-06: the hero category labels are removed entirely.** | The client asked for WOMENSWEAR, ACCESSORIES and HOMEWARE to be taken off the left of the hero, and for SCROLL to be taken off the bottom. The hero is now the photograph alone. **The header was explicitly to be left alone and nothing was taken out of it** — it keeps NEW IN / CLOTHING / ACCESSORIES / BRANDS / ABOUT, and gained CONTACT on 2026-09-06 when the contact page was built. The corner menu still routes to Homeware. `HERO_CATEGORIES` remains exported from `lib/nav.ts` in case the labels are ever wanted back. The placement decision is kept above only so nobody re-litigates it if they return. |
 | 6 | **The focus ring is `currentColor`.** | A fixed token cannot work: the ring runs over a black header, a photograph, a cool-white FAQ and a black footer. `var(--gold)` went black-on-black over the hero the moment gold was retired. Focusable text already contrasts with its own background, so borrowing its colour inherits that. Do not introduce a special focus colour. |
@@ -63,6 +63,26 @@ costs a review cycle and risks undoing a deliberate fix.
 | 13 | **The server prices the bag, never the browser.** | `/api/checkout` takes slugs, sizes and quantities and ignores anything else the client sends. A total posted from a browser is a total somebody sets to 1p. Verified: a request carrying a forged `priceP` is accepted and the field is simply not read. |
 | 14 | **The shop must never confirm an order it did not take.** | `/api/checkout` answers 503 `not_configured` until `SUMUP_API_KEY`, `SUMUP_MERCHANT_CODE` and `NEXT_PUBLIC_SITE_URL` all exist, and the bag says plainly that nothing has been charged. `/checkout/success` deliberately does NOT say "payment successful" — landing there means a browser followed a URL, not that money moved. Only a webhook from SumUp is proof, and that webhook does not exist yet. |
 | 15 | **Every price in `lib/catalogue.ts` is invented.** | Nobody has supplied a price list, a size run or a stock count. Under the Consumer Protection from Unfair Trading Regulations a displayed price is what a customer is entitled to pay, so these are more dangerous than the invented testimonials. `demo: true` on every product drives a visible notice; the site is noindex; and no payment provider is configured. **Replace every price with the client's own before any of those three change.** |
+
+## Search
+
+`lib/search.ts` filters twenty-six products in the browser. No index, no
+service, no dependency — at this size a filter *is* the search, and the array
+is already on the page.
+
+The rule that governs it: **search may not assert anything the product's own
+data does not say.** That is why there are no colour synonyms — `tone` is the
+artwork ramp behind the photograph, so "onyx" and "marble" are the design
+system's names for dark stone, not a statement that a garment is black.
+Returning a coat for "black" would be the site telling a customer the coat is
+black, which nobody has confirmed. A colour search therefore finds nothing,
+and nothing is the honest answer until the client supplies colours. The
+synonyms that do exist ("jumper" → knitwear, "pants" → trouser) are dictionary
+facts about English, never claims about stock.
+
+The empty result is not a dead end: it carries the confirmed phone number and
+chips for categories checked against the catalogue at render, so a suggestion
+can never point at an empty shelf.
 
 ## The routes
 

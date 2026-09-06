@@ -125,23 +125,28 @@ export function Nav() {
 
         {/* RIGHT */}
         <div className="flex shrink-0 items-center gap-5 sm:gap-7">
-          {/* Search and Bag are part of the approved composition, and neither
-              has anything behind it: there is no search index and no cart. So
-              they are spans, not links or buttons — nothing to click, nothing
-              to tab to, and hidden from assistive tech, because announcing a
-              control that does nothing is worse than not announcing it. The
-              moment either becomes real, swap the span for an <a>/<button>
-              and delete the aria-hidden. */}
-          <span
-            aria-hidden="true"
-            className="hidden select-none text-[10px] font-semibold uppercase leading-none tracking-[0.14em] text-bb-white/70 lg:inline"
+          {/* Both of these were inert, aria-hidden spans: part of the approved
+              composition with nothing behind them, because announcing a
+              control that does nothing is worse than not announcing it.
+              Locked decision 3 said to swap each for a real control "the
+              moment it becomes real". Both moments have now happened — the
+              bag when the shop was built, and search on 2026-09-06 when /shop
+              gained a field that actually filters the catalogue.
+
+              So SEARCH is a link to that field rather than a button that
+              opens an overlay: the results are the shop's own grid, on the
+              shop's own page, and a modal would be a second place for the
+              catalogue to live. next/link, and "/shop#find" with the slash,
+              for the same reason as the wordmark above — a bare fragment
+              means a section of whatever page you are on. */}
+          <Link
+            href="/shop#find"
+            /* py-3 turns a 10px line into a 44px target without moving it,
+               the same trick the wordmark and MENU use. */
+            className="hidden select-none py-3 text-[10px] font-semibold uppercase leading-none tracking-[0.14em] text-bb-white/70 transition-colors hover:text-bb-white lg:inline-block"
           >
             Search
-          </span>
-          {/* BAG is a real link now. Locked decision 3 said these were inert
-              spans "the moment either becomes real" — the bag became real when
-              the shop was built, so it is an <a> with a live count and no
-              aria-hidden. SEARCH stays a span: there is still no search. */}
+          </Link>
           <BagLink />
 
           <CornerMenu />
