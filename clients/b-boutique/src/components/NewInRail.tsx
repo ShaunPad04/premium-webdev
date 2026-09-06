@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { newIn } from "@/lib/shop";
+import { useInView } from "@/lib/useInView";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { ImageSlot, type Tone } from "./ImageSlot";
 
@@ -66,6 +67,11 @@ export function NewInRail() {
      timer effect depends on it, so touching the rail restarts the clock for
      free rather than needing a separate "stop" to remember to call. */
   const [touchedAt, setTouchedAt] = useState(0);
+  /* Off screen, the drift stops entirely. It used to write scrollLeft on this
+     rail sixty times a second from the moment the page loaded, including the
+     whole time the section was below the fold — scroll and paint work on
+     twelve photographs nobody could see. */
+  const [section, inView] = useInView<HTMLElement>();
 
   const nudge = useCallback((dir: 1 | -1) => {
     const el = rail.current;
@@ -86,8 +92,9 @@ export function NewInRail() {
 
   /* The rail walks itself along, a fraction of a pixel at a time.
    *
-   * It stops for: a pointer over it, focus inside it, a hidden tab, reduced
-   * motion, and any deliberate interaction (for RESUME_AFTER). That last one
+   * It stops for: a pointer over it, focus inside it, a hidden tab, the
+   * section being off screen, reduced motion, and any deliberate interaction
+   * (for RESUME_AFTER). That last one
    * matters most — nothing is worse than a carousel that drags itself out
    * from under the piece you were looking at.
    *
@@ -102,7 +109,7 @@ export function NewInRail() {
    * breakpoint has done to the card widths. Reset by that and the seam is
    * invisible, because the content either side of it is the same content. */
   useEffect(() => {
-    if (reduced || hovered || tabHidden) return;
+    if (reduced || hovered || tabHidden || !inView) return;
     const since = Date.now() - touchedAt;
     const delay = since < RESUME_AFTER ? RESUME_AFTER - since : 0;
 
@@ -184,7 +191,7 @@ export function NewInRail() {
       cancelAnimationFrame(raf);
       setDrifting(false);
     };
-  }, [reduced, hovered, tabHidden, touchedAt, resizeTick]);
+  }, [reduced, hovered, tabHidden, inView, touchedAt, resizeTick]);
 
   useEffect(() => {
     const onResize = () => setResizeTick((v) => v + 1);
@@ -204,6 +211,7 @@ export function NewInRail() {
   return (
     <section
       id="new-in"
+      ref={section}
       aria-labelledby="newin-heading"
       className="newin"
       /* Deliberately no onPointerEnter here. Pausing on the whole section made

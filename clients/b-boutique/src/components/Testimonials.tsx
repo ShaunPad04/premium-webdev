@@ -7,6 +7,7 @@ import {
   testimonialShots,
   testimonialsPending,
 } from "@/lib/testimonials";
+import { useInView } from "@/lib/useInView";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { ImageSlot } from "./ImageSlot";
@@ -48,6 +49,10 @@ export function Testimonials() {
   const reduced = usePrefersReducedMotion();
   const [shot, setShot] = useState(0);
   const [tabHidden, setTabHidden] = useState(false);
+  /* The photographs only need to change while somebody can see them. Off
+     screen this timer was re-rendering the whole section every nine seconds
+     for nothing. */
+  const [section, inView] = useInView<HTMLElement>();
   const shots = testimonialShots;
 
   useEffect(() => {
@@ -58,16 +63,21 @@ export function Testimonials() {
   }, []);
 
   useEffect(() => {
-    if (reduced || tabHidden || shots.length < 2) return;
+    if (reduced || tabHidden || !inView || shots.length < 2) return;
     const t = window.setTimeout(
       () => setShot((i) => (i + 1) % shots.length),
       SHOT_INTERVAL,
     );
     return () => window.clearTimeout(t);
-  }, [shot, reduced, tabHidden, shots.length]);
+  }, [shot, reduced, tabHidden, inView, shots.length]);
 
   return (
-    <section id="testimonials" aria-labelledby="tm-heading" className="tm">
+    <section
+      id="testimonials"
+      ref={section}
+      aria-labelledby="tm-heading"
+      className="tm"
+    >
       <h2 id="tm-heading" className="sr-only">
         What our customers say
       </h2>
@@ -102,6 +112,13 @@ export function Testimonials() {
             gap={18}
             label="Customer reviews"
             className="tm-rail"
+            /* The component paints two gradient divs over the ends of the
+               rail. This section already fades its edges with a mask on the
+               scrolling viewport itself — see .tm-rail in globals.css — and
+               running both stacked two fades on top of each other, which is
+               what made the first and last card look half-dissolved rather
+               than travelling. One fade, done in CSS, no extra elements. */
+            showGradientMask={false}
             /* The site has no card vocabulary — DESIGN.md is explicit that it
                is flat and square — so the default card is replaced rather than
                restyled at the call site. A hairline, a quote, an attribution. */

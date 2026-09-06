@@ -104,7 +104,13 @@ export const PRIMARY = [
   { label: "About", href: "#our-story" },
 ] as const;
 
-/** The hero's left micro navigation. The three things the shop sells. */
+/** The three things the shop sells.
+ *
+ *  Was the hero's left micro navigation until 2026-09-06, when the client
+ *  asked for the labels to come off the photograph. Nothing reads this today.
+ *  It is kept rather than deleted because it is the list, not the layout, and
+ *  restoring the hero labels — or building a category strip somewhere else —
+ *  should not mean rewriting it from memory. */
 export const HERO_CATEGORIES = [
   { label: "Womenswear", href: "#rails" },
   { label: "Accessories", href: "#rails" },

@@ -8,10 +8,11 @@ import {
   useReducedMotion,
 } from "motion/react";
 
+import { useInView } from "@/lib/useInView";
 import { cn } from "@/lib/utils";
 
-/* Vendored from the supplied component, with three deliberate deviations.
- * All three are recorded because a future reader will otherwise diff this
+/* Vendored from the supplied component, with four deliberate deviations.
+ * All four are recorded because a future reader will otherwise diff this
  * against the original and assume it drifted by accident.
  *
  * 1. `motion/react`, not `framer-motion`. They are the same library: Motion is
@@ -33,6 +34,13 @@ import { cn } from "@/lib/utils";
  * 3. `useReducedMotion() === true` kept as-is, but note it only freezes the
  *    transform. That is the correct reading of the preference here: the rail
  *    stops, the content stays.
+ *
+ * 4. Focus pauses as well as hover, and the rail stops entirely while it is
+ *    off screen. The original runs its animation frame for the life of the
+ *    component: on this page that is a transform written every frame, from
+ *    first paint, on a section two thirds of the way down that nobody has
+ *    scrolled to yet. requestAnimationFrame stops for a hidden tab but not
+ *    for an element out of view, so that one is ours to do.
  *
  * Everything else — the loop maths, the wrap, the ResizeObserver measurement,
  * the pause-on-hover, the non-loop clamping — is the original. */
@@ -106,6 +114,7 @@ export function InfiniteMovingCards<
   const [singleWidth, setSingleWidth] = React.useState(0);
   const [viewportWidth, setViewportWidth] = React.useState(0);
   const [hovered, setHovered] = React.useState(false);
+  const [root, inView] = useInView<HTMLDivElement>();
 
   const safeItems = items ?? [];
   const renderedItems = loop ? [...safeItems, ...safeItems] : safeItems;
@@ -136,6 +145,7 @@ export function InfiniteMovingCards<
 
   useAnimationFrame((_, delta) => {
     if (reduceMotion || safeItems.length <= 1) return;
+    if (!inView) return;
     if (pauseOnHover && hovered) return;
     if (singleWidth <= 0) return;
 
@@ -161,6 +171,7 @@ export function InfiniteMovingCards<
 
   return (
     <div
+      ref={root}
       className={cn("relative w-full", className)}
       onMouseEnter={pauseOnHover ? () => setHovered(true) : undefined}
       onMouseLeave={pauseOnHover ? () => setHovered(false) : undefined}

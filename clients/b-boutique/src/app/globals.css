@@ -453,35 +453,55 @@ body {
    is a rule, which is how everything else on this page separates things.
 
    The mask is applied here rather than through the component's own gradient
-   overlay. The component paints two gradient divs, which means two elements
-   sitting on top of the rail; a mask on the scrolling viewport itself does the
-   same job with nothing added to the DOM, and matches the brand rail under the
-   hero, which fades the same way for the same reason. `> div:first-child` is
-   the component's overflow-hidden viewport — coupled to its internals, and
-   noted here so that a version bump knows to check it. */
+   overlay, and the component's overlay is now switched off at the call site —
+   it was not, so for one commit BOTH ran and the ends of the rail carried two
+   stacked fades. That is why the first card read as broken rather than as
+   travelling. A mask on the scrolling viewport does the job with nothing added
+   to the DOM, and matches the brand rail under the hero, which fades the same
+   way for the same reason. `> div:first-child` is the component's
+   overflow-hidden viewport — coupled to its internals, and noted here so that
+   a version bump knows to check it.
+
+   In px rather than percentages, and equal at both ends. A percentage fade is
+   a different physical width on every screen: 2% is 8px on a phone, where the
+   rail is the whole viewport and needs a real edge, and 26px on a wide
+   desktop. 24px is the width that reads as an edge without eating a word. */
 .tm-rail > div:first-child {
-  /* Narrow. At 5% the fade ate the first forty pixels of whichever card was
-     at the left edge, and since a card sits there permanently the section read
-     as though the text were broken rather than travelling. 2% softens the cut
-     without touching anything you are trying to read. */
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 2%, #000 94%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 2%, #000 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
 }
 
-/* The rail runs past the text column into the section's right gutter. The
-   column is sized for a paragraph — 640px — which fits two cards and a sliver;
-   letting the rail bleed shows three and makes it read as a wall of reviews
-   rather than a pair. Only the rail bleeds: the eyebrow and the notice stay on
-   the measure, so the column still has an edge. */
+/* The rail is the one thing in this column that runs to the edge of the
+   section, at every width. Below 768 that means undoing .tm-body's 18px
+   padding so a card enters and leaves at the screen edge rather than at an
+   invisible margin 18px inside it — a marquee that stops short of the edge
+   reads as clipped. Above it, the rail runs on into the right gutter: the
+   column is sized for a paragraph, 640px, which fits two cards and a sliver,
+   and bleeding shows three, which is what makes it a wall of reviews rather
+   than a pair.
+
+   Only the rail bleeds. The eyebrow and the notice stay on the measure, so
+   the column still has an edge to read against. */
+.tm-rail {
+  width: calc(100% + 36px);
+  margin-inline: -18px;
+  max-width: none;
+}
+
 @media (min-width: 768px) {
   .tm-rail {
     width: calc(100% + clamp(40px, 6vw, 90px));
-    max-width: none;
+    margin-inline: 0;
   }
 }
 
+/* Sized so the rail always shows more than one quote — a marquee carrying a
+   single card at a time is a slideshow with extra steps.
+   At 390 that is 268px against a 390px viewport: one quote and a clear third
+   of the next, so the direction of travel is obvious.
+   At 1024+ it is a fixed 320, because the column has stopped growing. */
 .tm-card {
-  width: min(78vw, 340px);
+  width: min(69vw, 340px);
   height: 100%;
   margin: 0;
   padding: 26px 24px 22px;
@@ -492,6 +512,7 @@ body {
   gap: 20px;
 }
 
+@media (min-width: 768px)  { .tm-card { width: min(46vw, 340px); } }
 @media (min-width: 1024px) { .tm-card { width: 320px; } }
 
 /* Bodoni, because a quote is the one place in this column that is editorial
@@ -1319,29 +1340,17 @@ body {
   object-position: center center;
 }
 
-/* The categories sit at the vertical middle on desktop, where there is empty
-   frame to the left of the portrait. On a phone that lands squarely on the
-   hand and the ring, so they drop into the lower-left stack instead — above
-   the philosophy line, below the hand. Positioning only; the drift comes from
-   the keyframes below, which is why there is no translate utility on the
-   element competing with them. */
-/* 192px, not 196. This block is anchored by its bottom edge, and the
-   category hit areas took its height from 64px to 72px; left at 196 the whole
-   group would have risen 4px. Four off the offset puts its midpoint back
-   where it was — measured at 390: mid y616 before and after. Desktop needs no
-   equivalent, being centred rather than bottom-anchored. */
-.hero-fx-left { bottom: 192px; }
-
-@media (min-width: 1024px) {
-  .hero-fx-left { bottom: auto; top: 50%; transform: translateY(-50%); }
-}
+/* The hero carries no type at all now — the categories and SCROLL were
+   removed on 2026-09-06 — so the positioning and drift rules that placed them
+   are gone with them. What remains is the photograph's own parallax. */
 
 /* ── Hero motion ──────────────────────────────────────────────────────────
    Driven by a root scroll timeline over an absolute range of 0 to 100svh —
    one hero's worth of scrolling — so the whole thing is declarative, costs no
    JavaScript, and cannot fight Lenis. No pinning, no scrubbed zoom, no
-   progress forcing: the page moves at exactly its native speed and these four
-   elements drift slightly while it does.
+   progress forcing: the page moves at exactly its native speed and the
+   photograph drifts slightly while it does. It used to move four elements;
+   the other three were the type that has since been taken off the hero.
 
    Amounts are deliberately small. The image travels 32px against a 100svh
    frame; that reads as depth rather than as an effect, which is the point.
@@ -1352,7 +1361,6 @@ body {
    scale on the photograph would soften it for no gain. */
 @supports (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
-    .hero-fx,
     .hero-media {
       animation-timeline: scroll(root block);
       animation-range: 0 100svh;
@@ -1361,26 +1369,19 @@ body {
       animation-fill-mode: both;
     }
 
-    .hero-media    { animation-name: hero-media; }
-    .hero-fx-left  { animation-name: hero-left; }
-    .hero-fx-scroll { animation-name: hero-scroll; }
+    .hero-media { animation-name: hero-media; }
 
     /* A phone shows a taller crop through a shorter window, so the same
        travel eats visibly more of the frame. Halved, and the copy barely
        moves at all. */
     @media (max-width: 1023px) {
-      .hero-media    { animation-name: hero-media-sm; }
-      .hero-fx-left  { animation-name: hero-left-sm; }
+      .hero-media { animation-name: hero-media-sm; }
     }
   }
 }
 
-@keyframes hero-media  { from { transform: translateY(0); }  to { transform: translateY(32px); } }
-@keyframes hero-left   { from { transform: translateY(-50%); } to { transform: translateY(calc(-50% - 10px)); } }
-@keyframes hero-scroll { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-5px); } }
-
-@keyframes hero-media-sm { from { transform: translateY(0); }  to { transform: translateY(11px); } }
-@keyframes hero-left-sm  { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+@keyframes hero-media    { from { transform: translateY(0); } to { transform: translateY(32px); } }
+@keyframes hero-media-sm { from { transform: translateY(0); } to { transform: translateY(11px); } }
 
 /* Header and hero links: no underline, no colour change, just a small drop in
    opacity. Anything louder competes with the photograph. */
