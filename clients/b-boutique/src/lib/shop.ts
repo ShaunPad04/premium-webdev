@@ -100,6 +100,16 @@ export const categories = [
   { slug: "dresses",     name: "Dresses",     note: "Occasion, day, and the one you keep coming back to." },
   { slug: "tops",        name: "Tops",        note: "Silk, cotton and stripes that go with everything." },
   { slug: "knitwear",    name: "Knitwear",    note: "Lambswool, cotton, and proper weight." },
+  /* Added 2026-09-06 at the client's request, with photography generated to
+     match the existing shoot. Four more of the sections a womenswear boutique
+     of this kind actually runs — they are ordinary shop categories rather than
+     claims about stock, and no piece, price or brand is asserted under any of
+     them. The line under each is written for the demo, in the same voice as
+     the five above. */
+  { slug: "coats",       name: "Coats",       note: "Wool, weight, and enough length to be worth it." },
+  { slug: "shirts",      name: "Shirts",      note: "Cotton poplin, silk, and the good white one." },
+  { slug: "skirts",      name: "Skirts",      note: "Midi, bias-cut, and made to move." },
+  { slug: "denim",       name: "Denim",       note: "Straight, wide, and dark enough for evening." },
   { slug: "accessories", name: "Accessories", note: "Bags, scarves, and small gold things." },
   { slug: "homeware",    name: "Homeware",    note: "Candles, ceramics, and things worth wrapping." },
 ] as const;
@@ -118,6 +128,15 @@ export const newIn = [
   { slug: "silk-scarf",      name: "Silk twill scarf",       category: "Accessories", tone: "gold" },
   { slug: "stoneware-carafe", name: "Stoneware carafe",      category: "Homeware",    tone: "onyx" },
   { slug: "boucle-overshirt", name: "Boucle overshirt",      category: "Jackets",     tone: "bone" },
+  /* Four accessories added 2026-09-06, with photography generated to match the
+     still lifes above. The accessories page held two pieces, which is not a
+     range — it is what the project happened to contain. Names describe what is
+     in the photograph and nothing else: no brand, no price, no size and no
+     stock count, because none of those is known and every one is a claim. */
+  { slug: "gold-hoops",      name: "Gold hoop earrings",   category: "Accessories", tone: "gold" },
+  { slug: "leather-belt",    name: "Slim leather belt",    category: "Accessories", tone: "bone" },
+  { slug: "lambswool-scarf", name: "Lambswool scarf",      category: "Accessories", tone: "bone" },
+  { slug: "leather-tote",    name: "Structured tote",      category: "Accessories", tone: "marble" },
 ] as const;
 
 

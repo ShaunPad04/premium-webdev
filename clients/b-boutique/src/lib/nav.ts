@@ -119,6 +119,10 @@ export const CLOTHING_MENU = [
   { label: "Dresses", href: "/clothing#dresses" },
   { label: "Tops", href: "/clothing#tops" },
   { label: "Knitwear", href: "/clothing#knitwear" },
+  { label: "Coats", href: "/clothing#coats" },
+  { label: "Shirts", href: "/clothing#shirts" },
+  { label: "Skirts", href: "/clothing#skirts" },
+  { label: "Denim", href: "/clothing#denim" },
   { label: "View all clothing", href: "/clothing" },
 ] as const;
 

@@ -12,7 +12,7 @@ import { CLOTHING_CATEGORY_NAMES, clothingCards, newInFor } from "@/lib/pages";
 export const metadata: Metadata = {
   title: "Clothing",
   description:
-    "Jackets, trousers, dresses, tops and knitwear on the rails at B Boutique, 18 Sea View Street, Cleethorpes. Chosen a piece at a time and sold in the shop.",
+    "Coats, jackets, trousers, skirts, dresses, denim, shirts and knitwear on the rails at B Boutique, 18 Sea View Street, Cleethorpes. Chosen a piece at a time and sold in the shop.",
   alternates: { canonical: "/clothing" },
 };
 
@@ -42,7 +42,7 @@ export default function ClothingPage() {
         <PageMasthead
           eyebrow="The rails"
           title="Clothing"
-          lede="Jackets, trousers, dresses, tops and knitwear. One room, one rail of each, and every piece picked by hand rather than ordered by the pack."
+          lede="Coats, jackets, trousers, skirts, dresses, denim, shirts, tops and knitwear. One room, one rail of each, and every piece picked by hand rather than ordered by the pack."
         />
 
         <section aria-labelledby="clothing-cats" className="page-section">
@@ -52,7 +52,7 @@ export default function ClothingPage() {
                 What hangs where.
               </h2>
               <p className="page-lede">
-                Five categories, in the order the rails run through the shop.
+                Nine categories, in the order the rails run through the shop.
               </p>
             </div>
             <CategoryGrid cards={clothingCards} />

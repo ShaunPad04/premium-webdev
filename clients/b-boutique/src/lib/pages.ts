@@ -34,7 +34,12 @@ function fromFeatured(slug: string): CategoryCard {
   return { slug, name: c.name, note: c.note, image: f?.image, alt: f?.alt };
 }
 
-/** The five clothing categories, in the order the rails run.
+function fromSlot(slug: string, slot: string): CategoryCard {
+  const c = byName(slug);
+  return { slug, name: c.name, note: c.note, slot };
+}
+
+/** The clothing categories, in the order the rails run.
  *  Accessories and Homeware are deliberately absent — each has its own place
  *  on the site, and a "clothing" page that lists candles is not a clothing
  *  page. */
@@ -42,20 +47,23 @@ export const clothingCards: CategoryCard[] = [
   fromFeatured("jackets"),
   fromFeatured("trousers"),
   fromFeatured("dresses"),
-  {
-    ...byName("tops"),
-    slug: "tops",
-    slot: "new-cotton-tee",
-  },
+  fromSlot("tops", "new-cotton-tee"),
   fromFeatured("knitwear"),
+  /* The four shot on 2026-09-06. They carry their own photograph like the
+     five above; the only difference is that these are not vendored into
+     public/img yet — see the note in lib/images.ts. */
+  fromSlot("coats", "panel-coats"),
+  fromSlot("shirts", "panel-shirts"),
+  fromSlot("skirts", "panel-skirts"),
+  fromSlot("denim", "panel-denim"),
 ];
 
 export const accessoriesCard: CategoryCard = fromFeatured("accessories");
 
 /** New In, filtered to a set of categories.
  *
- *  The same nine pieces the home page rail carries — this is the one list of
- *  real stock in the project and there is no second one. Prices are absent
+ *  The same pieces the home page rail carries — this is the one list of stock
+ *  in the project and there is no second one. Prices are absent
  *  here for the same reason they are absent there: none are known, the shop
  *  sells in person, and stock turns faster than a page does. */
 export function newInFor(categoryNames: readonly string[]) {
@@ -68,4 +76,8 @@ export const CLOTHING_CATEGORY_NAMES = [
   "Dresses",
   "Tops",
   "Knitwear",
+  "Coats",
+  "Shirts",
+  "Skirts",
+  "Denim",
 ] as const;

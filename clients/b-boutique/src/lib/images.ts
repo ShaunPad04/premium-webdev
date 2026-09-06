@@ -64,6 +64,37 @@ const vendored = new Set<string>(
 
 /** slot -> the generation's filename on the CDN. Order is the page's order. */
 const shot: Record<string, string> = {
+  /* ── Generated 2026-09-06, at the client's request ──────────────────────
+   * Four clothing categories and four accessories, shot to match the sets
+   * already here: the category panels are studio model shots on a muted
+   * grey-green seamless with directional light from the left; the pieces are
+   * still lifes on black marble and polished brass with warm window light.
+   * Same shoot direction, so twenty-eight generations still read as one day.
+   *
+   * These are the `_min.webp` previews rather than the full-size PNGs, and
+   * that is a deliberate compromise rather than an oversight. The masters are
+   * 1536x2048 PNGs and nothing in this environment can reach the CDN to
+   * convert them — the egress policy denies that host, which is the same
+   * reason the slots below are not vendored. Shipping eight unoptimised PNGs
+   * to a preview would cost more than a soft card does.
+   *
+   * BEFORE LAUNCH: run `pnpm images` on a machine with normal internet. It
+   * pulls the full-quality masters into public/img as web-weight WebP and
+   * they stop being remote. Until then these load from the CDN at preview
+   * quality, and any that fail show the designed marble underneath.
+   *
+   * NOT VERIFIED VISUALLY. They were generated from this environment, which
+   * cannot fetch them back, so nobody has looked at these eight images yet. */
+  "panel-coats":   "hf_20260906_215715_7e7bb502-00fc-482d-84a8-38198a23894e_min.webp",
+  "panel-shirts":  "hf_20260906_215715_d5ded46b-eae4-4627-be36-e251cfef8d18_min.webp",
+  "panel-skirts":  "hf_20260906_215715_7b87b535-cccb-44c2-b2f5-814703018c19_min.webp",
+  "panel-denim":   "hf_20260906_215715_6c32a3e8-3220-49ca-8e99-a81fc9e28cc5_min.webp",
+
+  "new-gold-hoops":      "hf_20260906_215715_7a10e049-8195-4937-8c24-5e15b125f218_min.webp",
+  "new-leather-belt":    "hf_20260906_215715_927c9ece-a72f-45e8-801c-31bcde99b73e_min.webp",
+  "new-lambswool-scarf": "hf_20260906_215715_3e6072ab-bd1d-446c-a88e-f8357b3d232e_min.webp",
+  "new-leather-tote":    "hf_20260906_215715_62b81f5c-80a1-4ed0-b9b5-e36cae6803f5_min.webp",
+
   // Category panels — one per rail, keyed by slug so a reorder cannot
   // silently mis-pair a photograph with the wrong category.
   "panel-all":         "hf_20260901_005602_d257ff55-dc4f-40c5-bd57-f948cfbb8480.png",
