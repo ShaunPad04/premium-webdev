@@ -59,7 +59,15 @@ export function Nav() {
       <div className="relative flex h-[72px] items-center justify-between px-[18px] sm:px-6 lg:px-8">
         {/* LEFT — the wordmark, small. The giant one lives in the footer. */}
         <a
-          href="#top"
+          /* "/#top", not "#top".
+             A bare fragment means "a section of whatever page you are on", and
+             #top is the hero — which exists on the home page and nowhere else.
+             So on /clothing, /accessories, /about and /contact the wordmark was
+             a link to nothing: it did not navigate and it did not scroll.
+             With the slash it is a real link home from the four sub-pages and
+             still an ordinary same-document scroll to the top of the hero when
+             you are already on the home page. */
+          href="/#top"
           aria-label="B Boutique, home"
           /* py-3 for the same reason as the MENU button: a 20px-tall link in
              a 72px items-center row becomes a 44px target and nothing moves. */

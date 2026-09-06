@@ -314,7 +314,7 @@ export function NewInRail() {
 
       <p className="newin-foot">
         Stock changes weekly and sells in the shop, not online.{" "}
-        <a href="#visit" className="newin-viewall">
+        <a href="/#visit" className="newin-viewall">
           View all new in <span className="newin-viewall-arrow" aria-hidden="true">&rarr;</span>
         </a>
       </p>

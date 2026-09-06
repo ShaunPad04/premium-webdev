@@ -41,7 +41,7 @@ export function Homeware() {
             here because someone liked it — not because a category needed
             filling.
           </p>
-          <a href="#visit" className="hw-cta">
+          <a href="/#visit" className="hw-cta">
             Explore homeware{" "}
             <span className="hw-cta-arrow" aria-hidden="true">
               &rarr;
