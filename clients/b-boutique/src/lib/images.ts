@@ -72,6 +72,7 @@ const shot: Record<string, string> = {
    *
    * Same caveats as the block below: `_min.webp` previews, not vendored, not
    * seen by anyone in this environment. `pnpm images` fixes all three. */
+  "new-tapered-trouser":    "hf_20260906_224807_5359ff26-7ba0-447b-8f41-52b13a22aae7_min.webp",
   "new-charcoal-overcoat":  "hf_20260906_223202_d37645b0-0053-48f1-97e0-4335119ef087_min.webp",
   "new-camel-wrap-coat":    "hf_20260906_223202_a0c07a1a-7f0a-4071-add8-24ecd03a8a71_min.webp",
   "new-poplin-shirt":       "hf_20260906_223202_4e0f689d-7d17-437e-819d-697eb8aad703_min.webp",

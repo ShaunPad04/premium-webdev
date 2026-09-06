@@ -154,6 +154,7 @@ export const newIn = [
  *  of them is invented. Names describe the garment in the photograph and
  *  nothing more — no brand, no fabric weight, no origin, no care. */
 export const moreStock = [
+  { slug: "tapered-trouser",   name: "Tapered tailored trouser", category: "Trousers", tone: "onyx" },
   { slug: "charcoal-overcoat", name: "Charcoal wool overcoat",   category: "Coats",    tone: "marble" },
   { slug: "camel-wrap-coat",   name: "Camel wrap coat",          category: "Coats",    tone: "bone" },
   { slug: "poplin-shirt",      name: "Cotton poplin shirt",      category: "Shirts",   tone: "bone" },

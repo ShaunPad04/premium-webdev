@@ -74,6 +74,7 @@ const demoPricing: Record<string, { priceP: number; sizes: readonly string[] }> 
 
   /* The rest of the rails, added 2026-09-06 so that every category has stock
      in it rather than a name and an empty shelf. Same rule: invented. */
+  "tapered-trouser":   { priceP: 13500, sizes: CLOTHING_SIZES },
   "charcoal-overcoat": { priceP: 32500, sizes: CLOTHING_SIZES },
   "camel-wrap-coat":   { priceP: 28500, sizes: CLOTHING_SIZES },
   "poplin-shirt":      { priceP: 8900,  sizes: CLOTHING_SIZES },
