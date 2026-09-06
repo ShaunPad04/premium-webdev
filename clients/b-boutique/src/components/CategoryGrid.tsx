@@ -1,24 +1,26 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import type { CategoryCard } from "@/lib/pages";
 import { ImageSlot } from "./ImageSlot";
 
 /* The category index on /clothing and /accessories.
  *
- * A grid of photographs with a name and one line under each, and no link —
- * which is the whole point and is worth stating plainly, because a grid of
- * unlinked cards looks like an oversight until you know why.
+ * A grid of photographs with a name and one line under each, and every card
+ * is a link to that category's own page.
  *
- * There is no page under a category. The shop sells in person: there is no
- * catalogue, no basket, no stock feed and no per-item page anywhere in this
- * codebase. A card that looks clickable and lands on a 404 — or worse, on the
- * same page it started from — is the failure this site has already corrected
- * once, when seven links promised a category and delivered a homepage anchor.
- * So the cards are what they are: pictures of what is on the rails, with the
- * one real call to action at the bottom of the page.
+ * It did not used to be. For as long as there was no catalogue, no basket and
+ * no page under a category, a clickable card would have landed on a 404 or
+ * back on the page it started from — the exact failure this site corrected
+ * when seven links promised a category and delivered a homepage anchor. The
+ * shop changed that: /clothing/coats is a real page listing the real coats,
+ * so the card leads there.
  *
- * Nothing here is focusable, so nothing is added to the tab order. The
- * photographs are described where they carry information a caption does not.
+ * The whole card is the link, so the target is the card rather than a
+ * one-word name, and there is one link per category rather than three
+ * pointing at the same href. The count is not shown here — it belongs on the
+ * page you land on, not on a card that would then need re-rendering whenever
+ * stock moved.
  *
  * Images: `image` is an approved model shot, rendered through next/image with
  * a measured `sizes`. `slot` routes through ImageSlot, which layers the
@@ -49,6 +51,7 @@ export function CategoryGrid({
           className="cat-card"
           style={{ "--i": i } as React.CSSProperties}
         >
+          <Link href={`/clothing/${card.slug}`} className="cat-link-card">
           <div className="cat-media">
             {card.image ? (
               <Image
@@ -71,6 +74,7 @@ export function CategoryGrid({
           </div>
           <h3 className="cat-name">{card.name}</h3>
           <p className="cat-note">{card.note}</p>
+          </Link>
         </li>
       ))}
     </ul>

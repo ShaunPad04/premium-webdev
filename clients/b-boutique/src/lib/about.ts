@@ -15,9 +15,8 @@
  *
  *    - DERIVED. True from data already in this repository or already approved
  *      on the site: the address and hours out of shop.ts, the philosophy line
- *      signed off on 2026-09-01, the fact that the boutique sells in person
- *      rather than online (there is no shop route, basket or checkout
- *      anywhere in this codebase). Safe to publish.
+ *      signed off on 2026-09-01, and what the site itself does — as of
+ *      2026-09-06 it has a shop, so block 01 says so. Safe to publish.
  *    - TEMPORARY, carrying `temporary: true`. Written for the client demo at
  *      their request so the page reads finished. NOT safe to publish. The
  *      page renders one notice for as long as any of these remain.
@@ -45,7 +44,7 @@ export const aboutBlocks: AboutBlock[] = [
        what this codebase actually is. Nothing is asserted about the people. */
     body: [
       "B Boutique is an independent shop at 18 Sea View Street in Cleethorpes. Womenswear, accessories and a small amount of homeware, all of it in one room, all of it chosen a piece at a time.",
-      "There is no online shop and there is not going to be one soon. Stock changes weekly and turns faster than a website keeps up with, so the rails are the catalogue and the door is the checkout.",
+      "You can buy online or you can come in. Everything in the shop is a single piece rather than a size run in a warehouse, so what is listed is what is on the rail — and when it goes, it goes.",
     ],
   },
   {

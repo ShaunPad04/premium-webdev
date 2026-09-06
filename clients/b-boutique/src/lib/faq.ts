@@ -102,10 +102,12 @@ export const faq: FaqItem[] = [
   },
   {
     q: "Do you sell online?",
-    /* Not temporary. This one is genuinely settled: there is no shop route, no
-       basket and no checkout anywhere in this codebase, and shop.ts states the
-       boutique sells in person. Saying so is a description of what exists. */
-    a: "No. Everything is chosen by hand and sold in the shop. Stock changes weekly and turns faster than a website would keep up with, so the rails are the catalogue.",
+    /* Rewritten 2026-09-06, when the shop was built. This answer used to say
+       "No", and it was correct then — there was no shop route, no basket and
+       no checkout in the codebase, and an answer is a description of what
+       exists. There is now, so it says so. Still not marked temporary: it
+       describes the site rather than a policy nobody has confirmed. */
+    a: "Yes. There is an online shop, and everything on it is a piece that is physically on the rail in Cleethorpes. Stock changes weekly, so what is listed is what is in — and if you would rather see something in person first, it is on the rail.",
   },
 ];
 

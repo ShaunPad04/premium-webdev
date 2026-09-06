@@ -37,9 +37,9 @@ import { ImageSlot, type Tone } from "./ImageSlot";
  * Category, then name. Not brand and price — neither exists in the data, and
  * both are exactly the kind of thing that must not be invented for a shop
  * that has not opened. shop.ts is explicit that prices are absent on purpose:
- * the boutique sells in person and stock turns faster than a website does. So
- * the line under each piece is the real metadata we hold, and the section
- * closes by saying where to actually buy it.
+ * prices live in lib/catalogue.ts with the shop rather than here, and every
+ * one of them is invented. So the line under each piece is the metadata this
+ * list holds, and the section closes by sending you to the shop.
  *
  * ── The photographs ───────────────────────────────────────────────────────
  * They are warm — brass rails, black marble, a bone floor, warm window light —
@@ -314,9 +314,9 @@ export function NewInRail() {
       </ul>
 
       <p className="newin-foot">
-        Stock changes weekly and sells in the shop, not online.{" "}
-        <Link href="/#visit" className="newin-viewall">
-          View all new in <span className="newin-viewall-arrow" aria-hidden="true">&rarr;</span>
+        Stock changes weekly, and everything here is a single piece.{" "}
+        <Link href="/shop" className="newin-viewall">
+          Shop all new in <span className="newin-viewall-arrow" aria-hidden="true">&rarr;</span>
         </Link>
       </p>
     </section>

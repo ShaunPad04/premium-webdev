@@ -27,13 +27,14 @@ export type MenuItem = {
  *  `pending` is gone from Womenswear and Accessories: both now have a page.
  */
 export const MENU: MenuItem[] = [
-  { n: "01", label: "Womenswear", href: "/clothing" },
-  { n: "02", label: "Accessories", href: "/accessories" },
-  { n: "03", label: "Homeware", href: "/#homeware" },
-  { n: "04", label: "New Arrivals", href: "/#new-in" },
-  { n: "05", label: "The Boutique", href: "/about" },
-  { n: "06", label: "Visit Us", href: "/#visit" },
-  { n: "07", label: "Contact", href: "/contact" },
+  { n: "01", label: "Shop", href: "/shop" },
+  { n: "02", label: "Womenswear", href: "/clothing" },
+  { n: "03", label: "Accessories", href: "/accessories" },
+  { n: "04", label: "Homeware", href: "/#homeware" },
+  { n: "05", label: "New Arrivals", href: "/#new-in" },
+  { n: "06", label: "The Boutique", href: "/about" },
+  { n: "07", label: "Visit Us", href: "/#visit" },
+  { n: "08", label: "Contact", href: "/contact" },
 ];
 
 /** Social accounts.
@@ -76,6 +77,7 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
   {
     heading: "Shop",
     items: [
+      { n: "", label: "Shop all", href: "/shop" },
       { n: "", label: "New In", href: "/#new-in" },
       { n: "", label: "Clothing", href: "/clothing" },
       { n: "", label: "Accessories", href: "/accessories" },
@@ -108,25 +110,25 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
  *  the reason given above MENU — the header is on five routes now. */
 /** What hangs under a header item that has a menu.
  *
- *  Every href resolves to something that exists: the five slugs are the ids
- *  CategoryGrid puts on its cards, so each one lands on that category on
- *  /clothing rather than at the top of the page. There is no per-category
- *  route to point at — see the note in CategoryGrid about why the cards
- *  themselves are not links — so an anchor is the honest destination. */
+ *  Every href is a real page. These were anchors into /clothing until the
+ *  shop was built, because there was no per-category route to point at; there
+ *  is now, and /clothing/coats lists the coats. The ids stay on the cards so
+ *  the old anchors still land somewhere sensible. */
 export const CLOTHING_MENU = [
-  { label: "Jackets", href: "/clothing#jackets" },
-  { label: "Trousers", href: "/clothing#trousers" },
-  { label: "Dresses", href: "/clothing#dresses" },
-  { label: "Tops", href: "/clothing#tops" },
-  { label: "Knitwear", href: "/clothing#knitwear" },
-  { label: "Coats", href: "/clothing#coats" },
-  { label: "Shirts", href: "/clothing#shirts" },
-  { label: "Skirts", href: "/clothing#skirts" },
-  { label: "Denim", href: "/clothing#denim" },
+  { label: "Jackets", href: "/clothing/jackets" },
+  { label: "Trousers", href: "/clothing/trousers" },
+  { label: "Dresses", href: "/clothing/dresses" },
+  { label: "Tops", href: "/clothing/tops" },
+  { label: "Knitwear", href: "/clothing/knitwear" },
+  { label: "Coats", href: "/clothing/coats" },
+  { label: "Shirts", href: "/clothing/shirts" },
+  { label: "Skirts", href: "/clothing/skirts" },
+  { label: "Denim", href: "/clothing/denim" },
   { label: "View all clothing", href: "/clothing" },
 ] as const;
 
 export const PRIMARY = [
+  { label: "Shop", href: "/shop" },
   { label: "New In", href: "/#new-in" },
   { label: "Clothing", href: "/clothing", menu: CLOTHING_MENU },
   { label: "Accessories", href: "/accessories" },

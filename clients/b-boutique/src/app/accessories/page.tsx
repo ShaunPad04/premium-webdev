@@ -14,22 +14,17 @@ import { categories } from "@/lib/shop";
 export const metadata: Metadata = {
   title: "Accessories",
   description:
-    "Bags, scarves and small gold things at B Boutique, 18 Sea View Street, Cleethorpes. Chosen a piece at a time and sold in the shop.",
+    "Bags, scarves and small gold things at B Boutique, 18 Sea View Street, Cleethorpes. Chosen a piece at a time, and available online or on the rail.",
   alternates: { canonical: "/accessories" },
 };
 
-/* /accessories.
+/* /accessories — the editorial page for the category.
  *
- * Two pieces are in the data — a leather crossbody and a silk twill scarf —
- * and that is genuinely all this project holds. So the page is built as an
- * editorial page rather than as a grid pretending to be a department: one
- * large photograph, the category's own line, and the two pieces shown as what
- * they are.
- *
- * The alternative was to pad it, and padding here means inventing stock for a
- * real shop. Two honest pieces and a photograph reads as considered; six
- * invented ones read as a catalogue right up until somebody comes in and asks
- * for one. */
+ * It held two pieces when it was built, because two was all the project
+ * contained; there are six now. It stays an editorial page rather than a
+ * catalogue: one large photograph, the category's own line, and the pieces
+ * shown as what has landed. /shop is where the same pieces carry a price and
+ * a buy button, and the two do not compete. */
 export default function AccessoriesPage() {
   const pieces = newInFor(["Accessories"]);
 
@@ -90,9 +85,9 @@ export default function AccessoriesPage() {
                   category page is the same error, in a place nobody would
                   think to check. */}
               <p className="page-lede">
-                Sold in the shop, not online. The phone number is at the bottom
-                of the page if you want to ask about something before you come
-                down.
+                Available online or on the rail. The phone number is at the
+                bottom of the page if you want to ask about something before
+                you decide.
               </p>
             </div>
             <PieceGrid pieces={pieces} idPrefix="accessories" />

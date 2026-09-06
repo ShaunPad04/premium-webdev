@@ -116,8 +116,10 @@ export const categories = [
 
 export type Category = (typeof categories)[number];
 
-/** New in. Prices deliberately absent — the shop sells in person,
- *  and stock turns faster than a website does. */
+/** New in — the short list the home page rail carries.
+ *  No price here on purpose: prices live in lib/catalogue.ts, with the shop,
+ *  and every one of them is invented. Keeping them out of this file keeps the
+ *  rail from becoming a second, quietly diverging price list. */
 export const newIn = [
   { slug: "wool-trouser",    name: "Wide-leg wool trouser",  category: "Trousers",    tone: "bone" },
   { slug: "camel-blazer",    name: "Tailored camel blazer",  category: "Jackets",     tone: "marble" },
@@ -139,6 +141,33 @@ export const newIn = [
   { slug: "leather-tote",    name: "Structured tote",      category: "Accessories", tone: "marble" },
 ] as const;
 
+/** The rest of the rails.
+ *
+ *  `newIn` above is what the home page's New In rail carries — a short list,
+ *  deliberately, because that rail renders its set twice and every item is a
+ *  photograph. This is everything else the shop sells, and the two together
+ *  are the catalogue.
+ *
+ *  Added 2026-09-06 because four clothing categories had a card, a name and
+ *  nothing behind them: a boutique with an empty Coats rail. Photography was
+ *  generated to match; prices and sizes live in lib/catalogue.ts and every one
+ *  of them is invented. Names describe the garment in the photograph and
+ *  nothing more — no brand, no fabric weight, no origin, no care. */
+export const moreStock = [
+  { slug: "charcoal-overcoat", name: "Charcoal wool overcoat",   category: "Coats",    tone: "marble" },
+  { slug: "camel-wrap-coat",   name: "Camel wrap coat",          category: "Coats",    tone: "bone" },
+  { slug: "poplin-shirt",      name: "Cotton poplin shirt",      category: "Shirts",   tone: "bone" },
+  { slug: "silk-blouse",       name: "Silk blouse",              category: "Shirts",   tone: "gold" },
+  { slug: "satin-skirt",       name: "Bias-cut satin skirt",     category: "Skirts",   tone: "onyx" },
+  { slug: "pleated-skirt",     name: "Pleated wool skirt",       category: "Skirts",   tone: "marble" },
+  { slug: "straight-jeans",    name: "Straight-leg jean",        category: "Denim",    tone: "onyx" },
+  { slug: "wide-jeans",        name: "Wide-leg ecru jean",       category: "Denim",    tone: "bone" },
+  { slug: "merino-rollneck",   name: "Merino roll-neck",         category: "Knitwear", tone: "onyx" },
+  { slug: "burgundy-dress",    name: "Pleated silk midi dress",  category: "Dresses",  tone: "red" },
+  { slug: "wool-blazer",       name: "Wool tailored blazer",     category: "Jackets",  tone: "marble" },
+  { slug: "striped-top",       name: "Striped cotton top",       category: "Tops",     tone: "bone" },
+] as const;
+
 
 /** The five featured category panels.
  *
@@ -147,10 +176,10 @@ export const newIn = [
  *  what the panels add lives here: the photograph, its alt text and the
  *  displayed number.
  *
- *  `href` is "#visit" for all five because no category route exists yet, and
- *  a link to a page that 404s is worse than a link to the one place these
- *  clothes can actually be seen — the shop sells in person, not online. When
- *  real category pages exist, change these five hrefs and nothing else moves.
+ *  `href` was "#visit" for all five while no category route existed. There is
+ *  one now — /clothing/<slug> — and CategoryGrid links to it directly, so
+ *  these hrefs are unused by the rails. Left in place rather than deleted:
+ *  the field is part of the shape, and a future consumer will want it.
  *
  *  The images are the final approved assets: real WebP, 2048x2731, 3:4,
  *  full colour at source. The monochrome resting state is a CSS filter, never

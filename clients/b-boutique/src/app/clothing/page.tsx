@@ -12,7 +12,7 @@ import { CLOTHING_CATEGORY_NAMES, clothingCards, newInFor } from "@/lib/pages";
 export const metadata: Metadata = {
   title: "Clothing",
   description:
-    "Coats, jackets, trousers, skirts, dresses, denim, shirts and knitwear on the rails at B Boutique, 18 Sea View Street, Cleethorpes. Chosen a piece at a time and sold in the shop.",
+    "Coats, jackets, trousers, skirts, dresses, denim, shirts and knitwear at B Boutique, 18 Sea View Street, Cleethorpes. Chosen a piece at a time, and available online or on the rail.",
   alternates: { canonical: "/clothing" },
 };
 
@@ -67,8 +67,8 @@ export default function ClothingPage() {
               </h2>
               <p className="page-lede">
                 The clothing that has landed most recently. Stock changes
-                weekly, so this is a snapshot rather than a catalogue — and
-                everything here sells in the shop, not online.
+                weekly, so this is a snapshot rather than a standing range.
+                Everything here can be bought online or seen on the rail.
               </p>
             </div>
             <PieceGrid pieces={pieces} idPrefix="clothing" />

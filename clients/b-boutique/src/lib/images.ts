@@ -64,6 +64,27 @@ const vendored = new Set<string>(
 
 /** slot -> the generation's filename on the CDN. Order is the page's order. */
 const shot: Record<string, string> = {
+  /* ── Product photography, generated 2026-09-06 ─────────────────────────
+   * Twelve garment still lifes, shot to the same direction as the New In set:
+   * black marble with white veining, polished brass, warm window light from
+   * the left. They exist because four clothing categories had a card and a
+   * name and nothing behind them — a boutique with an empty Coats rail.
+   *
+   * Same caveats as the block below: `_min.webp` previews, not vendored, not
+   * seen by anyone in this environment. `pnpm images` fixes all three. */
+  "new-charcoal-overcoat":  "hf_20260906_223202_d37645b0-0053-48f1-97e0-4335119ef087_min.webp",
+  "new-camel-wrap-coat":    "hf_20260906_223202_a0c07a1a-7f0a-4071-add8-24ecd03a8a71_min.webp",
+  "new-poplin-shirt":       "hf_20260906_223202_4e0f689d-7d17-437e-819d-697eb8aad703_min.webp",
+  "new-silk-blouse":        "hf_20260906_223202_dc6f3d4c-a735-456e-8ec2-1efa0460d184_min.webp",
+  "new-satin-skirt":        "hf_20260906_223202_d1d34cff-c702-499d-8fd9-49e026bcb17d_min.webp",
+  "new-pleated-skirt":      "hf_20260906_223202_d77989c7-c7b0-4d05-888d-46e794128a49_min.webp",
+  "new-straight-jeans":     "hf_20260906_223202_e7ca6518-3092-4888-beed-60492d9c8283_min.webp",
+  "new-wide-jeans":         "hf_20260906_223202_615dc887-033e-4ab0-a931-b045ecec3ac6_min.webp",
+  "new-merino-rollneck":    "hf_20260906_223202_c5526975-1803-48fa-94a8-daf6d09938d9_min.webp",
+  "new-burgundy-dress":     "hf_20260906_223202_d1c3be07-5bdf-4e03-bae9-e471902e781c_min.webp",
+  "new-wool-blazer":        "hf_20260906_223202_da9bb067-5387-4c1d-9f24-590439c8b14e_min.webp",
+  "new-striped-top":        "hf_20260906_223202_f858bf93-854e-42ea-b6cc-91c7fa18a380_min.webp",
+
   /* ── Generated 2026-09-06, at the client's request ──────────────────────
    * Four clothing categories and four accessories, shot to match the sets
    * already here: the category panels are studio model shots on a muted

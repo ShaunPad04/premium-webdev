@@ -2321,7 +2321,20 @@ body {
   }
 }
 
-@keyframes ft-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+/* Movement only, no fade.
+ *
+ * This used to animate opacity as well, and on a long page it was invisible —
+ * by the time the footer was on screen the reveal had finished. /bag with an
+ * empty bag is short enough that the footer sits high in the viewport at rest,
+ * which parks the scrub mid-range, which renders the address and the wordmark
+ * at partial opacity. axe caught it as a serious contrast failure on six
+ * elements at 390.
+ *
+ * That is the same lesson as the category captions: a scroll-scrubbed opacity
+ * on TEXT is not a passing frame, it is a resting state on some page at some
+ * width, and half-opacity text fails contrast. Text moves; it does not fade.
+ * Third time this has bitten, so it is written down here as well as there. */
+@keyframes ft-rise { from { transform: translateY(14px); } to { transform: translateY(0); } }
 
 @media (prefers-reduced-motion: reduce) {
   .fw-mark { transition: none; transform: none; opacity: 1; }
@@ -3229,3 +3242,415 @@ body {
 }
 .nav-item.has-menu[data-dismissed] .nav-menu-wrap { pointer-events: none; }
 .nav-item.has-menu[data-dismissed] .nav-menu-item { opacity: 0; transform: translateY(-4px); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE SHOP — /shop, /shop/[slug], /bag
+   Added 2026-09-06. Same vocabulary as the rest of the site: flat, square,
+   hairlines, Bodoni for names and prices, Inter for everything operational.
+   A shop is where a design system usually acquires cards, radii and badges;
+   this one does not get any.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.prod-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(24px, 2.6vw, 40px) clamp(14px, 1.6vw, 24px);
+}
+@media (min-width: 640px)  { .prod-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .prod-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.prod-link { display: block; text-decoration: none; color: inherit; }
+
+.prod-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--bb-black-raised);
+}
+/* The photograph opens inside a frame that does not move — the same gesture
+   the category cards make, so the two read as one system. */
+.prod-media > * { transition: transform 900ms var(--bb-ease); }
+.prod-link:hover .prod-media > *,
+.prod-link:focus-visible .prod-media > * { transform: scale(1.035); }
+
+.prod-body { display: block; padding-top: 14px; }
+
+.prod-cat {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+
+.prod-name {
+  display: block;
+  margin-top: 5px;
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.3;
+}
+
+.prod-price {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  color: rgba(10, 10, 10, 0.72);
+  font-variant-numeric: tabular-nums;
+}
+
+.prod-link:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .prod-media > * { transition: none; }
+  .prod-link:hover .prod-media > * { transform: none; }
+}
+
+/* ── The product page ──────────────────────────────────────────────────────
+   Photograph on one side, everything you can do on the other. The media is
+   full-bleed to the edge of the page rather than sitting in the gutter: it is
+   the largest photograph on the site after the hero and boxing it in would
+   waste it. */
+.pdp {
+  display: flex;
+  flex-direction: column;
+  background: var(--bone);
+  color: var(--bb-black);
+}
+
+@media (min-width: 1024px) {
+  .pdp { flex-direction: row; align-items: stretch; min-height: 100svh; }
+  .pdp-media { flex: 0 0 52%; }
+  /* min-width: 0 for the same reason the testimonials column needs it — a
+     flex item will not shrink below its content otherwise. */
+  .pdp-body { flex: 1 1 48%; min-width: 0; display: flex; align-items: center; }
+}
+
+.pdp-media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--bb-black-raised);
+}
+@media (min-width: 1024px) { .pdp-media { aspect-ratio: auto; } }
+
+.pdp-body {
+  padding: clamp(40px, 6vw, 96px) var(--bb-gutter-editorial)
+           clamp(48px, 7vw, 110px);
+}
+.pdp-inner { width: 100%; max-width: 520px; }
+
+.pdp-cat {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+.pdp-back { color: inherit; text-decoration: underline; text-underline-offset: 4px; }
+
+.pdp-name {
+  margin-top: 20px;
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.pdp-price {
+  margin-top: 18px;
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-variant-numeric: tabular-nums;
+  color: var(--bb-black);
+}
+
+.pdp-pending { margin-top: 16px; }
+
+.pdp-note {
+  margin-top: 26px;
+  max-width: 46ch;
+  font-size: 14px;
+  line-height: 1.68;
+  color: rgba(10, 10, 10, 0.72);
+}
+
+/* ── Size and add ─────────────────────────────────────────────────────── */
+.atb { margin-top: 34px; }
+
+.atb-sizes { border: 0; padding: 0; margin: 0 0 26px; }
+.atb-sizes legend { padding: 0; margin-bottom: 12px; }
+
+.atb-size-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* A real radio, visually hidden, with the label as the control. Keeps arrow
+   keys, the group semantics and "3 of 6" for free; a div with onClick has
+   none of them. */
+.atb-size {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 52px;
+  min-height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--bb-light-border);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    border-color var(--bb-dur-quick) var(--bb-ease),
+    background var(--bb-dur-quick) var(--bb-ease),
+    color var(--bb-dur-quick) var(--bb-ease);
+}
+.atb-size input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+.atb-size:hover { border-color: rgba(10, 10, 10, 0.4); }
+.atb-size.is-on { background: var(--bb-black); border-color: var(--bb-black); color: var(--bb-white); }
+/* The ring goes on the label, because the input it belongs to is invisible. */
+.atb-size:has(input:focus-visible) { outline: 2px solid currentColor; outline-offset: 2px; }
+
+.atb-onesize {
+  margin-bottom: 26px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+
+.atb-add { width: 100%; justify-content: center; }
+.atb-status:empty { display: none; }
+.atb-added { margin-top: 16px; font-size: 13.5px; line-height: 1.6; }
+.atb-added-link { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── The bag ──────────────────────────────────────────────────────────── */
+.bag { display: grid; grid-template-columns: 1fr; gap: clamp(34px, 4vw, 64px); }
+@media (min-width: 900px) { .bag { grid-template-columns: 1fr 320px; align-items: start; } }
+
+.bag-lines { display: flex; flex-direction: column; }
+
+.bag-line {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  grid-template-areas:
+    "media detail"
+    "media qty"
+    "total total";
+  gap: 6px 18px;
+  padding: 22px 0;
+  border-top: 1px solid var(--bb-light-border);
+}
+.bag-line:last-child { border-bottom: 1px solid var(--bb-light-border); }
+
+@media (min-width: 640px) {
+  .bag-line {
+    grid-template-columns: 96px 1fr auto auto;
+    grid-template-areas: "media detail qty total";
+    align-items: center;
+    gap: 24px;
+  }
+}
+
+.bag-media {
+  grid-area: media;
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--bb-black-raised);
+}
+.bag-detail { grid-area: detail; }
+.bag-qty { grid-area: qty; display: flex; align-items: center; gap: 14px; }
+.bag-line-total {
+  grid-area: total;
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  text-align: right;
+}
+
+.bag-name {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.25;
+}
+.bag-name a { color: inherit; text-decoration: none; }
+.bag-name a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+.bag-meta {
+  margin-top: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+.bag-each { margin-top: 6px; font-size: 13px; color: rgba(10, 10, 10, 0.68); font-variant-numeric: tabular-nums; }
+
+.bag-qty-input {
+  width: 62px;
+  padding: 9px 10px;
+  border: 1px solid var(--bb-light-border);
+  background: transparent;
+  border-radius: 0;
+  font: inherit;
+  font-size: 15px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--bb-black);
+}
+.bag-qty-input:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+.bag-remove {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  /* Hit area only — vertical padding on an inline-level button grows the
+     target without moving a painted pixel. */
+  padding-block: 12px;
+  transition: color var(--bb-dur-quick) var(--bb-ease);
+}
+.bag-remove:hover { color: var(--bb-black); }
+
+.bag-sum { border: 1px solid var(--bb-light-border); padding: clamp(22px, 2.6vw, 32px); }
+
+.bag-totals { display: flex; flex-direction: column; gap: 10px; }
+.bag-totals > div { display: flex; justify-content: space-between; gap: 20px; font-size: 14px; }
+.bag-totals dt { color: rgba(10, 10, 10, 0.68); }
+.bag-totals dd { font-variant-numeric: tabular-nums; }
+
+.bag-total-row {
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--bb-light-border);
+  font-size: 16px !important;
+}
+.bag-total-row dt { color: var(--bb-black) !important; }
+
+.bag-pending { margin-top: 18px; }
+.bag-checkout { width: 100%; justify-content: center; margin-top: 22px; }
+
+.bag-legal {
+  margin-top: 18px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(10, 10, 10, 0.62);
+}
+
+.bag-empty { max-width: 46ch; }
+.bag-empty-cta { display: inline-flex; margin-top: 22px; }
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .prod {
+      animation: page-rise 700ms var(--bb-ease) both;
+      animation-timeline: view();
+      animation-range:
+        entry calc(var(--bb-enter) + min(var(--i, 0), 6) * var(--bb-step))
+        entry calc(var(--bb-settle) + min(var(--i, 0), 6) * var(--bb-step));
+    }
+    .prod-media {
+      animation: page-fade 700ms var(--bb-ease) both;
+      animation-timeline: view();
+      animation-range:
+        entry calc(var(--bb-enter) + min(var(--i, 0), 6) * var(--bb-step))
+        entry calc(var(--bb-settle) + min(var(--i, 0), 6) * var(--bb-step));
+    }
+  }
+}
+
+/* A category card is a link now that there is a category page under it. */
+.cat-link-card { display: block; color: inherit; text-decoration: none; }
+.cat-link-card:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; }
+
+/* The other rails — an index, not a nav bar. */
+.cat-links {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  max-width: 720px;
+}
+.cat-link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 0;
+  border-top: 1px solid var(--bb-light-border);
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-size: clamp(18px, 1.9vw, 24px);
+  transition: transform 420ms var(--bb-ease);
+}
+.cat-links li:last-child .cat-link { border-bottom: 1px solid var(--bb-light-border); }
+@media (hover: hover) and (pointer: fine) {
+  .cat-link:hover { transform: translateX(6px); }
+}
+.cat-link:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
+
+.cat-link-n {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--bb-grey-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-link { transition: none; }
+  .cat-link:hover { transform: none; }
+}
+
+/* A solid button for LIGHT sections.
+ *
+ * .visit-cta is white type on a transparent ground with a white border — it
+ * is drawn for the black Visit section and it is correct there. Used on a
+ * bone page it is white on cream, which axe caught as a serious contrast
+ * failure on /bag's empty state and on the checkout confirmation. Two grounds
+ * need two buttons; this is the one for the light half of the site, and it is
+ * the same black fill the form's submit already uses so the site does not
+ * gain a third button shape. */
+.btn-solid {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--bb-black);
+  background: var(--bb-black);
+  color: var(--bb-white);
+  padding: 15px 30px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 0;
+  transition:
+    background var(--bb-dur-quick) var(--bb-ease),
+    color var(--bb-dur-quick) var(--bb-ease),
+    transform var(--bb-dur-quick) var(--bb-ease);
+}
+.btn-solid:hover { background: transparent; color: var(--bb-black); }
+.btn-solid:active { transform: translateY(1px); }
+.btn-solid span { transition: transform var(--bb-dur-quick) var(--bb-ease); }
+.btn-solid:hover span,
+.btn-solid:focus-visible span { transform: translateX(4px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-solid, .btn-solid span { transition: none; }
+  .btn-solid:hover span { transform: none; }
+}

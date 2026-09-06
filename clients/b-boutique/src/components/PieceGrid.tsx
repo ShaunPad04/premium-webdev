@@ -7,9 +7,9 @@ import { ImageSlot } from "./ImageSlot";
  * has arrived deliberately and is looking for what is in, so the same nine
  * photographs stop moving and become a grid you can read at your own pace.
  *
- * Category above name, as on the home page. Not brand, not price: neither
- * exists in the data, and both are exactly the kind of thing that must never
- * be invented for a shop that sells in person and has published no prices. */
+ * Category above name, and deliberately no price: this grid is editorial —
+ * it shows what has landed — and the shop's own ProductGrid is where prices
+ * belong. Two grids both showing money is two places for it to disagree. */
 export function PieceGrid({
   pieces,
   idPrefix,

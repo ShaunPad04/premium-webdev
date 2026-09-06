@@ -194,6 +194,10 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        {/* No cart provider. The bag is an external store read through
+            useSyncExternalStore, so every component that needs it subscribes
+            directly and there is nothing to thread through the tree. See the
+            note at the top of lib/useCart. */}
         {children}
       </body>
     </html>

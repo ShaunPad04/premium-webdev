@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { PRIMARY } from "@/lib/nav";
+import { BagLink } from "./BagLink";
 import { CornerMenu } from "./CornerMenu";
 
 /* The campaign header.
@@ -99,8 +100,12 @@ export function Nav() {
               change). Narrowing the vw term is what moves it. Measured after:
               the nav's right edge goes 767 -> 757 at 1024 against a Menu
               button starting at 775, so 18px of clearance instead of 8. At
-              1440 the gap goes 46px -> 40px, which is the price. */}
-          <ul className="flex items-center" style={{ gap: "clamp(22px, 2.8vw, 50px)" }}>
+              1440 the gap goes 46px -> 40px, which is the price.
+
+              Narrowed again to 2.4vw when SHOP became a seventh item. Measured
+              at 1024 after: the nav's right edge is checked against the Menu
+              button below rather than assumed. */}
+          <ul className="flex items-center" style={{ gap: "clamp(18px, 2.4vw, 44px)" }}>
             {PRIMARY.map((item) =>
               "menu" in item && item.menu ? (
                 <NavMenuItem key={item.label} item={item} />
@@ -133,12 +138,11 @@ export function Nav() {
           >
             Search
           </span>
-          <span
-            aria-hidden="true"
-            className="hidden select-none text-[10px] font-semibold uppercase leading-none tracking-[0.14em] text-bb-white/70 lg:inline"
-          >
-            Bag (0)
-          </span>
+          {/* BAG is a real link now. Locked decision 3 said these were inert
+              spans "the moment either becomes real" — the bag became real when
+              the shop was built, so it is an <a> with a live count and no
+              aria-hidden. SEARCH stays a span: there is still no search. */}
+          <BagLink />
 
           <CornerMenu />
         </div>
