@@ -4,10 +4,20 @@
 
 export const shop = {
   name: "B Boutique",
-  /* Fill these in and they appear in the menu's contact block automatically.
-     Left empty rather than guessed — a wrong number on a real shop's site
-     sends customers to a stranger. */
-  phone: "" as string,
+  /* ── PHONE: CONFIRMED BY THE CLIENT 2026-09-06 ────────────────────────
+     Given by the client directly, in their own words, in chat. It is the
+     number the contact page, the corner menu and the footer all print, and
+     the only contact channel the site currently has.
+
+     EMAIL IS STILL EMPTY, and that is deliberate rather than an oversight.
+     Nobody has supplied one, so nothing on the site prints an address and
+     the contact form has no destination configured — see app/api/contact.
+     Fill this in and the form gains a target; leave it and the form says so
+     honestly rather than pretending to send.
+
+     Never guess either value. A wrong number on a real shop's site sends
+     customers to a stranger. */
+  phone: "07305534342" as string,
   email: "" as string,
   street: "18 Sea View Street",
   town: "Cleethorpes",
@@ -39,6 +49,21 @@ export const shop = {
 } as const;
 
 export const addressLines = [shop.street, shop.town, shop.postcode];
+
+/** The phone number as it is printed on the page.
+ *
+ *  `shop.phone` holds exactly the digits the client gave, unaltered — that is
+ *  the source of truth and nothing may edit it. This only groups them for
+ *  reading: UK mobile numbers are written 07305 534342, and eleven unbroken
+ *  digits are measurably harder to read back to somebody or copy correctly.
+ *  It is a display decision, not a change to the data — `tel:` links are
+ *  always built from the raw value.
+ *
+ *  Falls back to printing whatever is there if the number is not an 11-digit
+ *  UK mobile, rather than mangling a landline or an international format. */
+export const phoneDisplay = /^07\d{9}$/.test(shop.phone)
+  ? `${shop.phone.slice(0, 5)} ${shop.phone.slice(5)}`
+  : shop.phone;
 
 /** 0 = Sunday, matching Date.getDay(). null = closed. Times are 24h local. */
 export type Hours = { open: number; close: number } | null;

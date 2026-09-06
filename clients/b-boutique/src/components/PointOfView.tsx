@@ -1,4 +1,9 @@
-const SECONDARY = ["One shop", "One street", "Every piece", "chosen by hand."];
+import { philosophy } from "@/lib/about";
+
+/* One definition of the approved sentence and its annotation, imported here
+   and by the About page. They used to be two copies of the same signed-off
+   words, which is one edit away from disagreeing. */
+const SECONDARY = philosophy.lines;
 
 /* Our philosophy.
  *
@@ -32,8 +37,7 @@ export function PointOfView() {
         <div>
           <p className="pov-eyebrow">Our philosophy</p>
           <h2 id="pov-heading" data-lines className="pov-statement">
-            Clothes you won&rsquo;t meet coming the other way down the high
-            street.
+            {philosophy.statement}
           </h2>
         </div>
 

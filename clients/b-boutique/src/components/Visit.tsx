@@ -1,4 +1,4 @@
-import { shop, hours, formatHour } from "@/lib/shop";
+import { shop, hours, formatHour, phoneDisplay } from "@/lib/shop";
 import { directionsHref, mapEmbedSrc } from "@/lib/nav";
 import { VisitMap } from "./VisitMap";
 
@@ -40,6 +40,19 @@ export function Visit() {
           >
             Get directions <span className="visit-cta-arrow" aria-hidden="true">&rarr;</span>
           </a>
+
+          {/* The phone number, now that there is one. Client-confirmed
+              2026-09-06; before that this block did not exist, because the
+              only honest thing to print was nothing. `tel:` with the spaces
+              stripped so a phone dials it, the readable form on screen. */}
+          {shop.phone ? (
+            <p className="visit-phone">
+              <span className="visit-phone-label">Call the shop</span>
+              <a href={`tel:${shop.phone.replace(/\s+/g, "")}`} className="visit-phone-link">
+                {phoneDisplay}
+              </a>
+            </p>
+          ) : null}
 
           <div className="visit-hours">
             <h3 className="visit-hours-label">Opening hours</h3>

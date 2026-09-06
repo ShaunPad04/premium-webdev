@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# …except the example, which is names with no values and has to be committed
+# so a new environment knows what to set. The root .gitignore already carries
+# this exception; this file's `.env*` was overriding it inside the project.
+!.env.example
 
 # vercel
 .vercel

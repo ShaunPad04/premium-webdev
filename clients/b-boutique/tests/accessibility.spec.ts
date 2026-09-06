@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 // Routes to audit. Add each new page here as the site grows.
-const ROUTES = ['/'];
+const ROUTES = ['/', '/clothing', '/accessories', '/about', '/contact'];
 
 for (const route of ROUTES) {
   test(`${route} has no WCAG A/AA violations`, async ({ page }) => {

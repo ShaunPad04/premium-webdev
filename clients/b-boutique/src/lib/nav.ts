@@ -11,18 +11,29 @@ export type MenuItem = {
 
 /** Menu destinations.
  *
- *  This is a single-route site: src/app/page.tsx is the only page. Items
- *  marked `pending` have no dedicated route yet and point at the section
- *  where that content currently lives, so every link works today. Give them a
- *  real route and change one href each.
+ *  ── Why every anchor here starts with a slash ─────────────────────────────
+ *  This stopped being a single-route site on 2026-09-06: /clothing,
+ *  /accessories, /about and /contact are real pages now. The header, the
+ *  corner menu and the footer are on all five routes, so a bare "#rails"
+ *  would have meant "a section of whatever page you are already on" — which
+ *  is nothing at all on four of them.
+ *
+ *  "/#rails" is right on every route, including the home page itself: when
+ *  the path and query already match, the browser treats it as an ordinary
+ *  same-document fragment link and simply scrolls. Nothing special is needed
+ *  for it, and nothing intercepts it — Lenis is initialised without anchor
+ *  handling, so anchor scrolling is the browser's.
+ *
+ *  `pending` is gone from Womenswear and Accessories: both now have a page.
  */
 export const MENU: MenuItem[] = [
-  { n: "01", label: "Womenswear", href: "#rails", pending: true },
-  { n: "02", label: "Accessories", href: "#rails", pending: true },
-  { n: "03", label: "Homeware", href: "#homeware" },
-  { n: "04", label: "New Arrivals", href: "#new-in" },
-  { n: "05", label: "The Boutique", href: "#our-story" },
-  { n: "06", label: "Visit Us", href: "#visit" },
+  { n: "01", label: "Womenswear", href: "/clothing" },
+  { n: "02", label: "Accessories", href: "/accessories" },
+  { n: "03", label: "Homeware", href: "/#homeware" },
+  { n: "04", label: "New Arrivals", href: "/#new-in" },
+  { n: "05", label: "The Boutique", href: "/about" },
+  { n: "06", label: "Visit Us", href: "/#visit" },
+  { n: "07", label: "Contact", href: "/contact" },
 ];
 
 /** Social accounts.
@@ -55,53 +66,53 @@ export const mapEmbedSrc = `https://www.google.com/maps?q=${shop.lat},${shop.lng
 
 /** Footer navigation.
  *
- *  Every href here resolves today. This project is a single route —
- *  src/app/page.tsx — so the site's navigation is section anchors, and a
- *  footer column of /privacy, /terms and /cookies would be three links to
- *  404s. They are omitted until those pages exist rather than linked and
- *  broken.
+ *  Every href here resolves today. A footer column of /privacy, /terms and
+ *  /cookies would be three links to 404s, so those are omitted until the
+ *  pages exist rather than linked and broken.
  *
- *  "Contact" is omitted for the same reason: shop.phone and shop.email are
- *  deliberately empty, so there is nothing to link to. The FAQ answers the
- *  question and the Visit section carries the address. */
+ *  Contact appears now that there is a page and a confirmed phone number
+ *  behind it. It was omitted for as long as there was nothing to link to. */
 export const footerNav: { heading: string; items: MenuItem[] }[] = [
   {
     heading: "Shop",
     items: [
-      { n: "", label: "New In", href: "#new-in" },
-      { n: "", label: "Womenswear", href: "#rails", pending: true },
-      { n: "", label: "Accessories", href: "#rails", pending: true },
-      { n: "", label: "Homeware", href: "#homeware" },
+      { n: "", label: "New In", href: "/#new-in" },
+      { n: "", label: "Clothing", href: "/clothing" },
+      { n: "", label: "Accessories", href: "/accessories" },
+      { n: "", label: "Homeware", href: "/#homeware" },
     ],
   },
   {
     heading: "B Boutique",
     items: [
-      { n: "", label: "The Boutique", href: "#our-story" },
-      { n: "", label: "The Rails", href: "#rails" },
+      { n: "", label: "About us", href: "/about" },
+      { n: "", label: "The Rails", href: "/#rails" },
       /* #brands became a real anchor when the marquee was rebuilt; it was
          reachable from the header but not from here. */
-      { n: "", label: "Brands", href: "#brands" },
-      { n: "", label: "Questions", href: "#faq" },
-      { n: "", label: "Visit Us", href: "#visit" },
+      { n: "", label: "Brands", href: "/#brands" },
+      { n: "", label: "Questions", href: "/#faq" },
+      { n: "", label: "Visit Us", href: "/#visit" },
+      { n: "", label: "Contact", href: "/contact" },
     ],
   },
 ];
 
 /** The hero's centre navigation.
  *
- *  Every href is an anchor that exists on this page — checked, not assumed.
- *  There are no product routes yet, so Clothing and Accessories both land on
- *  the rails, which is where both actually live. That is honest rather than
- *  lossy: the alternative is a 404 dressed as a category.
+ *  Clothing and Accessories now go to their own pages rather than both
+ *  landing on the home page's rails, which is what they promised and did not
+ *  deliver. Contact is new and has a page and a phone number behind it.
  *
- *  When real routes exist, change the href here and nothing else moves. */
+ *  Nothing was taken out. Brands still points at the home page's brand rail,
+ *  which is where the logos are; it is "/#brands" rather than "#brands" for
+ *  the reason given above MENU — the header is on five routes now. */
 export const PRIMARY = [
-  { label: "New In", href: "#new-in" },
-  { label: "Clothing", href: "#rails" },
-  { label: "Accessories", href: "#rails" },
-  { label: "Brands", href: "#brands" },
-  { label: "About", href: "#our-story" },
+  { label: "New In", href: "/#new-in" },
+  { label: "Clothing", href: "/clothing" },
+  { label: "Accessories", href: "/accessories" },
+  { label: "Brands", href: "/#brands" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ] as const;
 
 /** The three things the shop sells.

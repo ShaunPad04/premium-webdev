@@ -399,8 +399,21 @@ body {
 @media (min-width: 1024px) {
   .tm { flex-direction: row; align-items: stretch; min-height: 650px; }
   .tm-media { flex: 0 0 47%; }
-  .tm-body  { flex: 1 1 53%; display: flex; align-items: center; }
+  /* min-width: 0 is load-bearing, not tidiness.
+     A flex item defaults to min-width: auto, so it refuses to shrink below
+     its own content's minimum — and this column's content is a rail defined
+     as `calc(100% + gutter)` of that same column. The two chased each other:
+     the column settled 50px wider than its 53% at 1440 and 115px wider at
+     1280, and the page grew a horizontal scrollbar. Measured before and
+     after: document scrollWidth 1490 -> 1440 at 1440, 1395 -> 1280 at 1280. */
+  .tm-body  { flex: 1 1 53%; min-width: 0; display: flex; align-items: center; }
 }
+
+/* The rail deliberately bleeds past the text column into the section's right
+   gutter. `clip` rather than `hidden`: hidden would make this a scroll
+   container, which changes how anything inside it can be scrolled into view;
+   clip just stops the bleed becoming page-wide overflow. */
+.tm { overflow-x: clip; }
 
 .tm-media { position: relative; overflow: hidden; aspect-ratio: 4 / 3; }
 @media (min-width: 1024px) { .tm-media { aspect-ratio: auto; } }
@@ -2265,3 +2278,533 @@ body {
   .ft-link { transition: none; }
 }
 
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PAGES — /clothing, /accessories, /about, /contact
+   Added 2026-09-06, when the site stopped being one route.
+
+   These reuse the home page's vocabulary rather than inventing a second one:
+   the same eyebrow, the same Bodoni headings, the same hairlines, the same
+   two grounds. A sub-page that looked like a different site would undo the
+   thing the home page spends its whole length establishing.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── The masthead ──────────────────────────────────────────────────────────
+   Black, because the shared header is drawn transparent with white type for
+   the home page's photograph and has to stay legible here. Tall enough to
+   clear the fixed 72px bar with room to breathe, and no taller: a full
+   viewport of empty black before any content is a hero without a photograph. */
+.pm {
+  background: var(--bb-black);
+  color: var(--bb-white);
+  padding: clamp(132px, 15vh, 190px) var(--bb-gutter-editorial) clamp(56px, 8vh, 96px);
+}
+
+.pm-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+@media (min-width: 900px) {
+  .pm-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: clamp(40px, 6vw, 90px);
+  }
+  .pm-main { max-width: 68ch; }
+}
+
+.pm-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-grey-mid);
+  margin-bottom: 22px;
+}
+
+.pm-h1 {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  font-size: clamp(44px, 8vw, 104px);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: var(--bb-white);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.pm-lede {
+  margin-top: 26px;
+  max-width: 54ch;
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.6;
+  /* white/55 measures 5.82:1 on --bb-black — clear AA, and quieter than the
+     heading it sits under. --bb-grey-mid would also pass here at 6.95:1 but
+     reads flat against the h1 at this size. */
+  color: rgba(255, 255, 255, 0.72);
+  text-wrap: pretty;
+}
+
+/* The masthead's right-hand column. One fact, set large. */
+.pm-aside { flex-shrink: 0; }
+
+.pm-phone { display: flex; flex-direction: column; gap: 10px; }
+
+.pm-phone-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-grey-mid);
+}
+
+.pm-phone-number {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-size: clamp(26px, 3.2vw, 38px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--bb-white);
+  text-decoration: none;
+  /* A phone number is the one link on the site people will actually want to
+     press on a phone, so it gets a real underline offset rather than the
+     opacity dip the rest of the navigation uses. */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  padding-bottom: 6px;
+  width: fit-content;
+  transition: border-color var(--bb-dur-quick) var(--bb-ease);
+}
+.pm-phone-number:hover,
+.pm-phone-number:focus-visible { border-bottom-color: var(--bb-white); }
+
+/* The header is fixed and 72px tall, so anything scrolled to by an anchor or
+   by focus lands under it unless it says otherwise. 96px, matching the value
+   the home page's sections already carry — set per element rather than as a
+   global scroll-padding-top, because those sections would then be offset
+   twice and sit 192px down. */
+.pm,
+.page-section,
+.cf-row { scroll-margin-top: 96px; }
+
+/* ── Generic page section ──────────────────────────────────────────────── */
+.page-section {
+  background: var(--bone);
+  color: var(--bb-black);
+  padding: clamp(64px, 10vh, 128px) var(--bb-gutter-editorial);
+}
+
+/* Alternating ground, the same pair the home page uses between sections. */
+.page-section.is-alt { background: var(--bone-deep); }
+
+.page-inner { width: 100%; }
+
+.page-head { max-width: 62ch; margin-bottom: clamp(36px, 5vh, 62px); }
+
+.page-h2 {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  font-size: clamp(28px, 4vw, 52px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.page-lede {
+  margin-top: 18px;
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.65;
+  /* 6.42:1 on bone — quieter than body copy without dropping under AA. */
+  color: rgba(10, 10, 10, 0.65);
+  text-wrap: pretty;
+}
+
+.page-body {
+  max-width: 62ch;
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.68;
+  color: rgba(10, 10, 10, 0.82);
+  text-wrap: pretty;
+}
+.page-body + .page-body { margin-top: 18px; }
+
+.page-body-small {
+  max-width: 56ch;
+  margin-top: 22px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(10, 10, 10, 0.65);
+}
+
+/* Same marker convention as the FAQ and the testimonials: impossible to read
+   as content, and it disappears on its own when the flag is removed. */
+.page-pending {
+  margin-top: 20px;
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--bb-black);
+  border: 1px solid var(--bb-light-border);
+  padding: 8px 12px;
+}
+
+/* ── Category grid ─────────────────────────────────────────────────────── */
+.cat-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 3vw, 44px) clamp(16px, 2vw, 28px);
+}
+@media (min-width: 640px)  { .cat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .cat-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.cat-media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--bb-black-raised);
+}
+
+.cat-img {
+  object-fit: cover;
+  /* The same calming filter the home page's photographs carry: the shoot is
+     warm and the room around it is cool. Never baked into the file. */
+  filter: saturate(0.86) contrast(1.02);
+  transition: filter var(--bb-dur-normal) var(--bb-ease);
+}
+.cat-card:hover .cat-img { filter: saturate(1) contrast(1); }
+
+.cat-name {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  font-size: clamp(19px, 1.7vw, 24px);
+  line-height: 1.2;
+  margin: 18px 0 0;
+}
+
+.cat-note {
+  margin-top: 7px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(10, 10, 10, 0.65);
+  max-width: 34ch;
+}
+
+/* ── Piece grid ────────────────────────────────────────────────────────── */
+.piece-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(24px, 2.6vw, 40px) clamp(14px, 1.6vw, 24px);
+}
+@media (min-width: 640px)  { .piece-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .piece-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.piece-media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--bb-black-raised);
+}
+
+.piece-cat {
+  margin-top: 14px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+
+.piece-name {
+  margin-top: 5px;
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.3;
+}
+
+/* ── /accessories lead ─────────────────────────────────────────────────── */
+.acc-lead {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(30px, 4vw, 64px);
+  align-items: center;
+}
+@media (min-width: 1024px) {
+  .acc-lead { grid-template-columns: 52% 1fr; }
+}
+
+.acc-lead-media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--bb-black-raised);
+}
+@media (min-width: 1024px) { .acc-lead-media { aspect-ratio: 3 / 4; } }
+
+.acc-lead-copy .page-body { margin-top: 22px; }
+
+/* ── /about ────────────────────────────────────────────────────────────── */
+.about-philosophy { background: var(--bb-black); color: var(--bb-white); }
+
+.about-phil-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+@media (min-width: 900px) {
+  .about-phil-inner {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: clamp(40px, 6vw, 100px);
+  }
+}
+
+.about-statement {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  /* Deliberately smaller than PointOfView's setting on the home page. There,
+     the sentence IS the section; here it is the opening of an explanation,
+     and setting it at the same scale would make the About page compete with
+     the one place it was signed off to live. */
+  font-size: clamp(26px, 3.6vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  max-width: 20ch;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.about-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 22px;
+  border-left: 1px solid var(--bb-dark-border);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-grey-mid);
+}
+
+.about-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(38px, 5vh, 66px);
+}
+
+.about-block {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  border-top: 1px solid var(--bb-light-border);
+  padding-top: clamp(22px, 3vh, 34px);
+}
+@media (min-width: 768px) {
+  .about-block { grid-template-columns: 90px 1fr; gap: clamp(20px, 3vw, 48px); }
+}
+
+.about-block-n {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--bb-grey-dark);
+}
+
+.about-block-h {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  font-size: clamp(21px, 2.2vw, 30px);
+  line-height: 1.15;
+  margin: 0 0 16px;
+}
+
+/* ── /contact ──────────────────────────────────────────────────────────── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(34px, 5vw, 80px);
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .contact-grid { grid-template-columns: 1fr 1.05fr; }
+}
+
+.cf { display: flex; flex-direction: column; gap: 22px; }
+
+.cf-row { display: flex; flex-direction: column; gap: 8px; }
+
+.cf-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+
+/* A rule, not a box — the same decision the FAQ makes. No radius, no fill,
+   no shadow: DESIGN.md is explicit that the system is flat and square, and a
+   rounded grey input would be the first piece of stock UI on the site. */
+.cf-input {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--bb-light-border);
+  background: transparent;
+  padding: 10px 0;
+  font: inherit;
+  font-size: 16px; /* never below 16: iOS zooms the page on focus otherwise */
+  line-height: 1.5;
+  color: var(--bb-black);
+  border-radius: 0;
+  transition: border-color var(--bb-dur-quick) var(--bb-ease);
+}
+.cf-input::placeholder { color: var(--bb-grey-dark); }
+.cf-input:hover { border-bottom-color: rgba(10, 10, 10, 0.34); }
+.cf-input:focus-visible {
+  outline: none;
+  border-bottom-color: var(--bb-black);
+  /* Focus has to be visible without relying on the border alone, which is
+     already dark: a second rule below it reads as a state change rather than
+     a hover. currentColor, per the locked focus decision. */
+  box-shadow: 0 2px 0 0 currentColor;
+}
+.cf-input[aria-invalid="true"] { border-bottom-color: var(--red); }
+
+.cf-textarea { resize: vertical; min-height: 132px; }
+
+.cf-error {
+  font-size: 12.5px;
+  line-height: 1.45;
+  /* Words, not colour. The red is a reinforcement; the message is the signal,
+     and it is associated with the field by aria-describedby. --red measures
+     7.4:1 on bone. */
+  color: var(--red);
+}
+
+.cf-hp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.cf-actions { margin-top: 6px; }
+
+.cf-submit {
+  appearance: none;
+  border: 1px solid var(--bb-black);
+  background: var(--bb-black);
+  color: var(--bb-white);
+  padding: 15px 30px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 0;
+  transition:
+    background var(--bb-dur-quick) var(--bb-ease),
+    color var(--bb-dur-quick) var(--bb-ease),
+    transform var(--bb-dur-quick) var(--bb-ease);
+}
+.cf-submit:hover:not(:disabled) { background: transparent; color: var(--bb-black); }
+.cf-submit:active:not(:disabled) { transform: translateY(1px); }
+.cf-submit:disabled { opacity: 0.55; cursor: progress; }
+
+.cf-status:empty { display: none; }
+
+.cf-ok,
+.cf-fail {
+  font-size: 14px;
+  line-height: 1.6;
+  border-left: 2px solid currentColor;
+  padding-left: 14px;
+  max-width: 52ch;
+}
+.cf-ok { color: var(--bb-black); }
+.cf-fail { color: var(--red); }
+.cf-fail-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── Visit's phone line ────────────────────────────────────────────────── */
+.visit-phone { margin-top: 26px; display: flex; flex-direction: column; gap: 8px; }
+
+.visit-phone-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-grey-mid);
+}
+
+.visit-phone-link {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-size: clamp(21px, 2.2vw, 28px);
+  line-height: 1;
+  color: var(--bb-white);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  padding-bottom: 5px;
+  width: fit-content;
+  transition: border-color var(--bb-dur-quick) var(--bb-ease);
+}
+.visit-phone-link:hover,
+.visit-phone-link:focus-visible { border-bottom-color: var(--bb-white); }
+
+/* ── Entrances ─────────────────────────────────────────────────────────────
+   Same grammar as every other section: viewport-relative scroll ranges, so
+   one number means the same distance everywhere. See the note on --bb-enter
+   at the top of this file. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* The entrance is split in two on purpose, and the reason is a real
+       accessibility failure rather than a preference.
+       A card that fades in as a whole renders its caption at partial opacity
+       for as long as the scrub sits mid-range — and at the top of these pages
+       the first row of cards is exactly there when the page loads, so it is a
+       resting state, not a passing frame. axe caught it: `.cat-card:nth-child(3)
+       > .cat-note` failed colour contrast on /clothing at 1440, because 65%
+       black at 80% element opacity is not 4.5:1 any more.
+       So the photograph fades and the card moves; the words only move. They
+       are legible from the first frame and the entrance still reads. */
+    .cat-card,
+    .piece,
+    .about-block {
+      animation: page-rise 700ms var(--bb-ease) both;
+      animation-timeline: view();
+      /* --i staggers by DISTANCE, not delay: with a scroll timeline attached
+         an animation-delay in ms is ignored outright. Capped at 6 so a
+         twelve-card grid does not need half a screen of scrolling to finish. */
+      animation-range:
+        entry calc(var(--bb-enter) + min(var(--i, 0), 6) * var(--bb-step))
+        entry calc(var(--bb-settle) + min(var(--i, 0), 6) * var(--bb-step));
+    }
+
+    .cat-media,
+    .piece-media {
+      animation: page-fade 700ms var(--bb-ease) both;
+      animation-timeline: view();
+      animation-range:
+        entry calc(var(--bb-enter) + min(var(--i, 0), 6) * var(--bb-step))
+        entry calc(var(--bb-settle) + min(var(--i, 0), 6) * var(--bb-step));
+    }
+  }
+}
+
+@keyframes page-rise {
+  from { transform: translateY(14px); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes page-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

@@ -73,7 +73,18 @@ export function Nav() {
           aria-label="Primary"
           className="pointer-events-auto absolute left-1/2 hidden -translate-x-1/2 lg:block"
         >
-          <ul className="flex items-center" style={{ gap: "clamp(28px, 3.2vw, 50px)" }}>
+          {/* 2.8vw, not 3.2. The centre nav gained a sixth item (Contact) when
+              the site gained pages, and at exactly 1024 — the width where this
+              nav first appears — the old spacing left 8px between CONTACT and
+              the Menu button. It cleared, but only just.
+
+              The floor is not what fixes it: at 1024 the clamp is on its vw
+              term, so lowering the 28px did nothing at all (measured: no
+              change). Narrowing the vw term is what moves it. Measured after:
+              the nav's right edge goes 767 -> 757 at 1024 against a Menu
+              button starting at 775, so 18px of clearance instead of 8. At
+              1440 the gap goes 46px -> 40px, which is the price. */}
+          <ul className="flex items-center" style={{ gap: "clamp(22px, 2.8vw, 50px)" }}>
             {PRIMARY.map((item) => (
               <li key={item.label}>
                 <a
