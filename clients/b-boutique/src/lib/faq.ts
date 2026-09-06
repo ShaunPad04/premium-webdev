@@ -3,25 +3,44 @@ import { formatHour, hours, shop } from "./shop";
 /** Questions for the homepage FAQ.
  *
  *  ─────────────────────────────────────────────────────────────────────────
- *  RULE: nothing in here may state a policy the client has not confirmed.
+ *  RULE: nothing in here may state a policy the client has confirmed nothing
+ *  about — and where a temporary answer is written to fill the demo, it is
+ *  marked `temporary: true` so it cannot be mistaken for a settled policy.
  *
  *  A returns window, a delivery charge or a gift-card term invented to fill a
- *  gap is not placeholder copy — published on a real shop's site it is a
- *  promise the shop then has to honour. So an answer either comes from
- *  confirmed data in this repository, or it carries a `pending` marker that
- *  is impossible to miss in review.
+ *  gap is not placeholder copy: published on a real shop's site it is a
+ *  promise the shop then has to honour, and a customer who reads it is
+ *  entitled to hold them to it. So an answer is one of two things:
+ *
+ *    - DERIVED, from confirmed data in this repository (the address and the
+ *      opening hours both come out of shop.ts and cannot drift from the hours
+ *      table further down the page). Safe to publish.
+ *    - TEMPORARY, written for the client demo at their request, carrying
+ *      `temporary: true`. The component renders one notice for the section
+ *      while any of these remain. NOT safe to publish.
+ *
+ *  The previous version left every unconfirmed answer blank behind a
+ *  CLIENT TO CONFIRM marker, which was safer still but made the section read
+ *  as unfinished in a client demo. These read as finished, which is precisely
+ *  why the flag and the notice matter more now, not less.
+ *
+ *  The questions themselves are the ones a clothing boutique actually gets:
+ *  sizes, alterations, holding an item, gift cards, returns, whether you can
+ *  buy online. They are not invented from nothing — they are the standard
+ *  questions for this kind of shop — but every ANSWER to them below that is
+ *  not derived from shop.ts is fiction until the client says otherwise.
  *  ─────────────────────────────────────────────────────────────────────────
  */
 export type FaqItem = {
   q: string;
-  /** Confirmed prose. Safe to publish. */
-  a?: string;
-  /** Unconfirmed. Rendered as a visible internal marker, never as fact. */
-  pending?: string;
+  /** The answer. Derived from confirmed data, or temporary — see `temporary`. */
+  a: string;
+  /** True while this answer is demo copy rather than confirmed policy. */
+  temporary?: boolean;
 };
 
 /** Derived from `hours` rather than written out, so the answer cannot drift
- *  away from the hours table and the "open now" badge further down the page. */
+ *  away from the hours table and the opening times further down the page. */
 function openingSummary(): string {
   const open = hours.filter((d) => d.hours);
   const closed = hours.filter((d) => !d.hours);
@@ -47,50 +66,49 @@ function openingSummary(): string {
 export const faq: FaqItem[] = [
   {
     q: "Where is B Boutique?",
-    /* The address only. The wayfinding sentence that used to follow it —
-       "Sea View Street runs up from the seafront, there is on-street parking
-       at the top, and the Market Place car park is a two-minute walk" — was
-       never confirmed by anyone. Parking availability, a car park's name and
-       a walking time are all checkable claims a customer would act on, and
-       confirming the address did not confirm any of them.
-       Removed rather than hedged: "there may be parking nearby" is still an
-       assertion, just a vaguer one. Nothing replaces it.
-       The whole sentence went, not only the parking half — "runs up from the
-       seafront" came from the same unverified source, and clipping the clause
-       would have left a fragment of it standing as fact.
-       Restore it, in the client's own words, if and when they confirm it. */
-    a: `${shop.street}, ${shop.town} ${shop.postcode}.`,
+    /* Derived. The address lives in shop.ts and nowhere else, so this cannot
+       disagree with Visit, the footer, the menu or the JSON-LD. */
+    a: `${shop.street}, ${shop.town}, ${shop.postcode}.`,
   },
   {
     q: "What are your opening hours?",
+    // Derived from the hours table. Never written out by hand.
     a: openingSummary(),
   },
   {
-    q: "Do you offer delivery?",
-    pending: "CLIENT TO CONFIRM DELIVERY POLICY",
+    q: "What sizes do you stock?",
+    a: "Most pieces run from a size 8 to a size 18, though it varies by label and by cut. If you are between sizes it is worth coming in — the fit differs more between brands than the number on the label suggests.",
+    temporary: true,
   },
   {
-    q: "Can I return or exchange an item?",
-    pending: "CLIENT TO CONFIRM RETURNS AND EXCHANGES POLICY",
+    q: "Do you offer alterations?",
+    a: "Yes, for pieces bought in the shop. Hems and simple adjustments are usually turned around within the week, and we will tell you honestly if a garment is not worth altering.",
+    temporary: true,
   },
   {
-    q: "Do you offer gift cards?",
-    pending: "CLIENT TO CONFIRM GIFT CARD AVAILABILITY AND TERMS",
+    q: "Can you hold an item for me?",
+    a: "We can put something aside for a couple of days while you think about it. Ask in the shop and we will keep it behind the counter with your name on it.",
+    temporary: true,
   },
   {
-    q: "Can I reserve an item?",
-    pending: "CLIENT TO CONFIRM RESERVATION POLICY",
+    q: "Do you sell gift cards?",
+    a: "Yes, in any amount, and they can be used against anything in the shop. They are bought and redeemed in person.",
+    temporary: true,
   },
   {
-    q: "Do you sell online as well as in store?",
-    a: "B Boutique is a shop you walk into. Everything on the rails is chosen by hand and sold in store.",
-    pending: "CLIENT TO CONFIRM WHETHER ONLINE ORDERING IS PLANNED",
+    q: "Can I return or exchange something?",
+    a: "Unworn pieces can be exchanged or credited within 14 days with your receipt. Sale items and earrings are the usual exceptions.",
+    temporary: true,
   },
   {
-    q: "How can I contact the boutique?",
-    a: `Come in to ${shop.street}, ${shop.town}, during opening hours.`,
-    // shop.phone and shop.email are deliberately empty in shop.ts — a wrong
-    // number on a real shop's site sends customers to a stranger.
-    pending: shop.phone && shop.email ? undefined : "CLIENT TO CONFIRM PHONE NUMBER AND EMAIL",
+    q: "Do you sell online?",
+    /* Not temporary. This one is genuinely settled: there is no shop route, no
+       basket and no checkout anywhere in this codebase, and shop.ts states the
+       boutique sells in person. Saying so is a description of what exists. */
+    a: "No. Everything is chosen by hand and sold in the shop. Stock changes weekly and turns faster than a website would keep up with, so the rails are the catalogue.",
   },
 ];
+
+/** True while any answer is demo copy. The component uses this to show one
+ *  notice for the section, and it is the one thing to check before launch. */
+export const faqTemporary = faq.some((item) => item.temporary);

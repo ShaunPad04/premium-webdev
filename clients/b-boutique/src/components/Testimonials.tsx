@@ -1,59 +1,54 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { testimonials, testimonialsPending } from "@/lib/testimonials";
+import {
+  testimonials,
+  testimonialShots,
+  testimonialsPending,
+} from "@/lib/testimonials";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
+import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { ImageSlot } from "./ImageSlot";
 
-const INTERVAL = 5500;
+/* What our customers say.
+ *
+ * Photograph on the left, quotes moving on the right — the layout the section
+ * already had, with the right-hand column changed from a one-at-a-time
+ * carousel to a continuous rail.
+ *
+ * ── Why the carousel went ─────────────────────────────────────────────────
+ * The old right column showed one quote at a time behind arrows, a counter and
+ * a progress bar: four controls and a 6.5s timer to deliver six sentences. It
+ * made the reader wait for content that has no order and no urgency. A rail
+ * shows several at once, needs no controls, and can be read in any order at
+ * whatever pace the reader has — which is what a wall of reviews is.
+ *
+ * That removed the swipe handler, the arrow keys, the index state and the
+ * leaving-slide bookkeeping with it. None of it is missed: there is no longer
+ * a position to be at, so there is nothing to navigate.
+ *
+ * ── The photograph keeps its own clock ────────────────────────────────────
+ * It used to crossfade in step with the quote, because both were driven by one
+ * index. With the quotes on a rail there is no index to follow, so the images
+ * run on their own slow timer. Deliberately slower than anything on the rail:
+ * two things changing at the same rate read as one mechanism, and these are
+ * not related — the room is not an illustration of the quote beside it.
+ *
+ * ── Honesty ───────────────────────────────────────────────────────────────
+ * Every quote is invented. See lib/testimonials.ts. The marker below renders
+ * for as long as any entry is still placeholder, and it is deliberately in the
+ * reading column rather than tucked under the fold. */
 
-/* The customer voice — the black break between two cool-white sections.
- *
- * A split composition, not a review widget: the boutique's own photograph on
- * the left, one quote set large in Bodoni on the right, and nothing that looks
- * like a card, an avatar bubble or a star badge. It should read as a fashion
- * campaign interrupted by somebody talking.
- *
- * ── Slide state ───────────────────────────────────────────────────────────
- * Three states, not two, because "not showing" is two different things. The
- * slide that just left has to fall UPWARD (0 -> -12px) while the one arriving
- * rises from BELOW (+13px -> 0). A single is-active class cannot express that,
- * so the outgoing slide is marked is-leaving for the length of the transition
- * and everything else waits at +13px.
- *
- * ── Autoplay ──────────────────────────────────────────────────────────────
- * Paused by hover, by a hidden tab, and entirely by reduced motion. Because
- * `index` is a dependency of the timer effect, any manual navigation restarts
- * the interval for free — there is no separate reset to forget to call. */
+/** Slow. The rail beside it moves at 26px/s; a 9s hold reads as a different
+ *  thing happening rather than a second hand on the same clock. */
+const SHOT_INTERVAL = 9000;
+
 export function Testimonials() {
   const reduced = usePrefersReducedMotion();
-  const [index, setIndex] = useState(0);
-  const [leaving, setLeaving] = useState<number | null>(null);
-  const [hovered, setHovered] = useState(false);
+  const [shot, setShot] = useState(0);
   const [tabHidden, setTabHidden] = useState(false);
-  const count = testimonials.length;
-
-  const go = useCallback(
-    (next: number) => {
-      setIndex((cur) => {
-        if (next === cur) return cur;
-        setLeaving(cur);
-        return (next + count) % count;
-      });
-    },
-    [count],
-  );
-
-  const step = useCallback((dir: 1 | -1) => go(index + dir), [go, index]);
-
-  // Clear the leaving mark once its transition has run, so a slide does not
-  // stay stuck in the "fell upward" position and animate in from the wrong way.
-  useEffect(() => {
-    if (leaving === null) return;
-    const t = window.setTimeout(() => setLeaving(null), 700);
-    return () => window.clearTimeout(t);
-  }, [leaving]);
+  const shots = testimonialShots;
 
   useEffect(() => {
     const onVis = () => setTabHidden(document.visibilityState === "hidden");
@@ -62,68 +57,33 @@ export function Testimonials() {
     return () => document.removeEventListener("visibilitychange", onVis);
   }, []);
 
-  const paused = hovered || tabHidden || reduced || count < 2;
-
   useEffect(() => {
-    if (paused) return;
-    const t = window.setTimeout(() => go(index + 1), INTERVAL);
+    if (reduced || tabHidden || shots.length < 2) return;
+    const t = window.setTimeout(
+      () => setShot((i) => (i + 1) % shots.length),
+      SHOT_INTERVAL,
+    );
     return () => window.clearTimeout(t);
-  }, [index, paused, go]);
-
-  /* Swipe. Horizontal intent has to be clear before this takes a gesture —
-     otherwise an ordinary vertical scroll that drifts sideways would flick
-     through the reviews. Nothing calls preventDefault, so the page keeps
-     scrolling normally throughout. */
-  const drag = useRef<{ x: number; y: number } | null>(null);
-  const onDown = (e: React.PointerEvent) => {
-    if (e.pointerType === "mouse" && e.button !== 0) return;
-    drag.current = { x: e.clientX, y: e.clientY };
-  };
-  const onUp = (e: React.PointerEvent) => {
-    const start = drag.current;
-    drag.current = null;
-    if (!start) return;
-    const dx = e.clientX - start.x;
-    const dy = e.clientY - start.y;
-    if (Math.abs(dx) < 44 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    step(dx < 0 ? 1 : -1);
-  };
-
-  /* Arrow keys, but only while focus is inside this section — a document-level
-     listener would steal them from the page. */
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); }
-    if (e.key === "ArrowRight") { e.preventDefault(); step(1); }
-  };
-
-  const stateOf = (i: number) =>
-    i === index ? "is-active" : i === leaving ? "is-leaving" : "";
+  }, [shot, reduced, tabHidden, shots.length]);
 
   return (
-    <section
-      id="testimonials"
-      aria-labelledby="tm-heading"
-      aria-roledescription="carousel"
-      className="tm"
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => { setHovered(false); drag.current = null; }}
-      onPointerDown={onDown}
-      onPointerUp={onUp}
-      onPointerCancel={() => { drag.current = null; }}
-      onKeyDown={onKeyDown}
-    >
+    <section id="testimonials" aria-labelledby="tm-heading" className="tm">
       <h2 id="tm-heading" className="sr-only">
         What our customers say
       </h2>
 
       <div className="tm-media">
-        {testimonials.map((t, i) => (
-          <div key={t.slot} className={`tm-shot ${stateOf(i)}`} aria-hidden={i !== index}>
+        {shots.map((s, i) => (
+          <div
+            key={s.slot}
+            className={`tm-shot ${i === shot ? "is-active" : ""}`}
+            aria-hidden={i !== shot}
+          >
             <ImageSlot
               tone="marble"
               seed={31 + i}
-              slot={t.slot}
-              alt={i === index ? t.alt : ""}
+              slot={s.slot}
+              alt={i === shot ? s.alt : ""}
               sizes="(min-width: 1024px) 47vw, 100vw"
               className="absolute inset-0 h-full w-full"
             />
@@ -135,51 +95,33 @@ export function Testimonials() {
         <div className="tm-inner">
           <p className="tm-eyebrow">What our customers say</p>
 
-          {/* Height is reserved by the tallest slide, so swapping quotes never
-              moves the controls or anything below the section. */}
-          <div className="tm-stage">
-            {testimonials.map((t, i) => (
-              <blockquote key={i} className={`tm-slide ${stateOf(i)}`} aria-hidden={i !== index}>
-                {/* No stars. A rating is a factual claim about what somebody
-                    said, and none is known — see lib/testimonials.ts. They
-                    appear on their own once real ratings exist. */}
-                {t.rating ? (
-                  <p className="tm-stars" aria-label={`${t.rating} out of 5`}>
-                    {"★".repeat(t.rating)}
-                  </p>
-                ) : null}
-                <p className="tm-quote">{t.quote}</p>
-                <footer className="tm-meta">
-                  <span className="tm-name">{t.name}</span>
-                  <span className="tm-source">{t.source}</span>
-                </footer>
-              </blockquote>
-            ))}
-          </div>
+          <InfiniteMovingCards
+            items={testimonials.map((t, i) => ({ ...t, id: i }))}
+            speed="slow"
+            direction="left"
+            gap={18}
+            label="Customer reviews"
+            className="tm-rail"
+            /* The site has no card vocabulary — DESIGN.md is explicit that it
+               is flat and square — so the default card is replaced rather than
+               restyled at the call site. A hairline, a quote, an attribution. */
+            renderItem={(t) => (
+              <figure className="tm-card">
+                <blockquote className="tm-card-quote">{t.quote}</blockquote>
+                <figcaption className="tm-card-meta">
+                  <span className="tm-card-name">{t.name}</span>
+                  <span className="tm-card-source">{t.source}</span>
+                </figcaption>
+              </figure>
+            )}
+          />
 
           {testimonialsPending ? (
             <p className="tm-pending">
-              [Placeholder testimonials — awaiting genuine customer reviews]
+              [Placeholder testimonials — invented for this demo, awaiting
+              genuine customer reviews]
             </p>
           ) : null}
-
-          <div className="tm-controls">
-            {/* data-dir, not :first-of-type — the CSS leans each arrow the way
-                it travels, and a selector that infers direction from document
-                order silently reverses the day someone adds a third control. */}
-            <button type="button" className="tm-arrow" data-dir="prev" onClick={() => step(-1)} aria-label="Previous testimonial">
-              <span aria-hidden="true">&larr;</span>
-            </button>
-            <p className="tm-count" aria-live="off">
-              {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
-            </p>
-            <button type="button" className="tm-arrow" data-dir="next" onClick={() => step(1)} aria-label="Next testimonial">
-              <span aria-hidden="true">&rarr;</span>
-            </button>
-            <span className="tm-track" aria-hidden="true">
-              <span className="tm-track-fill" style={{ width: `${((index + 1) / count) * 100}%` }} />
-            </span>
-          </div>
         </div>
       </div>
     </section>

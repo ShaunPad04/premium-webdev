@@ -416,7 +416,6 @@ body {
   transition: opacity 760ms var(--bb-ease), transform 760ms var(--bb-ease);
 }
 .tm-shot.is-active  { opacity: 1; transform: scale(1); }
-.tm-shot.is-leaving { opacity: 0; transform: scale(1.014); }
 
 .tm-shot img {
   /* Light touch: this photography is already black marble and brass, so it
@@ -441,66 +440,92 @@ body {
 
 /* The stage reserves the tallest slide's height, so a slide change never
    moves the controls or shifts anything below the section. */
-.tm-stage { position: relative; display: grid; }
-.tm-stage > * { grid-area: 1 / 1; }
 
-.tm-slide {
+
+
+
+
+/* ── The review rail ──────────────────────────────────────────────────────
+   The quotes move on an infinite marquee rather than sitting in a one-at-a-
+   time carousel. Cards, but not card-shaped: DESIGN.md says the system is flat
+   and square, so this is a hairline box on the section's own black — no
+   radius, no shadow, no surface change. What separates one quote from the next
+   is a rule, which is how everything else on this page separates things.
+
+   The mask is applied here rather than through the component's own gradient
+   overlay. The component paints two gradient divs, which means two elements
+   sitting on top of the rail; a mask on the scrolling viewport itself does the
+   same job with nothing added to the DOM, and matches the brand rail under the
+   hero, which fades the same way for the same reason. `> div:first-child` is
+   the component's overflow-hidden viewport — coupled to its internals, and
+   noted here so that a version bump knows to check it. */
+.tm-rail > div:first-child {
+  /* Narrow. At 5% the fade ate the first forty pixels of whichever card was
+     at the left edge, and since a card sits there permanently the section read
+     as though the text were broken rather than travelling. 2% softens the cut
+     without touching anything you are trying to read. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 2%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 2%, #000 94%, transparent);
+}
+
+/* The rail runs past the text column into the section's right gutter. The
+   column is sized for a paragraph — 640px — which fits two cards and a sliver;
+   letting the rail bleed shows three and makes it read as a wall of reviews
+   rather than a pair. Only the rail bleeds: the eyebrow and the notice stay on
+   the measure, so the column still has an edge. */
+@media (min-width: 768px) {
+  .tm-rail {
+    width: calc(100% + clamp(40px, 6vw, 90px));
+    max-width: none;
+  }
+}
+
+.tm-card {
+  width: min(78vw, 340px);
+  height: 100%;
   margin: 0;
-  opacity: 0;
-  transform: translateY(13px);
-  transition: opacity 600ms var(--bb-ease), transform 600ms var(--bb-ease);
-  pointer-events: none;
-}
-.tm-slide.is-active  { opacity: 1; transform: translateY(0); pointer-events: auto; }
-.tm-slide.is-leaving { opacity: 0; transform: translateY(-12px); }
-
-.tm-stars {
-  font-size: 12px;
-  letter-spacing: 0.28em;
-  color: var(--bb-white);   /* never gold */
-  margin-bottom: 22px;
+  padding: 26px 24px 22px;
+  border: 1px solid var(--bb-dark-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
 }
 
-.tm-quote {
+@media (min-width: 1024px) { .tm-card { width: 320px; } }
+
+/* Bodoni, because a quote is the one place in this column that is editorial
+   rather than utility — but at a fraction of the old 52px display size. At
+   that scale one quote filled the column; at this one, three do, which is the
+   point of showing them on a rail. */
+.tm-card-quote {
+  margin: 0;
   font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
   font-weight: 400;
-  font-size: clamp(29px, 3.2vw, 52px);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  max-width: 620px;
+  font-size: clamp(17px, 1.35vw, 20px);
+  line-height: 1.42;
+  letter-spacing: -0.01em;
   color: var(--bb-white);
-  /* A pull-quote set at 52px is where a one-word last line does the most
-     damage, and this one sets its own Bodoni rather than borrowing `.display`,
-     so it never inherited that balance. Browsers stop balancing past a handful
-     of lines, which is the right place to stop: a long review wants an even
-     rag at the top and its own last line, not an evened block. */
-  text-wrap: balance;
+  text-wrap: pretty;
 }
-@media (min-width: 768px) { .tm-quote { font-size: clamp(34px, 3.2vw, 52px); } }
 
-/* Attribution, and it is two things of different rank: who said it, and where
-   it was said. Both used to be 9px/600 with identical tracking, separated by
-   nothing but an opacity — so the pair read as one two-line block rather than
-   a name with a source under it. The name takes a size and the source takes a
-   weight step down; the tracking opens as it quietens, which is what pushes a
-   line back rather than shrinking it further. Nothing here goes below 9px. */
-.tm-meta { display: flex; flex-direction: column; gap: 7px; margin-top: 30px; }
-.tm-name,
-.tm-source {
-  line-height: 1;
-  text-transform: uppercase;
-}
-.tm-name {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+.tm-card-meta { display: flex; flex-direction: column; gap: 5px; }
+
+.tm-card-name {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   color: var(--bb-white);
 }
-.tm-source {
+
+/* Quieter than the name, and tracked open as it quietens — a line pushed back
+   rather than merely shrunk. Never below 9px. */
+.tm-card-source {
   font-size: 9px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.16em;
-  color: rgba(255, 255, 255, 0.55);   /* 6.30:1 on --bb-black */
+  text-transform: uppercase;
+  color: var(--bb-grey-mid);
 }
 
 /* The internal marker. Same convention as the newsletter and socials markers:
@@ -517,76 +542,12 @@ body {
   display: inline-block;
 }
 
-/* gap: 0, and that is not a tightening for its own sake. Each arrow is a 44px
-   box — WCAG 2.5.8 — carrying a glyph about 9px wide, so every button already
-   contributes ~17px of air on each side of what you can see. A 6px gap on top
-   of that made the visible spacing ~40px and the cluster read as three
-   unrelated objects. At 0 the hit areas still touch edge to edge and lose
-   nothing; only the dead air goes. */
-.tm-controls { display: flex; align-items: center; gap: 0; margin-top: 38px; }
 
-.tm-arrow {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  font-size: 15px;
-  line-height: 1;
-  color: var(--bb-white);
-  background: none;
-  border: 0;
-  transition: transform var(--bb-dur-quick) var(--bb-ease);
-}
 /* The arrow leans the way it will take you. This is the gesture the Visit CTA
    already uses (`.visit-cta:hover .visit-cta-arrow`), and the carousel was the
    one place on the page that answered a hover by fading itself to 55% instead
    — dimming a control to say it is live, which is the wrong way round. The
    glyph moves; the 44px target does not. */
-.tm-arrow[data-dir="prev"]:hover { transform: translateX(-3px); }
-.tm-arrow[data-dir="next"]:hover { transform: translateX(3px); }
-.tm-arrow:active { transform: scale(0.92); }
-
-/* Reduced motion takes the travel away, so it needs an affordance that is not
-   motion — otherwise these two are the only controls in the section that
-   answer a pointer with nothing at all. A wash inside the 44px box, which was
-   always there and never drawn. */
-@media (prefers-reduced-motion: reduce) {
-  .tm-arrow { transition: background-color var(--bb-dur-quick) var(--bb-ease); }
-  .tm-arrow:hover,
-  .tm-arrow:active { transform: none; background-color: rgba(255, 255, 255, 0.1); }
-}
-
-.tm-count {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  color: rgba(255, 255, 255, 0.72);
-  font-variant-numeric: tabular-nums;
-  min-width: 56px;
-  text-align: center;
-}
-
-.tm-track {
-  position: relative;
-  display: block;
-  flex: 1 1 auto;
-  max-width: 180px;
-  height: 1px;
-  /* 14 became 20 when the row gap went to 0. The next arrow's own 44px box
-     used to supply ~17px of air here on top of the 14, and the track floated
-     off the end of the cluster; now that the cluster is tight, this is the one
-     gap in the row that is deliberate — the progress rule is a separate idea
-     from the controls, and should read as one. */
-  margin-left: 20px;
-  background: rgba(255, 255, 255, 0.2);
-}
-.tm-track-fill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  display: block;
-  background: rgba(255, 255, 255, 0.72);
-  transition: width 600ms var(--bb-ease);
-}
 
 /* Entrance, once. The slide transitions above are separate and unaffected. */
 @supports (animation-timeline: view()) {
@@ -613,7 +574,7 @@ body {
 @keyframes tm-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .tm-shot, .tm-slide, .tm-track-fill { transition: none; }
+  .tm-shot { transition: none; }
 }
 
 /* ── Homeware ─────────────────────────────────────────────────────────────
@@ -2017,6 +1978,49 @@ body {
   transition:
     opacity 420ms var(--bb-ease) 120ms,
     transform 520ms var(--bb-ease) 120ms;
+}
+
+/* The blurred word cascade.
+ *
+ * Each word resolves out of a 10px blur, one after the next, when its row
+ * opens. The delay comes from --i, the word's index, capped at 20 places so a
+ * long answer finishes in about 300ms rather than crawling to the end of the
+ * paragraph — a stagger you have to wait out stops being an effect and starts
+ * being latency.
+ *
+ * inline-block is required for filter to apply per word; it is otherwise
+ * inert on an inline box. Words, not characters — see the note in Faq.tsx for
+ * why, and it is an accessibility point rather than a performance one.
+ *
+ * The closing state is undelayed and quick. Opening can take its time; a
+ * dismissal that staggers reads as the page struggling. */
+.faq-w {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 200ms var(--bb-ease), filter 200ms var(--bb-ease);
+}
+
+.faq-row[open] .faq-w {
+  opacity: 1;
+  filter: blur(0);
+  transition:
+    opacity 300ms var(--bb-ease) calc(min(var(--i), 20) * 15ms + 120ms),
+    filter 300ms var(--bb-ease) calc(min(var(--i), 20) * 15ms + 120ms);
+}
+
+@starting-style {
+  .faq-row[open] .faq-w {
+    opacity: 0;
+    filter: blur(10px);
+  }
+}
+
+/* Reduced motion gets the answer, not the choreography. The global block
+   collapses the durations, but a 0.01ms transition from blur(10px) still
+   flashes; this removes the blur outright so there is nothing to resolve. */
+@media (prefers-reduced-motion: reduce) {
+  .faq-w { opacity: 1; filter: none; transition: none; }
 }
 
 /* Without this the rise never runs, which is measured rather than assumed: at

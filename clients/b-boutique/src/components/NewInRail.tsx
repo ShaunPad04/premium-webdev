@@ -206,8 +206,14 @@ export function NewInRail() {
       id="new-in"
       aria-labelledby="newin-heading"
       className="newin"
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
+      /* Deliberately no onPointerEnter here. Pausing on the whole section made
+         the rail stop for a cursor resting anywhere near it — over the
+         heading, the arrows, the footnote, or the empty gutter beside a card —
+         which reads as broken rather than considered. The pause now lives on
+         the photographs themselves, below: you stop the rail by looking at a
+         piece, which is the only reason to want it stopped. Focus still pauses
+         from here, because a keyboard user tabbing in has the same intent and
+         no pointer to express it with. */
       onFocusCapture={() => setHovered(true)}
       onBlurCapture={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setHovered(false);
@@ -268,7 +274,15 @@ export function NewInRail() {
               className="newin-item"
               style={{ "--i": i } as React.CSSProperties}
             >
-              <div className="newin-media">
+              <div
+              className="newin-media"
+              /* The hover target is the image, not the card and not the
+                 section. Crossing the 16px gap between two cards resumes the
+                 drift for a frame or two — at 26px/s that is under 3px, and
+                 the alternative (a debounce) buys nothing you can see. */
+              onPointerEnter={() => setHovered(true)}
+              onPointerLeave={() => setHovered(false)}
+            >
                 <ImageSlot
                   tone={piece.tone as Tone}
                   seed={i + 11}

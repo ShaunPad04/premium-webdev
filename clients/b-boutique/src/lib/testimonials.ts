@@ -1,69 +1,109 @@
-/** ⚠ DEVELOPMENT PLACEHOLDERS — NOT CUSTOMER CONTENT ⚠
+/** ⚠ TEMPORARY DEMO CONTENT — NOT CUSTOMER TESTIMONY ⚠
  *
- *  B Boutique has no reviews. The shop has not opened, so there are no
- *  customers to have written any, and none exist anywhere in this project —
- *  searched before writing this file.
+ *  Every quote below is INVENTED. B Boutique has no reviews: the shop has not
+ *  opened, nobody has written one, and none exist anywhere in this project.
+ *  These were written to fill the section for a client demo, at the client's
+ *  explicit request, and they are fiction.
  *
- *  Every quote below is a marker in shouting caps precisely so it cannot be
- *  mistaken for a real one, in code or on screen. Writing plausible-sounding
- *  quotes here would have produced fabricated customer testimony sitting in a
- *  real business's repository, one commit away from being published as fact.
+ *  They used to read REPLACE WITH GENUINE REVIEW in shouting caps, which made
+ *  the demo look broken. Prose that reads naturally is what was asked for and
+ *  is what is here — which makes this file MORE dangerous than the version it
+ *  replaced, not less, because nothing about the words themselves signals that
+ *  they are made up. Three things stand between them and being published as
+ *  fact, and none of them may be removed casually:
  *
- *  THIS SECTION IS NOT FIT TO SHIP until every entry is replaced with a
- *  genuine review, its real author, and its real source. `pending: true` is
- *  what the component reads to render the visible internal marker; delete it
- *  from an entry once that entry is real.
+ *    1. `pending: true` on every entry. The component reads it and renders a
+ *       visible on-screen marker. Delete it from an entry only when that entry
+ *       is a real review with a real author.
+ *    2. The site is noindex until ALLOW_INDEXING is set, so search engines
+ *       cannot attach any of this to the real business. See layout.tsx.
+ *    3. This comment.
  *
- *  Ratings are deliberately absent rather than defaulted to five stars. A
- *  rating is a factual claim about what someone said; inventing one is the
- *  same class of error as inventing the sentence. Add `rating` per entry when
- *  the real reviews arrive and the stars appear on their own.
+ *  The names are deliberately first-name-plus-initial and the sources are
+ *  generic rather than "Google" or "Facebook": a fabricated review attributed
+ *  to a named platform is a false statement about that platform as well as
+ *  about the shop.
  *
- *  ── About the photographs ────────────────────────────────────────────────
- *  Deliberately the boutique's own room — rails, shelves, marble, brass — and
- *  NOT a portrait. A face beside a named quote reads as the person who said
- *  it, and there are no customer photographs. Keep it that way when the real
- *  reviews land: the shop is the illustration, not an invented customer. */
+ *  Ratings are deliberately absent. A star count is a numeric claim about what
+ *  somebody scored; inventing one is the same class of error as inventing the
+ *  sentence, and unlike the prose it would flow into any future aggregateRating
+ *  markup. Add `rating` per entry when the real reviews arrive.
+ *
+ *  THIS SECTION IS NOT FIT TO SHIP until every entry is replaced. */
 export type Testimonial = {
   quote: string;
   name: string;
   source: string;
-  /** Slot key for the accompanying boutique photograph. */
-  slot: string;
-  alt: string;
   /** Star rating, 1-5. Absent means no rating is known — show no stars. */
   rating?: number;
-  /** True while this is a placeholder rather than a real review. */
+  /** True while this is invented placeholder rather than a real review. */
   pending?: boolean;
 };
 
 export const testimonials: Testimonial[] = [
   {
-    quote: "REPLACE WITH GENUINE B BOUTIQUE REVIEW",
-    name: "CUSTOMER NAME",
-    source: "REVIEW SOURCE",
-    slot: "panel-all",
-    alt: "A rail of womenswear against the boutique's black marble wall",
+    quote:
+      "I went in for a birthday present and came out with a coat for myself. That is entirely their fault and I have no regrets.",
+    name: "Hannah W.",
+    source: "Temporary demo content",
     pending: true,
   },
   {
-    quote: "REPLACE WITH GENUINE B BOUTIQUE REVIEW",
-    name: "CUSTOMER NAME",
-    source: "REVIEW SOURCE",
-    slot: "panel-knitwear",
-    alt: "Folded knitwear on a brass and smoked-glass shelf in the boutique",
+    quote:
+      "They remembered what I bought in the spring and put something aside they thought would go with it. You do not get that online.",
+    name: "Denise M.",
+    source: "Temporary demo content",
     pending: true,
   },
   {
-    quote: "REPLACE WITH GENUINE B BOUTIQUE REVIEW",
-    name: "CUSTOMER NAME",
-    source: "REVIEW SOURCE",
-    slot: "panel-trousers",
-    alt: "Tailored trousers hanging on a polished brass rail in the boutique",
+    quote:
+      "Proper wool, proper linings, things that actually fit across the shoulders. Everything I own from here still looks new.",
+    name: "Priya R.",
+    source: "Temporary demo content",
+    pending: true,
+  },
+  {
+    quote:
+      "I never feel rushed. She let me take three things away to try and told me honestly which one was right.",
+    name: "Claire T.",
+    source: "Temporary demo content",
+    pending: true,
+  },
+  {
+    quote:
+      "Worth the drive from Grimsby. It is the only place near here where I do not see the same jacket on somebody else that week.",
+    name: "Sofia B.",
+    source: "Temporary demo content",
+    pending: true,
+  },
+  {
+    quote:
+      "Small shop, big taste. I have stopped bothering with the retail parks.",
+    name: "Nicola F.",
+    source: "Temporary demo content",
     pending: true,
   },
 ];
 
-/** True while any entry is still a placeholder. The component uses this to
- *  show the internal marker, and it is the one thing to check before launch. */
+/** The photographs beside the quotes. Deliberately the boutique's own room —
+ *  rails, shelves, marble, brass — and never a portrait: a face next to a
+ *  named quote reads as the person who said it, and there is no customer
+ *  photography. Keep it that way when the real reviews land. */
+export const testimonialShots: { slot: string; alt: string }[] = [
+  {
+    slot: "panel-all",
+    alt: "A rail of womenswear against the boutique's black marble wall",
+  },
+  {
+    slot: "panel-knitwear",
+    alt: "Folded knitwear on a brass and smoked-glass shelf in the boutique",
+  },
+  {
+    slot: "panel-trousers",
+    alt: "Tailored trousers hanging on a polished brass rail in the boutique",
+  },
+];
+
+/** True while any entry is still invented. The component uses this to show the
+ *  on-screen marker, and it is the one thing to check before launch. */
 export const testimonialsPending = testimonials.some((t) => t.pending);
