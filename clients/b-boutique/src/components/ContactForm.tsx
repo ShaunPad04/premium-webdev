@@ -206,6 +206,11 @@ export function ContactForm() {
       <div className="cf-actions">
         <button type="submit" className="cf-submit" disabled={sending}>
           {sending ? "Sending…" : "Send message"}
+          {sending ? null : (
+            <span className="cf-submit-arrow" aria-hidden="true">
+              &rarr;
+            </span>
+          )}
         </button>
       </div>
 

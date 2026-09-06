@@ -75,10 +75,14 @@ export default function AboutPage() {
 
             <div className="about-blocks">
               {aboutBlocks.map((block) => (
+                /* Number, heading and prose are three siblings, not two, so
+                   the grid can put them in three columns above 1100 and the
+                   prose keeps its 62ch measure without leaving a third of the
+                   page empty beside it. Below that they stack. */
                 <article key={block.label} className="about-block">
                   <p className="about-block-n">{block.label}</p>
+                  <h3 className="about-block-h">{block.heading}</h3>
                   <div className="about-block-body">
-                    <h3 className="about-block-h">{block.heading}</h3>
                     {block.body.map((para) => (
                       <p key={para.slice(0, 32)} className="page-body">
                         {para}

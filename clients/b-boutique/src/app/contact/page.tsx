@@ -74,7 +74,9 @@ export default function ContactPage() {
             </div>
 
             <div className="contact-form-col">
-              <ContactForm />
+              <div className="cf-tray">
+                <ContactForm />
+              </div>
             </div>
           </div>
         </section>
