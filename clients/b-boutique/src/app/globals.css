@@ -2915,3 +2915,99 @@ body {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+
+/* ── "Also in the shop" cross-links ────────────────────────────────────────
+   The accessories page holds two pieces, because two is what the shop's data
+   actually contains. The honest way to end a short page is to send the reader
+   somewhere real rather than to pad the grid with stock nobody has confirmed —
+   so the page closes on two destinations that exist, each with its own
+   photograph and the shop's own line beneath it. */
+.cross {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(22px, 2.6vw, 36px);
+}
+@media (min-width: 900px) { .cross { grid-template-columns: repeat(2, 1fr); } }
+
+.cross-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cross-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--bb-black-raised);
+}
+
+/* The photograph opens on hover inside a frame that does not move — the same
+   gesture the category cards make, so the two read as one system. */
+.cross-media > * {
+  transition: transform 900ms var(--bb-ease);
+}
+.cross-link:hover .cross-media > *,
+.cross-link:focus-visible .cross-media > * { transform: scale(1.03); }
+
+.cross-body { display: block; padding-top: 18px; }
+
+.cross-label {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-size: clamp(21px, 2.1vw, 28px);
+  line-height: 1.15;
+}
+
+.cross-arrow {
+  font-size: 0.6em;
+  transition: transform var(--bb-dur-quick) var(--bb-ease);
+}
+.cross-link:hover .cross-arrow,
+.cross-link:focus-visible .cross-arrow { transform: translateX(5px); }
+
+.cross-note {
+  display: block;
+  margin-top: 7px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(10, 10, 10, 0.65);
+  max-width: 40ch;
+}
+
+.cross-link:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cross-media > *,
+  .cross-arrow { transition: none; }
+  .cross-link:hover .cross-media > *,
+  .cross-link:focus-visible .cross-media > * { transform: none; }
+  .cross-link:hover .cross-arrow { transform: none; }
+}
+
+/* A short set of pieces fills the width instead of leaving empty cells. */
+@media (min-width: 640px) {
+  .piece-grid.is-sparse { grid-template-columns: repeat(2, 1fr); gap: clamp(20px, 2.4vw, 36px); }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .cross-item {
+      animation: page-rise 700ms var(--bb-ease) both;
+      animation-timeline: view();
+      animation-range:
+        entry calc(var(--bb-enter) + min(var(--i, 0), 6) * var(--bb-step))
+        entry calc(var(--bb-settle) + min(var(--i, 0), 6) * var(--bb-step));
+    }
+    .cross-media {
+      animation: page-fade 700ms var(--bb-ease) both;
+      animation-timeline: view();
+      animation-range:
+        entry calc(var(--bb-enter) + min(var(--i, 0), 6) * var(--bb-step))
+        entry calc(var(--bb-settle) + min(var(--i, 0), 6) * var(--bb-step));
+    }
+  }
+}

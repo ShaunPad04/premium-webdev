@@ -7,7 +7,9 @@ import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { PieceGrid } from "@/components/PieceGrid";
 import { Visit } from "@/components/Visit";
+import { ImageSlot } from "@/components/ImageSlot";
 import { accessoriesCard, newInFor } from "@/lib/pages";
+import { categories } from "@/lib/shop";
 
 export const metadata: Metadata = {
   title: "Accessories",
@@ -94,6 +96,72 @@ export default function AccessoriesPage() {
               </p>
             </div>
             <PieceGrid pieces={pieces} idPrefix="accessories" />
+          </div>
+        </section>
+
+        {/* The page has two pieces in it, because two is what the project
+            actually holds. Rather than pad the grid with invented stock — the
+            one thing that must never happen on a real shop's site — the page
+            ends by sending the reader somewhere real. Both destinations exist,
+            both carry their own photograph, and both notes are the shop's own
+            words out of shop.ts. */}
+        <section aria-labelledby="acc-also" className="page-section">
+          <div className="page-inner">
+            <div className="page-head">
+              <h2 id="acc-also" className="page-h2">
+                Also in the shop.
+              </h2>
+              <p className="page-lede">
+                Accessories are the smallest part of one room. The rest of it
+                is through here.
+              </p>
+            </div>
+
+            <ul className="cross">
+              {[
+                {
+                  href: "/clothing",
+                  label: "Clothing",
+                  note: "Jackets, trousers, dresses, tops and knitwear.",
+                  slot: "panel-knitwear",
+                },
+                {
+                  href: "/#homeware",
+                  label: "Homeware",
+                  note: categories.find((c) => c.slug === "homeware")!.note,
+                  slot: "panel-homeware",
+                },
+              ].map((item, i) => (
+                <li key={item.href} className="cross-item" style={{ "--i": i } as React.CSSProperties}>
+                  {/* The whole card is one link, so the target is the card and
+                      not a five-word phrase — and there is exactly one link per
+                      destination, so a screen reader is not read the same href
+                      three times. The arrow is decorative. */}
+                  <a href={item.href} className="cross-link">
+                    <span className="cross-media">
+                      <ImageSlot
+                        tone="marble"
+                        seed={61 + i}
+                        slot={item.slot}
+                        /* Decorative. The label beside it names the
+                           destination, so alt text here would be read twice
+                           and would say less than the link already does. */
+                        alt=""
+                        sizes="(min-width: 900px) 46vw, 88vw"
+                        className="absolute inset-0 h-full w-full"
+                      />
+                    </span>
+                    <span className="cross-body">
+                      <span className="cross-label">
+                        {item.label}
+                        <span className="cross-arrow" aria-hidden="true">&rarr;</span>
+                      </span>
+                      <span className="cross-note">{item.note}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 

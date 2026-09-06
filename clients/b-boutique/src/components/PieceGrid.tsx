@@ -18,8 +18,15 @@ export function PieceGrid({
   /** Keeps the SVG filter ids unique when two grids sit on one page. */
   idPrefix: string;
 }) {
+  /* Two or three pieces in a four-column grid is a row that is mostly empty,
+     and empty grid cells read as missing stock rather than as a small range.
+     Below four, the grid drops to two columns and the frames grow to fill the
+     width — the same pieces, shown as a pair rather than as the leftovers of a
+     wall. There is no padding with invented items to make the numbers work. */
+  const sparse = pieces.length < 4;
+
   return (
-    <ul className="piece-grid">
+    <ul className={`piece-grid${sparse ? " is-sparse" : ""}`}>
       {pieces.map((piece, i) => (
         <li key={piece.slug} className="piece" style={{ "--i": i } as React.CSSProperties}>
           <div className="piece-media">
@@ -33,7 +40,14 @@ export function PieceGrid({
                  announced twice, and there is no per-piece description in the
                  data to say anything more useful without inventing it. */
               alt=""
-              sizes="(min-width: 1024px) 23vw, (min-width: 640px) 31vw, 44vw"
+              /* Measured against the rendered frame at each breakpoint, in
+                 both densities: the sparse pair is roughly twice the width of
+                 a four-up card, so it cannot share one `sizes`. */
+              sizes={
+                sparse
+                  ? "(min-width: 1024px) 44vw, (min-width: 640px) 46vw, 88vw"
+                  : "(min-width: 1024px) 23vw, (min-width: 640px) 31vw, 44vw"
+              }
               className="absolute inset-0 h-full w-full"
             />
           </div>
