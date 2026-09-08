@@ -18,6 +18,8 @@ const ROUTES = [
   '/checkout/success?ref=BB-TEST',
   '/delivery',
   '/returns',
+  '/terms',
+  '/privacy',
 ];
 
 for (const route of ROUTES) {

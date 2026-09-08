@@ -25,6 +25,16 @@ import { addressLines, phoneDisplay, shop } from "./shop";
  *    "derived"    True from data already confirmed in this repository — the
  *                 address and phone in shop.ts, both client-confirmed. Safe.
  *
+ *    "technical"  True of what this codebase actually DOES, checked against
+ *                 the source rather than remembered. This is what makes an
+ *                 honest privacy notice possible before the client has said
+ *                 anything: what a website collects is not her opinion, it is
+ *                 a fact about the code, and the code is right here. Every
+ *                 such claim below names the file it was read from, so the
+ *                 next person can re-check it rather than trust it. Safe to
+ *                 publish — but it stops being true the moment somebody adds
+ *                 an analytics script, so it is verified again at launch.
+ *
  *    "required"   A commercial decision only the client can make. Rendered as
  *                 a visible CLIENT INPUT REQUIRED slot rather than filled with
  *                 something plausible, and it drives a page-level notice for
@@ -47,7 +57,7 @@ import { addressLines, phoneDisplay, shop } from "./shop";
  *  reads harmlessly in a draft and costs money in a dispute.
  *  ─────────────────────────────────────────────────────────────────────────
  */
-export type BlockKind = "statutory" | "derived" | "required";
+export type BlockKind = "statutory" | "derived" | "technical" | "required";
 
 export type PolicyBlock = {
   /** Short heading. Reads as a question a customer would actually ask. */
@@ -56,19 +66,35 @@ export type PolicyBlock = {
   /** Paragraphs. Empty for a `required` block — there is nothing to say yet. */
   body: string[];
   /** For `statutory`: the legislation it comes from, shown in small print so
-   *  a customer can check it and the client can see it is not our invention. */
+   *  a customer can check it and the client can see it is not our invention.
+   *  For `technical`: the file the claim was read out of. Both are there so a
+   *  reader can verify rather than believe. */
   basis?: string;
+  /** Overrides the small-caps label above `basis`. Defaults to the statutory
+   *  wording; a technical block wants "How we know", not "Your legal right". */
+  basisLabel?: string;
   /** For `required`: what to ask the client, in words they can answer. */
   ask?: string;
 };
 
 export type Policy = {
-  slug: "delivery" | "returns";
+  slug: "delivery" | "returns" | "terms" | "privacy";
   title: string;
   eyebrow: string;
   lede: string;
+  /** The sentence under "In plain English." It differs per page because the
+   *  pages are made of different things: delivery, returns and terms are
+   *  mostly law and shop policy, while privacy is mostly a description of
+   *  what the code does. One generic line would be wrong on at least one of
+   *  them, and a privacy notice claiming to "name the Act" when it is really
+   *  naming a source file is exactly the kind of small dishonesty this
+   *  project keeps out. */
+  intro: string;
   blocks: PolicyBlock[];
 };
+
+const LEGAL_INTRO =
+  "Your rights when you buy online are set by law, not by us, and where that is the case this page says so and names the Act it comes from. Anything that is B Boutique's own decision is marked as such.";
 
 /* ── Delivery ───────────────────────────────────────────────────────────── */
 
@@ -77,6 +103,8 @@ const delivery: Policy = {
   title: "Delivery",
   eyebrow: "Getting it to you",
   lede: "How an order leaves the shop, what it costs, and when it should reach you.",
+  intro:
+    LEGAL_INTRO,
   blocks: [
     {
       heading: "Where we send to",
@@ -129,6 +157,8 @@ const returns: Policy = {
   title: "Returns",
   eyebrow: "Changing your mind",
   lede: "What you can send back, how long you have, and what happens to your money.",
+  intro:
+    LEGAL_INTRO,
   blocks: [
     {
       heading: "You have 14 days to change your mind",
@@ -196,7 +226,196 @@ const returns: Policy = {
   ],
 };
 
-export const policies: readonly Policy[] = [delivery, returns];
+/* ── Terms of sale ──────────────────────────────────────────────────────── */
+
+const terms: Policy = {
+  slug: "terms",
+  title: "Terms of sale",
+  eyebrow: "The agreement",
+  lede: "What you are agreeing to when you buy from this website, and who you are agreeing it with.",
+  intro:
+    LEGAL_INTRO,
+  blocks: [
+    {
+      heading: "Who you are buying from",
+      kind: "derived",
+      body: [
+        `${shop.name}, ${addressLines.join(", ")}. Telephone ${phoneDisplay}.`,
+        "One shop, on one street. There is no warehouse and no second branch — the pieces on this website are the pieces on the rail.",
+      ],
+    },
+    {
+      heading: "The trading name behind the shop",
+      kind: "required",
+      body: [],
+      ask: "Are you a sole trader or a limited company? If it is a company, we need the registered name, the company number and the registered office address, because an online shop has to display them. If you are a sole trader, your own name is what goes here.",
+    },
+    {
+      heading: "When the order becomes a contract",
+      kind: "required",
+      body: [],
+      ask: "Standard wording, and it protects you: 'Your order is an offer to buy. The contract is formed when we confirm we have your piece and it is on its way — not when the payment goes through.' That single sentence is what lets you refund somebody lawfully when a one-of-one piece sold in the shop an hour earlier. Say yes and we will use it, or tell us how you would rather it read.",
+    },
+    {
+      heading: "Prices and VAT",
+      kind: "required",
+      body: [],
+      ask: "Are you VAT registered? If so we need the number, and the prices shown will say they include VAT. If not, the page simply says the price is the price and no VAT is charged — which is also completely normal for a shop this size.",
+    },
+    {
+      heading: "How you pay",
+      kind: "technical",
+      body: [
+        "Payment is taken by SumUp, on SumUp's own secure payment page. Your card details are entered there and never reach this website — we do not see them, receive them or store them at any point.",
+        "The amount you are charged is worked out on our own server from the pieces in your bag, not from anything your browser sends us.",
+      ],
+      basis:
+        "Read from src/app/api/checkout/route.ts — the checkout is created through SumUp's hosted payment page, and the basket is priced server-side from the shop's own catalogue.",
+      basisLabel: "How we know",
+    },
+    {
+      heading: "If a piece has already gone",
+      kind: "required",
+      body: [],
+      ask: "This is the same question as the oversell one on your list, and the answer belongs here as a term as well as a promise. Refund straight away and ring to apologise, or ring first and offer something similar? Your words.",
+    },
+    {
+      heading: "None of this affects your legal rights",
+      kind: "statutory",
+      body: [
+        "Nothing on this page removes or reduces any right the law gives you as a consumer. If anything here ever conflicts with your statutory rights, your statutory rights win.",
+        "Your right to change your mind within 14 days, and your rights if something is faulty, are set out in full on our returns page.",
+      ],
+      basis:
+        "Consumer Rights Act 2015 — a term is not binding on a consumer to the extent that it would exclude or restrict the trader's liability under the Act.",
+    },
+    {
+      heading: "Which country's law applies",
+      kind: "required",
+      body: [],
+      ask: "For a shop trading in Cleethorpes the ordinary answer is 'the law of England and Wales, and you can bring a claim in the English courts — and if you live elsewhere in the UK, the consumer protection of where you live still applies to you.' Confirm that is what you want and we will use it.",
+    },
+    {
+      heading: "If something goes wrong",
+      kind: "derived",
+      body: [
+        `Ring the shop on ${phoneDisplay}. A conversation settles almost everything, and it is quicker than writing.`,
+      ],
+    },
+  ],
+};
+
+/* ── Privacy ────────────────────────────────────────────────────────────── */
+
+const privacy: Policy = {
+  slug: "privacy",
+  title: "Privacy",
+  eyebrow: "Your information",
+  lede: "What this website collects, what it does not, and what you can ask us to do about it.",
+  intro:
+    "Most of this page is not a promise — it is a description of what this website is made of, and each part names the file it was read out of so it can be checked rather than believed. Where the law gives you a right instead, the page says so.",
+  blocks: [
+    {
+      heading: "This site sets no cookies and does not track you",
+      kind: "technical",
+      body: [
+        "There is no analytics, no advertising pixel, no tracking script and no cookie banner, because there is nothing to consent to. We do not know who you are, where you came from, or which pages you looked at.",
+        "This is not a promise about the future — it is a statement about what the site is made of today, and it was checked against the code rather than assumed.",
+      ],
+      basis:
+        "Verified by searching the whole of src/ for cookie, analytics, gtag, googletagmanager, plausible and fbq. No match.",
+      basisLabel: "How we know",
+    },
+    {
+      heading: "The fonts do not phone home",
+      kind: "technical",
+      body: [
+        "The typefaces are served from this website itself. Your browser never asks Google for them, so no request carrying your address goes anywhere else when a page loads.",
+      ],
+      basis:
+        "Read from src/app/layout.tsx — the fonts are loaded through next/font, which downloads and self-hosts them when the site is built.",
+      basisLabel: "How we know",
+    },
+    {
+      heading: "The map, and the one thing that does load from elsewhere",
+      kind: "technical",
+      body: [
+        "The map of the shop is Google's, and Google does set its own cookies. So it does not load until you ask for it — the page shows the address and a button, and nothing reaches Google unless you press it.",
+        "Everything else on the page works whether you open the map or not.",
+      ],
+      basis:
+        "Read from src/components/VisitMap.tsx — the Google embed is mounted only on a deliberate click.",
+      basisLabel: "How we know",
+    },
+    {
+      heading: "Your bag stays in your browser",
+      kind: "technical",
+      body: [
+        "What you put in your bag is saved on your own device and is not sent to us. Clear your browser data and it is gone; use a different phone and it was never there.",
+        "It only leaves your device when you press Checkout, and then only as a list of pieces and sizes so the payment can be worked out.",
+      ],
+      basis:
+        "Read from src/lib/useCart.tsx — the bag is stored in the browser's localStorage under one key.",
+      basisLabel: "How we know",
+    },
+    {
+      heading: "If you use the contact form",
+      kind: "technical",
+      body: [
+        "Your name, your email address and your message are emailed to the shop so somebody can reply. That is all that is sent, and nothing is saved on this website.",
+        "Your IP address is used for one thing: counting how many messages have come from one place in the last ten minutes, so a script cannot flood the shop's inbox. It is held in the server's memory for those ten minutes, is never written down, and is never included in the email.",
+      ],
+      basis:
+        "Read from src/app/api/contact/route.ts — the emailed text is name, address and message only; the IP is a key in an in-memory map with a ten-minute window.",
+      basisLabel: "How we know",
+    },
+    {
+      heading: "If you buy something",
+      kind: "technical",
+      body: [
+        "The pieces and sizes in your bag go to our server, which prices them and asks SumUp to set up a payment. Your name, address and card details are given to SumUp on their own page and never come back to us.",
+      ],
+      basis:
+        "Read from src/app/api/checkout/route.ts — the request carries slugs, sizes and quantities, and no customer detail.",
+      basisLabel: "How we know",
+    },
+    {
+      heading: "The three companies involved",
+      kind: "technical",
+      body: [
+        "Vercel hosts the website and keeps ordinary server logs. SumUp takes the payment and holds whatever a payment needs. Resend delivers the contact form's email to the shop. Each has its own privacy notice.",
+        "Nobody else receives anything. Your details are not sold, shared for advertising, or passed to a mailing list — there is no mailing list.",
+      ],
+      basis:
+        "Read from the project's dependencies and route handlers: no other third party is contacted by this site.",
+      basisLabel: "How we know",
+    },
+    {
+      heading: "How long the shop keeps things",
+      kind: "required",
+      body: [],
+      ask: "How long do you keep an enquiry email — a few months, a year? And once orders start, how long do you keep the record? There is a real answer: HMRC generally expects business records to be kept for six years, so order records usually stay that long, but enquiry emails are your choice.",
+    },
+    {
+      heading: "Who to ask, and how",
+      kind: "required",
+      body: [],
+      ask: "A privacy notice has to name who is responsible for the information and give a way to contact them. That means the same trading name as the terms page, and an email address to send a request to — the enquiries address is fine.",
+    },
+    {
+      heading: "What you can ask us to do",
+      kind: "statutory",
+      body: [
+        "You can ask what information we hold about you, ask us to correct it, ask us to delete it, or object to us using it. Ask, and we will answer within one month. There is no charge.",
+        "If you are not happy with how we have handled it, you can complain to the Information Commissioner's Office, the UK's data protection regulator, at ico.org.uk. You can go to them directly and you do not have to come to us first.",
+      ],
+      basis:
+        "UK GDPR — the rights of access, rectification, erasure and objection, the one-month response period, and the right to lodge a complaint with the supervisory authority.",
+    },
+  ],
+};
+
+export const policies: readonly Policy[] = [delivery, returns, terms, privacy];
 
 export function policyBySlug(slug: string): Policy | undefined {
   return policies.find((p) => p.slug === slug);

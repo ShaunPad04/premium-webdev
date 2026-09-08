@@ -86,10 +86,10 @@ can never point at an empty shelf.
 
 ## The routes
 
-Twelve routes as of 2026-09-08: `/`, `/shop`, `/shop/[slug]`, `/bag`,
+Fourteen routes as of 2026-09-08: `/`, `/shop`, `/shop/[slug]`, `/bag`,
 `/checkout/success`, `/clothing`, `/clothing/[category]`, `/accessories`,
-`/about`, `/contact`, `/delivery`, `/returns` — plus `POST /api/contact` and
-`POST /api/checkout`.
+`/about`, `/contact`, `/delivery`, `/returns`, `/terms`, `/privacy` — plus
+`POST /api/contact` and `POST /api/checkout`.
 
 `/clothing/[category]` is what stopped the site reading as disorganised: the
 category grid showed nine categories with nothing underneath any of them, which
@@ -105,18 +105,22 @@ Not a to-do list — every one of these is a thing a developer cannot invent:
 - **Stock levels.** Nothing decrements. Two people can buy the same one-off piece.
 - **An order record.** Nothing is written down, so nothing can be picked, packed,
   refunded or audited.
-- **Eight answers on `/delivery` and `/returns`.** Both pages are built and
-  linked, but each carries four `required` blocks — postage price, dispatch
-  time, courier, where you post to; who pays return postage, exclusions,
-  exchanges, in-shop policy. Each renders as a visible slot and drives a
-  page notice. See the SELLING TERMS section below.
-- **Terms of sale and a privacy notice.** Neither page exists.
-- **The trader's legal identity.** `trader.legalEntity` in `policies.ts` is
-  empty: sole trader or limited company, and the number if there is one.
+- **Fifteen answers across the four selling-terms pages.** All four are built
+  and linked; `outstandingPolicySlots` counts the gaps. Delivery 4, Returns 4,
+  Terms 5, Privacy 2. Each renders as a visible slot and drives a page notice.
+  See the SELLING TERMS section below.
+- **The trader's legal identity.** Asked for on both `/terms` and `/privacy`,
+  and `trader.legalEntity` in `policies.ts` is empty: sole trader or limited
+  company, and the registered name, number and office if there is one.
+- **The ICO data protection fee.** Most UK businesses processing personal data
+  must register with the Information Commissioner's Office and pay an annual
+  fee. The privacy page names the ICO as the regulator to complain to; whether
+  the shop is registered is not known and is not a question a developer can
+  answer. Worth putting to the client before launch.
 
-## Selling terms — `/delivery` and `/returns`
+## Selling terms — `/delivery`, `/returns`, `/terms`, `/privacy`
 
-Built 2026-09-08. `lib/policies.ts` holds both pages, and its rule is
+Built 2026-09-08. `lib/policies.ts` holds all four pages, and its rule is
 stricter than anywhere else in this project, for a reason worth stating
 plainly: **every other placeholder here is a claim a customer might believe;
 these two pages are a claim a customer can enforce.** A postage price or a
@@ -131,11 +135,23 @@ impossible to add by accident:
 |---|---|---|
 | `statutory` | UK consumer law — true of every distance seller regardless of what this shop decides. Prints the Act it comes from, so a customer can check and the client can see it was not invented here. | Yes |
 | `derived` | From client-confirmed data in `shop.ts` — the address, the phone. | Yes |
+| `technical` | A statement about what this codebase actually **does**, read out of the file it names. This is what makes an honest privacy notice possible before the client has said anything: what a website collects is not her opinion, it is a fact about the code. Renders a "How we know" footnote citing the source file. | Yes — see the warning below |
 | `required` | A commercial decision only the client can make. Renders as a visible CLIENT INPUT REQUIRED slot carrying the question, never as plausible prose. | **No** |
 
-Eight `required` slots remain, four per page; `outstandingPolicySlots`
-counts them and a launch check should assert zero. Each page renders one
-notice while any of its own remain.
+Fifteen `required` slots remain — Delivery 4, Returns 4, Terms 5, Privacy 2.
+`outstandingPolicySlots` counts them and a launch check should assert zero.
+Each page renders one notice while any of its own remain.
+
+**The `technical` blocks expire.** `/privacy` states, as fact, that the site
+sets no cookies, runs no analytics, self-hosts its fonts so nothing is
+requested from Google on page load, loads the Google map only on a deliberate
+click, keeps the bag in `localStorage`, and uses the visitor's IP for nothing
+but a ten-minute in-memory rate limit that is never written down or emailed.
+Every one of those was verified against the source on 2026-09-08 and every one
+stops being true the moment somebody adds a script. **Re-run the checks before
+launch and after any dependency change**; the `basis` line on each block names
+exactly what to re-check. Adding analytics to this site without editing that
+page turns it into a false statement to every visitor.
 
 **The statutory text was written by a developer, not a solicitor.** It is
 stated conservatively — where the law gives the customer a right it is
@@ -145,9 +161,17 @@ wants ten minutes from somebody qualified, or a read against the Trading
 Standards Business Companion guidance. **That check is a launch task, not an
 optional polish**, and it is not done.
 
-Both pages are linked from the footer and, more importantly, from the bag —
-these terms have to be available to the customer *before* they are bound by
-the order, not discovered afterwards.
+All four are linked from the footer's "Buying online" column, and delivery and
+returns additionally from the bag — those two have to be available to the
+customer *before* they are bound by the order, not discovered afterwards.
+
+`/terms` carries one block worth pointing at: **when the order becomes a
+contract.** The standard wording — the order is an offer, the contract forms
+when the shop confirms the piece is on its way — is what lets the shop
+lawfully refund somebody when a one-of-one piece sold over the counter an hour
+earlier. It is left as a `required` slot with that wording in the ask, because
+it is the client's term to adopt, but it is the single most useful sentence on
+the page for a shop with no stock system.
 
 ## SumUp — what the API can and cannot do
 

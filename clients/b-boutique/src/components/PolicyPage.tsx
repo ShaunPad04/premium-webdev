@@ -7,12 +7,12 @@ import type { Policy } from "@/lib/policies";
 import { policyIsIncomplete } from "@/lib/policies";
 import { phoneDisplay, shop } from "@/lib/shop";
 
-/* Delivery and Returns share this page.
+/* Delivery, Returns, Terms of sale and Privacy all share this page.
  *
- * One component rather than two nearly identical files, because the two pages
- * are the same document with different contents — and because a rule about
- * how an unconfirmed policy is displayed has to hold on both of them or it
- * holds on neither.
+ * One component rather than four nearly identical files, because they are the
+ * same document with different contents — and because a rule about how an
+ * unconfirmed policy is displayed has to hold on all four or it holds on
+ * none.
  *
  * ── The three kinds of block, and why they look different ─────────────────
  * A customer cannot be expected to know which sentence on a returns page is
@@ -23,6 +23,11 @@ import { phoneDisplay, shop } from "@/lib/shop";
  *              not decoration — it is the difference between "the shop says"
  *              and "you are entitled to", and it lets a customer check.
  *   derived    plain. It comes from confirmed shop data.
+ *   technical  plain to a customer, but carries a "How we know" footnote
+ *              naming the file the claim was read out of. A privacy notice is
+ *              the one document on a website that can be checked against the
+ *              website, and saying which file makes that possible instead of
+ *              asking to be believed.
  *   required   renders as a visibly empty slot carrying the question the
  *              client still has to answer, rather than as prose. Nothing
  *              plausible is written in the gap.
@@ -49,12 +54,7 @@ export function PolicyPage({ policy }: { policy: Policy }) {
               <h2 id="pol-h" className="page-h2">
                 In plain English.
               </h2>
-              <p className="page-lede">
-                Your rights when you buy online are set by law, not by us, and
-                where that is the case this page says so and names the Act it
-                comes from. Anything that is B Boutique&rsquo;s own decision is
-                marked as such.
-              </p>
+              <p className="page-lede">{policy.intro}</p>
 
               {incomplete ? (
                 /* The same device catalogue.ts, faq.ts and about.ts use: one
@@ -89,7 +89,9 @@ export function PolicyPage({ policy }: { policy: Policy }) {
                       ))}
                       {block.basis ? (
                         <p className="pol-basis">
-                          <span className="pol-basis-tag">Your legal right</span>
+                          <span className="pol-basis-tag">
+                            {block.basisLabel ?? "Your legal right"}
+                          </span>
                           {block.basis}
                         </p>
                       ) : null}
@@ -104,8 +106,8 @@ export function PolicyPage({ policy }: { policy: Policy }) {
               <a href={`tel:${shop.phone}`} className="cf-fail-link">
                 {phoneDisplay}
               </a>
-              . It is quicker than email and you will speak to somebody who has
-              the piece in their hand.
+              . It is one room and one telephone; you will speak to somebody
+              who can actually answer.
             </p>
           </div>
         </section>

@@ -67,9 +67,11 @@ export const mapEmbedSrc = `https://www.google.com/maps?q=${shop.lat},${shop.lng
 
 /** Footer navigation.
  *
- *  Every href here resolves today. A footer column of /privacy, /terms and
- *  /cookies would be three links to 404s, so those are omitted until the
- *  pages exist rather than linked and broken.
+ *  Every href here resolves today, which is the whole rule: a link is added
+ *  when its page exists and not before. Delivery, Returns, Terms of sale and
+ *  Privacy were all omitted for exactly that reason and all four are here now
+ *  that they are built. /cookies still is not, because this site sets no
+ *  cookies — see the privacy page, which says so and names the check.
  *
  *  Contact appears now that there is a page and a confirmed phone number
  *  behind it. It was omitted for as long as there was nothing to link to. */
@@ -107,6 +109,8 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
     items: [
       { n: "", label: "Delivery", href: "/delivery" },
       { n: "", label: "Returns", href: "/returns" },
+      { n: "", label: "Terms of sale", href: "/terms" },
+      { n: "", label: "Privacy", href: "/privacy" },
     ],
   },
 ];
