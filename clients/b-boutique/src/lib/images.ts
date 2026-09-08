@@ -26,27 +26,55 @@ const CDN =
 
 /** The slots whose photograph is vendored in public/img as <slot>.webp.
  *
- *  A set, not a boolean. The upload arrived 16 of 19 complete, and a single
- *  flag would have forced a choice between pointing slots at files that do not
- *  exist or leaving all of them on an unreachable CDN. Per-slot, the vendored
- *  ones load locally and the rest fall back to the CDN — which the sandbox
- *  cannot reach, so here they show their designed marble and cloth, while a
- *  real visitor gets the photograph. Add a slot when its file lands.
+ *  A set, not a boolean. The vendored ones load locally; the rest fall back to
+ *  the CDN, which a real visitor CAN reach — falling back is not the same as
+ *  not being shown. Only this sandbox is blocked from that host, which is why
+ *  an un-vendored slot shows its designed marble here and the photograph in
+ *  production. Add a slot when its file lands.
  *
- *  Not vendored:
- *    new-boucle-overshirt · homeware-ceramics
- *      their source PNG was not in the upload.
- *    panel-tops · panel-dresses · panel-accessories
- *      vendored once, for a category-panel treatment the rail replaced. The
- *      .webp files were removed in the release cleanup because nothing on the
- *      page rendered them; their CDN source below is kept so the photograph
- *      can come back if a slot ever needs it again.
+ *  33 of 39 as of 2026-09-08. `pnpm images` fetched all 39; six were then
+ *  held back after the first visual review of the set, and their files
+ *  deliberately removed so this manifest cannot claim a local copy that is
+ *  not there:
+ *
+ *    panel-coats · panel-shirts · panel-skirts · panel-denim
+ *      generated as fake magazine spreads carrying gibberish typography, and
+ *      two of the four have malformed hands. All four are rendered — they are
+ *      the clothing category cards in lib/pages.ts — so they are still on the
+ *      page from the CDN. Not vendoring them does not fix that; new art does.
+ *    panel-accessories
+ *      reproduces third-party trade marks (an interlocking-GG emblem, a
+ *      Triomphe-style clasp). Nothing renders it, and it is kept out of the
+ *      repository deliberately. Do not vendor it.
+ *    new-satin-skirt
+ *      the photograph is a matte brown pencil skirt; the product is a
+ *      bias-cut satin skirt. Wrong garment, not merely a weak shot.
+ *
+ *  Re-running `pnpm images` will pull all six back. That is a decision, not a
+ *  routine step — read this block first.
  *
  *  panel-jackets is gone entirely: it had no local file AND no consumer, so
  *  it was one dead remote URL the page could never have used. */
-const vendored = new Set<string>(
-  [
+const vendored = new Set<string>([
+  "new-tapered-trouser",
+  "new-charcoal-overcoat",
+  "new-camel-wrap-coat",
+  "new-poplin-shirt",
+  "new-silk-blouse",
+  "new-pleated-skirt",
+  "new-straight-jeans",
+  "new-wide-jeans",
+  "new-merino-rollneck",
+  "new-burgundy-dress",
+  "new-wool-blazer",
+  "new-striped-top",
+  "new-gold-hoops",
+  "new-leather-belt",
+  "new-lambswool-scarf",
+  "new-leather-tote",
   "panel-all",
+  "panel-tops",
+  "panel-dresses",
   "panel-knitwear",
   "panel-trousers",
   "panel-homeware",
@@ -58,9 +86,10 @@ const vendored = new Set<string>(
   "new-leather-crossbody",
   "new-silk-scarf",
   "new-stoneware-carafe",
-  "homeware-linen"
-]
-);
+  "new-boucle-overshirt",
+  "homeware-ceramics",
+  "homeware-linen",
+]);
 
 /** slot -> the generation's filename on the CDN. Order is the page's order. */
 const shot: Record<string, string> = {
