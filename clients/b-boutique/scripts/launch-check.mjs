@@ -118,14 +118,20 @@ if (/email:\s*""/.test(read('src/lib/shop.ts'))) {
 }
 
 /* ── 5. Photography ─────────────────────────────────────────────────────── */
-/* Counted against the total, not on its own. "23 photographs are not
-   vendored" reads as though none are, and 16 of the 39 slots have been local
-   since the first shoot — a number that overstates the problem is as useless
-   as one that understates it. */
+/* Derived from the vendored set, not from a filename pattern.
+   Two wrong answers, in order: "23 photographs are not vendored" read as
+   though none were, when 13 of the 39 slots have been local since the first
+   shoot. Replacing it with a count of `_min.webp` strings then reported 23
+   when the true figure is 26 — three remote slots do not use that suffix, so
+   the gate quietly UNDERSTATED the problem, which is the worse direction.
+   The only count that cannot drift is total minus vendored. */
 const images = read('src/lib/images.ts');
 const shot = images.slice(images.indexOf('const shot'), images.indexOf('export const slots'));
 const total = (shot.match(/^\s{2}"?[a-z0-9-]+"?:/gm) ?? []).length;
-const remote = (images.match(/_min\.webp/g) ?? []).length;
+const vendored = (images
+  .slice(images.indexOf('const vendored'), images.indexOf('const shot'))
+  .match(/"[a-z0-9-]+"/g) ?? []).length;
+const remote = total - vendored;
 if (remote > 0) {
   block(
     `${remote} of ${total} photographs still load from the CDN`,
