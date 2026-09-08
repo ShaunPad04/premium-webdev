@@ -97,6 +97,41 @@ is a label on an empty shelf. Each one is now a page listing that category's
 actual stock, `CategoryGrid`'s cards link there, and the header's Clothing menu
 points at them rather than at anchors.
 
+## `pnpm launch-check`
+
+The list below, as a command. It reads the source and exits non-zero while
+anything invented, unconfirmed or self-contradicting remains — 10 blockers as
+of 2026-09-08, which is the correct answer today.
+
+**Deliberately NOT part of `pnpm verify`.** Verify runs several times a day and
+must stay green; a gate that fails on every run for a known, correct reason
+trains people to ignore it, which is the failure this project keeps guarding
+against. This one is run before launch and then actually read.
+
+The one check worth knowing about: it re-tests the **privacy page's own
+claims**. `/privacy` states as fact that the site runs no analytics and sets no
+cookies, and that is one `npm install` away from being a false statement to
+every visitor — so the script scans `src/` for real tracker tokens with
+comments stripped, and blocks the launch if any appear. Verified in both
+directions: planting `googletagmanager.com` in `layout.tsx` fired the blocker
+and named the file; removing it went clean again.
+
+Two bugs found in the check by testing it rather than trusting it, both worth
+remembering because both are the classic shape:
+
+- `demo: true as const` did not match a line-anchored `true`, so the script
+  reported **the most dangerous file in the project as clean**. A gate that
+  passes wrongly is worse than no gate.
+- The tracker list originally contained the bare word `plausible`, which this
+  project's own comments use ("a plausible invention"). It flagged three source
+  files as analytics. A false alarm in a launch gate is not harmless — it is
+  how a gate stops being read.
+
+It **cannot** tell you whether a price is correct, whether the legal wording is
+sound, whether a photograph is of the right garment, whether the SumUp round
+trip works, or whether the shop is registered with the ICO. It says so on every
+run, because a checklist that implies it is exhaustive is worse than none.
+
 ## What is still missing before the shop can take real money
 
 Not a to-do list — every one of these is a thing a developer cannot invent:
