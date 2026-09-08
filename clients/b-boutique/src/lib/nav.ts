@@ -97,6 +97,18 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
       { n: "", label: "Contact", href: "/contact" },
     ],
   },
+  /* Added 2026-09-08 with the pages themselves. A shop selling at a distance
+     has to make its delivery and returns terms available BEFORE the customer
+     is bound — a link in the footer, on every page including the bag, is the
+     ordinary way that is done. They are not buried in small print at the
+     bottom of the meta row for the same reason. */
+  {
+    heading: "Buying online",
+    items: [
+      { n: "", label: "Delivery", href: "/delivery" },
+      { n: "", label: "Returns", href: "/returns" },
+    ],
+  },
 ];
 
 /** The hero's centre navigation.

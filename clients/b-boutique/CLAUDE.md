@@ -86,9 +86,10 @@ can never point at an empty shelf.
 
 ## The routes
 
-Ten routes as of 2026-09-06: `/`, `/shop`, `/shop/[slug]`, `/bag`,
+Twelve routes as of 2026-09-08: `/`, `/shop`, `/shop/[slug]`, `/bag`,
 `/checkout/success`, `/clothing`, `/clothing/[category]`, `/accessories`,
-`/about`, `/contact` — plus `POST /api/contact` and `POST /api/checkout`.
+`/about`, `/contact`, `/delivery`, `/returns` — plus `POST /api/contact` and
+`POST /api/checkout`.
 
 `/clothing/[category]` is what stopped the site reading as disorganised: the
 category grid showed nine categories with nothing underneath any of them, which
@@ -104,9 +105,49 @@ Not a to-do list — every one of these is a thing a developer cannot invent:
 - **Stock levels.** Nothing decrements. Two people can buy the same one-off piece.
 - **An order record.** Nothing is written down, so nothing can be picked, packed,
   refunded or audited.
-- **Delivery, returns, terms and a privacy notice.** Legally required for
-  distance selling in the UK, including the 14-day cancellation right under the
-  Consumer Contracts Regulations.
+- **Eight answers on `/delivery` and `/returns`.** Both pages are built and
+  linked, but each carries four `required` blocks — postage price, dispatch
+  time, courier, where you post to; who pays return postage, exclusions,
+  exchanges, in-shop policy. Each renders as a visible slot and drives a
+  page notice. See the SELLING TERMS section below.
+- **Terms of sale and a privacy notice.** Neither page exists.
+- **The trader's legal identity.** `trader.legalEntity` in `policies.ts` is
+  empty: sole trader or limited company, and the number if there is one.
+
+## Selling terms — `/delivery` and `/returns`
+
+Built 2026-09-08. `lib/policies.ts` holds both pages, and its rule is
+stricter than anywhere else in this project, for a reason worth stating
+plainly: **every other placeholder here is a claim a customer might believe;
+these two pages are a claim a customer can enforce.** A postage price or a
+returns window published on a real shop's site is a term of the contract of
+sale — the customer read it, relied on it, and can hold B Boutique to it
+whatever anybody meant.
+
+So every block is exactly one of three kinds, and the type makes a fourth
+impossible to add by accident:
+
+| Kind | What it is | Safe to publish |
+|---|---|---|
+| `statutory` | UK consumer law — true of every distance seller regardless of what this shop decides. Prints the Act it comes from, so a customer can check and the client can see it was not invented here. | Yes |
+| `derived` | From client-confirmed data in `shop.ts` — the address, the phone. | Yes |
+| `required` | A commercial decision only the client can make. Renders as a visible CLIENT INPUT REQUIRED slot carrying the question, never as plausible prose. | **No** |
+
+Eight `required` slots remain, four per page; `outstandingPolicySlots`
+counts them and a launch check should assert zero. Each page renders one
+notice while any of its own remain.
+
+**The statutory text was written by a developer, not a solicitor.** It is
+stated conservatively — where the law gives the customer a right it is
+described in full; where it gives the trader an option or an exemption that
+is left to the client rather than assumed in their favour. Before launch it
+wants ten minutes from somebody qualified, or a read against the Trading
+Standards Business Companion guidance. **That check is a launch task, not an
+optional polish**, and it is not done.
+
+Both pages are linked from the footer and, more importantly, from the bag —
+these terms have to be available to the customer *before* they are bound by
+the order, not discovered afterwards.
 
 ## SumUp — what the API can and cannot do
 

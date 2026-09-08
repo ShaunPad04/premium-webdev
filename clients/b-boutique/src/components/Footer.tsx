@@ -115,9 +115,11 @@ export function Footer() {
 
       <div className="ft-meta">
         <p>&copy; {year} B Boutique</p>
-        {/* No Privacy, Terms or Cookies: this project is a single route and
-            none of those pages exist. Three links to 404s is worse than none.
-            No builder credit either — nobody asked for one. */}
+        {/* Delivery and Returns are real pages now and are linked from the
+            nav columns above, where a customer looks for them, rather than
+            from this meta row. Privacy and Terms still do not exist, so they
+            are still not linked — a link to a 404 is worse than none. No
+            builder credit either; nobody asked for one. */}
       </div>
     </footer>
   );

@@ -3308,6 +3308,89 @@ body {
   .prod-link:hover .prod-media > * { transform: none; }
 }
 
+/* ── Delivery and returns ──────────────────────────────────────────────────
+   A document, not a marketing page: one measure, generous leading, and no
+   card chrome. The only two devices are the legal-basis footnote and the
+   unfilled slot, and they are deliberately the two things that look
+   different from everything else on the page. */
+.pol {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(34px, 4.4vw, 52px);
+  max-width: 68ch;
+}
+
+.pol-block { scroll-margin-top: 108px; }
+
+.pol-h {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-size: clamp(20px, 2.3vw, 27px);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.pol-body {
+  margin-top: 14px;
+  font-size: clamp(15px, 1.3vw, 16.5px);
+  line-height: 1.68;
+  color: rgba(10, 10, 10, 0.78);
+}
+
+/* The legal basis. Small, but not hidden — a customer should be able to read
+   which Act a right comes from, and the client should be able to see that the
+   sentence above it was not invented here. Indented off a rule rather than
+   boxed, so it reads as a footnote to the paragraph it follows. */
+.pol-basis {
+  margin-top: 16px;
+  border-left: 2px solid var(--bb-light-border);
+  padding-left: 16px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--bb-grey-dark);
+}
+.pol-basis-tag {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-black);
+  margin-bottom: 5px;
+}
+
+/* An unanswered question, drawn as an unanswered question. Dashed, because a
+   dashed edge reads as provisional in a way a solid one does not, and this is
+   the one place on the site where looking unfinished is the entire point. */
+.pol-slot {
+  margin-top: 14px;
+  border: 1px dashed var(--bb-light-border);
+  padding: 18px 20px;
+}
+.pol-slot-tag {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.pol-slot-ask {
+  margin-top: 9px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: rgba(10, 10, 10, 0.78);
+}
+
+.pol-close {
+  margin-top: clamp(40px, 5vw, 60px);
+  padding-top: clamp(24px, 3vw, 32px);
+  border-top: 1px solid var(--bb-light-border);
+  max-width: 68ch;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(10, 10, 10, 0.78);
+}
+
 /* ── Shop search ───────────────────────────────────────────────────────────
    A field on a cream page, not a chrome search bar. One rule at the bottom of
    the field and nothing else: the shop's own contact form is drawn this way
@@ -3721,6 +3804,15 @@ body {
   line-height: 1.55;
   color: rgba(10, 10, 10, 0.62);
 }
+/* Underlined, not colour-only: the surrounding line is already grey and a
+   link distinguished by hue alone fails for anyone who cannot see the
+   difference. These two are the terms a customer must be able to find. */
+.bag-legal-link {
+  color: var(--bb-black);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 
 .bag-empty { max-width: 46ch; }
 .bag-empty-cta { display: inline-flex; margin-top: 22px; }

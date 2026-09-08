@@ -16,6 +16,8 @@ const ROUTES = [
      "we cannot confirm this" page — which is exactly the one a client demo
      shows, so it is audited like any other route. */
   '/checkout/success?ref=BB-TEST',
+  '/delivery',
+  '/returns',
 ];
 
 for (const route of ROUTES) {

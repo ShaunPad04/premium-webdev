@@ -185,9 +185,22 @@ export function Bag() {
           {error ? <p className="cf-fail">{error}</p> : null}
         </div>
 
+        {/* Delivery and returns have to be available to the customer BEFORE
+            they are bound by the order, not discovered afterwards — so they
+            are linked from the last screen before payment, not only from the
+            footer. next/link because both are internal routes. */}
         <p className="bag-legal">
           Prices include VAT where it applies. You will be taken to our payment
-          provider to pay; your card details never reach this site.
+          provider to pay; your card details never reach this site. Before you
+          buy, please read our{" "}
+          <Link href="/delivery" className="bag-legal-link">
+            delivery
+          </Link>{" "}
+          and{" "}
+          <Link href="/returns" className="bag-legal-link">
+            returns
+          </Link>{" "}
+          terms &mdash; including your right to change your mind within 14 days.
         </p>
       </div>
     </div>
