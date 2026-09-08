@@ -61,7 +61,7 @@ costs a review cycle and risks undoing a deliberate fix.
 | 11 | **The contact form must never report success without a send.** | `/api/contact` answers 503 `not_configured` until `CONTACT_TO`, `CONTACT_FROM` and `RESEND_API_KEY` all exist, and the form shows a plainly worded failure plus the phone number. Do not "fix" this by faking a thank-you, by removing the form, or by pointing it at a guessed address. Setting those three variables is a launch BLOCKER; see `.env.example`. |
 | 12 | **Money is integers in pence, everywhere.** | `0.1 + 0.2` is not `0.3` in binary floating point, and a basket totalling £74.99999999 is a rounding bug waiting to be charged to somebody. Prices are `priceP` integers from the catalogue to the provider; the single division is `formatPrice` for display, and one more at the very edge where SumUp's API wants a decimal. Never store, add or compare money as pounds. |
 | 13 | **The server prices the bag, never the browser.** | `/api/checkout` takes slugs, sizes and quantities and ignores anything else the client sends. A total posted from a browser is a total somebody sets to 1p. Verified: a request carrying a forged `priceP` is accepted and the field is simply not read. |
-| 14 | **The shop must never confirm an order it did not take.** | `/api/checkout` answers 503 `not_configured` until `SUMUP_API_KEY`, `SUMUP_MERCHANT_CODE` and `NEXT_PUBLIC_SITE_URL` all exist, and the bag says plainly that nothing has been charged. `/checkout/success` deliberately does NOT say "payment successful" — landing there means a browser followed a URL, not that money moved. Only a webhook from SumUp is proof, and that webhook does not exist yet. |
+| 14 | **The shop must never confirm an order it did not take.** | `/api/checkout` answers 503 `not_configured` until `SUMUP_API_KEY`, `SUMUP_MERCHANT_CODE` and `NEXT_PUBLIC_SITE_URL` all exist, and the bag says plainly that nothing has been charged. Landing on `/checkout/success` means a browser followed a URL, not that money moved, so **the page asks SumUp rather than reading the URL**: `GET /v0.1/checkouts?checkout_reference=…`, authenticated, server-side (`lib/sumup.ts`). PAID, FAILED/EXPIRED and "we could not find out" are three different pages, and the bag is emptied on PAID alone. **Correction, 2026-09-08:** this row previously said a webhook was the proof. SumUp publishes no payment webhook — see the SumUp section below — so the query is the mechanism, not a placeholder for one. |
 | 15 | **Every price in `lib/catalogue.ts` is invented.** | Nobody has supplied a price list, a size run or a stock count. Under the Consumer Protection from Unfair Trading Regulations a displayed price is what a customer is entitled to pay, so these are more dangerous than the invented testimonials. `demo: true` on every product drives a visible notice; the site is noindex; and no payment provider is configured. **Replace every price with the client's own before any of those three change.** |
 
 ## Search
@@ -104,13 +104,49 @@ Not a to-do list — every one of these is a thing a developer cannot invent:
 - **Stock levels.** Nothing decrements. Two people can buy the same one-off piece.
 - **An order record.** Nothing is written down, so nothing can be picked, packed,
   refunded or audited.
-- **The SumUp webhook.** A customer returning to `/checkout/success` is not proof
-  they paid.
 - **Delivery, returns, terms and a privacy notice.** Legally required for
   distance selling in the UK, including the 14-day cancellation right under the
   Consumer Contracts Regulations.
 
-### Anchors
+## SumUp — what the API can and cannot do
+
+Checked 2026-09-08 against both official specs, `sumup/sumup-openapi`
+(`openapi.yaml`) and `sumup/sumup-go` (`openapi.json`). Not from memory, and
+not from the marketing pages.
+
+**There is no catalogue, product, item, inventory or stock endpoint.** 28
+paths in total: checkouts, customers, transactions, refunds, payouts,
+receipts, readers, merchants, members, roles. `catalog_access` and
+`catalog_edit` appear only as *permission strings* on the custom-roles
+endpoint — they gate what staff can do inside SumUp's own apps, and there is
+nothing to call. `products` exists only as a read-only array hanging off a
+completed transaction ("List of products from the merchant's catalogue for
+which the transaction serves as a payment"), which is a receipt line, not a
+stock level.
+
+**Consequence: the shop's till cannot be the website's source of truth for
+stock.** That was the option worth having and it is not available. Stock needs
+its own store, and a sale in the shop has to reach it some other way.
+
+**There is no payment webhook.** The five published webhooks are
+`readers.created`, `readers.deleted`, `members.created`, `members.updated`,
+`members.deleted`. A checkout's `return_url` is documented as an optional
+backend callback, but no signature scheme is published for it, so an unsigned
+POST claiming a payment succeeded is not evidence. Confirmation is therefore a
+**pull**, not a push: `lib/sumup.ts`.
+
+**Three request fields that were wrong until the spec was read**, all in
+`/api/checkout`:
+
+- `hosted_checkout: { enabled: true }` — was **missing**. `hosted_checkout_url`
+  is only "returned when Hosted Checkout is enabled", so without it there is no
+  payment page in the response and every checkout would have failed at the last
+  step the moment real keys were set.
+- `redirect_url` — where the *payer* is sent. This is the success page.
+- `return_url` — a *server* callback, not a landing page. The success page used
+  to be put here. It is now deliberately unset.
+
+## Anchors
 
 Because the header, corner menu and footer appear on all of them, **every
 same-page anchor in `lib/nav.ts` is written `/#section`, never `#section`** — a

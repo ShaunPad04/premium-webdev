@@ -12,6 +12,10 @@ const ROUTES = [
   '/shop',
   '/shop/charcoal-overcoat',
   '/bag',
+  /* Dynamic, and the state reachable without SumUp keys is the honest
+     "we cannot confirm this" page — which is exactly the one a client demo
+     shows, so it is audited like any other route. */
+  '/checkout/success?ref=BB-TEST',
 ];
 
 for (const route of ROUTES) {

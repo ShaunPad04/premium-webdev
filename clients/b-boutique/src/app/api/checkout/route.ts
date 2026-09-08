@@ -24,14 +24,41 @@ import { DELIVERY_P, productBySlug } from "@/lib/catalogue";
  * /checkout/success. Card details never touch this site, which keeps its PCI
  * scope to the smallest it can be (SAQ A).
  *
+ * Three fields below are not decoration, and each was wrong before the
+ * official spec was read (sumup/sumup-openapi, and the same schemas in
+ * sumup/sumup-go):
+ *
+ *   hosted_checkout: { enabled: true }
+ *     `hosted_checkout_url` is described as "Returned when Hosted Checkout is
+ *     enabled for the checkout". Without this the response has no URL, there
+ *     is nowhere to send the customer, and this route fails every request at
+ *     the last step. It was missing.
+ *
+ *   redirect_url — where the PAYER is sent.
+ *     "URL where the payer should be sent after a redirect-based payment or
+ *     SCA flow completes."
+ *
+ *   return_url — a SERVER callback, not a landing page.
+ *     "Optional backend callback URL used by SumUp to notify your platform
+ *     about processing updates for the checkout." This route used to put the
+ *     success page here, which is the wrong field for a human being.
+ *
+ * It is deliberately NOT set. SumUp's spec publishes no signature scheme for
+ * that callback, and an unauthenticated POST that says "this order is paid"
+ * is not something to write stock or orders from. The success page instead
+ * ASKS SumUp — GET /v0.1/checkouts?checkout_reference=… — which is
+ * authenticated, authoritative, and cannot be forged by a customer typing a
+ * URL. See lib/sumup.ts.
+ *
  * WHAT IS STILL MISSING BEFORE THIS CAN TAKE REAL MONEY, and none of it is
  * something a developer can invent:
  *   - Real prices. Everything in lib/catalogue.ts is made up.
  *   - Stock. Nothing decrements; two people can buy the same one-off piece.
+ *     SumUp's API exposes no catalogue, product, item, inventory or stock
+ *     endpoint — checked against both official specs — so the shop's own till
+ *     cannot be the source of truth for what is left. That needs a store.
  *   - An order record. Nothing is written down, so nothing can be picked,
  *     packed, refunded or audited. That needs somewhere to store it.
- *   - The webhook that confirms payment. A customer returning to the success
- *     page is not proof they paid; only SumUp telling the server is.
  *   - Delivery, returns, terms and a privacy notice — legally required for
  *     distance selling in the UK, including the 14-day cancellation right.
  */
@@ -130,11 +157,16 @@ export async function POST(request: NextRequest) {
         amount: totalP / 100,
         currency: "GBP",
         merchant_code: merchantCode,
+        purpose: "CHECKOUT",
+        /* Without this there is no hosted payment page in the response. */
+        hosted_checkout: { enabled: true },
         description: priced
           .map((l) => `${l.qty} x ${l.name}${l.size === "One size" ? "" : ` (${l.size})`}`)
           .join(", ")
           .slice(0, 255),
-        return_url: `${siteUrl}/checkout/success?ref=${reference}`,
+        /* Where the customer lands. `return_url` is SumUp's server callback
+           and is deliberately not set — see the note at the top. */
+        redirect_url: `${siteUrl}/checkout/success?ref=${reference}`,
       }),
       signal: AbortSignal.timeout(12_000),
     });
