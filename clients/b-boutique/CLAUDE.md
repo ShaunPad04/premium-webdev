@@ -97,6 +97,55 @@ is a label on an empty shelf. Each one is now a page listing that category's
 actual stock, `CategoryGrid`'s cards link there, and the header's Clothing menu
 points at them rather than at anchors.
 
+## Performance — and the trap in measuring it
+
+**Measured 2026-09-08. Desktop 100, mobile 96, CLS 0, TBT 10ms, accessibility
+100 on both.** The site is fast. Read the rest of this section before trying
+to make it faster.
+
+**PageSpeed Insights returned 83 and then 96 for mobile on IDENTICAL code,
+twenty minutes apart** — LCP 4.1s then 2.6s, Speed Index 4.8s then 3.0s.
+Verified against the deployment list: no deploy happened in between, both runs
+hit commit `119c66c`. The likeliest cause is a cold Vercel edge cache on the
+first run. **A single PSI run on this site is not evidence**, and the noise
+floor is wide enough (±13 points, ±1.5s LCP) to swallow any safe optimisation
+whole. Take three runs, compare medians, or do not act.
+
+The same applies locally, harder: an audit run straight after `pnpm build` and
+`pnpm test:a11y` reported 76. Three runs on a settled machine gave a median of
+90. Let the machine go quiet first.
+
+**Two optimisations were tried against the 83 and both were reverted:**
+
+- `content-visibility: auto` on the five below-fold sections. Genuinely cut
+  main-thread work 2.67s → 1.78s and TBT 118ms → 44ms, but **did not move LCP
+  at all**, cost ~0.18s of Speed Index, and introduced a *serious* axe
+  colour-contrast violation on `.ft-meta > p` — the footer's scroll-scrubbed
+  reveal cannot progress inside a skipped subtree, so the text is sampled
+  mid-animation. Same class of bug as the earlier `/bag` footer failure.
+  Do not reapply it to `.ft` without solving that.
+- **Scroll timelines: audited, nothing to fix.** All 21 `animation-timeline`
+  rules animate only `transform` and/or `opacity` — both compositor-only,
+  neither forces layout or paint. 61 elements out of 1,119 DOM nodes carry a
+  timeline, and exactly one is above the fold (`.hero-media`). The motion is
+  not a performance problem and narrowing it would buy nothing.
+
+**The LCP element is the header wordmark** (`header > div > a.display`), not
+the hero photograph — confirmed from the trace, and the breakdown is 15ms TTFB
+plus ~2.2s element render delay. This project has been caught by this before:
+when the philosophy line was on the hero, that paragraph was LCP. Read the LCP
+element out of the trace every time; do not assume it is the picture.
+
+**Do not "fix" the hero image on Lighthouse's advice.** It reports ~93 KB
+wasted because it compares against CSS pixels and under-credits device pixel
+ratio. The mobile hero is 836x1672 into a 463x823 slot — slightly *under* what
+a DPR-2 phone wants, not over.
+
+**The one real outstanding performance action** is vendoring the 23 CDN
+photographs with `pnpm images`. That moves them same-origin and through
+`next/image` (AVIF, per-breakpoint srcset). Until it is done, every number
+above describes a site that is not the finished one.
+
 ## `pnpm launch-check`
 
 The list below, as a command. It reads the source and exits non-zero while
