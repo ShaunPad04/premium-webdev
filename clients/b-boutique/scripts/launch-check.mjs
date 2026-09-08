@@ -118,11 +118,18 @@ if (/email:\s*""/.test(read('src/lib/shop.ts'))) {
 }
 
 /* ── 5. Photography ─────────────────────────────────────────────────────── */
-const remote = (read('src/lib/images.ts').match(/_min\.webp/g) ?? []).length;
+/* Counted against the total, not on its own. "23 photographs are not
+   vendored" reads as though none are, and 16 of the 39 slots have been local
+   since the first shoot — a number that overstates the problem is as useless
+   as one that understates it. */
+const images = read('src/lib/images.ts');
+const shot = images.slice(images.indexOf('const shot'), images.indexOf('export const slots'));
+const total = (shot.match(/^\s{2}"?[a-z0-9-]+"?:/gm) ?? []).length;
+const remote = (images.match(/_min\.webp/g) ?? []).length;
 if (remote > 0) {
   block(
-    `${remote} photographs are not vendored`,
-    'src/lib/images.ts — they load from a CDN that may not outlive the project. Run `pnpm images` on a machine with normal internet, then LOOK at all of them.',
+    `${remote} of ${total} photographs still load from the CDN`,
+    'src/lib/images.ts — the rest are already vendored in public/img. Run `pnpm images` on a machine with normal internet to pull these down, then LOOK at all of them: nobody has seen this batch.',
   );
 }
 
