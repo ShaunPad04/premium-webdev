@@ -10,6 +10,10 @@ import { useState } from "react";
  */
 export function StockSignIn() {
   const [value, setValue] = useState("");
+  /* Ticked by default. The overwhelmingly common case is her own phone, and
+     the alternative — a passcode prompt between a waiting customer and
+     marking a coat sold — is the thing that stops the page being used. */
+  const [remember, setRemember] = useState(true);
   const [state, setState] = useState<"idle" | "sending" | "wrong" | "blocked" | "failed">("idle");
 
   async function submit(e: React.FormEvent) {
@@ -20,7 +24,7 @@ export function StockSignIn() {
       const res = await fetch("/api/stock", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "sign-in", passphrase: value }),
+        body: JSON.stringify({ action: "sign-in", passphrase: value, remember }),
       });
       if (res.ok) {
         window.location.reload();
@@ -55,6 +59,18 @@ export function StockSignIn() {
           spellCheck={false}
           required
         />
+
+        <label className="st-gate-remember">
+          <input
+            type="checkbox"
+            checked={remember}
+            onChange={(e) => setRemember(e.target.checked)}
+          />
+          <span>
+            Keep me signed in on this phone
+            <em>Leave this off on a shared or borrowed device.</em>
+          </span>
+        </label>
 
         <button type="submit" className="st-gate-go" disabled={state === "sending"}>
           {state === "sending" ? "Checking…" : "Open the list"}

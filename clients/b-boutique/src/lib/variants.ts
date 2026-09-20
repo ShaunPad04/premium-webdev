@@ -31,6 +31,10 @@ import { products, type Product } from "./catalogue";
  *  Rendered as nothing at all, never as a guess. */
 export const UNKNOWN_COLOUR = "";
 
+/** A piece with no confirmed colour still has variants — one per size, with
+ *  the colour left blank. This is the list used in that case. */
+const NO_COLOURS: readonly string[] = [UNKNOWN_COLOUR];
+
 export type Variant = {
   /** Stable, and the primary key in the database. See `variantId`. */
   id: string;
@@ -60,19 +64,28 @@ export function variantId(slug: string, size: string, colour: string): string {
   return [part(slug), part(size), part(colour) || "nocolour"].join("·");
 }
 
-/** Every variant the catalogue currently implies.
+/** Every variant the catalogue currently implies: sizes MULTIPLIED BY colours.
  *
- *  One colour per piece for now, because that is all the data model holds.
- *  When the client confirms that a piece comes in two colours, it gains two
- *  entries here and the database gains two rows; nothing else changes. */
+ *  The first version of this took one colour per piece, which cannot express
+ *  the ordinary case of a boutique buying the same coat in camel and in
+ *  black. Those are two different things to own, count and sell — a customer
+ *  wanting the black 12 is not served by the camel 12 being in stock — so
+ *  they are two variants, and a piece in three sizes and two colours is six
+ *  rows rather than three.
+ *
+ *  A piece with no confirmed colour still gets one variant per size, with the
+ *  colour blank. Nothing is invented and nothing disappears while the client
+ *  has not answered. */
 export function variantsFor(product: Product): Variant[] {
-  const colour = colourFor(product.slug);
-  return product.sizes.map((size) => ({
-    id: variantId(product.slug, size, colour),
-    slug: product.slug,
-    size,
-    colour,
-  }));
+  const colours = coloursFor(product.slug);
+  return product.sizes.flatMap((size) =>
+    colours.map((colour) => ({
+      id: variantId(product.slug, size, colour),
+      slug: product.slug,
+      size,
+      colour,
+    })),
+  );
 }
 
 export function allVariants(): Variant[] {
@@ -92,15 +105,29 @@ export function allVariants(): Variant[] {
  *  card is a generated stand-in and says nothing about the garment on the
  *  rail — that mistake has already been made once on this project, where a
  *  "satin skirt" turned out to be a matte brown pencil skirt. */
-const colours: Record<string, string> = {};
+const colours: Record<string, readonly string[]> = {};
 
-export function colourFor(slug: string): string {
-  return colours[slug] ?? UNKNOWN_COLOUR;
+/** The colours a piece comes in. Empty answer means "not confirmed", which
+ *  renders as nothing rather than as a guess. */
+export function coloursFor(slug: string): readonly string[] {
+  const c = colours[slug];
+  return c && c.length > 0 ? c : NO_COLOURS;
+}
+
+/** True when this piece is sold in more than one colour, and therefore needs
+ *  the customer to choose one as well as a size. */
+export function hasColourChoice(slug: string): boolean {
+  return coloursFor(slug).length > 1;
+}
+
+/** True when the client has confirmed any colour at all for this piece. */
+export function colourIsKnown(slug: string): boolean {
+  return coloursFor(slug)[0] !== UNKNOWN_COLOUR;
 }
 
 /** How many pieces still have no confirmed colour. Read by launch-check. */
 export function piecesWithoutColour(): string[] {
-  return products.filter((p) => !colours[p.slug]).map((p) => p.slug);
+  return products.filter((p) => !colourIsKnown(p.slug)).map((p) => p.slug);
 }
 
 /* ── Reading what the client writes down ────────────────────────────────── */

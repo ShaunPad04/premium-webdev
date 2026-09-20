@@ -22,6 +22,7 @@ type Body = {
   qty?: unknown;
   value?: unknown;
   passphrase?: unknown;
+  remember?: unknown;
   note?: unknown;
 };
 
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
     if (tooManyAttempts(ip)) {
       return json({ ok: false, code: "too_many_attempts" }, 429);
     }
-    const ok = await signIn(str(body.passphrase));
+    const ok = await signIn(str(body.passphrase), body.remember === true);
     /* No detail about why. "Wrong passphrase" and "no passphrase set" are the
        same answer to someone guessing. */
     return json({ ok }, ok ? 200 : 401);

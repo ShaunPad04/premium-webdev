@@ -174,7 +174,14 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
                           {v.colour ? (
                             <span className="st-colour">{v.colour}</span>
                           ) : (
-                            <span className="st-nocolour" title="No colour confirmed yet">
+                            /* Not a placeholder to fill in later: it is the
+                               honest state until the shop says what colour
+                               the piece is, and it is visible so it gets
+                               chased rather than forgotten. */
+                            <span
+                              className="st-nocolour"
+                              title="Nobody has confirmed what colour this piece is"
+                            >
                               colour not set
                             </span>
                           )}
