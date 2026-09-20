@@ -189,8 +189,21 @@ Specific commitments already implemented and not to be regressed:
   reveals resolve to their finished state, smooth scrolling reverts to auto,
   and animation and transition durations collapse.
 - **Interaction works without JavaScript where it can.** The rails use native
-  CSS scroll-snap, and the FAQ is a native `<details name="faq">` group, so
-  both stay keyboard and screen-reader navigable with no script.
+  CSS scroll-snap, so they stay keyboard and screen-reader navigable with no
+  script.
+
+  *The FAQ was a second example of this and is no longer. It was a native
+  `<details name="faq">` group; on 2026-09-20 the client supplied a component
+  to use and it became a client-side accordion with per-row state. With
+  JavaScript off, only the first row — which is open on arrival — can be read.
+  Two things were kept rather than inherited from the supplied component: the
+  answers are always rendered in the HTML instead of mounted on open, because
+  the address and the opening hours are the most valuable crawlable facts on
+  the page; and a closed panel carries `inert`, so it stays in the document
+  without being announced. The deviation log is in
+  `components/ui/faq-section.tsx`. If the no-script behaviour is wanted back,
+  the same visual design sits on `<details>` without changing the component's
+  API.*
 - **Press feedback exists, because most of these readers are on a phone.**
   Pressable elements scale to 0.97 on `:active`. On touch there is no hover to
   fall back on, so press is the only feedback channel there is.

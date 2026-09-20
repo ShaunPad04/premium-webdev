@@ -1827,93 +1827,35 @@ body {
   font-style: italic;
 }
 
-/* ── The spread ──
-   One column on a phone, two from 768, three from 1200. Three is the point:
-   eight short entries across three columns is a page of information, and the
-   same eight stacked in one column is a list of questions. The breakpoint is
-   1200 rather than 1024 because at 1024 the third column falls to ~290px,
-   which puts the longest questions onto four lines. */
-.faq-spread {
-  border-top: 1px solid var(--bb-light-border);
-  padding-top: clamp(30px, 3.6vw, 52px);
-  column-gap: clamp(30px, 4.2vw, 78px);
-  /* Balance keeps the last column from being a stub. Without it an 8-entry
-     spread fills column one and two and leaves two entries in column three,
-     which reads as an accident rather than a layout. */
-  column-fill: balance;
-}
+/* ── Rows ──
+   Hairlines, not boxes. The supplied component wrapped every row in a
+   rounded, bordered, gradient-filled card; that is the thing the client
+   called cheap twice, and this system is square with no shadow vocabulary.
+   The rows themselves are styled in components/ui/faq-section.tsx with the
+   project's own colour utilities — only the section shell above and the two
+   rules below need to be CSS, because they reach for tokens Tailwind has no
+   utility for. */
 
-@media (min-width: 768px) {
-  .faq-spread {
-    columns: 2;
-    /* The one drawn element in the section, and it is a typographic rule
-       between columns rather than a border around anything. This is what
-       stops the spread reading as two unrelated stacks of text. */
-    column-rule: 1px solid var(--bb-light-border);
-  }
-}
-
-@media (min-width: 1200px) { .faq-spread { columns: 3; } }
-
-.faq-entry {
-  break-inside: avoid;
-  /* Chromium still wants the legacy property for multicol in some versions,
-     and an entry split across a column boundary separates a question from
-     its answer — the one failure this layout cannot tolerate. */
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
-  margin-bottom: clamp(30px, 3.4vw, 50px);
-}
-
-.faq-entry:last-child { margin-bottom: 0; }
-
-.faq-eq {
+.faq-contact-title {
   font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
   font-weight: 400;
-  font-size: clamp(20px, 1.5vw, 25px);
-  line-height: 1.16;
-  letter-spacing: -0.018em;
-  color: var(--bb-black);
-  margin-bottom: 11px;
-  text-wrap: balance;
-}
-
-.faq-ea {
-  font-size: 14px;
-  line-height: 1.75;
-  color: var(--bb-grey-dark);
-  /* --bb-grey-dark is the light-section grey: 5.44:1 on --bb-white. It is
-     NOT interchangeable with --bb-grey-mid, which fails on white. */
-  text-wrap: pretty;
+  font-size: clamp(21px, 1.7vw, 28px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--bb-black-soft);
 }
 
 /* ── Motion ──
-   One quiet rise for the section as it arrives, and nothing at all after
-   that. There is no hover state and no press state here, because there is
-   nothing to press: this is the one section on the site that is purely
-   something to read, and the client has twice asked for its motion to calm
-   down.
+   One quiet rise for the section header as it arrives. The rows animate
+   themselves, on open, in the component — nothing on this section moves
+   because the page scrolled past it.
 
-   The spread animates AS ONE BLOCK, not per entry. Per entry was tried and
-   measured: `animation-timeline: view()` on a multicol child resolves
-   against the fragment rather than against the flow, so three of the eight
-   entries sat at opacity 0 while their neighbours were fully visible, and
-   the balanced columns kept their reserved space. The result was a spread
-   with holes in it. One subject, one timeline, no fragments — and the
-   section cannot half-appear.
-
-   @supports, because animation-timeline is the progressive layer — without
-   it the section is simply present, which is the correct fallback for
-   content that was never hidden in the first place. */
+   @supports, because animation-timeline is the progressive layer: without it
+   the header is simply present, which is the right fallback for content that
+   was never hidden. */
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     .faq-intro > * {
-      animation: faq-rise 800ms var(--bb-ease) both;
-      animation-timeline: view();
-      animation-range: entry var(--bb-enter) entry var(--bb-settle);
-    }
-
-    .faq-spread {
       animation: faq-rise 800ms var(--bb-ease) both;
       animation-timeline: view();
       animation-range: entry var(--bb-enter) entry var(--bb-settle);
@@ -1922,7 +1864,6 @@ body {
 }
 
 @keyframes faq-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-
 
 /* ── Footer ───────────────────────────────────────────────────────────────
    Visit and this form one continuous dark chapter; a hairline is the only
