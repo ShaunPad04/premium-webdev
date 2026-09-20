@@ -1945,8 +1945,24 @@ body {
 }
 .faq-row[open]::before { transform: scaleY(1); }
 @media (max-width: 767px) { .faq-row::before { left: -10px; } }
-/* The ring is drawn just inside the row, so it is not clipped by the rules. */
-.faq-summary:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
+/* The ring hugs the question instead of boxing the row.
+ *
+ * Drawn on the summary with a negative offset it became a full-width black
+ * rectangle around a row of text — the shape of a browser default, and the
+ * thing that made this section look cheap. Measured first, because it was
+ * worth knowing which input caused it: a mouse click does NOT show it
+ * (:focus-visible false, outline none); only the keyboard does. So this is
+ * the keyboard indicator, and it has to stay clearly visible — it just has no
+ * reason to be a rectangle the width of the column.
+ *
+ * Still currentColor, per the locked decision: the ring runs over cream here
+ * and over black elsewhere on the site, and borrowing the text's own colour
+ * is what keeps it legible on both. */
+.faq-summary:focus-visible { outline: none; }
+.faq-summary:focus-visible .faq-q {
+  outline: 2px solid currentColor;
+  outline-offset: 5px;
+}
 
 /* Bodoni, and large.
    This used to be Inter at 15px, on the argument that the heading owns the
@@ -2062,7 +2078,7 @@ body {
  * the browser's own mechanism, not a max-height guess. */
 .faq-answer {
   opacity: 0;
-  transform: translateY(-8px);
+  transform: translateY(-10px);
   transition:
     opacity 180ms var(--bb-ease),
     transform 180ms var(--bb-ease);
@@ -2070,9 +2086,12 @@ body {
 .faq-row[open] .faq-answer {
   opacity: 1;
   transform: translateY(0);
+  /* Unhurried. You have decided to read this, so it can take its time
+     arriving; the closing state above stays short and undelayed, because a
+     dismissal that lingers reads as lag. */
   transition:
-    opacity 420ms var(--bb-ease) 120ms,
-    transform 520ms var(--bb-ease) 120ms;
+    opacity 520ms var(--bb-ease) 60ms,
+    transform 620ms var(--bb-ease) 60ms;
 }
 
 /* The blurred word cascade.
@@ -2134,13 +2153,55 @@ body {
    padding and 15px type on a 1440 screen. */
 @media (min-width: 1024px) {
   .faq-answer {
-    padding: 0 0 24px;
+    padding: 0;
     max-width: 44ch;
     /* This is a reading column now, not a disclosure tucked under a row. */
     font-size: 17px;
     line-height: 1.78;
     color: var(--bb-black-soft);
   }
+
+  /* NOTHING MOVES WHEN A ROW OPENS.
+   *
+   * The box stays at zero height and lets its answer paint outside it. The
+   * second column is empty on every other row, so an answer overflowing into
+   * it covers nothing — and because the box never takes up space, the row
+   * never grows and the seven questions below it never shift.
+   *
+   * That shift was the whole reason the section felt restless: opening a
+   * question pushed the rest of the index down its own height, so the list
+   * you were reading rearranged itself underneath the thing you just
+   * pressed. The reveal is now carried entirely by the answer's own fade and
+   * rise, with no layout in it at all.
+   *
+   * Closed rows are still not painted — <details> keeps their content at
+   * content-visibility: hidden — so only one answer is ever in the column. */
+  .faq-row::details-content,
+  /* The [open] variant has to be named too. The @supports block above sets
+     `.faq-row[open]::details-content { height: auto }`, and an attribute
+     selector outranks a bare class, so overriding only the unqualified rule
+     left every open row still growing to its answer's height — measured: the
+     three rows below an opened question moved down by 42px. */
+  .faq-row[open]::details-content {
+    height: 0;
+    overflow: visible;
+    opacity: 1;
+    transition: none;
+  }
+  /* Room for the last answer to reach into, since it no longer has a row of
+     its own to sit in. */
+  .faq-list { padding-bottom: 92px; }
+
+  /* The rules belong to the INDEX, not to the section.
+     Run across the whole row they carried on into the reading column and
+     struck a line through the answer — eight horizontal rules crossing a
+     paragraph of body copy, which is the detail that made the section look
+     unfinished. Moving them onto the summary stops them at the end of the
+     column they are measuring. */
+  .faq-row { border-top: none; }
+  .faq-row:last-of-type { border-bottom: none; }
+  .faq-summary { border-top: 1px solid var(--bb-light-border); }
+  .faq-row:last-of-type .faq-summary { border-bottom: 1px solid var(--bb-light-border); }
 }
 
 /* Reduced motion gets the answer, not the choreography. The global block
