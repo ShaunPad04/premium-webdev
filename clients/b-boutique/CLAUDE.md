@@ -131,11 +131,36 @@ names the ICO as the regulator to complain to. This is not a developer's
 decision and not a blocker the code can carry — it is a thing to tell her
 plainly before launch.
 
-**The merchant code `MCA7CUNT-3769` does not match SumUp's format.** Every
-example in their specification is eight alphanumeric characters with no
-hyphen (`M2DDT39A`, `MH4H92C7`). This may be a different identifier entirely.
-Verify with `pnpm sumup:code` against her API key before it goes into Vercel —
-a wrong merchant code fails every checkout.
+**Merchant code: use `MCA7CUNT`.** Decided 2026-09-20.
+
+The client gave `MCA7CUNT-3769`, read off a SumUp receipt, and was adamant it
+was right. She was — the reading is that the receipt prints two fields on one
+line and the dash is the separator. `MCA7CUNT` is eight characters beginning
+with M, which is exactly the shape of all seven merchant codes in SumUp's
+specification (`M1234567`, `M2DDT39A`, `MC0X0ABC`, `MEDKHDTI`, `MH4H92C7`,
+`MK01A8C2`, `MK10CL2A`). The trailing `3769` is most likely a receipt,
+terminal or transaction number.
+
+**This is an inference, not a confirmation, and it is worth being honest about
+which.** SumUp declares NO pattern and NO length constraint on `merchant_code`
+anywhere in either specification — those seven examples are all there is to go
+on. A twelve-character `MCA7CUNT3769` would contradict every one of them, so
+it is ruled out, but "eight characters starting with M" is an observed
+pattern rather than a published rule.
+
+Two ways to settle it properly, both better than the inference:
+
+- `SUMUP_API_KEY=… pnpm sumup:code` reads the code from her own account.
+- A photograph of that line of the receipt.
+
+**It fails loudly if wrong**, which is why proceeding on the inference is
+safe: a bad merchant code is rejected by SumUp when the checkout is created,
+on the first test card, long before a real customer sees it. It cannot fail
+quietly and it cannot take somebody's money into the wrong account.
+
+Setting it alone achieves nothing: `/api/checkout` answers 503 until
+`SUMUP_API_KEY`, `SUMUP_MERCHANT_CODE` and `NEXT_PUBLIC_SITE_URL` are ALL
+present, and the last of those is waiting on the domain.
 
 ## Search
 
