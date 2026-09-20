@@ -39,12 +39,29 @@ export const MENU: MenuItem[] = [
 
 /** Social accounts.
  *
- *  Deliberately empty. No handles are held anywhere in this project, and a
- *  guessed URL on a real trading business's site sends customers to somebody
- *  else's account. The menu renders this row only when it has entries — add
- *  `{ name: "Instagram", href: "https://instagram.com/…" }` and it appears.
+ *  ⚠ STILL EMPTY, AND THAT IS NOT AN OVERSIGHT.
+ *
+ *  The client has asked for Facebook and Instagram links in the footer and the
+ *  whole row is built and waiting for them — icons, layout, the lot. What is
+ *  missing is the one thing a developer cannot supply: the actual accounts.
+ *
+ *  A guessed handle on a real trading business's site is not a placeholder. It
+ *  is a link that sends her customers to a stranger's page, and on Instagram a
+ *  plausible guess like `bboutique` or `bboutiquecleethorpes` almost certainly
+ *  belongs to somebody. So nothing is guessed and nothing is linked to a
+ *  platform's home page as a stand-in.
+ *
+ *  Add the real profile URLs here and the row appears, icons and all:
+ *
+ *    { name: "Instagram", href: "https://www.instagram.com/…" },
+ *    { name: "Facebook",  href: "https://www.facebook.com/…" },
+ *
+ *  `name` must stay exactly "Instagram" or "Facebook" — the footer matches on
+ *  it to choose the logo, and falls back to the plain name for anything else.
  */
-export const socials: { name: string; href: string }[] = [];
+export type Social = { name: "Instagram" | "Facebook" | (string & {}); href: string };
+
+export const socials: Social[] = [];
 
 /** The address as Google Maps wants it. One definition: the Visit section,
  *  the footer map and the directions link all read this, so the pin can never

@@ -2316,8 +2316,24 @@ body {
 }
 
 /* Two genuine groups. Not four columns padded out with invented routes. */
+/* Two columns on a phone, and one column per group from 640px up.
+   At two columns "Buying online" dropped onto a second row underneath Shop,
+   which put the delivery and returns links — the ones a customer goes
+   looking for before they buy — in the least-read corner of the footer,
+   below the fold of the block. auto-fit rather than a fixed count so the
+   Follow column slots in beside the others the day real handles exist,
+   instead of leaving an empty cell until then. */
 .ft-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; }
-@media (min-width: 640px) { .ft-nav { gap: 40px; } }
+@media (min-width: 640px) {
+  .ft-nav { grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 40px; }
+}
+
+/* The mark sits with its name, not instead of it: the word is the accessible
+   name and the glyph is what makes it findable at a glance. Baseline-ish
+   alignment via a small nudge — a 17px square next to 13px text sits low on
+   the line otherwise. */
+.ft-social { display: inline-flex; align-items: center; gap: 9px; }
+.ft-social svg { flex: none; transform: translateY(-1px); }
 
 .ft-group {
   font-size: 9px;
@@ -2393,9 +2409,29 @@ body {
   .fw-mark.is-in { transform: translateY(0); }
 }
 
+/* Our credit sits at the far end of the meta row, away from the shop's own
+   copyright. `margin-left: auto` on a flex row rather than a float or a
+   grid: it takes the space that is left and collapses to a normal wrap on a
+   phone, where "Made by" underneath the copyright is the right order anyway. */
+.ft-made { color: rgba(255, 255, 255, 0.5); }
+@media (min-width: 640px) { .ft-made { margin-left: auto; } }
+.ft-made-link {
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+  transition: color 200ms var(--bb-ease), text-decoration-color 200ms var(--bb-ease);
+}
+.ft-made-link:hover,
+.ft-made-link:focus-visible {
+  color: var(--bb-white);
+  text-decoration-color: var(--bb-white);
+}
+
 .ft-meta {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
   gap: 8px 24px;
   padding-block: 26px 30px;
   font-size: 9px;
