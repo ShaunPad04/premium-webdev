@@ -689,7 +689,8 @@ body {
   text-underline-offset: 5px;
   text-decoration-thickness: 1px;
 }
-.hw-cta-arrow { display: inline-block; transition: transform 450ms var(--bb-ease); }
+/* 200ms: an arrow nudging four pixels over 450ms reads as hesitation. */
+.hw-cta-arrow { display: inline-block; transition: transform 200ms var(--bb-ease); }
 .hw-cta:hover .hw-cta-arrow,
 .hw-cta:focus-visible .hw-cta-arrow { transform: translateX(4px); }
 
@@ -1184,7 +1185,8 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: rgba(255, 255, 255, 0.78);
-  transition: color 500ms var(--bb-ease);
+  /* 220ms. A colour change is the one thing that should feel instant. */
+  transition: color 220ms var(--bb-ease);
 }
 
 .cats-arrow {
@@ -1508,7 +1510,7 @@ body {
    to answer. Scale, not a colour change, because the colour is already spent
    on hover and has nowhere left to go. */
 .visit-cta:active { transform: scale(0.985); }
-.visit-cta-arrow { display: inline-block; transition: transform 450ms var(--bb-ease); }
+.visit-cta-arrow { display: inline-block; transition: transform 200ms var(--bb-ease); }
 .visit-cta:hover .visit-cta-arrow { transform: translateX(4px); }
 @media (prefers-reduced-motion: reduce) {
   .visit-cta:active { transform: none; }
@@ -2921,7 +2923,8 @@ body {
     transform var(--bb-dur-quick) var(--bb-ease);
 }
 .cf-submit:hover:not(:disabled) { background: transparent; color: var(--bb-black); }
-.cf-submit:active:not(:disabled) { transform: translateY(1px); }
+/* The press is a scale now, defined once near the end of this file, so the
+   site presses one way rather than two. */
 .cf-submit:disabled { opacity: 0.55; cursor: progress; }
 
 /* The arrow travels on hover, exactly as it does on "View all new in" and on
@@ -3068,9 +3071,11 @@ body {
 }
 
 /* The photograph opens on hover inside a frame that does not move — the same
-   gesture the category cards make, so the two read as one system. */
+   gesture the category cards make, so the two read as one system. Same 900 to
+   420ms correction as the product card, for the same reason and to keep the
+   two reading as one system. */
 .cross-media > * {
-  transition: transform 900ms var(--bb-ease);
+  transition: transform 420ms var(--bb-ease);
 }
 .cross-link:hover .cross-media > *,
 .cross-link:focus-visible .cross-media > * { transform: scale(1.03); }
@@ -3331,7 +3336,12 @@ body {
 }
 /* The photograph opens inside a frame that does not move — the same gesture
    the category cards make, so the two read as one system. */
-.prod-media > * { transition: transform 900ms var(--bb-ease); }
+/* 420ms, down from 900ms. A card hover lasts three to five hundred
+   milliseconds; at 900 the photograph never reached scale(1.035) and every
+   visitor saw the first half of a gesture nobody ever finished. The gesture
+   is kept — it is the shop's own vocabulary — at a length a real hover can
+   complete. */
+.prod-media > * { transition: transform 420ms var(--bb-ease); }
 .prod-link:hover .prod-media > *,
 .prod-link:focus-visible .prod-media > * { transform: scale(1.035); }
 
@@ -4024,7 +4034,6 @@ body {
     transform var(--bb-dur-quick) var(--bb-ease);
 }
 .btn-solid:hover { background: transparent; color: var(--bb-black); }
-.btn-solid:active { transform: translateY(1px); }
 .btn-solid span { transition: transform var(--bb-dur-quick) var(--bb-ease); }
 .btn-solid:hover span,
 .btn-solid:focus-visible span { transform: translateX(4px); }
@@ -4316,4 +4325,110 @@ body {
   font-style: normal;
   font-size: 12.5px;
   color: var(--bb-grey-dark);
+}
+
+/* ── Press, and pointers that cannot hover ─────────────────────────────────
+ *
+ * Two related gaps, both of which matter most on the device most of this
+ * shop's customers use.
+ *
+ * ── 1. Hover on a touch screen ──
+ * Counted before writing this: 56 :hover rules in this file, 5 of them behind
+ * a pointer query. A touch device has no hover state to be in, so it fakes
+ * one on tap; the well-known consequence is a card left zoomed with nothing
+ * hovering it after the tap navigates and the reader comes back.
+ *
+ * HONESTLY: that stuck state was NOT reproduced here. Removing this block and
+ * re-running the touch test passed either way, so Chromium's emulated touch
+ * appears to clear :hover across a back-navigation. This is therefore a
+ * defensive gate against a documented behaviour rather than a fix for a
+ * defect observed on this site, and it should be checked on a real phone
+ * before anybody claims otherwise. What IS measured is that it costs nothing:
+ * the photograph still opens on a real pointer (matrix(1.035…) under hover)
+ * and does not transform on a coarse one.
+ *
+ * Only the transform hovers are neutralised here. A colour that lingers for a
+ * moment on a link is not the same defect as a photograph stuck at 103.5%,
+ * and rewriting forty rules to fix seven is how a stylesheet becomes
+ * unreadable. This mirrors the reset idiom the file already uses for
+ * prefers-reduced-motion rather than inventing a second pattern.
+ */
+@media (hover: none), (pointer: coarse) {
+  .prod-link:hover .prod-media > *,
+  .cross-link:hover .cross-media > *,
+  .cat-card:hover .cat-img,
+  .cats-card:hover .cats-img,
+  .newin-item:hover .newin-media img,
+  .hw-fig:hover img {
+    transform: none;
+  }
+  .hw-cta:hover .hw-cta-arrow,
+  .visit-cta:hover .visit-cta-arrow,
+  .cross-link:hover .cross-arrow,
+  .newin-viewall:hover .newin-viewall-arrow {
+    transform: none;
+  }
+}
+
+/*
+ * ── 2. Nothing happened when you pressed it ──
+ * Four :active rules existed in four thousand lines, and two of those were
+ * `translateY(1px)` — the 2004 button push. Tapping a product card, a size
+ * chip, Add to bag or Checkout produced nothing at all until the next page
+ * arrived. On a phone there is no hover to fall back on, so press is the only
+ * feedback channel there is, and an interface that does not acknowledge a
+ * press reads as one that did not hear it.
+ *
+ * scale(0.97) rather than a translate: it is the whole control acknowledging
+ * the finger rather than a button pretending to be a physical switch, and
+ * because scale takes the element's children with it the label goes with it.
+ * 160ms, and transform only.
+ */
+.prod-link,
+.cross-link,
+.cat-card,
+.atb-size,
+.atb-add,
+.cf-submit,
+.bag-remove,
+.bag-checkout,
+.btn-solid,
+.visit-cta {
+  transition: transform 160ms var(--bb-ease);
+}
+
+.prod-link:active,
+.cross-link:active,
+.cat-card:active,
+.atb-size:active:not(:has(input:disabled)),
+.atb-add:active:not(:disabled),
+.cf-submit:active:not(:disabled),
+.bag-remove:active,
+.bag-checkout:active:not(:disabled),
+.btn-solid:active,
+.visit-cta:active {
+  transform: scale(0.97);
+}
+
+/* A control that is sold out or submitting is not refusing to respond — it is
+   correctly doing nothing, and it should not flinch as though it might. */
+.atb-size.is-out:active,
+.atb-add:disabled:active,
+.cf-submit:disabled:active {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prod-link:active,
+  .cross-link:active,
+  .cat-card:active,
+  .atb-size:active,
+  .atb-add:active,
+  .cf-submit:active,
+  .bag-remove:active,
+  .bag-checkout:active,
+  .btn-solid:active,
+  .visit-cta:active {
+    transform: none;
+  }
 }
