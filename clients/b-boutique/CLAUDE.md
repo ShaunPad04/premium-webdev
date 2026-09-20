@@ -389,6 +389,20 @@ that runs for 200ms and dies must not leave a connection behind it. Two
 tables, created on demand with `IF NOT EXISTS` — one table and one log does
 not justify a migration framework.
 
+**Provisioned 2026-09-20**: `b-boutique-db`, Neon free tier, region `lhr1`
+(London — next to the functions and next to the customers), Neon Auth
+deliberately OFF. Auth is a user-accounts product and this site has no app
+users; switching it on would have added an identity store that nothing reads
+and a data-processing surface `/privacy` would then be wrong about.
+
+Sixteen variables were injected on Production and Preview, confirmed present.
+`DATABASE_URL` is Neon's POOLED string and is what `connectionString()` picks
+up first. **No custom variable prefix was set** — one would have renamed
+everything to `STORAGE_URL` and left `/stock` reporting "no database" beside a
+working one. No per-deployment database branches either: the production branch
+on this project *is* `client/b-boutique`, so previews are rare and one
+database means one answer to what is in the shop.
+
 `stock_log` is not an afterthought. When a count is wrong, and it will be
 because a human is tapping a phone in a shop, the only useful question is
 "what happened to this piece?". **Every change goes through `adjust` or
