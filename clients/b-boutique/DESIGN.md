@@ -335,8 +335,16 @@ lifted, change its tone or give it space. A shadow in this system is a bug.
 - **Don't** use bounce or elastic easing. `--ease-spring` is declared,
   unreferenced, and should be treated as retired.
 - **Don't** animate layout properties. Transform and opacity only.
-- **Don't** fake commerce — no cart state, no checkout, no search backend, no
-  invented prices or stock counts.
+- **Don't** confirm commerce the shop cannot honour. Cart state, checkout and
+  search are all REAL now, so the old form of this rule ("no cart state, no
+  checkout, no search backend") is retired — but the rule underneath it is not.
+  Never confirm an order the shop did not take: `/checkout/success` asks SumUp
+  whether the payment happened rather than trusting the URL. Never show a stock
+  count nobody has counted. Never report a contact form as sent when nothing
+  was sent. Every price in `catalogue.ts` is still invented, and the three
+  guards keeping it off a real card — the `demo: true` notice, `noindex`, and
+  an unset `NEXT_PUBLIC_SITE_URL` — are not to be removed as a side effect of
+  other work. See PRODUCT.md, "Commerce the shop cannot honour".
 - **Don't** assert an unverified fact about the shop: no parking claims,
   walking times, delivery terms, returns policy or stockist relationships until
   the client confirms them.
