@@ -3918,3 +3918,248 @@ body {
   .btn-solid, .btn-solid span { transition: none; }
   .btn-solid:hover span { transform: none; }
 }
+
+/* ══ /stock — the shop's own stock list ═══════════════════════════════════
+   A staff tool, not part of the shop. Deliberately plainer than the rest of
+   the site: light ground, big targets, no motion, nothing decorative. It is
+   used one-handed at a counter with a customer waiting, and under shop
+   lighting, which is why it is the light palette rather than the black one.
+
+   Every control clears 44px. That is not a nicety here — a mis-tap marks the
+   wrong garment sold. */
+
+.st {
+  min-height: 100svh;
+  background: var(--bb-white-pure);
+  color: var(--bb-black);
+  padding: 0 0 96px;
+}
+
+.st-top {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--bb-white-pure);
+  border-bottom: 1px solid var(--bb-light-border);
+  padding: 14px 16px 12px;
+}
+.st-top-row { display: flex; align-items: center; gap: 12px; }
+.st-title {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.st-out {
+  background: none;
+  border: 1px solid var(--bb-light-border);
+  color: var(--bb-grey-dark);
+  font: inherit;
+  font-size: 13px;
+  min-height: 44px;
+  padding: 0 14px;
+  cursor: pointer;
+}
+.st-out:hover { border-color: var(--bb-black); color: var(--bb-black); }
+
+.st-find { display: block; margin-top: 10px; }
+.st-find input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 16px; /* 16px or iOS zooms the page on focus */
+  color: var(--bb-black);
+  background: var(--bb-white);
+  border: 1px solid var(--bb-light-border);
+  border-radius: 0;
+  -webkit-appearance: none;
+}
+.st-find input::placeholder { color: var(--bb-grey-dark); }
+
+.st-uncounted {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--bb-grey-dark);
+}
+.st-uncounted b { color: var(--bb-black); font-weight: 600; }
+
+.st-problem {
+  margin: 0;
+  padding: 13px 16px;
+  background: var(--red);
+  color: var(--bb-white);
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+
+.st-list { list-style: none; margin: 0; padding: 0; }
+
+.st-piece { border-bottom: 1px solid var(--bb-light-border); }
+.st-piece-head {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "name total" "cat total";
+  gap: 1px 14px;
+  align-items: center;
+  text-align: left;
+  background: none;
+  border: 0;
+  font: inherit;
+  padding: 15px 16px;
+  min-height: 60px;
+  cursor: pointer;
+  color: inherit;
+}
+.st-piece-head:hover { background: var(--bb-white); }
+.st-piece-name { grid-area: name; font-size: 16px; font-weight: 600; }
+.st-piece-cat {
+  grid-area: cat;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+.st-piece-total {
+  grid-area: total;
+  font-size: 19px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--bb-grey-dark);
+}
+
+.st-vars { list-style: none; margin: 0; padding: 0 0 8px; background: var(--bb-white); }
+.st-var {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 12px;
+  align-items: center;
+  padding: 11px 16px;
+  border-top: 1px solid var(--bb-light-border);
+}
+.st-var-id { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.st-size { font-size: 16px; font-weight: 600; }
+.st-colour { font-size: 14px; color: var(--bb-grey-dark); }
+.st-nocolour {
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+  border: 1px dashed currentColor;
+  padding: 1px 6px;
+}
+.st-qty {
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 1.6ch;
+  text-align: right;
+}
+.st-qty-none { color: var(--bb-grey-dark); }
+
+.st-acts { grid-column: 1 / -1; display: flex; gap: 8px; }
+.st-sold, .st-minor {
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+.st-sold {
+  flex: 1 1 auto;
+  background: var(--bb-black);
+  color: var(--bb-white);
+  border: 1px solid var(--bb-black);
+}
+.st-minor {
+  background: transparent;
+  color: var(--bb-black);
+  border: 1px solid var(--bb-light-border);
+  font-weight: 500;
+}
+.st-sold:disabled, .st-minor:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.st-empty, .st-gate-note { padding: 22px 16px; color: var(--bb-grey-dark); font-size: 14.5px; }
+
+/* ── The passcode screen, and the not-configured screen ─────────────────── */
+.st-gate {
+  min-height: 100svh;
+  background: var(--bb-white-pure);
+  color: var(--bb-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 18px 64px;
+}
+.st-gate-box { width: 100%; max-width: 380px; }
+.st-gate-eyebrow {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+.st-gate-h { margin: 10px 0 0; font-size: 30px; font-weight: 600; letter-spacing: -0.02em; }
+.st-gate-p { margin: 10px 0 0; color: var(--bb-grey-dark); font-size: 14.5px; line-height: 1.55; }
+.st-gate-label {
+  display: block;
+  margin: 24px 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+.st-gate-box input {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--bb-black);
+  background: var(--bb-white);
+  border: 1px solid var(--bb-light-border);
+  border-radius: 0;
+  -webkit-appearance: none;
+}
+.st-gate-go {
+  width: 100%;
+  margin-top: 14px;
+  min-height: 50px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--bb-black);
+  color: var(--bb-white);
+  border: 1px solid var(--bb-black);
+  cursor: pointer;
+}
+.st-gate-go:disabled { opacity: 0.5; cursor: wait; }
+.st-gate-bad { margin: 14px 0 0; color: var(--red); font-size: 14.5px; }
+
+.st-gate-list { list-style: none; margin: 22px 0 0; padding: 0; }
+.st-gate-list li {
+  padding: 13px 0;
+  border-top: 1px solid var(--bb-light-border);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.st-gate-list li b { font-size: 14.5px; font-weight: 600; }
+.st-gate-list li span { font-size: 13.5px; color: var(--bb-grey-dark); line-height: 1.5; }
+.st-gate-list li.is-on b::after { content: " ✓"; color: var(--bb-grey-dark); }
+
+/* The focus ring rule holds here as everywhere: currentColor, so it inherits
+   the contrast the text already has. See locked decision 6. */
+.st button:focus-visible,
+.st input:focus-visible,
+.st-gate button:focus-visible,
+.st-gate input:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}

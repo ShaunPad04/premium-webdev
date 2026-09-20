@@ -139,6 +139,38 @@ if (remote > 0) {
   );
 }
 
+/* ── 5b. Stock, colour and the counts ───────────────────────────────────── */
+/* Added when the shop stopped being a brochure. Three separate failures, and
+   the third is the one that matters most:
+
+   A count nobody has taken, published as "1 left", is a SCARCITY CLAIM about
+   a real business — the same regulations that cover a price, and arguably
+   worse, because it pressures the purchase rather than merely describing it.
+   So the site must not print a number until a person has counted it. */
+const variants = read('src/lib/variants.ts');
+const colourTable = variants.slice(
+  variants.indexOf('const colours'),
+  variants.indexOf('export function colourFor'),
+);
+const coloursSet = (colourTable.match(/"[a-z0-9-]+"\s*:/g) ?? []).length;
+const productCount = (read('src/lib/catalogue.ts').match(/priceP:\s*\d+/g) ?? []).length;
+if (coloursSet < productCount) {
+  block(
+    `${productCount - coloursSet} of ${productCount} pieces have no confirmed colour`,
+    'src/lib/variants.ts — the colours table is keyed by slug and filled from what the client says, in her words. Do NOT read a colour off a photograph: the artwork is a generated stand-in, and this project has already had a "satin skirt" that was a matte brown pencil skirt.',
+  );
+}
+
+if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
+  notes.push(
+    'No DATABASE_URL in this environment, so stock counts could not be checked. On Vercel the Neon integration supplies it; here it means this run says nothing either way about whether anything has been counted.',
+  );
+} else {
+  notes.push(
+    'DATABASE_URL is present. This script does NOT connect to it — whether every variant has a real, counted number is a question for /stock, and a person has to have counted them.',
+  );
+}
+
 /* ── 6. The privacy page's claims, which expire ─────────────────────────── */
 /* /privacy states as fact that this site has no analytics, no tracking and no
    cookies. That was true when it was written and is one npm install away from

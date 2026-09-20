@@ -257,6 +257,89 @@ earlier. It is left as a `required` slot with that wording in the ask, because
 it is the client's term to adopt, but it is the single most useful sentence on
 the page for a shop with no stock system.
 
+## Stock — the website is the source of truth, not the till
+
+Built 2026-09-20, after establishing twice over that SumUp cannot supply this.
+
+**The decision:** the website keeps its own stock and that list is the one
+that counts. The shop's till is at most an *input* to it, never the authority.
+That is not a preference, it is forced: SumUp has no catalogue or inventory
+endpoint in either direction (see the SumUp section below), so there is
+nothing to read stock levels from and nothing to write products to.
+
+### The variant model — `lib/variants.ts`
+
+A product used to carry a list of size LABELS and no count against any of
+them, which renders a dropdown and sells nothing. A **variant** is one row per
+buyable thing: slug + size + colour. The camel coat in a 12 is a different
+object from the camel coat in a 14 and from the black one in a 12.
+
+`variantId` builds the key from those three values rather than assigning one,
+so a reordered catalogue cannot silently re-point a stock count at a different
+garment. The separator is `·` because hyphens already appear inside slugs.
+
+**`colours` is empty on purpose.** Not one colour in this shop is confirmed,
+which is also why `lib/search.ts` has no colour terms. Each answer from the
+client adds a line. **Never read a colour off a photograph** — the artwork is
+a generated stand-in and says nothing about the garment; this project already
+shipped a "satin skirt" that was a matte brown pencil skirt.
+
+### The store — `lib/stock.ts`
+
+Neon Postgres, via Neon's own HTTP driver rather than a TCP client: a function
+that runs for 200ms and dies must not leave a connection behind it. Two
+tables, created on demand with `IF NOT EXISTS` — one table and one log does
+not justify a migration framework.
+
+`stock_log` is not an afterthought. When a count is wrong, and it will be
+because a human is tapping a phone in a shop, the only useful question is
+"what happened to this piece?". **Every change goes through `adjust` or
+`setCount` and every change is logged.** There is deliberately no unlogged
+write path: an unexplainable count is an untrusted one, an untrusted stock
+system gets ignored, and an ignored one oversells.
+
+`qty: null` means **never counted**, and it is not zero. Conflating them is
+how a shop hides its own stock from itself.
+
+### Her page — `/stock`
+
+Phone-first, one-handed, at a counter with a customer waiting: find the piece,
+tap **Sold**, done. Count / Back / Received sit behind a second tap because
+they happen weekly and selling happens all day. Every control clears 44px — a
+mis-tap marks the wrong garment sold.
+
+**The count never moves optimistically.** A number that flicks to the right
+value and then back because the request failed is worse than one that takes
+300ms, because she has already walked away believing it.
+
+No header, no footer, nothing on the site links to it, and it is `noindex`
+regardless of `ALLOW_INDEXING`. The gate is a single passphrase
+(`STOCK_PASSPHRASE`) with an HMAC-signed HttpOnly cookie, `SameSite=lax`,
+`Secure`, `Path=/stock`, 12 hours. Accounts would be security theatre for a
+handful of people who already share a till; the threat is a stranger finding
+the URL. **Authorisation is checked on every request in `/api/stock`, never
+inferred from the page having rendered a button.**
+
+Verified 2026-09-20: unconfigured → 503/401 and nobody let in; wrong passcode
+→ 401 with no detail about why; correct passcode → cookie with all four flags;
+axe clean at 390px; no horizontal overflow.
+
+### The rule that governs what gets displayed
+
+**No stock number reaches a visitor until a person has counted it.** "Only 1
+left" when nobody counted is a scarcity claim about a real business — the same
+regulations as a price, and arguably worse because it pressures the purchase
+rather than describing it. `pnpm launch-check` blocks on unconfirmed colours;
+the counts themselves are a question for `/stock` and for a person.
+
+### Still to build
+
+Checkout does not yet reserve a variant, and there is still no order record.
+The SumUp transaction poll (counter sales picked up automatically) is
+**optional and conditional** — it only works if she rings sales through by
+tapping the product in the SumUp app rather than typing an amount, and her
+page covers it either way.
+
 ## SumUp — what the API can and cannot do
 
 Checked 2026-09-08 against both official specs, `sumup/sumup-openapi`
