@@ -103,6 +103,53 @@ export function formatHour(h: number): string {
   return `${twelve}${suffix}`;
 }
 
+/** The opening times as one sentence, derived from `hours` and never written
+ *  out by hand.
+ *
+ *  It lives here rather than in the FAQ because three different places were
+ *  each stating the hours in their own words, and on 2026-09-20 two of them
+ *  became false in the same instant: the client confirmed she opens seven
+ *  days, `hours` was corrected, and the site's own meta description carried
+ *  on telling Google and every shared link "Open Tuesday to Sunday". The
+ *  structured data said one thing and the description beside it said
+ *  another.
+ *
+ *  A fact about a real shop, hardcoded in three places, is a fact that will
+ *  be wrong in two of them. Anything that states the hours reads this. */
+export function openingSummary(): string {
+  const open = hours.filter((d) => d.hours);
+  const closed = hours.filter((d) => !d.hours);
+  if (open.length === 0) return "";
+
+  const first = open[0].hours!;
+  const uniform = open.every(
+    (d) => d.hours!.open === first.open && d.hours!.close === first.close,
+  );
+  /* Seven identical days is "every day", not "Monday to Sunday". The client's
+     own words were "open every single day", and a range that happens to span
+     the whole week reads like a rota rather than a plain fact. */
+  const span =
+    open.length === hours.length && uniform
+      ? "Every day"
+      : open.length > 1 && uniform
+        ? `${open[0].day} to ${open[open.length - 1].day}`
+        : open.map((d) => d.day).join(", ");
+  const time = `${formatHour(first.open)} — ${formatHour(first.close)}`;
+  const shut =
+    closed.length === 0
+      ? ""
+      : ` Closed ${closed.map((d) => d.day).join(" and ")}.`;
+
+  return uniform ? `${span}, ${time}.${shut}` : shut.trim();
+}
+
+/** The same thing lower-cased to sit mid-sentence: "…, open every day, 10am
+ *  — 4pm." Trailing full stop removed so the caller owns its punctuation. */
+export function openingPhrase(): string {
+  const s = openingSummary().replace(/\.$/, "");
+  return s.charAt(0).toLowerCase() + s.slice(1);
+}
+
 /* openState(), OpenState and hoursForWeekday() lived here and are gone with
    OpenBadge, their only consumer. They derived a live "open now" badge from
    the VISITOR's clock rather than the shop's, so the badge was wrong for

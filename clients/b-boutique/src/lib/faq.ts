@@ -1,4 +1,4 @@
-import { formatHour, hours, shop } from "./shop";
+import { openingSummary, shop } from "./shop";
 
 /** Questions for the homepage FAQ.
  *
@@ -38,35 +38,6 @@ export type FaqItem = {
   /** True while this answer is demo copy rather than confirmed policy. */
   temporary?: boolean;
 };
-
-/** Derived from `hours` rather than written out, so the answer cannot drift
- *  away from the hours table and the opening times further down the page. */
-function openingSummary(): string {
-  const open = hours.filter((d) => d.hours);
-  const closed = hours.filter((d) => !d.hours);
-  if (open.length === 0) return "";
-
-  const first = open[0].hours!;
-  const uniform = open.every(
-    (d) => d.hours!.open === first.open && d.hours!.close === first.close,
-  );
-  /* Seven identical days is "every day", not "Monday to Sunday". The client's
-     own words were "open every single day", and a range that happens to span
-     the whole week reads like a rota rather than a plain fact. */
-  const span =
-    open.length === hours.length && uniform
-      ? "Every day"
-      : open.length > 1 && uniform
-        ? `${open[0].day} to ${open[open.length - 1].day}`
-        : open.map((d) => d.day).join(", ");
-  const time = `${formatHour(first.open)} — ${formatHour(first.close)}`;
-  const shut =
-    closed.length === 0
-      ? ""
-      : ` Closed ${closed.map((d) => d.day).join(" and ")}.`;
-
-  return uniform ? `${span}, ${time}.${shut}` : `${shut}`;
-}
 
 export const faq: FaqItem[] = [
   {

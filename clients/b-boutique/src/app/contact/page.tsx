@@ -6,12 +6,14 @@ import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { ContactForm } from "@/components/ContactForm";
 import { Visit } from "@/components/Visit";
-import { phoneDisplay, shop } from "@/lib/shop";
+import { addressLines, openingPhrase, phoneDisplay, shop } from "@/lib/shop";
 
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Call B Boutique or send a message. 18 Sea View Street, Cleethorpes, DN35 8EZ — open Tuesday to Sunday.",
+    /* Derived, for the same reason as the site description: this said
+       "open Tuesday to Sunday" while the shop opened seven days. */
+    `Call B Boutique or send a message. ${addressLines.join(", ")} — open ${openingPhrase()}.`,
   alternates: { canonical: "/contact" },
 };
 

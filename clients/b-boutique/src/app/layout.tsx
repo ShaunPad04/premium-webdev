@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Bodoni_Moda, Inter } from "next/font/google";
 import { directionsHref } from "@/lib/nav";
-import { shop, hours } from "@/lib/shop";
+import { hours, openingPhrase, shop } from "@/lib/shop";
 import "./globals.css";
 
 /* Two faces, and only two.
@@ -62,8 +62,14 @@ const inter = Inter({
   display: "swap",
 });
 
+/* The hours are DERIVED, not typed. This string said "Open Tuesday to Sunday"
+   for a day after the client confirmed she opens seven days — sitting
+   directly beside JSON-LD that correctly listed all seven. Every shared link
+   and every search result carried the wrong one. */
 const description =
-  "An independent boutique on Sea View Street, Cleethorpes. Womenswear, accessories and homeware, chosen one piece at a time. Open Tuesday to Sunday, 10 till 4.";
+  `An independent boutique on Sea View Street, Cleethorpes. Womenswear, ` +
+  `accessories and homeware, chosen one piece at a time. ` +
+  `Open ${openingPhrase()}.`;
 
 /* Indexing is OFF until someone deliberately turns it on.
  *
