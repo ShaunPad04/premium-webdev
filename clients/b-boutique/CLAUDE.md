@@ -1,5 +1,38 @@
 @AGENTS.md
 
+# Design context — read before any design work
+
+Two files in this directory hold the design brief, and every `/impeccable`
+command reads them before doing anything:
+
+| File | Holds | Answers |
+|---|---|---|
+| `PRODUCT.md` | Register, users, purpose, brand personality, anti-references, design principles, accessibility commitments | who, what, why |
+| `DESIGN.md` | Colour, typography, elevation, components, motion, the do's and don'ts | how it looks |
+
+**Register: `brand`.** Design IS the product on the storefront. `/stock` is the
+one product-register surface — a staff tool tapped a hundred times a day — and
+it is deliberately excluded from design passes, where motion is a cost rather
+than a feature.
+
+The five principles, in short: never assert what the client has not confirmed ·
+one source of truth, or none · the shop may ask for a visit or a sale and must
+be able to honour either · restraint is the luxury signal · decisions are
+recorded with their reasoning.
+
+**These files go stale, and stale here is not harmless.** Both were written
+2026-09-03 and by 2026-09-20 they described a different product: a single
+scroll-driven page that "sells in person only", with "no account, no basket",
+open "Tuesday to Sunday… closed Monday". That last one is the same false fact
+found hardcoded in `CornerMenu.tsx` the same day, telling customers a real shop
+is shut on a day it is open. It survived two sweeps for hardcoded hours,
+because nobody greps a context document.
+
+So: **when the product changes, refresh them in the same pass.** Run
+`/impeccable teach` for `PRODUCT.md`, `/impeccable document` for `DESIGN.md`.
+A design brief that disagrees with the code is worse than none, because it
+passes the gate and gets believed.
+
 # Typography — APPROVED, do not change
 
 Signed off by the client 2026-09-01; the wordmark MOVED 2026-09-02.
