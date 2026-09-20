@@ -54,7 +54,14 @@ export default async function ProductPage({
               tone={product.tone as Tone}
               seed={17}
               slot={product.slot}
-              alt={`${product.name}, photographed in the shop`}
+              /* Names the piece and stops there. It used to say "photographed
+                 in the shop", which was a claim about where the picture was
+                 taken — and the pictures are generated art direction from a
+                 CDN, not photographs of 18 Sea View Street. Alt text is heard
+                 by the people who cannot see the image and have no way to
+                 judge it, so it is the last place to assert something
+                 unverified. */
+              alt={product.name}
               /* Measured: the media column is 52% of the page above 1024 and
                  full width below it. */
               sizes="(min-width: 1024px) 52vw, 100vw"
@@ -87,13 +94,20 @@ export default async function ProductPage({
               ) : null}
 
               {/* No invented description. The data holds a name, a category
-                  and a photograph, and everything a product description
-                  usually says — fabric, origin, fit, care — is a claim about
-                  a garment nobody has confirmed. What can honestly be said is
-                  where it is and how it is sold. */}
+                  and a picture, and everything a product description usually
+                  says — fabric, origin, fit, care — is a claim about a garment
+                  nobody has confirmed. What can honestly be said is where it
+                  is and how it is sold.
+
+                  This used to open "Photographed in the shop at 18 Sea View
+                  Street." That was false: lib/images.ts resolves every slot to
+                  generated art direction on a CDN, so the claim was about a
+                  photograph that was never taken. The second sentence was
+                  always true, is the half that actually sells a boutique
+                  against an online-only seller, and is all that remains. */}
               <p className="pdp-note">
-                Photographed in the shop at 18 Sea View Street. If you would
-                rather see it in person before deciding, it is on the rail.
+                If you would rather see it in person before deciding, it is on
+                the rail at 18 Sea View Street.
               </p>
 
               <AddToBag product={product} />
