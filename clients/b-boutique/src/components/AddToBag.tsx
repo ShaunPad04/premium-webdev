@@ -64,7 +64,10 @@ export function AddToBag({ product }: { product: Product }) {
     singleSize ? product.sizes[0] : null,
   );
   const [error, setError] = useState<string | null>(null);
-  const [added, setAdded] = useState<{ size: string; colour: string } | null>(null);
+  /* `n` counts the adds. It is the element's key, so adding the same size
+     twice replays the confirmation instead of quietly rewriting text that is
+     already on screen — which looks identical to nothing having happened. */
+  const [added, setAdded] = useState<{ size: string; colour: string; n: number } | null>(null);
   const [stock, setStock] = useState<Availability>({});
 
   useEffect(() => {
@@ -203,7 +206,7 @@ export function AddToBag({ product }: { product: Product }) {
             }
             const c = colour ?? "";
             add(product.slug, size, c);
-            setAdded({ size, colour: c });
+            setAdded((prev) => ({ size, colour: c, n: (prev?.n ?? 0) + 1 }));
           }}
         >
           {chosenOut ? "Sold out" : "Add to bag"}
@@ -220,7 +223,7 @@ export function AddToBag({ product }: { product: Product }) {
           bag" is not enough information to catch a mistake. */}
       <div className="atb-status" role="status" aria-live="polite">
         {added ? (
-          <p className="atb-added">
+          <p className="atb-added" key={added.n}>
             Added
             {singleSize ? "" : `, size ${added.size}`}
             {added.colour ? `, ${added.colour}` : ""}.{" "}

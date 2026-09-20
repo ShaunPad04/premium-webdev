@@ -3809,7 +3809,33 @@ body {
 
 .atb-add { width: 100%; justify-content: center; }
 .atb-status:empty { display: none; }
-.atb-added { margin-top: 16px; font-size: 13.5px; line-height: 1.6; }
+/* The confirmation arrives rather than appearing.
+ *
+ * It used to be a conditional render: nothing, then a line of text, between
+ * two frames. A state change that materialises from nothing reads as a glitch
+ * rather than as an answer — and this particular one is the whole feedback
+ * for the most important press on the page.
+ *
+ * @starting-style rather than a mount effect, and the element is keyed on the
+ * add in AddToBag.tsx so a second add to the same bag replays it rather than
+ * silently updating text that is already on screen. */
+.atb-added {
+  margin-top: 16px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms var(--bb-ease), transform 200ms var(--bb-ease);
+}
+@starting-style {
+  .atb-added { opacity: 0; transform: translateY(4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atb-added { transition: opacity 150ms linear; transform: none; }
+  @starting-style {
+    .atb-added { transform: none; }
+  }
+}
 .atb-added-link { text-decoration: underline; text-underline-offset: 3px; }
 
 /* ── The bag ──────────────────────────────────────────────────────────── */
@@ -3830,6 +3856,42 @@ body {
   border-top: 1px solid var(--bb-light-border);
 }
 .bag-line:last-child { border-bottom: 1px solid var(--bb-light-border); }
+
+/* A line on its way out.
+ *
+ * Height, not just opacity: fading alone leaves a row-shaped hole that then
+ * snaps shut, which is the jump this exists to remove. `interpolate-size` is
+ * already enabled at :root for the FAQ, which is what makes the height
+ * animatable without a max-height guess that either clips a tall line or
+ * leaves dead space under a short one.
+ *
+ * It slides toward the Remove button it was dismissed from rather than in an
+ * arbitrary direction, so the row appears to go where it was sent.
+ *
+ * Browsers without interpolate-size get the fade and the slide and then an
+ * instant collapse — the same honest degradation the FAQ makes. */
+.bag-line {
+  overflow: hidden;
+  transition:
+    opacity 180ms var(--bb-ease),
+    transform 200ms var(--bb-ease),
+    height 220ms var(--bb-ease),
+    padding 220ms var(--bb-ease);
+}
+.bag-line.is-leaving {
+  opacity: 0;
+  transform: translateX(10px);
+  height: 0;
+  padding-block: 0;
+  /* Not focusable or clickable on the way out: a row being removed must not
+     take a second press. */
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bag-line { transition: opacity 120ms linear; }
+  .bag-line.is-leaving { transform: none; height: 0; padding-block: 0; }
+}
 
 @media (min-width: 640px) {
   .bag-line {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 
 import {
@@ -32,6 +32,35 @@ export function Bag() {
     useCart();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  /* Lines on their way out.
+   *
+   * Removing a line used to delete it from the store on the click, so the row
+   * vanished between two frames and everything below it jumped up by its
+   * height. That is the one thing an animation is unambiguously for: not
+   * decoration, but stopping a change being jarring — and on a page where the
+   * rows look alike, a row that disappears instantly leaves real doubt about
+   * WHICH one went.
+   *
+   * The row is marked leaving, collapses over 220ms, and only then leaves the
+   * store. If the same line is removed twice the second call is ignored,
+   * because the timeout from the first is already going to remove it. */
+  const [leaving, setLeaving] = useState<string[]>([]);
+  const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
+  const keyOf = (l: { slug: string; size: string; colour: string }) =>
+    `${l.slug}|${l.size}|${l.colour}`;
+
+  function removeLine(line: { slug: string; size: string; colour: string }) {
+    const key = keyOf(line);
+    if (timers.current[key]) return;
+    setLeaving((v) => [...v, key]);
+    timers.current[key] = setTimeout(() => {
+      delete timers.current[key];
+      setLeaving((v) => v.filter((k) => k !== key));
+      remove(line.slug, line.size, line.colour);
+    }, 220);
+  }
 
   if (count === 0) {
     return (
@@ -92,7 +121,7 @@ export function Bag() {
                apart. */
             <li
               key={`${line.slug}-${line.size}-${line.colour}`}
-              className="bag-line"
+              className={`bag-line${leaving.includes(keyOf(line)) ? " is-leaving" : ""}`}
             >
               <Link href={`/shop/${p.slug}`} className="bag-media" aria-label={p.name}>
                 <ImageSlot
@@ -138,19 +167,21 @@ export function Bag() {
                   min={0}
                   max={10}
                   value={line.qty}
-                  onChange={(e) =>
-                    setQty(
-                      line.slug,
-                      line.size,
-                      line.colour,
-                      Number(e.target.value),
-                    )
-                  }
+                  onChange={(e) => {
+                    const n = Number(e.target.value);
+                    /* Typing 0 is the other way to remove a line, and it
+                       should leave the same way pressing Remove does. */
+                    if (n < 1) {
+                      removeLine(line);
+                      return;
+                    }
+                    setQty(line.slug, line.size, line.colour, n);
+                  }}
                 />
                 <button
                   type="button"
                   className="bag-remove"
-                  onClick={() => remove(line.slug, line.size, line.colour)}
+                  onClick={() => removeLine(line)}
                 >
                   Remove
                 </button>
