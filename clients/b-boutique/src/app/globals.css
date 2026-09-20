@@ -1748,9 +1748,17 @@ body {
   .visit-cta, .visit-cta-arrow, .vm-expand { transition: none; }
 }
 
-/* ── FAQ ──────────────────────────────────────────────────────────────────
-   Rules, not boxes. The whole section is a left column of type and a list of
-   hairlines; there is no card anywhere in it. */
+/* ── FAQ ────────────────────────────────────────────────
+   An information spread, not an accordion.
+
+   The previous version of this block ran to roughly 490 lines and had been
+   patched three times over: two duplicated `.faq-row::before` families, two
+   competing `:focus-visible` treatments, a media-query specificity fight
+   resolved by source order, and a per-word blur cascade. All of it existed
+   to make eight collapsing rows behave. There are no rows now, so all of it
+   is gone rather than carried.
+
+   What is left: type, measure, air, and one hairline between the columns. */
 .faq {
   background: var(--bb-white);
   color: var(--bb-black-soft);
@@ -1762,15 +1770,14 @@ body {
 @media (min-width: 768px) { .faq { padding-inline: var(--bb-gutter-editorial); } }
 @media (min-width: 1024px) { .faq { padding-block: 108px 120px; } }
 
-.faq-inner { display: flex; flex-direction: column; gap: 44px; }
+.faq-inner { display: flex; flex-direction: column; gap: 40px; }
 
-/* The list sits BELOW the heading at full width rather than beside it.
+/* The spread sits BELOW the heading at full width rather than beside it.
    Beside it, the heading stopped a third of the way down and left the column
-   under it empty — and every attempt to use that space put the answers
-   somewhere they had to be explained. Underneath, at this scale, the rows
-   have the width they need and nothing is left over. */
+   under it empty. Underneath, the columns get the whole measure — which is
+   the entire reason this layout works at three columns at all. */
 @media (min-width: 1024px) {
-  .faq-inner { gap: 64px; }
+  .faq-inner { gap: 56px; }
   .faq-intro { max-width: 46%; }
 }
 
@@ -1807,437 +1814,115 @@ body {
   line-height: 1.65;
   color: var(--bb-grey-dark);
   /* pretty, not balance: this is a sentence, and balance evens the lines of a
-     short block at the cost of the last one. pretty only refuses the widow —
-     "or ordering." was sitting alone on line two. */
+     short block at the cost of the last one. pretty only refuses the widow. */
   text-wrap: pretty;
 }
 
-/* ── Rows ──
-   The one hairline on the page that was not the system's. Every other rule
-   resolves to --bb-light-border (rgba(10,10,10,.14)) or --bb-dark-border
-   (rgba(255,255,255,.14)); these eight were hard-coded at .16 — a near-miss
-   of the token rather than a decision, and the only rule family on the page
-   that did not match the others. */
-.faq-row { border-top: 1px solid var(--bb-light-border); }
-.faq-row:last-of-type { border-bottom: 1px solid var(--bb-light-border); }
-
-/* The row, at editorial scale.
-   Three columns: the numeral, the question, and the mark. A hundred pixels
-   tall, because the previous 52px rows were the reason the numeral had to go
-   the first time — at that height it was neither decoration nor information,
-   just a second grey column. Given room it becomes the thing that stops this
-   reading as a support centre. */
-.faq-summary {
-  display: grid;
-  /* The numeral column is a FIXED width, not `auto`. Sized to its content it
-     was about 88px at 1440 while the answer below was indented by a computed
-     95px, so every answer sat a few pixels adrift of the question it belonged
-     to — the kind of gap that reads as a mistake rather than an indent. One
-     token, used by both. */
-  grid-template-columns: var(--faq-num) minmax(0, 1fr) auto;
-  align-items: baseline;
-  column-gap: var(--faq-gap);
-  min-height: 100px;
-  padding-block: clamp(22px, 2.6vw, 34px);
-  cursor: pointer;
-  list-style: none;
+.faq-pending {
+  margin-top: 18px;
+  max-width: 340px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--bb-grey-dark);
+  font-style: italic;
 }
-.faq-summary::-webkit-details-marker { display: none; }
 
-/* The numeral. Large, ghosted, and decorative — see the note in Faq.tsx for
-   why it is aria-hidden. Tabular so eight of them form a true vertical edge,
-   and it goes solid on the row that is open so the eye can find its place
-   from the numbers alone. */
-.faq-n {
+/* ── The spread ──
+   One column on a phone, two from 768, three from 1200. Three is the point:
+   eight short entries across three columns is a page of information, and the
+   same eight stacked in one column is a list of questions. The breakpoint is
+   1200 rather than 1024 because at 1024 the third column falls to ~290px,
+   which puts the longest questions onto four lines. */
+.faq-spread {
+  border-top: 1px solid var(--bb-light-border);
+  padding-top: clamp(30px, 3.6vw, 52px);
+  column-gap: clamp(30px, 4.2vw, 78px);
+  /* Balance keeps the last column from being a stub. Without it an 8-entry
+     spread fills column one and two and leaves two entries in column three,
+     which reads as an accident rather than a layout. */
+  column-fill: balance;
+}
+
+@media (min-width: 768px) {
+  .faq-spread {
+    columns: 2;
+    /* The one drawn element in the section, and it is a typographic rule
+       between columns rather than a border around anything. This is what
+       stops the spread reading as two unrelated stacks of text. */
+    column-rule: 1px solid var(--bb-light-border);
+  }
+}
+
+@media (min-width: 1200px) { .faq-spread { columns: 3; } }
+
+.faq-entry {
+  break-inside: avoid;
+  /* Chromium still wants the legacy property for multicol in some versions,
+     and an entry split across a column boundary separates a question from
+     its answer — the one failure this layout cannot tolerate. */
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: clamp(30px, 3.4vw, 50px);
+}
+
+.faq-entry:last-child { margin-bottom: 0; }
+
+.faq-eq {
   font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
-  font-size: clamp(30px, 4.2vw, 62px);
-  line-height: 0.9;
-  font-variant-numeric: tabular-nums;
-  color: rgba(10, 10, 10, 0.16);
-  transition: color 520ms var(--bb-ease);
-  user-select: none;
-}
-.faq-row[open] .faq-n,
-.faq-summary:hover .faq-n,
-.faq-summary:focus-visible .faq-n { color: var(--bb-black); }
-
-/* Hover used to be `opacity: .68` on the whole row, which fades the question
-   — the one thing you are pointing at — along with its furniture, and dims a
-   row to announce that it is live. Backwards. The question holds at full
-   black; the number and the plus, which rest quieter than it, come up to meet
-   it.
-
-   That colour shift used to be the whole hover, deliberately. The client asked
-   for movement, so there is now one gesture on top of it, and only one: a
-   hairline draws itself along the foot of the row, left to right, and the
-   question steps a few pixels toward the space it opens. It is the section's
-   own vocabulary — this page is built out of hairlines — rather than a new
-   idea imported for the occasion, and it is transform-only, so it costs no
-   layout and cannot shift the eight rows below it. */
-.faq-summary:hover .faq-icon,
-.faq-summary:focus-visible .faq-icon { color: var(--bb-black-soft); }
-
-.faq-summary { position: relative; }
-
-/* The drawing rule. Sits on the row's own bottom edge and scales out from the
-   left, so it reads as the row underlining itself rather than a box appearing.
-   transform-origin flips on the way out, which means it retracts back the way
-   it came instead of collapsing to its middle. */
-.faq-summary::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background: var(--bb-black-soft);
-  transform: scaleX(0);
-  transform-origin: right center;
-  transition: transform 520ms var(--bb-ease);
-}
-.faq-summary:hover::after,
-.faq-summary:focus-visible::after {
-  transform: scaleX(1);
-  transform-origin: left center;
-}
-
-/* The question steps toward the rule as it draws. 5px — enough to feel
-   answered, small enough that a two-line question does not appear to wander. */
-.faq-q { transition: transform 520ms var(--bb-ease); }
-.faq-summary:hover .faq-q,
-.faq-summary:focus-visible .faq-q { transform: translateX(5px); }
-
-/* An open row keeps the rule, at rest rather than on hover: the row you are
-   reading stays underlined while you read it. */
-.faq-row[open] .faq-summary::after { transform: scaleX(1); transform-origin: left center; }
-
-/* And it is marked in the margin. A hairline grows down the left edge of the
-   whole open row — question and answer together — so the thing you opened is
-   legible as one block even when the answer runs past the fold. It grows from
-   the top rather than fading in, which is the same gesture as the rule that
-   draws along the foot, turned ninety degrees. scaleY, so it costs no layout.
-   Decorative and inert: the open state is already carried by <details>. */
-.faq-row { position: relative; }
-.faq-row::before {
-  content: "";
-  position: absolute;
-  left: -18px;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: var(--bb-black);
-  transform: scaleY(0);
-  transform-origin: top center;
-  transition: transform 620ms var(--bb-ease);
-}
-.faq-row[open]::before { transform: scaleY(1); }
-@media (max-width: 767px) { .faq-row::before { left: -10px; } }
-/* Focus, without a rectangle anywhere.
- *
- * The client sent two screenshots of a black box around a question. That was
- * `outline` on the summary, then on the question — and an outline is a box
- * whatever it is drawn around.
- *
- * Worth recording why it kept coming back after I "fixed" it: measured in
- * Chromium, a mouse click does NOT match :focus-visible (false, outline
- * none), and I concluded it was keyboard-only and therefore rare. Safari and
- * Firefox DO match it when a <summary> is clicked, so the client saw it on
- * every press while I could not reproduce it once. The measurement was right
- * and the conclusion drawn from it was wrong.
- *
- * It cannot simply be removed — it is the keyboard indicator and WCAG 2.4.7
- * requires one — so it is designed instead: the text underlines itself and
- * the numeral goes solid. An underline follows the words rather than
- * enclosing them, so it reads as emphasis rather than as a browser default,
- * and it is legible whichever input summoned it.
- *
- * Distinguishable from the open state on purpose: an open row carries a rule
- * under the WHOLE row, the numeral solid and the mark turned. Focus adds a
- * line under the words only, at a different width. currentColor throughout,
- * per the locked decision — this ring runs over cream here and over black
- * elsewhere on the site. */
-.faq-summary:focus-visible { outline: none; }
-.faq-summary:focus-visible .faq-q {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 10px;
-  text-decoration-skip-ink: none;
-}
-
-/* An open row keeps the rule, at rest rather than on hover: the row you are
-   reading stays underlined while you read it. */
-.faq-row[open] .faq-summary::after { transform: scaleX(1); transform-origin: left center; }
-
-/* And it is marked in the margin. A hairline grows down the left edge of the
-   whole open row — question and answer together — so the thing you opened is
-   legible as one block even when the answer runs past the fold. It grows from
-   the top rather than fading in, which is the same gesture as the rule that
-   draws along the foot, turned ninety degrees. scaleY, so it costs no layout.
-   Decorative and inert: the open state is already carried by <details>. */
-.faq-row { position: relative; }
-.faq-row::before {
-  content: "";
-  position: absolute;
-  left: -18px;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: var(--bb-black);
-  transform: scaleY(0);
-  transform-origin: top center;
-  transition: transform 620ms var(--bb-ease);
-}
-.faq-row[open]::before { transform: scaleY(1); }
-@media (max-width: 767px) { .faq-row::before { left: -10px; } }
-
-
-/* Bodoni, and large.
-   This used to be Inter at 15px, on the argument that the heading owns the
-   editorial serif and the questions are utility. The client's read on the
-   result was that it looked generic and unprofessional, and they are right
-   about what it was doing: eight lines of 15px UI text under a 66px Bodoni
-   heading is a support-centre list sitting under a fashion masthead, and the
-   contrast that was supposed to be the point just made the questions look
-   like the part nobody designed.
-
-   Set in the same face as the heading at a third of its size, the list reads
-   as an index — which is what it is. The answers stay in Inter: the serif
-   carries the question, the grotesk carries the prose, and the hierarchy is
-   between the two rather than between the section and its own contents. */
-.faq-q {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
-  /* The size the section turns on. At 22px in a narrow index these read as a
-     list of links; at 44px across the page they read as the headings they
-     are, and the answer beneath becomes the body copy under a heading rather
-     than a tooltip hanging off a row. */
-  font-size: clamp(24px, 3.2vw, 44px);
   font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.022em;
+  font-size: clamp(20px, 1.5vw, 25px);
+  line-height: 1.16;
+  letter-spacing: -0.018em;
   color: var(--bb-black);
+  margin-bottom: 11px;
   text-wrap: balance;
 }
 
-/* Rests at grey-dark rather than full black. At full black the plus carried
-   the same weight as the question beside it, and eight of them down the right
-   edge read as a column of controls competing with the column of type. It is
-   an affordance, not a headline: quiet at rest, full strength on hover and on
-   the row that is actually open. 5.44:1 on --bb-white, so it clears the 3:1
-   non-text floor with room to spare. */
-/* Two hairlines at the section's own weight. The vertical stroke scales to
-   nothing as the row opens while the whole mark turns, so a plus becomes a
-   minus in a single move — one gesture, not a glyph swap. */
-.faq-icon {
-  display: grid;
-  place-items: center;
-  color: var(--bb-grey-dark);
-  transition:
-    transform 520ms var(--bb-ease),
-    color 220ms var(--bb-ease);
-}
-.faq-icon svg { display: block; overflow: visible; }
-.faq-icon-v {
-  transform-origin: 12px 12px;
-  transition: transform 520ms var(--bb-ease);
-}
-.faq-row[open] .faq-icon { transform: rotate(180deg); color: var(--bb-black); }
-.faq-row[open] .faq-icon-v { transform: scaleY(0); }
-
-/* Answers sit under the QUESTION column, not the number — the grid holds. */
-/* The answer hangs under the QUESTION column, not the number — so its left
-   edge has to clear the number column AND the gap between them. The gap grew
-   from 8px to 14px when the rows opened up, and left at 44 the answers sat
-   6px proud of every question above them: close enough to look like a mistake
-   rather than an indent. */
-/* The 58/70px left padding was clearing a number column that no longer
-   exists. The answer now sits under its own question on a phone, and in the
-   facing column on a wide screen. */
-/* Indented past the numeral so it starts at its question's left edge, and
-   held to a reading measure rather than the width of the section. A
-   paragraph set the full width of a 1440 page is not a paragraph anybody
-   finishes. */
-.faq-answer {
-  padding: 0 0 clamp(28px, 3vw, 44px);
-  max-width: 52ch;
-  font-size: clamp(15px, 1.15vw, 17px);
+.faq-ea {
+  font-size: 14px;
   line-height: 1.75;
-  color: var(--bb-black-soft);
-}
-/* Starts exactly where its question starts, from the same two tokens the
-   summary grid uses. Declared on the row so both boxes can read them. */
-.faq-row {
-  --faq-num: clamp(52px, 6.2vw, 92px);
-  --faq-gap: clamp(14px, 2.2vw, 34px);
-}
-@media (min-width: 640px) {
-  .faq-answer { margin-left: calc(var(--faq-num) + var(--faq-gap)); }
-}
-
-/* A rule and small caps, not a bordered box. This was the only boxed element
-   in a section built entirely out of hairlines, which made a standing note
-   read as an error state. The warning is unchanged and still load-bearing:
-   seven of the eight answers here are copy written for the demo, and one of
-   them published as settled policy is a promise the shop has to honour. */
-.faq-pending {
-  margin-top: 22px;
-  padding-top: 12px;
-  border-top: 1px solid var(--bb-light-border);
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 1.5;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--bb-grey-dark);
-  max-width: 34ch;
-}
-.faq-answer p + .faq-pending { margin-top: 14px; }
-
-/* Height 0 -> auto, natively. interpolate-size makes `auto` animatable and
-   ::details-content is the box the browser opens; together they give the real
-   thing rather than a max-height guess that either clips a long answer or
-   leaves dead space under a short one. Browsers without it snap open, which
-   is an honest degradation of the same markup. */
-@supports (interpolate-size: allow-keywords) {
-  :root { interpolate-size: allow-keywords; }
-
-  .faq-row::details-content {
-    height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition:
-      height 480ms var(--bb-ease),
-      content-visibility 480ms allowed-discrete,
-      opacity 300ms var(--bb-ease);
-  }
-  .faq-row[open]::details-content { height: auto; opacity: 1; }
+  /* --bb-grey-dark is the light-section grey: 5.44:1 on --bb-white. It is
+     NOT interchangeable with --bb-grey-mid, which fails on white. */
+  text-wrap: pretty;
 }
 
-/* The answer arrives, rather than simply being uncovered.
- *
- * The height transition above opens the box; on its own that is a shutter
- * going up, and the text inside is just suddenly there — correct, and
- * characterless, which is what the client was reacting to. This gives the copy
- * its own short move: it rises the last few pixels and settles slightly after
- * the box has begun opening, so the row reads as one gesture with a follow
- * rather than two things happening at once.
- *
- * Asymmetric on purpose. Opening is unhurried and delayed behind the box —
- * you have decided to read it, so it can take its time. Closing is quick and
- * undelayed, because a dismissal that lingers feels like lag. Transform and
- * opacity only; the height above is the one layout property in play and it is
- * the browser's own mechanism, not a max-height guess. */
-.faq-answer {
-  opacity: 0;
-  transform: translateY(-10px);
-  transition:
-    opacity 180ms var(--bb-ease),
-    transform 180ms var(--bb-ease);
-}
-.faq-row[open] .faq-answer {
-  opacity: 1;
-  transform: translateY(0);
-  /* Unhurried. You have decided to read this, so it can take its time
-     arriving; the closing state above stays short and undelayed, because a
-     dismissal that lingers reads as lag. */
-  transition:
-    opacity 520ms var(--bb-ease) 60ms,
-    transform 620ms var(--bb-ease) 60ms;
-}
+/* ── Motion ──
+   One quiet rise for the section as it arrives, and nothing at all after
+   that. There is no hover state and no press state here, because there is
+   nothing to press: this is the one section on the site that is purely
+   something to read, and the client has twice asked for its motion to calm
+   down.
 
-/* The blurred word cascade.
- *
- * Each word resolves out of a 10px blur, one after the next, when its row
- * opens. The delay comes from --i, the word's index, capped at 20 places so a
- * long answer finishes in about 300ms rather than crawling to the end of the
- * paragraph — a stagger you have to wait out stops being an effect and starts
- * being latency.
- *
- * inline-block is required for filter to apply per word; it is otherwise
- * inert on an inline box. Words, not characters — see the note in Faq.tsx for
- * why, and it is an accessibility point rather than a performance one.
- *
- * The closing state is undelayed and quick. Opening can take its time; a
- * dismissal that staggers reads as the page struggling. */
-.faq-w {
-  display: inline-block;
-  opacity: 0;
-  filter: blur(10px);
-  transition: opacity 200ms var(--bb-ease), filter 200ms var(--bb-ease);
-}
+   The spread animates AS ONE BLOCK, not per entry. Per entry was tried and
+   measured: `animation-timeline: view()` on a multicol child resolves
+   against the fragment rather than against the flow, so three of the eight
+   entries sat at opacity 0 while their neighbours were fully visible, and
+   the balanced columns kept their reserved space. The result was a spread
+   with holes in it. One subject, one timeline, no fragments — and the
+   section cannot half-appear.
 
-.faq-row[open] .faq-w {
-  opacity: 1;
-  filter: blur(0);
-  transition:
-    opacity 300ms var(--bb-ease) calc(min(var(--i), 20) * 15ms + 120ms),
-    filter 300ms var(--bb-ease) calc(min(var(--i), 20) * 15ms + 120ms);
-}
-
-@starting-style {
-  .faq-row[open] .faq-w {
-    opacity: 0;
-    filter: blur(10px);
-  }
-}
-
-/* Reduced motion gets the answer, not the choreography. The global block
-   collapses the durations, but a 0.01ms transition from blur(10px) still
-   flashes; this removes the blur outright so there is nothing to resolve. */
-@media (prefers-reduced-motion: reduce) {
-  .faq-w { opacity: 1; filter: none; transition: none; }
-}
-
-/* Without this the rise never runs, which is measured rather than assumed: at
-   120ms into an open the answer already read opacity 1 and transform none.
-   ::details-content is `content-visibility: hidden` while closed, so on the
-   first frame of an open the element has only just started being rendered at
-   all — and a transition cannot interpolate from a state the box was never in.
-   @starting-style supplies that first frame explicitly. Browsers without it
-   land on the end state immediately, which is the same honest degradation the
-   height animation already makes. */
-@starting-style {
-  .faq-row[open] .faq-answer {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-}
-
-/* Entrance — the quietest on the page. No SplitText: the philosophy section
-   owns that effect and repeating it everywhere spends its impact. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* Stacked, one timeline each, so the cascade is the layout's. The ms
-       delays that were here did nothing under a scroll timeline. */
+   @supports, because animation-timeline is the progressive layer — without
+   it the section is simply present, which is the correct fallback for
+   content that was never hidden in the first place. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
     .faq-intro > * {
       animation: faq-rise 800ms var(--bb-ease) both;
       animation-timeline: view();
       animation-range: entry var(--bb-enter) entry var(--bb-settle);
     }
 
-    /* Eight rows, 75px apart, each on its own timeline: the list already
-       arrives one row at a time as you scroll, which is the whole stagger the
-       section wants. The twelve nth-of-type delays that used to follow this
-       rule were inert, and this is the calmest section on the page — the
-       right amount of choreography here is none.
-
-       The range matters more than it looks: at `entry 5% entry 36%` a 75px
-       row completed its entire reveal inside 23px of scrolling, which reads
-       as a snap rather than a rise. On the shared grammar it takes 27vh. */
-    .faq-row {
-      animation: faq-row-in 700ms var(--bb-ease) both;
+    .faq-spread {
+      animation: faq-rise 800ms var(--bb-ease) both;
       animation-timeline: view();
       animation-range: entry var(--bb-enter) entry var(--bb-settle);
     }
   }
 }
 
-@keyframes faq-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes faq-row-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes faq-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-@media (prefers-reduced-motion: reduce) {
-  .faq-row::details-content { transition: none; }
-  .faq-icon { transition: none; }
-}
 
 /* ── Footer ───────────────────────────────────────────────────────────────
    Visit and this form one continuous dark chapter; a hairline is the only
@@ -3228,6 +2913,31 @@ body {
    retargets from wherever it is while a keyframe restarts from zero. */
 
 .nav-item { position: relative; }
+
+/* The corner menu's panel is portalled to <body>, which puts the header —
+   its own z-60 stacking context — in front of the panel instead of behind
+   it. That is what keeps the CLOSE trigger readable over the panel's
+   reserved top strip, and it is the whole point. The centre nav is the one
+   thing in the header that must NOT stay in front: at 1024 and up those
+   links run straight into the panel's left edge.
+
+   So they fade while the menu is open. CornerMenu sets the attribute; the
+   rule lives here, next to the nav it applies to. Fading rather than
+   `display: none` keeps the header's flex row from reflowing, and
+   pointer-events: none stops a link that is no longer visible from being
+   clickable through the panel. The panel is a focus trap already, so these
+   are unreachable by keyboard for as long as it is open. */
+body[data-menu-open] nav[aria-label="Primary"] {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms var(--bb-ease);
+}
+nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-menu-open] nav[aria-label="Primary"],
+  nav[aria-label="Primary"] { transition: none; }
+}
 
 /* The panel is 8px below the trigger, and the wrapper's top padding covers
    that gap. Without it the pointer crosses 8px of nothing on the way down,

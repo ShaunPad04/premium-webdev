@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
+import { createPortal } from "react-dom";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { MENU, directionsHref, socials } from "@/lib/nav";
@@ -24,6 +25,13 @@ const EASE = [0.22, 1, 0.36, 1] as const;
    the chip between bone and onyx, and the chip is gone. */
 export function CornerMenu() {
   const [open, setOpen] = useState(false);
+  /* The overlay is portalled to <body>, and a portal needs a DOM target that
+     does not exist during the server render. Gating on mount also means the
+     server sends no panel markup at all, which is correct: a closed dialog
+     has nothing to say to a crawler, and every link in it is already in the
+     footer. */
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const reduced = usePrefersReducedMotion();
   const panelId = useId();
   const trigger = useRef<HTMLButtonElement>(null);
@@ -73,6 +81,16 @@ export function CornerMenu() {
     main?.setAttribute("inert", "");
     footer?.setAttribute("inert", "");
 
+    /* The panel is portalled to <body>, so the header — a z-60 stacking
+       context — now paints above it rather than below. For the trigger that
+       is exactly right, and the panel reserves top padding for it. For the
+       centre nav it is not: at 1024 and up those links run into the panel's
+       left edge. This attribute fades them out for as long as the menu is
+       open; the rule lives beside the nav's own styles in globals.css.
+       An attribute rather than a prop because Nav owns that markup and this
+       is the only thing CornerMenu needs from it. */
+    document.body.setAttribute("data-menu-open", "");
+
     // Move focus into the panel.
     const t = window.setTimeout(
       () => panel.current?.querySelector<HTMLElement>("a[href]")?.focus(),
@@ -84,6 +102,7 @@ export function CornerMenu() {
       document.body.style.overflow = prev;
       main?.removeAttribute("inert");
       footer?.removeAttribute("inert");
+      document.body.removeAttribute("data-menu-open");
       window.clearTimeout(t);
     };
   }, [open, close, reduced]);
@@ -135,6 +154,36 @@ export function CornerMenu() {
         </span>
       </button>
 
+      {/* ── Why this is a portal ──────────────────────────────────────────
+          The panel used to render here, inside <header>, and it was
+          MEASURABLY in the wrong place.
+
+          Two faults, compounding:
+
+          1. The header sets `backdrop-filter: blur(14px)` once the page is
+             scrolled. A backdrop-filter makes an element the containing
+             block for every `position: fixed` DESCENDANT — so the panel was
+             never anchored to the window at all, it was anchored to the
+             header's box. It only looked right because the header happens to
+             be full-width today. Any future header container, transform or
+             filter would have moved the menu with no edit to this file.
+
+          2. The panel sat inside a `max-w-[100rem] mx-auto` rail, written to
+             match "the header's own max-width". The header has no
+             max-width. So above 1600px the rail stopped growing while the
+             trigger kept going right, and the panel drifted toward the
+             centre of the screen. Measured on the shipped build: at 1920 the
+             panel's right edge was 1736 against a CLOSE button ending at
+             1888 — 152px adrift. At 2560 it was 2056 against 2528, which is
+             472px, and reads as a panel floating in the middle of the page.
+             That is what the client reported, and it reproduces exactly.
+
+          Portalling to <body> removes fault 1 as a class rather than as an
+          instance, and anchoring to the viewport's right edge at the
+          header's own padding removes fault 2. The panel's position now
+          depends on nothing but the window. */}
+      {mounted
+        ? createPortal(
       <AnimatePresence>
         {open ? (
           <>
@@ -149,10 +198,10 @@ export function CornerMenu() {
               aria-hidden="true"
             />
 
-            {/* Fixed rail matching the header's own max-width and padding, so
-                the panel opens from the trigger's corner rather than the
-                viewport's — they are 500px apart at 2560. */}
-            <div className="pointer-events-none fixed inset-x-0 top-3 z-50 mx-auto max-w-[100rem] sm:top-5">
+            {/* right-[18px] / sm:right-6 / lg:right-8 are the header's own
+                horizontal padding, so the panel's right edge lands on the
+                same line as the CLOSE button above it at every breakpoint,
+                and keeps doing so at any width. */}
             <motion.div
               key="panel"
               id={panelId}
@@ -160,7 +209,7 @@ export function CornerMenu() {
               role="dialog"
               aria-modal="true"
               aria-label="Menu"
-              className="pointer-events-auto absolute right-4 top-0 w-[min(24rem,calc(100vw-2rem))] sm:right-6 origin-top-right overflow-hidden rounded-[22px] bg-panel text-bone shadow-[0_30px_80px_rgba(0,0,0,.6)]"
+              className="pointer-events-auto fixed right-[18px] top-3 z-50 w-[min(24rem,calc(100vw-2.25rem))] origin-top-right overflow-hidden rounded-[22px] bg-panel text-bone shadow-[0_30px_80px_rgba(0,0,0,.6)] sm:right-6 sm:top-5 lg:right-8"
               style={{ maxHeight: "calc(100svh - 1.5rem)" }}
               {...panelMotion}
             >
@@ -291,10 +340,12 @@ export function CornerMenu() {
                 </motion.div>
               </div>
             </motion.div>
-            </div>
           </>
         ) : null}
-      </AnimatePresence>
+      </AnimatePresence>,
+            document.body,
+          )
+        : null}
     </>
   );
 }
