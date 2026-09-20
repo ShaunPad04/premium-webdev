@@ -50,10 +50,15 @@ function openingSummary(): string {
   const uniform = open.every(
     (d) => d.hours!.open === first.open && d.hours!.close === first.close,
   );
+  /* Seven identical days is "every day", not "Monday to Sunday". The client's
+     own words were "open every single day", and a range that happens to span
+     the whole week reads like a rota rather than a plain fact. */
   const span =
-    open.length > 1 && uniform
-      ? `${open[0].day} to ${open[open.length - 1].day}`
-      : open.map((d) => d.day).join(", ");
+    open.length === hours.length && uniform
+      ? "Every day"
+      : open.length > 1 && uniform
+        ? `${open[0].day} to ${open[open.length - 1].day}`
+        : open.map((d) => d.day).join(", ");
   const time = `${formatHour(first.open)} — ${formatHour(first.close)}`;
   const shut =
     closed.length === 0
