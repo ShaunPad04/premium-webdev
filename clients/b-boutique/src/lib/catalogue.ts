@@ -127,11 +127,30 @@ export function formatPrice(priceP: number): string {
   return gbp.format(priceP / 100);
 }
 
-/** Delivery. Invented like everything else here, and flagged in the UI.
- *  A single flat rate rather than a table: weight bands, zones and free
- *  thresholds are commercial decisions nobody has made. */
-export const DELIVERY_P = 495;
-export const DELIVERY_IS_DEMO = true;
+/** Delivery. CONFIRMED BY THE CLIENT 2026-09-20.
+ *
+ *  £4.35 on any order, free at £120 and above. Her figures, in her words, and
+ *  no longer invented — which is why DELIVERY_IS_DEMO is false and the bag's
+ *  "these figures are made up" notice no longer fires for delivery.
+ *
+ *  Pence, as integers, like every other money value here. £4.35 is 435 and
+ *  £120 is 12000; neither is ever a float. See locked decision 12.
+ *
+ *  The threshold is compared against the SUBTOTAL — the pieces — not against
+ *  the total. Comparing against a total that already includes delivery is the
+ *  classic off-by-one in a free-delivery rule: an order of £115.65 plus £4.35
+ *  reaches £120 and qualifies for free delivery, which then drops it back to
+ *  £115.65, which no longer qualifies. Subtotal has no such loop. */
+export const DELIVERY_P = 435;
+export const FREE_DELIVERY_OVER_P = 12000;
+export const DELIVERY_IS_DEMO = false;
+
+/** What delivery costs on a given basket. One definition, used by the bag and
+ *  by the checkout, so the price quoted and the price charged cannot drift. */
+export function deliveryFor(subtotalP: number): number {
+  if (subtotalP <= 0) return 0;
+  return subtotalP >= FREE_DELIVERY_OVER_P ? 0 : DELIVERY_P;
+}
 
 /** The products in one category, by the category's display name.
  *  Used by the category pages and by the shop's own filtering; there is one

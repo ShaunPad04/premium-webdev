@@ -9,16 +9,24 @@ export const shop = {
      number the contact page, the corner menu and the footer all print, and
      the only contact channel the site currently has.
 
-     EMAIL IS STILL EMPTY, and that is deliberate rather than an oversight.
-     Nobody has supplied one, so nothing on the site prints an address and
-     the contact form has no destination configured — see app/api/contact.
-     Fill this in and the form gains a target; leave it and the form says so
-     honestly rather than pretending to send.
+     ── EMAIL: CONFIRMED BY THE CLIENT 2026-09-20 ────────────────────────
+     bboutiquecleethorpes@gmail.com, and she asked for it to be SHOWN on the
+     site rather than kept behind the form. Both were her answers, given in
+     her own words.
+
+     Setting it here does NOT wire up the contact form. That still needs
+     CONTACT_TO, CONTACT_FROM and RESEND_API_KEY in the environment, and
+     /api/contact answers 503 until all three exist. This value is what the
+     site prints and what the privacy page gives people for a data request.
+
+     Worth revisiting once the domain lands: a gmail.com address on a shop's
+     own domain reads as temporary, and hello@<domain> is a better face. Her
+     call, not ours, and this is a real working inbox in the meantime.
 
      Never guess either value. A wrong number on a real shop's site sends
      customers to a stranger. */
   phone: "07305534342" as string,
-  email: "" as string,
+  email: "bboutiquecleethorpes@gmail.com" as string,
   street: "18 Sea View Street",
   town: "Cleethorpes",
 
@@ -65,11 +73,21 @@ export const phoneDisplay = /^07\d{9}$/.test(shop.phone)
   ? `${shop.phone.slice(0, 5)} ${shop.phone.slice(5)}`
   : shop.phone;
 
-/** 0 = Sunday, matching Date.getDay(). null = closed. Times are 24h local. */
+/** 0 = Sunday, matching Date.getDay(). null = closed. Times are 24h local.
+ *
+ *  ── CONFIRMED BY THE CLIENT 2026-09-20 ──────────────────────────────────
+ *  "everyday 10-4", in her words. MONDAY WAS WRONG: this table had it closed,
+ *  which was never confirmed by anybody and is now corrected. A shop shown as
+ *  shut on a day it is open turns a customer away at the door, and it is the
+ *  kind of error that outlives the page once Google has cached it.
+ *
+ *  Seven days at the same hours is what she said. If that is seasonal — and
+ *  a seaside town usually is — it needs asking again before winter, because
+ *  this table is also what the JSON-LD tells search engines. */
 export type Hours = { open: number; close: number } | null;
 
 export const hours: readonly { day: string; short: string; hours: Hours }[] = [
-  { day: "Monday",    short: "Mon", hours: null },
+  { day: "Monday",    short: "Mon", hours: { open: 10, close: 16 } },
   { day: "Tuesday",   short: "Tue", hours: { open: 10, close: 16 } },
   { day: "Wednesday", short: "Wed", hours: { open: 10, close: 16 } },
   { day: "Thursday",  short: "Thu", hours: { open: 10, close: 16 } },

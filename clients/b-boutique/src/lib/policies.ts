@@ -108,27 +108,34 @@ const delivery: Policy = {
   blocks: [
     {
       heading: "Where we send to",
-      kind: "required",
-      body: [],
-      ask: "Do you post anywhere in the UK? Anywhere outside it? Is collection from the shop an option for online orders?",
+      kind: "derived",
+      body: [
+        "Anywhere in the United Kingdom. We do not post outside the UK at the moment.",
+      ],
     },
     {
       heading: "What delivery costs",
-      kind: "required",
-      body: [],
-      ask: "One flat price for every order is simplest to start with. Is there a spend above which it is free?",
+      kind: "derived",
+      body: [
+        "\u00a34.35 on any order, and free when you spend \u00a3120 or more.",
+        "The charge is shown in your bag before you pay, so there is nothing added at the last step.",
+      ],
     },
     {
       heading: "When it is sent",
-      kind: "required",
-      body: [],
-      ask: "How soon after an order do you get to the post office — same day, next working day, twice a week? Say what is actually true on a busy week, not the best case.",
+      kind: "derived",
+      body: [
+        "We aim to post your order the next working day.",
+        "The shop is open seven days a week, but the post office is not, so an order placed late on a Saturday usually goes on the Monday.",
+      ],
     },
     {
       heading: "Who carries it",
-      kind: "required",
-      body: [],
-      ask: "Royal Mail, a courier, or both? Tracked or not? A customer asking 'where is it' needs an answer.",
+      kind: "derived",
+      body: [
+        "Royal Mail.",
+        `If your order has not turned up when you expected it, ring the shop on ${phoneDisplay} and we will tell you when it went and how it was sent.`,
+      ],
     },
     {
       heading: "The longest we can take",
@@ -193,9 +200,12 @@ const returns: Policy = {
     },
     {
       heading: "Who pays to send it back",
-      kind: "required",
-      body: [],
-      ask: "The law lets you make the customer pay return postage on a change of mind — but ONLY if you tell them before they order, which is what this page is for. If you would rather cover it, say so. Either answer is fine; not answering is what causes the argument. (A faulty item is always at your cost, whatever you decide here.)",
+      kind: "derived",
+      body: [
+        "If you have simply changed your mind, the return postage is yours to pay. We are telling you here, before you order, because the law only lets us ask for it if we do.",
+        "If the piece is faulty, or is not what was described, we pay \u2014 that is your right and nothing on this page changes it.",
+        "Get proof of posting. Until it reaches us it is still your parcel, and proof of posting is free at the counter.",
+      ],
     },
     {
       heading: "Where to send it",
@@ -207,21 +217,27 @@ const returns: Policy = {
     },
     {
       heading: "Anything that cannot come back",
-      kind: "required",
-      body: [],
-      ask: "Pierced earrings and anything sealed for hygiene are the usual ones a boutique excludes, and the law does allow certain exclusions — but only where they genuinely apply. Do you want any, and exactly which? We will not write one you have not asked for.",
+      kind: "derived",
+      body: [
+        "Nothing is excluded. Everything we sell online can be returned within the 14 days set out above.",
+      ],
     },
     {
       heading: "Exchanges",
-      kind: "required",
-      body: [],
-      ask: "Do you offer them at all? Given most pieces are one of one, 'no, but here is a refund' may be the honest answer and it is a perfectly good one.",
+      kind: "derived",
+      body: [
+        "We do not do exchanges on online orders. Most pieces here are one of one, so there is usually nothing to exchange into.",
+        "Send it back for a refund instead, and order the one you want. That is quicker than an exchange and you are not waiting on us.",
+      ],
     },
     {
       heading: "Bought in the shop rather than online",
-      kind: "required",
-      body: [],
-      ask: "Everything above is online-only — a customer who buys over the counter has no automatic right to change their mind, so whatever you offer in the shop is your own goodwill policy. What is it? Worth stating, because people assume the online rules apply and they do not.",
+      kind: "derived",
+      body: [
+        "Everything above applies to orders placed on this website. Buying over the counter is different: you have had the chance to see the piece and try it on, so there is no automatic right to change your mind.",
+        "What we offer in the shop, as our own goodwill, is an exchange or a credit note. That is not the law \u2014 it is what B Boutique chooses to do.",
+        "Your rights if something is faulty are exactly the same either way, in the shop or online.",
+      ],
     },
   ],
 };
@@ -246,21 +262,25 @@ const terms: Policy = {
     },
     {
       heading: "The trading name behind the shop",
-      kind: "required",
-      body: [],
-      ask: "Are you a sole trader or a limited company? If it is a company, we need the registered name, the company number and the registered office address, because an online shop has to display them. If you are a sole trader, your own name is what goes here.",
+      kind: "derived",
+      body: [
+        "B Boutique is a sole trader business trading as B Boutique Cleethorpes. There is no company number because it is not a limited company \u2014 which is entirely normal for a shop this size.",
+        `The trading address is ${addressLines.join(", ")}, and the telephone number is ${phoneDisplay}.`,
+      ],
     },
     {
       heading: "When the order becomes a contract",
       kind: "required",
       body: [],
-      ask: "Standard wording, and it protects you: 'Your order is an offer to buy. The contract is formed when we confirm we have your piece and it is on its way — not when the payment goes through.' That single sentence is what lets you refund somebody lawfully when a one-of-one piece sold in the shop an hour earlier. Say yes and we will use it, or tell us how you would rather it read.",
+      ask: "ASKED 2026-09-20. The answer was that it will not happen, and worst case she will organise it — which is a plan for the situation, not a term for this page. It leaves the page saying nothing about when the contract forms, and the default is then that it forms when the payment goes through. That is the WORSE position for her: it means a refund on a piece that sold over the counter an hour earlier is her breaking a contract rather than declining an offer. The wording protects her and costs nothing. Worth putting to her once more, in those words: 'Your order is an offer to buy. The contract is formed when we confirm we have your piece and it is on its way — not when the payment goes through.' If she still says no, that is her decision and this block comes out — but it should be a decision, not a gap.",
     },
     {
       heading: "Prices and VAT",
-      kind: "required",
-      body: [],
-      ask: "Are you VAT registered? If so we need the number, and the prices shown will say they include VAT. If not, the page simply says the price is the price and no VAT is charged — which is also completely normal for a shop this size.",
+      kind: "derived",
+      body: [
+        "B Boutique is not VAT registered, so no VAT is charged and none is shown separately. The price you see is the price you pay.",
+        "Delivery is charged on top and is shown in your bag before you pay.",
+      ],
     },
     {
       heading: "How you pay",
@@ -277,7 +297,7 @@ const terms: Policy = {
       heading: "If a piece has already gone",
       kind: "required",
       body: [],
-      ask: "This is the same question as the oversell one on your list, and the answer belongs here as a term as well as a promise. Refund straight away and ring to apologise, or ring first and offer something similar? Your words.",
+      ask: "ASKED 2026-09-20. The answer was 'sorted', which is a reassurance to us rather than a sentence a customer can read. This block needs the actual words she would say to somebody whose order she cannot fill: refund straight away and ring to apologise, or ring first and offer something similar? Two sentences of hers is all it takes, and it goes on the page verbatim.",
     },
     {
       heading: "None of this affects your legal rights",
@@ -291,9 +311,11 @@ const terms: Policy = {
     },
     {
       heading: "Which country's law applies",
-      kind: "required",
-      body: [],
-      ask: "For a shop trading in Cleethorpes the ordinary answer is 'the law of England and Wales, and you can bring a claim in the English courts — and if you live elsewhere in the UK, the consumer protection of where you live still applies to you.' Confirm that is what you want and we will use it.",
+      kind: "derived",
+      body: [
+        "These terms are governed by the law of England and Wales, and a claim can be brought in the English courts.",
+        "If you live in Scotland or Northern Ireland, the consumer protection of where you live still applies to you. Nothing here takes that away.",
+      ],
     },
     {
       heading: "If something goes wrong",
@@ -394,13 +416,15 @@ const privacy: Policy = {
       heading: "How long the shop keeps things",
       kind: "required",
       body: [],
-      ask: "How long do you keep an enquiry email — a few months, a year? And once orders start, how long do you keep the record? There is a real answer: HMRC generally expects business records to be kept for six years, so order records usually stay that long, but enquiry emails are your choice.",
+      ask: "PART-ANSWERED 2026-09-20: 'six months'. That works for enquiry emails and is entirely her choice. It does NOT work for order records — HMRC generally expects business records to be kept for six years, so deleting an order at six months would put her on the wrong side of that, not the right side of data protection. The two need separating before this goes live: enquiries six months, order records six years. Needs her to confirm the split rather than us assuming it, because it is a statement about what her business actually does.",
     },
     {
       heading: "Who to ask, and how",
-      kind: "required",
-      body: [],
-      ask: "A privacy notice has to name who is responsible for the information and give a way to contact them. That means the same trading name as the terms page, and an email address to send a request to — the enquiries address is fine.",
+      kind: "derived",
+      body: [
+        `B Boutique Cleethorpes, a sole trader business at ${addressLines.join(", ")}, is responsible for the information on this page.`,
+        `Email ${shop.email} or ring ${phoneDisplay}. Either reaches the same person.`,
+      ],
     },
     {
       heading: "What you can ask us to do",
@@ -445,9 +469,11 @@ export const trader = {
   name: shop.name,
   address: addressLines,
   phone: phoneDisplay,
-  /** CLIENT INPUT REQUIRED: sole trader or limited company, and the
-   *  registered number and registered office if there is one. */
-  legalEntity: "",
+  /** CONFIRMED BY THE CLIENT 2026-09-20: a sole trader, trading as
+   *  "B Boutique Cleethorpes". Not a limited company, so there is no
+   *  company number and no registered office to display — the trading
+   *  address in `shop.ts` is the address that goes on the terms page. */
+  legalEntity: "Sole trader, trading as B Boutique Cleethorpes",
   /** CLIENT INPUT REQUIRED — see shop.email, empty for the same reason. */
   email: shop.email,
 };

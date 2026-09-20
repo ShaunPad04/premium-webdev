@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 
-import { DELIVERY_P, productBySlug } from "@/lib/catalogue";
+import { deliveryFor, productBySlug } from "@/lib/catalogue";
 
 /* Start a payment.
  *
@@ -119,7 +119,9 @@ export async function POST(request: NextRequest) {
     priced.push({ name: product.name, size, qty, priceP: product.priceP });
   }
 
-  const totalP = subtotalP + DELIVERY_P;
+  /* Delivery is worked out here, on the server, from the server-priced
+     subtotal — never taken from the browser. Same function the bag uses. */
+  const totalP = subtotalP + deliveryFor(subtotalP);
 
   const apiKey = process.env.SUMUP_API_KEY;
   const merchantCode = process.env.SUMUP_MERCHANT_CODE;

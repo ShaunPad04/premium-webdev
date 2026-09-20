@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
-import { DELIVERY_P, productBySlug } from "./catalogue";
+import { deliveryFor, productBySlug } from "./catalogue";
 
 /* The bag.
  *
@@ -168,7 +168,9 @@ export function useCart() {
       const p = productBySlug(l.slug);
       return p ? sum + p.priceP * l.qty : sum;
     }, 0);
-    const deliveryP = count === 0 ? 0 : DELIVERY_P;
+    /* One definition of the delivery rule, shared with the checkout, so the
+       price shown in the bag and the price actually charged cannot drift. */
+    const deliveryP = count === 0 ? 0 : deliveryFor(subtotalP);
     return {
       lines,
       count,

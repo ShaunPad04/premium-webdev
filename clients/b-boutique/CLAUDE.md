@@ -57,12 +57,85 @@ costs a review cycle and risks undoing a deliberate fix.
 | 7 | **Hero parallax: ~32px desktop, ~11px mobile.** | Same travel eats far more of a taller crop seen through a shorter window, hence the two figures. |
 | 9 | **The address is confirmed: 18 Sea View Street, Cleethorpes, DN35 8EZ.** | Client-confirmed 2026-09-02. The original brief said DN35 8HY; that is wrong and must never return. Neither may "6 Market Street", which belongs to a different project. Every address on the site derives from `shop.ts` — change it there or nowhere. The **parking claim** ("on-street parking at the top, Market Place car park a two-minute walk") was a separate, still-UNVERIFIED claim and has now been removed from both Visit and the FAQ. Do not reinstate it, or invent parking availability, prices, walking times, street rules or car park names, until the client confirms it in their own words. |
 | 8 | **No hero scale, no hero pinning.** | The 140vh sticky track is gone: it moved nothing for 40vh and put a blank spacer before the brand rail. The hero is exactly 100svh and the rail begins at its bottom edge. |
-| 10 | **The phone number is confirmed: 07305534342.** | Given by the client in chat, 2026-09-06. It lives in `shop.ts` and nowhere else; `phoneDisplay` groups it as `07305 534342` for reading while `tel:` links use the raw digits. **There is still no email address** — `shop.email` is empty on purpose, nothing on the site prints one, and none may be guessed. |
+| 10 | **The phone number is confirmed: 07305534342.** | Given by the client in chat, 2026-09-06. It lives in `shop.ts` and nowhere else; `phoneDisplay` groups it as `07305 534342` for reading while `tel:` links use the raw digits. **Email confirmed 2026-09-20: bboutiquecleethorpes@gmail.com**, and she asked for it to be SHOWN on the site rather than kept behind the form. Setting it does not wire up the contact form — that still needs `CONTACT_TO`, `CONTACT_FROM` and `RESEND_API_KEY`. |
 | 11 | **The contact form must never report success without a send.** | `/api/contact` answers 503 `not_configured` until `CONTACT_TO`, `CONTACT_FROM` and `RESEND_API_KEY` all exist, and the form shows a plainly worded failure plus the phone number. Do not "fix" this by faking a thank-you, by removing the form, or by pointing it at a guessed address. Setting those three variables is a launch BLOCKER; see `.env.example`. |
 | 12 | **Money is integers in pence, everywhere.** | `0.1 + 0.2` is not `0.3` in binary floating point, and a basket totalling £74.99999999 is a rounding bug waiting to be charged to somebody. Prices are `priceP` integers from the catalogue to the provider; the single division is `formatPrice` for display, and one more at the very edge where SumUp's API wants a decimal. Never store, add or compare money as pounds. |
 | 13 | **The server prices the bag, never the browser.** | `/api/checkout` takes slugs, sizes and quantities and ignores anything else the client sends. A total posted from a browser is a total somebody sets to 1p. Verified: a request carrying a forged `priceP` is accepted and the field is simply not read. |
 | 14 | **The shop must never confirm an order it did not take.** | `/api/checkout` answers 503 `not_configured` until `SUMUP_API_KEY`, `SUMUP_MERCHANT_CODE` and `NEXT_PUBLIC_SITE_URL` all exist, and the bag says plainly that nothing has been charged. Landing on `/checkout/success` means a browser followed a URL, not that money moved, so **the page asks SumUp rather than reading the URL**: `GET /v0.1/checkouts?checkout_reference=…`, authenticated, server-side (`lib/sumup.ts`). PAID, FAILED/EXPIRED and "we could not find out" are three different pages, and the bag is emptied on PAID alone. **Correction, 2026-09-08:** this row previously said a webhook was the proof. SumUp publishes no payment webhook — see the SumUp section below — so the query is the mechanism, not a placeholder for one. |
 | 15 | **Every price in `lib/catalogue.ts` is invented.** | Nobody has supplied a price list, a size run or a stock count. Under the Consumer Protection from Unfair Trading Regulations a displayed price is what a customer is entitled to pay, so these are more dangerous than the invented testimonials. `demo: true` on every product drives a visible notice; the site is noindex; and no payment provider is configured. **Replace every price with the client's own before any of those three change.** |
+
+## What the client confirmed — 2026-09-20
+
+Collected in the shop and returned through the shop-visit form. Everything
+below is in her words; anything she did not answer is still a gap, not a
+default.
+
+| | Confirmed |
+|---|---|
+| Legal identity | **Sole trader**, trading as **B Boutique Cleethorpes**. No company number — not a limited company. |
+| VAT | **Not registered.** The page says the price is the price. |
+| Email | **bboutiquecleethorpes@gmail.com**, and to be SHOWN on the site. |
+| Opening hours | **Seven days, 10–4.** Monday was previously in `shop.ts` as CLOSED and was never confirmed by anybody — corrected. A shop shown shut on a day it is open turns customers away at the door. |
+| Delivery | **£4.35, free at £120+**, UK only, next working day, Royal Mail. |
+| Returns | Customer pays return postage on a change of mind · back to the shop · **no exclusions** · **no exchanges** online · in-shop goodwill is exchange or credit note. |
+| Governing law | England and Wales. |
+| Till | **She types the amount — she does not tap the product.** |
+| SumUp | Online checkout confirmed enabled. |
+
+### What this decided
+
+**The SumUp transaction poll is dead.** She types amounts, so counter sales
+carry no product line and there is nothing for the website to read. `/stock`
+is not a fallback — it is the mechanism, and the only one. Do not revisit the
+poll unless she changes how she works the till.
+
+**Delivery is now real.** `DELIVERY_P = 435`, `FREE_DELIVERY_OVER_P = 12000`,
+`DELIVERY_IS_DEMO = false`. One function, `deliveryFor(subtotalP)`, is used by
+both the bag and `/api/checkout`, so the price quoted and the price charged
+cannot drift. **The threshold is compared against the subtotal, not the
+total** — comparing against a total that includes delivery creates a loop
+where £115.65 + £4.35 qualifies for free delivery and then no longer does.
+
+**Twelve of the fifteen policy slots are filled.** Three remain, and each one
+carries what she actually said in its `ask`, so the gap is specific:
+
+- **When the order becomes a contract** — she said it "won't happen, worst
+  case organise it". That is a plan for the situation, not a term. Leaving it
+  blank means the contract forms at payment, which is the WORSE position for
+  her: refunding a piece that sold over the counter becomes breaking a
+  contract rather than declining an offer. Worth one more ask.
+- **If a piece has already gone** — she said "sorted". Needs the actual
+  sentence a customer would read.
+- **How long the shop keeps things** — she said six months. Fine for enquiry
+  emails, wrong for order records: HMRC generally expects business records
+  kept six years. The two need separating, by her, not by us.
+
+### Still missing, and it is the big one
+
+**No product data at all.** The form came back with a single row reading
+`X | no colour | no price | no sizes/counts`. Every price in `catalogue.ts` is
+still invented, no colour is confirmed, and no count exists. Until that
+arrives the shop cannot take money, and 26 products plus 26 colours are two
+of the eight remaining launch blockers.
+
+**No wholesalers named** ("no."), which leaves the brands rail marked NOT
+CONFIRMED and leaves the supplier-imagery plan with no source. She answered
+that image permission is "already held" — held from whom, if no supplier is
+named? That contradiction needs resolving before any supplier photograph goes
+on the site.
+
+**ICO: not registered.** She confirmed this. A shop taking names, addresses
+and emails for orders is processing personal data, and most UK businesses
+doing that must register with the ICO and pay the annual fee. The privacy page
+names the ICO as the regulator to complain to. This is not a developer's
+decision and not a blocker the code can carry — it is a thing to tell her
+plainly before launch.
+
+**The merchant code `MCA7CUNT-3769` does not match SumUp's format.** Every
+example in their specification is eight alphanumeric characters with no
+hyphen (`M2DDT39A`, `MH4H92C7`). This may be a different identifier entirely.
+Verify with `pnpm sumup:code` against her API key before it goes into Vercel —
+a wrong merchant code fails every checkout.
 
 ## Search
 
