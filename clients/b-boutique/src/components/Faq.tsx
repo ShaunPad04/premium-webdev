@@ -20,6 +20,25 @@ import { faq, faqTemporary } from "@/lib/faq";
  * Rules, not boxes: each row is a hairline and some breathing room. No card,
  * no background, no radius, no shadow.
  *
+ * ── Index and facing page ─────────────────────────────────────────────────
+ * On a wide screen this is NOT an accordion. The questions are an index down
+ * the left, under the heading, and the open answer is set in the facing
+ * column — which is the half of the section that used to be empty. The
+ * previous version put an eight-row accordion beside a heading that stopped
+ * a third of the way down, leaving roughly 500px of dead cream, a plus sign
+ * 700px from the question it belonged to, and nothing open, so a visitor
+ * scrolling past learned nothing at all. That is a support-centre layout, and
+ * the client called it generic twice; the first fix changed the typeface,
+ * which was treating a structural problem as a typographic one.
+ *
+ * It is still the same markup and still no JavaScript. The answers are
+ * positioned into the facing column by CSS; `name="faq"` already guarantees
+ * exactly one is open, so one panel is all that can ever show. Below 1024px
+ * the positioning is dropped and it stacks as an ordinary accordion, which is
+ * the right shape on a phone.
+ *
+ * The first row carries `open`, so the section always says something.
+ *
  * ── The blurred reveal ────────────────────────────────────────────────────
  * The answer resolves out of a blur, a piece at a time, when a row opens.
  *
@@ -74,14 +93,18 @@ export function Faq() {
           {faq.map((item, i) => {
             const words = item.a.split(" ");
             return (
-              <details key={item.q} name="faq" className="faq-row">
+              /* `open` on the first row only. An index whose facing page is
+                 blank is a worse version of the problem this replaces. */
+              <details key={item.q} name="faq" className="faq-row" open={i === 0}>
                 <summary className="faq-summary">
-                  <span className="faq-n">{String(i + 1).padStart(2, "0")}</span>
                   <span className="faq-q">{item.q}</span>
                   {/* One plus that turns 45° into a cross — the same two strokes
-                      rotating, so the shape morphs rather than swapping glyph. */}
+                      rotating, so the shape morphs rather than swapping glyph.
+                      It sits directly after the question now. At the far right
+                      of a 1440 row it was 700px from the words it applied to,
+                      which is an affordance pointing at nothing. */}
                   <span className="faq-icon" aria-hidden="true">
-                    <svg viewBox="0 0 16 16" width="15" height="15" fill="none">
+                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none">
                       <path d="M8 1.5v13M1.5 8h13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
                     </svg>
                   </span>

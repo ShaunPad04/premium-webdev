@@ -1764,11 +1764,46 @@ body {
 
 .faq-inner { display: flex; flex-direction: column; gap: 44px; }
 
+/* ── Index and facing page, 1024px and up ──
+   The heading, the index and the notice live on the left; an opened answer is
+   set in the column facing it. What was here before was a 36% intro beside a
+   64% accordion, and because the intro stopped a third of the way down while
+   eight rows ran on beside it, roughly 500px of the section was empty cream.
+
+   ── Why the row is a grid and not a positioned panel ──
+   The first version of this absolutely positioned each answer into the right
+   column. It measured correctly and screenshotted correctly, and it was
+   broken for almost every real visitor.
+
+   `.faq-row` carries a scroll-driven reveal, and once that has run the row
+   holds `transform: matrix(1, 0, 0, 1, 0, 0)` — an IDENTITY transform, which
+   changes nothing visually and makes the element a containing block for
+   absolutely positioned descendants all the same. So the panel resolved its
+   offsets against its own row and landed on top of the question that opened
+   it. Measured: panel x=412 with motion on, x=769 with motion reduced.
+
+   It looked right in every screenshot because the capture harness runs with
+   `reducedMotion: "reduce"`, which switches that transform off. The harness
+   was hiding it.
+
+   A grid on the row cannot be broken this way: the answer is a real grid item
+   in normal flow, and no ancestor transform can move it. */
 @media (min-width: 1024px) {
-  .faq-inner { flex-direction: row; align-items: flex-start; gap: clamp(48px, 5vw, 104px); }
-  .faq-intro { flex: 0 0 36%; }
-  .faq-list  { flex: 1 1 64%; min-width: 0; }
+  .faq-inner { display: block; gap: 0; }
+  .faq-intro { width: 46%; }
+  .faq-list  { margin-top: 40px; }
+
+  /* <details> as the grid: <summary> takes column one, and the browser's own
+     ::details-content box takes column two. */
+  .faq-row {
+    display: grid;
+    grid-template-columns: minmax(0, 46%) minmax(0, 1fr);
+    column-gap: clamp(32px, 4vw, 72px);
+    align-items: start;
+  }
+  .faq-summary { grid-column: 1; }
 }
+
 
 .faq-eyebrow {
   font-size: 9px;
@@ -1817,23 +1852,24 @@ body {
 .faq-row { border-top: 1px solid var(--bb-light-border); }
 .faq-row:last-of-type { border-bottom: 1px solid var(--bb-light-border); }
 
+/* Flex, not grid, and that is the whole point of the change: in a grid with a
+   1fr question column the plus was pinned to the far right of the row, 700px
+   from the words it applied to at 1440. In a flex row it follows the question
+   immediately, which is where an affordance belongs.
+
+   The 01-08 number column is gone. It added a second grey column down the
+   left and told the reader nothing the list position did not already say. */
 .faq-summary {
-  display: grid;
-  grid-template-columns: 44px 1fr 44px;
-  /* Baseline-ish rather than centred: with the question now up to 27px and
-     the number at 13px, centring hung the number in the middle of a two-line
-     question. `start` plus a nudge puts it on the question's first line. */
-  align-items: start;
-  gap: 14px;
-  min-height: 96px;
-  padding-block: clamp(22px, 2.4vw, 30px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding-block: 13px;
   cursor: pointer;
   list-style: none;
 }
-/* Optical alignment. The cap height of 27px Bodoni sits a few pixels below
-   the top of its line box; 13px Inter sits higher in its own. Measured at
-   1440 rather than eyeballed: 6px puts the two on the same optical line. */
-.faq-n, .faq-icon { margin-top: 6px; }
+.faq-q { flex: 0 1 auto; }
+.faq-icon { flex: none; }
 .faq-summary::-webkit-details-marker { display: none; }
 
 /* Hover used to be `opacity: .68` on the whole row, which fades the question
@@ -1849,8 +1885,6 @@ body {
    own vocabulary — this page is built out of hairlines — rather than a new
    idea imported for the occasion, and it is transform-only, so it costs no
    layout and cannot shift the eight rows below it. */
-.faq-summary:hover .faq-n,
-.faq-summary:focus-visible .faq-n,
 .faq-summary:hover .faq-icon,
 .faq-summary:focus-visible .faq-icon { color: var(--bb-black-soft); }
 
@@ -1912,22 +1946,6 @@ body {
 /* The ring is drawn just inside the row, so it is not clipped by the rules. */
 .faq-summary:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
 
-@media (min-width: 640px) { .faq-summary { grid-template-columns: 56px 1fr 56px; } }
-
-/* The number grew with the question. At 9px beside 27px Bodoni it read as a
-   footnote that had drifted into the wrong column; at 13px it is a margin
-   number, which is what an index has. Tabular so eight of them form a true
-   vertical edge rather than a ragged one. */
-.faq-n {
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.1em;
-  color: var(--bb-grey-dark);
-  font-variant-numeric: tabular-nums;
-  transition: color var(--bb-dur-quick) var(--bb-ease);
-}
-
 /* Bodoni, and large.
    This used to be Inter at 15px, on the argument that the heading owns the
    editorial serif and the questions are utility. The client's read on the
@@ -1943,7 +1961,10 @@ body {
    between the two rather than between the section and its own contents. */
 .faq-q {
   font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
-  font-size: clamp(19px, 2.1vw, 27px);
+  /* Smaller than the 27px it was. That size was set for a question sitting in
+     a 64%-wide row; in the index column it would wrap every second question
+     onto two lines and turn a list back into a stack of paragraphs. */
+  font-size: clamp(18px, 1.45vw, 22px);
   font-weight: 400;
   line-height: 1.18;
   letter-spacing: -0.015em;
@@ -1966,7 +1987,6 @@ body {
     color var(--bb-dur-quick) var(--bb-ease);
 }
 .faq-row[open] .faq-icon { transform: rotate(45deg); color: var(--bb-black-soft); }
-.faq-row[open] .faq-n { color: var(--bb-black-soft); }
 
 /* Answers sit under the QUESTION column, not the number — the grid holds. */
 /* The answer hangs under the QUESTION column, not the number — so its left
@@ -1974,24 +1994,33 @@ body {
    from 8px to 14px when the rows opened up, and left at 44 the answers sat
    6px proud of every question above them: close enough to look like a mistake
    rather than an indent. */
+/* The 58/70px left padding was clearing a number column that no longer
+   exists. The answer now sits under its own question on a phone, and in the
+   facing column on a wide screen. */
 .faq-answer {
-  padding: 0 58px 30px 58px;
-  max-width: 680px;
+  padding: 0 0 26px;
+  max-width: 62ch;
   font-size: 15px;
   line-height: 1.72;
   color: var(--bb-grey-dark);
 }
-@media (min-width: 640px) { .faq-answer { padding-left: 70px; padding-right: 70px; } }
 
+/* A rule and small caps, not a bordered box. This was the only boxed element
+   in a section built entirely out of hairlines, which made a standing note
+   read as an error state. The warning is unchanged and still load-bearing:
+   seven of the eight answers here are copy written for the demo, and one of
+   them published as settled policy is a promise the shop has to honour. */
 .faq-pending {
-  margin-top: 10px;
-  font-size: 11px;
+  margin-top: 22px;
+  padding-top: 12px;
+  border-top: 1px solid var(--bb-light-border);
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--bb-black-soft);
-  border: 1px solid rgba(10, 10, 10, 0.22);
-  padding: 7px 10px;
-  display: inline-block;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+  max-width: 34ch;
 }
 .faq-answer p + .faq-pending { margin-top: 14px; }
 
@@ -2077,6 +2106,38 @@ body {
   .faq-row[open] .faq-w {
     opacity: 0;
     filter: blur(10px);
+  }
+}
+
+/* Which question you are reading. On a phone the answer sits directly under
+   its question and nothing needs saying; in a facing-page layout the answer
+   is half a screen away, so the index has to show where it came from.
+
+   The closed questions step back rather than the open one shouting — #646460
+   on cream is 5.44:1, comfortably AA, so nothing becomes hard to read. Note
+   the direction: this dims the rows you are NOT reading. The hover treatment
+   above records getting this backwards once, by fading the row being pointed
+   at. */
+@media (min-width: 1024px) {
+  .faq-q { color: var(--bb-grey-dark); transition: color 200ms var(--bb-ease), transform 200ms var(--bb-ease); }
+  .faq-row[open] .faq-q { color: var(--bb-black); }
+  .faq-summary:hover .faq-q,
+  .faq-summary:focus-visible .faq-q { color: var(--bb-black); }
+}
+
+/* ── The facing column, continued ──
+   Down here rather than with the layout above because a media query adds NO
+   specificity: the base `.faq-answer` rules sit later in the file and would
+   otherwise win on source order alone, leaving the panel with its phone
+   padding and 15px type on a 1440 screen. */
+@media (min-width: 1024px) {
+  .faq-answer {
+    padding: 0 0 24px;
+    max-width: 44ch;
+    /* This is a reading column now, not a disclosure tucked under a row. */
+    font-size: 17px;
+    line-height: 1.78;
+    color: var(--bb-black-soft);
   }
 }
 
