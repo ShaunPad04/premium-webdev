@@ -3933,6 +3933,11 @@ body {
   background: var(--bb-white-pure);
   color: var(--bb-black);
   padding: 0 0 96px;
+  /* Built phone-first and then opened on a laptop, where every row ran the
+     full width of the screen and the disabled Sold button became a grey slab
+     most of a metre wide. A stock list is a column whatever it is read on. */
+  max-width: 720px;
+  margin-inline: auto;
 }
 
 .st-top {
@@ -4072,7 +4077,10 @@ body {
   -webkit-appearance: none;
 }
 .st-sold {
+  /* Grows to fill a phone row, then stops. Past this it stops reading as a
+     button and starts reading as a bar, which is what it looked like. */
   flex: 1 1 auto;
+  max-width: 240px;
   background: var(--bb-black);
   color: var(--bb-white);
   border: 1px solid var(--bb-black);
