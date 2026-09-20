@@ -108,8 +108,23 @@ const robots: Metadata["robots"] = indexable
       googleBot: { index: false, follow: false, noimageindex: true },
     };
 
+/* The site's own origin, which every canonical URL and every Open Graph image
+ * URL on the site is resolved against.
+ *
+ * This was hardcoded to https://bboutique.co.uk — a domain nobody ever bought.
+ * The real one, registered 2026-09-20, is bboutiqueclee.com. A metadataBase
+ * pointing at a domain the business does not own is not a cosmetic error: it
+ * puts a canonical tag on every page naming somebody else's address, and hands
+ * every social preview an image URL that does not resolve.
+ *
+ * NEXT_PUBLIC_SITE_URL wins where it is set, so a preview deployment can
+ * describe itself rather than claiming to be production. It is read at build
+ * time and must be absolute, so a malformed value is caught by the build
+ * rather than by a customer. */
+const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_URL || "https://bboutiqueclee.com";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://bboutique.co.uk"),
+  metadataBase: new URL(SITE_ORIGIN),
   title: {
     default: "B Boutique — Womenswear & Homeware, Sea View Street, Cleethorpes",
     template: "%s — B Boutique, Cleethorpes",

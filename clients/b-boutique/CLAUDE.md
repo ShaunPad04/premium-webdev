@@ -162,6 +162,33 @@ Setting it alone achieves nothing: `/api/checkout` answers 503 until
 `SUMUP_API_KEY`, `SUMUP_MERCHANT_CODE` and `NEXT_PUBLIC_SITE_URL` are ALL
 present, and the last of those is waiting on the domain.
 
+## The domain — bboutiqueclee.com, registered 2026-09-20
+
+Bought through Vercel, auto-renewing 20 Sept 2027. Attached to the
+`b-boutique` project as the apex, with `www.bboutiqueclee.com` added as a
+308 redirect to it. Both verified immediately — a Vercel-registered domain
+needs no DNS work.
+
+**`metadataBase` was wrong and is now right.** It had been hardcoded to
+`https://bboutique.co.uk`, a domain nobody ever bought, which put a canonical
+tag naming somebody else's address on every page and gave every social
+preview an image URL that does not resolve. It now reads
+`NEXT_PUBLIC_SITE_URL` and falls back to `https://bboutiqueclee.com`.
+Verified in the built HTML: `/shop/camel-blazer` emits
+`<link rel="canonical" href="https://bboutiqueclee.com/shop/camel-blazer">`.
+
+**`NEXT_PUBLIC_SITE_URL` IS DELIBERATELY NOT SET IN VERCEL.** This is the
+important part. `SUMUP_API_KEY` and `SUMUP_MERCHANT_CODE` are both already
+set on Production and Preview — confirmed against the project's environment
+variables. `/api/checkout` answers 503 only because the third variable is
+missing. **Setting it turns the shop on**, and the prices it would charge are
+the invented ones in `lib/catalogue.ts`.
+
+Locked decision 15 names three things standing between those prices and being
+charged to a real person. One of them is now one environment variable away
+from gone. The order is: her real prices first, then
+`NEXT_PUBLIC_SITE_URL`, then a test card, and `ALLOW_INDEXING` last of all.
+
 ## Search
 
 `lib/search.ts` filters twenty-six products in the browser. No index, no
