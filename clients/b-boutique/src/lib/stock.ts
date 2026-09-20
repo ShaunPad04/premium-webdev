@@ -66,45 +66,73 @@ export type StockRow = {
 };
 
 /* ── Schema ──────────────────────────────────────────────────────────────
- * Created on demand rather than through a migration tool. One table and one
- * log at this size does not justify a migration framework, and `IF NOT
- * EXISTS` is idempotent — the alternative is a dependency and a build step
- * for a schema that will change perhaps twice.
+ * Created on demand rather than through a migration tool. Two tables and one
+ * index does not justify a migration framework, and `IF NOT EXISTS` is
+ * idempotent.
+ *
+ * ── ONE STATEMENT PER CALL, and this is not a style preference ───────────
+ * The first version sent all three in a single string and every request to
+ * /stock died with:
+ *
+ *     NeonDbError: cannot insert multiple commands into a prepared statement
+ *
+ * Neon's HTTP driver sends each call as one prepared statement, and Postgres
+ * will not parse several commands in one of those (error 42601, raised in
+ * exec_parse_message). It is not a Neon limitation to work around — it is how
+ * the extended query protocol works, and the fix is to send them separately.
+ *
+ * This was shipped unverified because there was no database to run it
+ * against, and it failed the first time a real one appeared. Worth
+ * remembering: "it compiles and the types line up" is not the same as "it
+ * has been run".
  *
  * `stock_log` is not an afterthought. When a count is wrong — and it will be,
  * because a human is tapping a phone in a shop — the only useful question is
  * "what happened to this piece?", and that needs a record of every change and
  * where it came from. It is also the beginning of the order record the shop
  * does not yet have. */
-const SCHEMA = `
-  CREATE TABLE IF NOT EXISTS stock (
-    id           TEXT PRIMARY KEY,
-    slug         TEXT NOT NULL,
-    size         TEXT NOT NULL,
-    colour       TEXT NOT NULL DEFAULT '',
-    qty          INTEGER NOT NULL DEFAULT 0 CHECK (qty >= 0),
-    restockable  BOOLEAN NOT NULL DEFAULT FALSE,
-    updated_at   TIMESTAMPTZ NOT NULL DEFAULT now()
-  );
+const SCHEMA: readonly string[] = [
+  `CREATE TABLE IF NOT EXISTS stock (
+     id           TEXT PRIMARY KEY,
+     slug         TEXT NOT NULL,
+     size         TEXT NOT NULL,
+     colour       TEXT NOT NULL DEFAULT '',
+     qty          INTEGER NOT NULL DEFAULT 0 CHECK (qty >= 0),
+     restockable  BOOLEAN NOT NULL DEFAULT FALSE,
+     updated_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+   )`,
+  `CREATE TABLE IF NOT EXISTS stock_log (
+     id         BIGSERIAL PRIMARY KEY,
+     variant_id TEXT NOT NULL,
+     delta      INTEGER NOT NULL,
+     qty_after  INTEGER NOT NULL,
+     reason     TEXT NOT NULL,
+     note       TEXT,
+     at         TIMESTAMPTZ NOT NULL DEFAULT now()
+   )`,
+  `CREATE INDEX IF NOT EXISTS stock_log_variant ON stock_log (variant_id, at DESC)`,
+];
 
-  CREATE TABLE IF NOT EXISTS stock_log (
-    id         BIGSERIAL PRIMARY KEY,
-    variant_id TEXT NOT NULL,
-    delta      INTEGER NOT NULL,
-    qty_after  INTEGER NOT NULL,
-    reason     TEXT NOT NULL,
-    note       TEXT,
-    at         TIMESTAMPTZ NOT NULL DEFAULT now()
-  );
-
-  CREATE INDEX IF NOT EXISTS stock_log_variant ON stock_log (variant_id, at DESC);
-`;
+/* Three round trips is three too many to repeat on every request. Memoised
+ * per warm instance: a cold start pays for it once, and `IF NOT EXISTS` makes
+ * paying twice harmless anyway. Reset on failure so a transient error does
+ * not leave an instance believing a schema exists that does not. */
+let schemaReady: Promise<boolean> | null = null;
 
 export async function ensureSchema(): Promise<boolean> {
   const q = sql();
   if (!q) return false;
-  await q.query(SCHEMA);
-  return true;
+  if (schemaReady) return schemaReady;
+
+  schemaReady = (async () => {
+    for (const statement of SCHEMA) await q.query(statement);
+    return true;
+  })().catch((err) => {
+    schemaReady = null;
+    throw err;
+  });
+
+  return schemaReady;
 }
 
 /** Every variant the catalogue implies, given a row if it has one.
