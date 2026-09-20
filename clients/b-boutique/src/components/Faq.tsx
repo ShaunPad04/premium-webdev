@@ -20,24 +20,22 @@ import { faq, faqTemporary } from "@/lib/faq";
  * Rules, not boxes: each row is a hairline and some breathing room. No card,
  * no background, no radius, no shadow.
  *
- * ── Index and facing page ─────────────────────────────────────────────────
- * On a wide screen this is NOT an accordion. The questions are an index down
- * the left, under the heading, and the open answer is set in the facing
- * column — which is the half of the section that used to be empty. The
- * previous version put an eight-row accordion beside a heading that stopped
- * a third of the way down, leaving roughly 500px of dead cream, a plus sign
- * 700px from the question it belonged to, and nothing open, so a visitor
- * scrolling past learned nothing at all. That is a support-centre layout, and
- * the client called it generic twice; the first fix changed the typeface,
- * which was treating a structural problem as a typographic one.
+ * ── Editorial scale ───────────────────────────────────────────────────────
+ * The client called this section generic three times. The first fix changed
+ * the typeface. The second rebuilt the layout properly — an index with the
+ * answer in a facing column, no number gutter, no row shift. Both were real
+ * improvements and it was still eight hairline rows with a plus on each,
+ * which is the most common FAQ pattern on the web. Each round had made the
+ * existing pattern better instead of changing the pattern.
  *
- * It is still the same markup and still no JavaScript. The answers are
- * positioned into the facing column by CSS; `name="faq"` already guarantees
- * exactly one is open, so one panel is all that can ever show. Below 1024px
- * the positioning is dropped and it stacks as an ordinary accordion, which is
- * the right shape on a phone.
+ * So: questions at up to 44px Bodoni, a large ghosted numeral beside each
+ * one, hundred-pixel rows, and the answer opening underneath its own
+ * question. The section now reads as a magazine's information page rather
+ * than a support centre, and the work is done by scale and air rather than by
+ * anything drawn.
  *
- * The first row carries `open`, so the section always says something.
+ * Still the same markup, still no JavaScript, still a server component. The
+ * first row carries `open`, so the section always says something.
  *
  * ── The blurred reveal ────────────────────────────────────────────────────
  * The answer resolves out of a blur, a piece at a time, when a row opens.
@@ -97,15 +95,30 @@ export function Faq() {
                  blank is a worse version of the problem this replaces. */
               <details key={item.q} name="faq" className="faq-row" open={i === 0}>
                 <summary className="faq-summary">
+                  {/* Decorative, and aria-hidden for it. The list position is
+                      already carried by the order of the questions, and
+                      "zero three" announced before every one of them is noise
+                      to anybody listening. It is here for the composition —
+                      which is also why it was right to delete it from the
+                      52px rows it used to sit in, where it was neither
+                      decoration nor information. */}
+                  <span className="faq-n" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
                   <span className="faq-q">{item.q}</span>
                   {/* One plus that turns 45° into a cross — the same two strokes
                       rotating, so the shape morphs rather than swapping glyph.
                       It sits directly after the question now. At the far right
                       of a 1440 row it was 700px from the words it applied to,
                       which is an affordance pointing at nothing. */}
+                  {/* Two hairlines at the section's own weight, not a "+"
+                      glyph. The vertical one collapses as the row opens while
+                      the whole mark rotates, so a plus becomes a minus in one
+                      move rather than swapping one character for another. */}
                   <span className="faq-icon" aria-hidden="true">
-                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none">
-                      <path d="M8 1.5v13M1.5 8h13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+                      <path className="faq-icon-h" d="M2 12h20" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+                      <path className="faq-icon-v" d="M12 2v20" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
                     </svg>
                   </span>
                 </summary>
