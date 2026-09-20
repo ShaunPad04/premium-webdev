@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 import { deliveryFor, productBySlug } from "./catalogue";
+import { coloursFor } from "./variants";
 
 /* The bag.
  *
@@ -30,13 +31,35 @@ import { deliveryFor, productBySlug } from "./catalogue";
  * that changes identity on every read is an infinite render loop.
  *
  * ── What is stored ────────────────────────────────────────────────────────
- * Slug, size and quantity. NOT the price. A price copied into the bag is a
- * price that can be edited in devtools, and a price that goes stale the moment
+ * Slug, size, COLOUR and quantity. NOT the price.
+ *
+ * Colour is part of the line and part of its identity, not a label on it. The
+ * camel coat in a 12 and the black one in a 12 are two different things to
+ * own and two different things to sell, so they are two lines in the bag and
+ * two rows in the stock table — the same `variantId` in both places, which is
+ * what lets the bag, the checkout and her stock list talk about one garment
+ * without a second lookup table to keep in step.
+ *
+ * A piece whose colour the client has not confirmed carries `colour: ""`,
+ * which renders as nothing rather than as a guess.
+ *
+ * The price is NOT stored. A price copied into the bag is a price that can be
+ * edited in devtools, and a price that goes stale the moment
  * the catalogue changes; both are answered by looking it up on every read. The
  * server prices the bag again before charging — see app/api/checkout.
  */
 
-export type BagLine = { slug: string; size: string; qty: number };
+export type BagLine = {
+  slug: string;
+  size: string;
+  /** "" when the client has not confirmed a colour for this piece. */
+  colour: string;
+  qty: number;
+};
+
+/** Two lines are the same line when they are the same variant. */
+const same = (a: { slug: string; size: string; colour: string }, b: BagLine) =>
+  a.slug === b.slug && a.size === b.size && a.colour === b.colour;
 
 const KEY = "bb-bag-v1";
 const MAX_QTY = 10;
@@ -65,13 +88,20 @@ function parse(raw: string | null): readonly BagLine[] {
      is still sold in. */
   const lines = parsed.flatMap((entry): BagLine[] => {
     if (typeof entry !== "object" || entry === null) return [];
-    const { slug, size, qty } = entry as Record<string, unknown>;
+    const { slug, size, colour, qty } = entry as Record<string, unknown>;
     if (typeof slug !== "string" || typeof size !== "string") return [];
+    /* Lines written before the bag knew about colour have none. They are read
+       as the blank colour, which is exactly what every piece carries while no
+       colour is confirmed — so nothing in anybody's bag is lost today. The
+       moment a piece gains real colours, a blank line for it stops matching a
+       variant below and is dropped rather than guessed into one of them. */
+    const c = typeof colour === "string" ? colour : "";
     const product = productBySlug(slug);
     if (!product || !product.sizes.includes(size)) return [];
+    if (!coloursFor(slug).includes(c)) return [];
     const n = Math.floor(Number(qty));
     if (!Number.isFinite(n) || n < 1) return [];
-    return [{ slug, size, qty: Math.min(n, MAX_QTY) }];
+    return [{ slug, size, colour: c, qty: Math.min(n, MAX_QTY) }];
   });
 
   return lines.length ? lines : EMPTY;
@@ -132,10 +162,10 @@ const getServerSnapshot = () => EMPTY;
 export function useCart() {
   const lines = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  const add = useCallback((slug: string, size: string) => {
-    const at = snapshot.findIndex((l) => l.slug === slug && l.size === size);
+  const add = useCallback((slug: string, size: string, colour: string) => {
+    const at = snapshot.findIndex((l) => same({ slug, size, colour }, l));
     if (at === -1) {
-      write([...snapshot, { slug, size, qty: 1 }]);
+      write([...snapshot, { slug, size, colour, qty: 1 }]);
       return;
     }
     const next = [...snapshot];
@@ -143,20 +173,22 @@ export function useCart() {
     write(next);
   }, []);
 
-  const setQty = useCallback((slug: string, size: string, qty: number) => {
-    write(
-      qty < 1
-        ? snapshot.filter((l) => !(l.slug === slug && l.size === size))
-        : snapshot.map((l) =>
-            l.slug === slug && l.size === size
-              ? { ...l, qty: Math.min(qty, MAX_QTY) }
-              : l,
-          ),
-    );
-  }, []);
+  const setQty = useCallback(
+    (slug: string, size: string, colour: string, qty: number) => {
+      const key = { slug, size, colour };
+      write(
+        qty < 1
+          ? snapshot.filter((l) => !same(key, l))
+          : snapshot.map((l) =>
+              same(key, l) ? { ...l, qty: Math.min(qty, MAX_QTY) } : l,
+            ),
+      );
+    },
+    [],
+  );
 
-  const remove = useCallback((slug: string, size: string) => {
-    write(snapshot.filter((l) => !(l.slug === slug && l.size === size)));
+  const remove = useCallback((slug: string, size: string, colour: string) => {
+    write(snapshot.filter((l) => !same({ slug, size, colour }, l)));
   }, []);
 
   const clear = useCallback(() => write(EMPTY), []);

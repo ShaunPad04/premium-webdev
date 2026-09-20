@@ -1,12 +1,14 @@
 import type { NextRequest } from "next/server";
 
 import { deliveryFor, productBySlug } from "@/lib/catalogue";
+import { countsFor } from "@/lib/stock";
+import { coloursFor, variantId } from "@/lib/variants";
 
 /* Start a payment.
  *
  * ── THE RULE ──────────────────────────────────────────────────────────────
- * The browser sends slugs, sizes and quantities. It does NOT send prices and
- * it does NOT send a total, and if it did they would be ignored. Anything the
+ * The browser sends slugs, sizes, colours and quantities. It does NOT send
+ * prices and it does NOT send a total, and if it did they would be ignored. Anything the
  * client can send, the client can change; a total posted from a browser is a
  * total somebody sets to 1p. The bag is priced again here, from this server's
  * own catalogue, and that is the figure the provider is asked to charge.
@@ -53,17 +55,33 @@ import { deliveryFor, productBySlug } from "@/lib/catalogue";
  * WHAT IS STILL MISSING BEFORE THIS CAN TAKE REAL MONEY, and none of it is
  * something a developer can invent:
  *   - Real prices. Everything in lib/catalogue.ts is made up.
- *   - Stock. Nothing decrements; two people can buy the same one-off piece.
- *     SumUp's API exposes no catalogue, product, item, inventory or stock
- *     endpoint — checked against both official specs — so the shop's own till
- *     cannot be the source of truth for what is left. That needs a store.
+ *   - A RESERVATION. Stock is now CHECKED here (see below) but not held: two
+ *     people can pass the check a second apart and both be sent to pay for
+ *     the same one-off piece. Nothing decrements on payment either — the
+ *     count only moves when somebody taps it in /stock. Closing this properly
+ *     means reserving the variant before the redirect and releasing it if the
+ *     payment is abandoned, which needs the order record below.
  *   - An order record. Nothing is written down, so nothing can be picked,
  *     packed, refunded or audited. That needs somewhere to store it.
  *   - Delivery, returns, terms and a privacy notice — legally required for
  *     distance selling in the UK, including the 14-day cancellation right.
  */
 
-type Line = { slug?: unknown; size?: unknown; qty?: unknown };
+type Line = {
+  slug?: unknown;
+  size?: unknown;
+  colour?: unknown;
+  qty?: unknown;
+};
+
+/** The piece as a customer would say it back: name, size, colour — and only
+ *  the parts that exist. "One size" and a blank colour say nothing. */
+function describe(l: { name: string; size: string; colour: string }): string {
+  const detail = [l.size === "One size" ? "" : l.size, l.colour]
+    .filter(Boolean)
+    .join(", ");
+  return detail ? `${l.name} (${detail})` : l.name;
+}
 
 const MAX_LINES = 25;
 const MAX_QTY = 10;
@@ -88,11 +106,19 @@ export async function POST(request: NextRequest) {
 
   /* Price it here, from here. */
   let subtotalP = 0;
-  const priced: { name: string; size: string; qty: number; priceP: number }[] = [];
+  const priced: {
+    name: string;
+    size: string;
+    colour: string;
+    qty: number;
+    priceP: number;
+    variant: string;
+  }[] = [];
 
   for (const raw of body.lines as Line[]) {
     const slug = typeof raw?.slug === "string" ? raw.slug : "";
     const size = typeof raw?.size === "string" ? raw.size : "";
+    const colour = typeof raw?.colour === "string" ? raw.colour : "";
     const qty = Math.floor(Number(raw?.qty));
 
     const product = productBySlug(slug);
@@ -108,6 +134,16 @@ export async function POST(request: NextRequest) {
         { status: 409 },
       );
     }
+    /* The colour has to be one this piece is actually sold in. A piece with
+       no confirmed colour is sold in exactly one "colour" — the blank one —
+       so a browser sending "black" for it is rejected rather than quietly
+       accepted and printed on a receipt nobody can honour. */
+    if (!coloursFor(slug).includes(colour)) {
+      return Response.json(
+        { ok: false, error: `That colour is not available for ${product.name}.` },
+        { status: 409 },
+      );
+    }
     if (!Number.isFinite(qty) || qty < 1 || qty > MAX_QTY) {
       return Response.json(
         { ok: false, error: "That quantity is not available." },
@@ -116,7 +152,73 @@ export async function POST(request: NextRequest) {
     }
 
     subtotalP += product.priceP * qty;
-    priced.push({ name: product.name, size, qty, priceP: product.priceP });
+    priced.push({
+      name: product.name,
+      size,
+      colour,
+      qty,
+      priceP: product.priceP,
+      variant: variantId(slug, size, colour),
+    });
+  }
+
+  /* ── Stock, checked here and not taken on trust ─────────────────────────
+   * The product page already greys out a sold-out size, and that counts for
+   * nothing: anything a browser is told, a browser can ignore. This is the
+   * check that matters, and it runs in the last moment before a payment is
+   * created rather than when the page was built — somebody can have the bag
+   * open for an hour while the piece sells over the counter.
+   *
+   * ── "Never counted" is allowed through, deliberately ────────────────────
+   * A variant with no row has never been counted by anybody. Refusing those
+   * would close the entire shop today, because not one line has been counted
+   * yet — and it would do it by asserting a fact ("there are none") that
+   * nobody has established. The honest reading of an uncounted line is that
+   * the website does not know, and the existing behaviour for what the
+   * website does not know is to take the order and let the shop confirm.
+   *
+   * That is a real oversell risk and it is named rather than hidden: it
+   * closes when the counts are in, which is `/stock` and a person, not code.
+   * A count of zero, by contrast, is somebody's explicit statement that the
+   * rail is empty, and it stops the sale. */
+  try {
+    const counts = await countsFor(priced.map((l) => l.variant));
+    if (counts) {
+      for (const line of priced) {
+        const have = counts.get(line.variant);
+        if (have === undefined) continue;
+        if (have < line.qty) {
+          return Response.json(
+            {
+              ok: false,
+              code: "out_of_stock",
+              /* Names the piece, never the number. A count is not something
+                 a visitor is told on this site even when it is true and even
+                 when it would be convenient here — see the rule in
+                 /api/availability. "Not that many" is enough to act on. */
+              error:
+                have === 0
+                  ? `${describe(line)} has just sold. Please remove it from your bag.`
+                  : `There are not that many of ${describe(line)} left. Please lower the quantity.`,
+            },
+            { status: 409 },
+          );
+        }
+      }
+    }
+  } catch (err) {
+    /* A stock database that is down must not take money it cannot check
+       against. This is the one place that fails CLOSED, because the failure
+       on the other side is charging somebody for a garment that is gone. */
+    console.error("checkout: stock check failed", err);
+    return Response.json(
+      {
+        ok: false,
+        error:
+          "We could not check what is left in the shop just now, so nothing has been charged. Please try again in a moment.",
+      },
+      { status: 503 },
+    );
   }
 
   /* Delivery is worked out here, on the server, from the server-priced
@@ -163,7 +265,7 @@ export async function POST(request: NextRequest) {
         /* Without this there is no hosted payment page in the response. */
         hosted_checkout: { enabled: true },
         description: priced
-          .map((l) => `${l.qty} x ${l.name}${l.size === "One size" ? "" : ` (${l.size})`}`)
+          .map((l) => `${l.qty} x ${describe(l)}`)
           .join(", ")
           .slice(0, 255),
         /* Where the customer lands. `return_url` is SumUp's server callback

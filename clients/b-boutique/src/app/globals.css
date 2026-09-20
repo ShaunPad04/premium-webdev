@@ -3682,6 +3682,60 @@ body {
   color: var(--bb-grey-dark);
 }
 
+/* A size the shop has counted to zero. The radio is genuinely disabled, so
+   it is out of the tab order and announced as unavailable rather than merely
+   looking grey — and the words "sold out" are inside the label, because a
+   line through a number is a statement made in colour and decoration alone.
+   #646460 on cream measures 5.44:1, which clears AA for text that a disabled
+   control is not strictly required to clear at all. */
+.atb-size.is-out {
+  color: var(--bb-grey-dark);
+  border-style: dashed;
+  cursor: not-allowed;
+}
+.atb-size.is-out:hover { border-color: var(--bb-light-border); }
+.atb-size.is-out input { cursor: not-allowed; }
+.atb-size.is-out > span { text-decoration: line-through; }
+/* Chosen AND sold out — reachable by picking a size and then switching to a
+   colour it is gone in. Two rules land on one chip: `is-on` paints it black,
+   `is-out` greys the text, and #646460 on #050505 measures 3.43:1, which
+   fails AA. axe does NOT catch this, because the radio inside is disabled and
+   the contrast rule skips disabled controls; it was found by measuring the
+   computed colours in a real render. */
+.atb-size.is-on.is-out { color: rgba(255, 255, 255, 0.78); }
+.atb-size.is-out em {
+  display: block;
+  font-size: 9px;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+/* One confirmed colour is a fact about the garment, printed, not asked. */
+.atb-onecolour {
+  margin-bottom: 22px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+.atb-onecolour span { color: var(--bb-black); }
+
+/* Every size of this piece counted to zero. The add button is not disabled
+   here, it is replaced: a greyed-out button invites a customer to keep
+   pressing it, and what they need instead is the phone number. */
+.atb-out {
+  margin: 0 0 8px;
+  padding: 16px 18px;
+  border: 1px solid var(--bb-light-border);
+  background: rgba(10, 10, 10, 0.03);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.atb-out-tel { text-decoration: underline; text-underline-offset: 3px; }
+
 .atb-add { width: 100%; justify-content: center; }
 .atb-status:empty { display: none; }
 .atb-added { margin-top: 16px; font-size: 13.5px; line-height: 1.6; }

@@ -304,3 +304,67 @@ export async function setRestockable(id: string, value: boolean): Promise<boolea
   `;
   return true;
 }
+
+/** The counts for a named set of variants, in one query.
+ *
+ *  For the two places that ask about specific things rather than about the
+ *  whole shop: the product page, which asks about one garment's sizes and
+ *  colours, and the checkout, which asks about what is in somebody's bag. A
+ *  query per line would be a query per line.
+ *
+ *  A variant with no row is ABSENT from the map, not zero. "Nobody has
+ *  counted this" and "there are none" are different answers and the caller
+ *  has to decide what to do about each — see the note in /api/checkout.
+ *
+ *  `null` means there is no database configured at all. */
+export async function countsFor(
+  ids: readonly string[],
+): Promise<Map<string, number> | null> {
+  const q = sql();
+  if (!q) return null;
+  if (ids.length === 0) return new Map();
+
+  await ensureSchema();
+  const rows = (await q`
+    SELECT id, qty FROM stock WHERE id = ANY(${ids as string[]})
+  `) as { id: string; qty: number }[];
+  return new Map(rows.map((r) => [r.id, Number(r.qty)]));
+}
+
+/** Which variants of one piece can be bought, and which are sold out.
+ *
+ *  ── What this deliberately does NOT return ───────────────────────────────
+ *  A number. Not one count reaches a visitor, ever. "Only 1 left" is a
+ *  scarcity claim about a real business, it falls under the same regulations
+ *  as a price, and it is arguably worse because it pressures the purchase
+ *  rather than describing it. The shop floor gets numbers; the shop front
+ *  gets yes or no.
+ *
+ *  Three states, because two would lie:
+ *    "in"      — counted, and there is at least one.
+ *    "out"     — counted, and there are none. Cannot be bought.
+ *    "unknown" — never counted. Behaves exactly as the site did before stock
+ *                existed: the piece can be added and the shop rings to
+ *                confirm. NOT rendered as either in or out of stock. */
+export type Availability = "in" | "out" | "unknown";
+
+export async function availabilityForSlug(
+  slug: string,
+): Promise<Record<string, { state: Availability; restockable: boolean }> | null> {
+  const q = sql();
+  if (!q) return null;
+
+  await ensureSchema();
+  const rows = (await q`
+    SELECT id, qty, restockable FROM stock WHERE slug = ${slug}
+  `) as { id: string; qty: number; restockable: boolean }[];
+
+  const out: Record<string, { state: Availability; restockable: boolean }> = {};
+  for (const r of rows) {
+    out[r.id] = {
+      state: Number(r.qty) > 0 ? "in" : "out",
+      restockable: Boolean(r.restockable),
+    };
+  }
+  return out;
+}

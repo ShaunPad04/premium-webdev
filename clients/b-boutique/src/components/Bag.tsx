@@ -15,7 +15,7 @@ import { useCart } from "@/lib/useCart";
 /* The bag, and the button that starts a payment.
  *
  * ── What it sends ─────────────────────────────────────────────────────────
- * Slugs, sizes and quantities. Never a price and never a total: a total sent
+ * Slugs, sizes, colours and quantities. Never a price and never a total: a total sent
  * from the browser is a total the browser can change, which is the oldest
  * hole in online retail. The server prices the bag again from its own
  * catalogue and charges that. The figure below is for the customer to read,
@@ -53,7 +53,12 @@ export function Bag() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          lines: lines.map((l) => ({ slug: l.slug, size: l.size, qty: l.qty })),
+          lines: lines.map((l) => ({
+            slug: l.slug,
+            size: l.size,
+            colour: l.colour,
+            qty: l.qty,
+          })),
         }),
       });
       const data = (await res.json().catch(() => ({}))) as {
@@ -82,7 +87,13 @@ export function Bag() {
           const p = productBySlug(line.slug);
           if (!p) return null;
           return (
-            <li key={`${line.slug}-${line.size}`} className="bag-line">
+            /* Keyed by the variant, not the product: the same coat in two
+               colours is two lines and React has to be able to tell them
+               apart. */
+            <li
+              key={`${line.slug}-${line.size}-${line.colour}`}
+              className="bag-line"
+            >
               <Link href={`/shop/${p.slug}`} className="bag-media" aria-label={p.name}>
                 <ImageSlot
                   tone={p.tone as Tone}
@@ -102,21 +113,25 @@ export function Bag() {
                 <p className="bag-meta">
                   {p.category}
                   {p.sizes.length > 1 ? ` · Size ${line.size}` : ""}
+                  {/* Only when the client has confirmed one. A blank colour
+                      prints nothing rather than an empty separator. */}
+                  {line.colour ? ` · ${line.colour}` : ""}
                 </p>
                 <p className="bag-each">{formatPrice(p.priceP)}</p>
               </div>
 
               <div className="bag-qty">
-                <label className="sr-only" htmlFor={`qty-${p.slug}-${line.size}`}>
+                <label className="sr-only" htmlFor={`qty-${p.slug}-${line.size}-${line.colour}`}>
                   Quantity, {p.name}
                   {p.sizes.length > 1 ? `, size ${line.size}` : ""}
+                  {line.colour ? `, ${line.colour}` : ""}
                 </label>
                 {/* A number input rather than plus/minus buttons: it is one
                     control instead of two, it types, and it is already
                     labelled and announced. min={0} removes the line, which is
                     what people expect typing 0 to do. */}
                 <input
-                  id={`qty-${p.slug}-${line.size}`}
+                  id={`qty-${p.slug}-${line.size}-${line.colour}`}
                   className="bag-qty-input"
                   type="number"
                   inputMode="numeric"
@@ -124,13 +139,18 @@ export function Bag() {
                   max={10}
                   value={line.qty}
                   onChange={(e) =>
-                    setQty(line.slug, line.size, Number(e.target.value))
+                    setQty(
+                      line.slug,
+                      line.size,
+                      line.colour,
+                      Number(e.target.value),
+                    )
                   }
                 />
                 <button
                   type="button"
                   className="bag-remove"
-                  onClick={() => remove(line.slug, line.size)}
+                  onClick={() => remove(line.slug, line.size, line.colour)}
                 >
                   Remove
                 </button>
