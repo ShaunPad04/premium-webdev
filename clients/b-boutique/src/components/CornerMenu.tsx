@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { MENU, directionsHref, socials } from "@/lib/nav";
-import { addressLines, shop } from "@/lib/shop";
+import { addressLines, openingSummary, shop } from "@/lib/shop";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -257,8 +257,18 @@ export function CornerMenu() {
                       </span>
                     ))}
                   </address>
+                  {/* Derived, never typed. This line read "Tue – Sun / 10:00
+                      – 16:00" until now, and the shop is open SEVEN days —
+                      confirmed by the client on 2026-09-20, when Monday was
+                      corrected from closed to 10-4 in shop.ts.
+                      So the main navigation, on every page of the site, was
+                      telling customers a real shop is shut on a day it is
+                      open. Two other places were found and fixed at the time;
+                      this one was a hardcoded string and the sweep missed it.
+                      openingSummary() reads the same hours table the Visit
+                      section and the JSON-LD read, so it cannot drift again. */}
                   <p className="mt-2.5 font-mono text-[0.6875rem] leading-[1.75] text-bone/60">
-                    Tue &ndash; Sun / 10:00 &ndash; 16:00
+                    {openingSummary()}
                   </p>
 
                   {/* Rendered only once real handles exist — see lib/nav.ts */}
