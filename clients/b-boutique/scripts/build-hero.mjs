@@ -12,72 +12,74 @@
  * in three formats each, so a <picture> per slide can hand every browser
  * the smallest thing it understands and fetch exactly one file.
  *
- * ── Why the mobile crop is taken here and not by the browser ──────────────
- * A 16:9 frame shown through a 100svh phone viewport is cropped to roughly
- * a third of its width by `object-fit: cover`. Left to the browser that
- * means downloading 2048px of picture to display 650 of it, and centring on
- * whatever happens to be in the middle. Every one of these photographs puts
- * the subject right of centre, so a centre crop cuts her in half.
+ * ── Every slide has TWO sources, and that is the whole point ──────────────
+ * `<name>.png` is the 16:9 frame. `<name>-portrait.png` is a genuine 9:16
+ * version of the same photograph, made by outpainting — the scene extended
+ * above and below rather than the sides thrown away.
  *
- * So each slide carries `subject`, the horizontal position of the person as
- * a fraction of the frame, and the portrait crop is taken around it.
+ * The first version of this script had only the landscape source and cut
+ * the phone crop out of it. That is the obvious approach and it is badly
+ * wrong, because there is nothing to cut: a 9:16 window out of a 2048x1152
+ * frame is 648px wide, full stop. Measured against the single-image hero it
+ * replaced, that was 1100px -> 648px across, a 41% drop in width and 66% of
+ * the pixels, and the client saw it immediately.
  *
- * Known cost, stated rather than hidden: the portrait crop is 648x1152 out
- * of the 2048x1152 source. A 390px viewport at DPR 2 wants ~780px, so these
- * are about 17% under what a high-density phone would like. They are not
- * upscaled to hide that — upscaling adds bytes without adding detail. The
- * fix, if it matters later, is to outpaint each source to 9:16 the way
- * `1-paris` already was for the single-image hero; that costs credits and
- * has not been spent on the other four.
+ * Worse, the outpainted portrait for `1-paris` already existed and this
+ * script stopped using it — the good file was sitting on disk while the
+ * page served a 648px cut of the landscape.
+ *
+ * So: the portrait source is required, not optional. The build throws if
+ * one is missing rather than silently falling back to cutting the
+ * landscape, because a silent fallback is exactly how the regression got
+ * shipped in the first place.
  *
  *   node scripts/build-hero.mjs
  */
 import sharp from "sharp";
 import { mkdir } from "node:fs/promises";
+import { existsSync } from "node:fs";
 
 await mkdir("public/img/hero", { recursive: true });
 
-/* `subject` is where the person's head sits across the frame, 0 = left edge,
- * 1 = right edge. Read off each photograph by eye and then checked against
- * the rendered page at 390px — a wrong value here crops someone's face off
- * on every phone, and it is invisible on a desktop screenshot. */
-const slides = [
-  { src: "assets/hero/1-paris.png", out: "1-paris", subject: 0.52 },
-  { src: "assets/hero/2-street.png", out: "2-street", subject: 0.55 },
-  { src: "assets/hero/3-terrace.png", out: "3-terrace", subject: 0.55 },
-  { src: "assets/hero/4-flowers.png", out: "4-flowers", subject: 0.5 },
-  { src: "assets/hero/5-sea.png", out: "5-sea", subject: 0.68 },
-];
+const slides = ["1-paris", "2-street", "3-terrace", "4-flowers", "5-sea"];
 
+/* 1800 for the landscape file and 1100 for the portrait one, matching what
+   the single-image hero shipped before the slideshow — so the comparison
+   against it is like for like rather than flattering. */
 const DESKTOP_W = 1800;
+const MOBILE_W = 1100;
 const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
 
-for (const { src, out, subject } of slides) {
-  const meta = await sharp(src).metadata();
+for (const name of slides) {
+  const land = `assets/hero/${name}.png`;
+  const port = `assets/hero/${name}-portrait.png`;
 
-  /* Desktop: the frame as shot, just resized. */
-  const desk = sharp(src).resize({ width: DESKTOP_W, withoutEnlargement: true });
+  /* Loud, not silent. The regression this replaces happened because the
+     script quietly did something reasonable-looking with a missing file. */
+  if (!existsSync(port)) {
+    throw new Error(
+      `Missing portrait source ${port}. Every slide needs a real 9:16 file — ` +
+        `do not cut one out of the landscape, it loses two thirds of the pixels.`,
+    );
+  }
 
-  /* Mobile: a 9:16 window taken around the subject, clamped so it cannot
-     run off either edge of the source. */
-  const cropW = Math.round((meta.height * 9) / 16);
-  const left = Math.max(
-    0,
-    Math.min(meta.width - cropW, Math.round(meta.width * subject - cropW / 2)),
-  );
-  const mob = sharp(src).extract({ left, top: 0, width: cropW, height: meta.height });
+  const lm = await sharp(land).metadata();
+  const pm = await sharp(port).metadata();
+
+  const desk = sharp(land).resize({ width: DESKTOP_W, withoutEnlargement: true });
+  const mob = sharp(port).resize({ width: MOBILE_W, withoutEnlargement: true });
 
   const [da, dw, dj, ma, mw, mj] = await Promise.all([
-    desk.clone().avif({ quality: 62, effort: 6 }).toFile(`public/img/hero/${out}-d.avif`),
-    desk.clone().webp({ quality: 78 }).toFile(`public/img/hero/${out}-d.webp`),
-    desk.clone().jpeg({ quality: 82, mozjpeg: true }).toFile(`public/img/hero/${out}-d.jpg`),
-    mob.clone().avif({ quality: 62, effort: 6 }).toFile(`public/img/hero/${out}-m.avif`),
-    mob.clone().webp({ quality: 78 }).toFile(`public/img/hero/${out}-m.webp`),
-    mob.clone().jpeg({ quality: 82, mozjpeg: true }).toFile(`public/img/hero/${out}-m.jpg`),
+    desk.clone().avif({ quality: 62, effort: 6 }).toFile(`public/img/hero/${name}-d.avif`),
+    desk.clone().webp({ quality: 78 }).toFile(`public/img/hero/${name}-d.webp`),
+    desk.clone().jpeg({ quality: 82, mozjpeg: true }).toFile(`public/img/hero/${name}-d.jpg`),
+    mob.clone().avif({ quality: 62, effort: 6 }).toFile(`public/img/hero/${name}-m.avif`),
+    mob.clone().webp({ quality: 78 }).toFile(`public/img/hero/${name}-m.webp`),
+    mob.clone().jpeg({ quality: 82, mozjpeg: true }).toFile(`public/img/hero/${name}-m.jpg`),
   ]);
 
   console.log(
-    `${out.padEnd(11)} ${meta.width}x${meta.height}  ` +
+    `${name.padEnd(11)} land ${lm.width}x${lm.height} port ${pm.width}x${pm.height}  ->  ` +
       `desktop ${da.width}x${da.height} avif ${kb(da.size)} webp ${kb(dw.size)} jpg ${kb(dj.size)}  |  ` +
       `mobile ${ma.width}x${ma.height} avif ${kb(ma.size)} webp ${kb(mw.size)} jpg ${kb(mj.size)}`,
   );
