@@ -85,9 +85,12 @@ export function Hero() {
         </span>
       </h1>
 
-      <div className="hero-media absolute inset-0 -z-10">
-        <HeroSlideshow />
-      </div>
+      {/* No wrapper. HeroSlideshow renders TWO layers into this section — the
+          photographs at z-index -10 (carrying `.hero-media` and its parallax)
+          and the captions and arrows at z-index 1. A wrapper at -10 would be
+          a stacking context the controls could not climb out of, so they are
+          siblings here rather than nested. */}
+      <HeroSlideshow />
 
       {/* The scrim. Two jobs, and it grew a second one on 2026-09-21.
        *

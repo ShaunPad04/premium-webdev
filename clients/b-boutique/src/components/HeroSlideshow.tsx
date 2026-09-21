@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { hours, shop } from "@/lib/shop";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 /* The hero slideshow.
@@ -45,7 +46,35 @@ import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 type Slide = {
   /** Basename in /img/hero; the -d and -m variants are built by build-hero.mjs. */
   file: string;
+  /** Two lines of display type that change with the frame. See CAPTION note. */
+  text: readonly [string, string];
 };
+
+/* ── The captions, and where every word of them came from ─────────────────
+ *
+ * The client sent a slideshow component (cosmos.so imagery, MIT) and asked
+ * for the hero to work like it. Its gesture is a two-line statement that
+ * changes WITH the picture, plus arrows and a counter. That gesture is what
+ * is adopted here; its copy is not, because its copy is mood text
+ * ("SURRENDER TO THE VOID") and this is a real shop's front door.
+ *
+ * So nothing below is written for effect. Each line is either the client's
+ * own words or read out of `lib/shop.ts` at render:
+ *
+ *   1  "Something a little different" — her supplied bio, verbatim, the same
+ *      sentence printed on the owner card.
+ *   2  The trading categories, which are the site's own subheading.
+ *   3  Homeware and gifts — her bio again ("finding that special gift").
+ *   4  `shop.street` / `shop.town`. Derived, so it cannot drift from the
+ *      address in the footer, the map and the JSON-LD.
+ *   5  "Every day" is asserted ONLY if every row in `hours` actually has
+ *      opening hours. If a day is ever closed, the line degrades to the
+ *      neutral "Come in" rather than printing a promise that stopped being
+ *      true. That check is the whole reason this is a function.
+ *
+ * No size range, no price, no "new in every week". Those would all be
+ * inventions and the hero is the loudest place on the site to put one. */
+const everyDay = hours.every((d) => d.hours);
 
 /* Order matters. `1-paris` is first because it is the frame the client
    approved as the hero before the slideshow existed, and because it is the
@@ -53,11 +82,11 @@ type Slide = {
    cut out of the 16:9 — so it is the sharpest of the five on a phone, which
    is where the LCP is measured. */
 const SLIDES: readonly Slide[] = [
-  { file: "1-paris" },
-  { file: "2-street" },
-  { file: "3-terrace" },
-  { file: "4-flowers" },
-  { file: "5-sea" },
+  { file: "1-paris",   text: ["Something a little", "different"] },
+  { file: "2-street",  text: ["Womenswear", "and accessories"] },
+  { file: "3-terrace", text: ["Homeware", "and gifts"] },
+  { file: "4-flowers", text: [shop.street, shop.town] },
+  { file: "5-sea",     text: everyDay ? ["Open", "every day"] : ["Come", "in"] },
 ];
 
 /** Long enough to look at, short enough to see a second frame before the
@@ -205,43 +234,148 @@ export function HeroSlideshow() {
     setReady((r) => (r[i] ? r : r.map((v, n) => (n === i ? true : v))));
   }, []);
 
+  /* Bumped on every press of an arrow. It is in the interval's dependency
+     list purely so the timer is torn down and restarted: without it, a
+     manual advance one second before a tick would be followed a second
+     later by an automatic one, which reads as the control being ignored. */
+  const [nudge, setNudge] = useState(0);
+
+  /* Step to the nearest slide in `dir` whose photograph has arrived. Shared
+     by the timer and the arrows so there is one definition of "next", and so
+     a press can never fade to an empty frame — the same rule the autoplay
+     has followed since the deferral landed. */
+  const step = useCallback(
+    (i: number, dir: 1 | -1) => {
+      const n = SLIDES.length;
+      for (let s = 1; s <= n; s++) {
+        const next = (((i + dir * s) % n) + n) % n;
+        if (next === i) break;
+        if (ready[next]) return next;
+      }
+      return i; /* nothing else has loaded yet — hold this frame */
+    },
+    [ready],
+  );
+
+  const go = useCallback(
+    (dir: 1 | -1) => {
+      setIndex((i) => step(i, dir));
+      setNudge((n) => n + 1);
+    },
+    [step],
+  );
+
   useEffect(() => {
     if (reduced || !mounted) return;
-    const t = setInterval(() => {
-      setIndex((i) => {
-        for (let step = 1; step <= SLIDES.length; step++) {
-          const next = (i + step) % SLIDES.length;
-          if (next === i) break;
-          if (ready[next]) return next;
-        }
-        return i; /* nothing else has loaded yet — hold this frame */
-      });
-    }, HOLD_MS);
+    const t = setInterval(() => setIndex((i) => step(i, 1)), HOLD_MS);
     return () => clearInterval(t);
-  }, [reduced, mounted, ready]);
+  }, [reduced, mounted, step, nudge]);
 
   /* Reduced motion: the first frame, and nothing else mounted or fetched. */
   const visible = reduced || !mounted ? SLIDES.slice(0, 1) : SLIDES;
 
+  /* A fragment, not a wrapper, and that is structural rather than tidiness.
+   *
+   * The photographs must stay at z-index -10 so the scrim paints over them
+   * and the copy over that; the captions and the arrows must sit at z-index 1
+   * so they are visible and clickable. A single positioned wrapper at -10
+   * would be a stacking context its own children could never climb out of,
+   * so the two layers are siblings inside `.hero` instead.
+   *
+   * The pictures keep the `hero-media` class because that is what carries the
+   * scroll parallax (locked decision 7). The controls deliberately do NOT —
+   * a photograph that drifts on scroll is art direction; an arrow button that
+   * drifts away from your cursor is a bug. */
   return (
-    <div
-      className="hero-slides"
-      role="img"
-      aria-label="Women photographed in everyday clothes on city streets"
-    >
-      {visible.map((s, i) => (
-        <div
-          key={s.file}
-          className="hero-slide"
-          /* aria-hidden on every slide: the wrapper above is the one thing
-             announced. Without this a screen reader finds five nested
-             regions where the design has one picture. */
-          aria-hidden="true"
-          data-active={i === index ? "" : undefined}
-        >
-          <SlidePicture file={s.file} first={i === 0} onReady={() => markReady(i)} />
+    <>
+      {/* Still one announced picture rather than five: role="img" plus a
+          single label here, every <img> alt="". The CAPTIONS deliberately
+          live OUTSIDE it — text inside a role="img" is erased from the
+          accessibility tree, and these are real words. */}
+      <div
+        className="hero-media hero-slides-pics absolute inset-0 -z-10"
+        role="img"
+        aria-label="Women photographed in everyday clothes on city streets"
+      >
+        {visible.map((s, i) => (
+          <div
+            key={s.file}
+            className="hero-slide"
+            aria-hidden="true"
+            data-active={i === index ? "" : undefined}
+          >
+            <SlidePicture file={s.file} first={i === 0} onReady={() => markReady(i)} />
+          </div>
+        ))}
+      </div>
+
+      {/* Only the frame on screen is in the accessibility tree; the other
+          four are aria-hidden, so a screen reader hears one statement rather
+          than five stacked on top of each other. aria-live is NOT used: this
+          is ambient decoration and interrupting a reader every six seconds
+          to announce "Homeware and gifts" would be hostile. */}
+      <div className="hero-captions">
+        {visible.map((s, i) => (
+          <p
+            key={s.file}
+            className="hero-caption"
+            data-active={i === index ? "" : undefined}
+            aria-hidden={i === index ? undefined : "true"}
+          >
+            <span>{s.text[0]}</span>
+            <span>{s.text[1]}</span>
+          </p>
+        ))}
+      </div>
+
+      {/* Arrows and counter — the client's reference carries both.
+       *
+       * Rendered only when motion is wanted, because with
+       * `prefers-reduced-motion` this component mounts ONE slide and fetches
+       * no others: arrows pointing at four photographs that were never
+       * downloaded would be controls that do nothing. A static frame with no
+       * controls is the honest degradation.
+       *
+       * Disabled until the deferred slides mount (idle after `load`), for the
+       * same reason — `disabled` says so out loud instead of failing
+       * silently for the second or so it takes. */}
+      {reduced ? null : (
+        <div className="hero-controls">
+          <p className="hero-counter" aria-hidden="true">
+            <span className="hero-counter-now">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span className="hero-counter-rule" />
+            <span>{String(SLIDES.length).padStart(2, "0")}</span>
+          </p>
+          <div className="hero-nav">
+            <button
+              type="button"
+              onClick={() => go(-1)}
+              disabled={!mounted}
+              aria-label="Previous photograph"
+              className="hero-nav-btn"
+            >
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                <path d="M9.5 3L5 7.5 9.5 12" stroke="currentColor" strokeWidth="1.3"
+                  strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => go(1)}
+              disabled={!mounted}
+              aria-label="Next photograph"
+              className="hero-nav-btn"
+            >
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                <path d="M5.5 3L10 7.5 5.5 12" stroke="currentColor" strokeWidth="1.3"
+                  strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
         </div>
-      ))}
-    </div>
+      )}
+    </>
   );
 }

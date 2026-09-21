@@ -464,9 +464,11 @@ body {
  * 1.4s is deliberately much slower than the site's interaction durations.
  * This is ambient rather than responsive — nobody pressed anything — and at
  * the site's usual ~300ms it reads as a jump cut. */
-.hero-slides {
-  position: absolute;
-  inset: 0;
+/* The photographs' layer. Positioning comes from utilities in the component
+   (absolute inset-0 -z-10) because it has to stay in lockstep with the scrim
+   and the copy, which are declared the same way in Hero.tsx. */
+.hero-slides-pics {
+  overflow: hidden;
 }
 
 .hero-slide {
@@ -655,12 +657,24 @@ body {
   font-synthesis: none;   /* never a slanted roman standing in for the real italic */
 }
 
+/* `width: fit-content` is load-bearing, not tidiness.
+   With `left` and `right` both set this box spanned the FULL width of the
+   hero at z-index 1, so although it looks like a column in the bottom-left
+   corner, its hit area covered the whole bottom of the frame — including the
+   slideshow arrows at the opposite edge, which are at the same z-index and
+   earlier in the DOM. Playwright caught it: every click on Next was
+   intercepted by `.hero-copy`. The arrows were invisible to a cursor and
+   nothing about the rendering showed it.
+   fit-content shrinks the box to the copy while still being capped by the
+   left/right gutters, so `.hero-sub`'s 34ch wrap is unchanged. Text stays
+   selectable, which a `pointer-events: none` fix would have cost. */
 .hero-copy {
   position: absolute;
   left: 18px;
   right: 18px;
   bottom: clamp(38px, 7vh, 72px);
   z-index: 1;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -690,6 +704,24 @@ body {
   /* grey-light, not grey-mid: this sits on a photograph, which is darker and
      noisier than a flat ground, so it takes the lighter of the two. */
   color: var(--bb-grey-light);
+  /* The longest line in this column by a distance — street, town, and the
+     full opening summary — and the one that decides how wide `.hero-copy`
+     shrinks to. Left uncapped it ran to roughly 354px at 390, which is the
+     whole gutter-to-gutter width, and the resulting hit box sat underneath
+     the slideshow arrows at the far edge. Capping it in `ch` rather than `%`
+     keeps the measurement definite: a percentage inside a `fit-content` box
+     is circular and resolves differently across engines.
+     26ch clears the arrows at 390 with room to spare and has no effect from
+     768 up, where the line already fits well inside the frame. */
+}
+
+/* Scoped to the phone, which the first attempt was not — and a screenshot
+   caught it. Applied at every width the cap broke the address into THREE
+   lines at 1440, where there was no collision to solve and the line had been
+   sitting comfortably on two. The arrows are only close to this text at
+   phone widths, so the cap only belongs there. */
+@media (max-width: 767px) {
+  .hero-where { max-width: 26ch; }
 }
 
 .hero-cta {
@@ -742,6 +774,203 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-cta, .hero-cta svg { transition: none; }
+}
+
+/* ── The slideshow's own furniture: captions, counter, arrows ─────────────
+ *
+ * From the component the client sent. Three things are borrowed from it —
+ * a two-line statement that changes WITH the frame, a prev/next pair, and an
+ * "01 / 05" counter — and they are placed to the RIGHT because the left of
+ * this frame is already spoken for: the h1, the subline, the address and the
+ * CTA all stack up the bottom-left corner. Dropping a second big statement
+ * on top of that would be two headlines fighting, which is the opposite of
+ * what the reference does (there, the statement is the ONLY type on screen).
+ *
+ * So the frame is read as a spread: the fixed statement anchors the left, the
+ * changing one answers it from the right, and the controls sit under it. */
+.hero-captions {
+  position: absolute;
+  top: clamp(124px, 17vh, 196px);
+  right: var(--bb-gutter-editorial);
+  z-index: 1;
+  display: none;     /* desktop only — see the note at the foot of this block */
+  text-align: right;
+}
+
+/* Its own pool of shade, because the captions sit in the TOP right and the
+   page's main scrim is built for the bottom left. Measured on 1-paris at
+   1440: white type landed on pale sky and pale stone at 2.9:1 without it.
+   The box is deliberately far larger than the text (negative insets on every
+   side) for the reason the headline's radial had to be moved off `.hero-line`
+   — a radial in a box only slightly bigger than its content meets the box
+   edge before it reaches transparent and draws a visible rectangle. With this
+   much room it fades out into nothing. */
+.hero-captions::before {
+  content: "";
+  position: absolute;
+  /* Pulled out to the frame's own top-right CORNER — the negative offsets
+     are the caption's own `top` and `right` expressions, negated. That is
+     the point of the shape: a radial anchored at 100% 0% has two edges it
+     never has to fade out across, because they coincide with the edge of the
+     photograph, and two it does, which have the whole box to do it in. The
+     first attempt centred the ellipse inside a floating box and had to fade
+     on all four sides; it was too weak where the type actually sits. */
+  top: calc(-1 * clamp(124px, 17vh, 196px));
+  right: calc(-1 * var(--bb-gutter-editorial));
+  width: min(64vw, 940px);
+  height: min(62vh, 660px);
+  z-index: -1;
+  pointer-events: none;
+  /* Measured, not chosen. With the previous 0.58 centre the captions came
+     back at 1.93:1 worst case (slide 3, homeware, on pale terrace stone) and
+     2.13 at 1440 — under the 3:1 that WCAG AA asks of large text, on five
+     different photographs with nothing in common but being bright. These
+     stops were raised until the worst of the ten measurements cleared it
+     with room; the numbers are in the commit. */
+  background: radial-gradient(
+    124% 112% at 100% 0%,
+    rgba(26, 20, 22, 0.88) 0%,
+    rgba(26, 20, 22, 0.7) 30%,
+    rgba(26, 20, 22, 0.4) 54%,
+    rgba(26, 20, 22, 0.14) 72%,
+    transparent 86%
+  );
+}
+
+/* Stacked in one grid cell so they cross-fade in place rather than pushing
+   each other around — the same reason `.hero-slide` uses absolute inset. A
+   grid is used instead so the block still takes the height of its tallest
+   caption and nothing below it has to be positioned by hand. */
+.hero-caption {
+  grid-area: 1 / 1;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  /* The line breaks are AUTHORED — each caption is a tuple of two strings,
+     one <span> each — so this cap exists only as a backstop against a future
+     caption long enough to run into the middle of the frame. It is not a
+     wrapping mechanism: 11ch was tried and broke "Something a little" across
+     two lines of its own, making three lines out of two. */
+  max-width: min(42vw, 460px);
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  font-size: clamp(26px, 2.4vw, 44px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--bb-white-pure);
+  opacity: 0;
+  /* Half the photograph's 1400ms. The picture is the slow thing; the type
+     arriving a beat ahead of it is what makes the pair read as one move
+     rather than two things fading at once. */
+  transition: opacity 700ms var(--bb-ease);
+}
+
+.hero-caption[data-active] { opacity: 1; }
+
+/* 18px below 768 so the arrows sit on the SAME gutter as the copy opposite
+   them, which is where `.hero-copy` is pinned at phone widths. */
+.hero-controls {
+  position: absolute;
+  right: 18px;
+  bottom: clamp(38px, 7vh, 72px);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.hero-counter {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;  /* 01 and 05 must not shuffle the rule */
+  /* Paper, not grey-light, and that is a measurement rather than a
+     preference. This is 11px — normal text, so AA wants 4.5:1 — and it sits
+     on five different photographs. In grey-light it came back at 3.85:1 on
+     slide 4, which fails. Paper on the same pixel is 5.17:1.
+     The alternative was to deepen the foot scrim until grey passed, which
+     would have darkened the photograph for every visitor to save one token;
+     changing the colour costs nothing and touches nothing else. */
+  color: var(--bb-white-pure);
+}
+
+/* The hierarchy that the colour used to carry, moved onto weight so it does
+   not cost contrast: the current frame is the heavier of the two. */
+.hero-counter-now { font-weight: 700; }
+
+.hero-counter-rule {
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.hero-nav { display: flex; gap: 8px; }
+
+.hero-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 44px, which is the touch-target floor and not a coincidence: these are
+     the only controls on the hero a thumb is meant to find. */
+  width: 44px;
+  height: 44px;
+  color: var(--bb-white-pure);
+  border: 1px solid rgba(250, 248, 246, 0.42);
+  background: rgba(26, 20, 22, 0.34);
+  transition: background var(--bb-dur-quick) var(--bb-ease),
+              color var(--bb-dur-quick) var(--bb-ease),
+              border-color var(--bb-dur-quick) var(--bb-ease);
+}
+
+.hero-nav-btn:hover:not(:disabled),
+.hero-nav-btn:focus-visible {
+  background: var(--bb-white-pure);
+  border-color: var(--bb-white-pure);
+  color: var(--bb-black);
+}
+
+/* Visible, and saying so. The deferred slides mount on idle after `load`, so
+   this state lasts about a second; it is drawn rather than hidden because a
+   control that vanishes and reappears is worse than one that waits. */
+.hero-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .hero-nav-btn:hover:not(:disabled) {
+    background: rgba(26, 20, 22, 0.34);
+    border-color: rgba(250, 248, 246, 0.42);
+    color: var(--bb-white-pure);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-caption { transition: none; }
+  .hero-nav-btn { transition: none; }
+}
+
+/* The captions are desktop-only, and that is a decision rather than a
+   shortcut. At 390 the frame already carries a 42px headline, a subline, the
+   address and a button up the left side; a second statement in the same
+   picture is not a narrowed desktop, it is a crowded phone. The counter and
+   the arrows DO appear at every width — they are small, they explain that
+   there are five photographs, and they give a touch user a way through them
+   that the autoplay alone does not. */
+@media (min-width: 768px) {
+  .hero-controls { right: var(--bb-gutter-editorial); }
+}
+
+@media (min-width: 1024px) {
+  .hero-captions { display: grid; }
 }
 
 /* ── Hero scroll interaction ─────────────────────────────────────────────
