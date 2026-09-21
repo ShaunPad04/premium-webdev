@@ -81,6 +81,115 @@ export function ScrollReset() {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
+  /* ── Same-page fragment links ───────────────────────────────────────────
+   *
+   * The client reported, more than once, that clicking the wordmark did not
+   * take him to the top. The first fix missed it because the first CLICK
+   * works: the hash goes from "" to "#top", the browser navigates, the
+   * pathname effect below does its job. It is the SECOND click that fails,
+   * and every click after it.
+   *
+   * Reproduced: scroll to 2500, click the wordmark — scrollY 0, correct.
+   * Scroll to 2500 again, click it again — scrollY 2500. Nothing at all
+   * happens, because the hash is already "#top", so there is no navigation,
+   * no hashchange event and nothing for React to re-render. The address bar
+   * in the client's screenshot already read /#top, which is precisely that
+   * state: he was clicking a link that, by then, did nothing.
+   *
+   * usePathname cannot see this — "/" to "/" is not a change — so it needs
+   * its own handler rather than another dependency below.
+   *
+   * It is delegated from the document rather than wired into the wordmark,
+   * because the wordmark is not the only one: /#visit, /#new-in and
+   * /#homeware in the corner menu and the footer all have the same shape and
+   * the same fault.
+   *
+   * Lenis is the reason this cannot be left to the browser even when the
+   * hash DOES change. It runs its own rAF loop writing `animatedScroll` back
+   * every frame, so a native fragment jump is overwritten within a frame or
+   * two. Whatever moves the page has to go through Lenis while Lenis
+   * exists. */
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      /* Let the browser handle anything that is not a plain left click:
+         modified clicks open tabs and windows, and hijacking those is worse
+         than the bug being fixed.
+         `defaultPrevented` is deliberately NOT checked. This runs in the
+         capture phase, before next/link's own handler, so nothing has
+         prevented anything yet — and checking it was the reason the first
+         attempt at this fix did nothing at all: next/link calls
+         preventDefault() on the way past, so a bubble-phase listener saw
+         every wordmark click as already handled and returned immediately. */
+      if (e.button !== 0) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+      const a = (e.target as Element | null)?.closest?.("a[href]") as
+        | HTMLAnchorElement
+        | null;
+      if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
+
+      const url = new URL(a.href, window.location.href);
+      if (url.origin !== window.location.origin) return;
+      /* A different page is an ordinary navigation — the pathname effect
+         below handles where it lands. */
+      if (url.pathname !== window.location.pathname) return;
+      if (!url.hash || url.hash.length < 2) return;
+
+      let target: Element | null = null;
+      try {
+        target = document.querySelector(url.hash);
+      } catch {
+        return; /* a hash that is not a valid selector is not ours to fix */
+      }
+      if (!target) return;
+
+      /* stopPropagation as well as preventDefault: next/link's handler would
+         otherwise still run and push its own navigation for the same click,
+         which re-enters the router for a page it is already on. */
+      e.preventDefault();
+      e.stopPropagation();
+
+      /* Keep the address bar honest, and keep Back working: replace when the
+         hash is unchanged (the repeat-click case, which should not stack
+         identical history entries) and push when it is new. */
+      if (url.hash === window.location.hash) {
+        window.history.replaceState(null, "", url.hash);
+      } else {
+        window.history.pushState(null, "", url.hash);
+      }
+
+      const lenis = window.__lenis;
+      /* #top is the hero, which starts at the document top. Scrolling to the
+         element lands a pixel or two off because of the fixed header, and on
+         a "back to top" control that reads as not quite having worked. */
+      const toTop = target === document.querySelector("#top");
+      if (lenis) {
+        if (toTop) lenis.scrollTo(0, { force: true });
+        else lenis.scrollTo(target as HTMLElement, { force: true });
+      } else if (toTop) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
+
+      /* Accessibility: a fragment link is supposed to move focus as well as
+         the viewport, and preventDefault() has just taken that away. The
+         skip link is the one that matters most — it goes to #main, and a
+         keyboard user who lands there without focus is back where they
+         started. preventScroll, because the scroll is already handled. */
+      const el = target as HTMLElement;
+      if (!el.hasAttribute("tabindex") && !/^(a|button|input|select|textarea)$/i.test(el.tagName)) {
+        el.setAttribute("tabindex", "-1");
+      }
+      el.focus({ preventScroll: true });
+    };
+
+    /* Capture phase — see the note about defaultPrevented above. This must
+       see the click before next/link does. */
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
+  }, []);
+
   useEffect(() => {
     if (first.current) {
       first.current = false;
