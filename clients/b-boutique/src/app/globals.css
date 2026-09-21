@@ -1538,7 +1538,7 @@ body {
 /* The masked reveal, when PremiumMotion splits this into lines. GSAP writes
    the wrapper; this only has to stop `balance` and any inherited leading from
    changing the measured line boxes underneath it. */
-.pov-statement .split-line { will-change: transform; }
+.pov-statement .split-line { will-change: transform, opacity; }
 
 .pov-note { display: flex; gap: 20px; align-items: stretch; }
 

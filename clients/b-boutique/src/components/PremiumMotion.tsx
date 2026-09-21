@@ -47,6 +47,21 @@ export function PremiumMotion() {
           onSplit(self) {
             return gsap.from(self.lines, {
               yPercent: 105,
+              /* Added 2026-09-21 at the client's request — he asked for this
+                 to fade in on scroll. It already animated: the lines rose out
+                 of their mask, measured 67px of travel resolving to 0 as the
+                 section entered. But opacity was pinned at 1 for the whole
+                 tween, so it read as a slide and not as a fade, which is why
+                 he did not see the thing he was asking for.
+
+                 Fading alongside the mask rather than instead of it: the mask
+                 hides a line completely at yPercent 105, so the opacity only
+                 does visible work over the second half of the rise, where it
+                 softens the edge of the reveal. That is the part that reads
+                 as a fade. Dropping the mask would make the fade louder and
+                 would also throw away a deliberate decision — it is additive
+                 and reversible this way. */
+              opacity: 0,
               duration: 0.9,
               stagger: 0.08,
               // Closest built-in to the site's cubic-bezier(.22,1,.36,1):
