@@ -2035,19 +2035,51 @@ body {
      the invert turns the panel into a pale grey rectangle: measured, and it is
      exactly what a blocked embed looked like before this line existed. */
   background-color: #ffffff;
-  filter: grayscale(1) invert(0.92) contrast(1.05) brightness(0.95);
+  /* IN COLOUR since 2026-09-21, at the client's instruction.
+     This carried `grayscale(1) invert(0.92) contrast(1.05) brightness(0.95)`
+     — the trick that turned Google's white map into a near-black one to sit
+     in what used to be a dark section. Two things changed: the client asked
+     for colour, and Visit went to the warm paper ground in the Rouge
+     re-theme, so an inverted near-black map was the one dark rectangle left
+     in a light section.
+     The white background-color STAYS and is not decorative. A blocked embed
+     paints nothing, and without it the panel's own ground shows through and
+     the fallback sits on a colour it was not measured against. White is what
+     a working map paints, so blocked and working now look the same — which
+     is the whole reason that line exists, and it survives the filter going.
+     No filter at all rather than a gentler one: a half-desaturated map reads
+     as a rendering fault rather than a choice. */
 }
 
 /* Keeps "Expand map" legible wherever the map happens to be pale, and settles
    the frame into the section's black rather than letting it sit on top as a
    lit rectangle. */
+/* ── Rebuilt 2026-09-21, when the map went to colour ──────────────────────
+   The old scrim was a light wash, and it could be: the map underneath was
+   inverted to near-black, so the white address on top had a dark ground by
+   construction. With the filter gone the map is LIGHT, and a light wash over
+   a light map leaves white type on near-white.
+   It cannot be measured here — the Google embed does not load in this
+   sandbox — so the contrast is made INDEPENDENT of the map instead of
+   estimated against it. The radial below is a plate centred on the copy at
+   0.78 alpha: composited over the worst case the map can paint (pure white)
+   that is a 8.33:1 ground for the near-white text, which clears AA for body
+   copy with room. Computed, not eyeballed.
+   It fades to almost nothing at the edges, so the map's colour is what fills
+   the frame and only the type sits on a darkened patch — the same technique
+   the hero uses, and for the same reason. */
 .vm-preview-scrim {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(to top, rgba(26, 20, 22, 0.55) 0%, rgba(26, 20, 22, 0.12) 42%, transparent 70%),
-    rgba(26, 20, 22, 0.18);
+    radial-gradient(58% 42% at 50% 46%,
+      rgba(26, 20, 22, 0.78) 0%,
+      rgba(26, 20, 22, 0.62) 38%,
+      rgba(26, 20, 22, 0.24) 68%,
+      rgba(26, 20, 22, 0.08) 100%),
+    linear-gradient(to top, rgba(26, 20, 22, 0.52) 0%, rgba(26, 20, 22, 0.10) 38%, transparent 66%),
+    rgba(26, 20, 22, 0.06);
 }
 
 .vm-expand {
@@ -2375,8 +2407,6 @@ body {
    name and the glyph is what makes it findable at a glance. Baseline-ish
    alignment via a small nudge — a 17px square next to 13px text sits low on
    the line otherwise. */
-.ft-social { display: inline-flex; align-items: center; gap: 9px; }
-.ft-social svg { flex: none; transform: translateY(-1px); }
 
 .ft-group {
   font-size: 9px;
@@ -2398,6 +2428,22 @@ body {
 }
 .ft-link:hover,
 .ft-link:focus-visible { color: var(--bb-white); transform: translateX(3px); }
+
+/* The mark sits BESIDE the label, and this rule has to come after .ft-link
+   to do it. It did not, and that was the whole bug: .ft-social declared
+   `display: inline-flex` at line 2378 and .ft-link re-declared
+   `display: inline-block` at 2391. Same specificity, one class each, so the
+   LATER rule won — the anchor went back to inline flow and, in a footer
+   column this narrow, the label wrapped underneath the icon instead of
+   sitting next to it. The client saw the logo stacked above the word.
+   nowrap as well, so a narrower column can never re-break it. */
+.ft-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  white-space: nowrap;
+}
+.ft-social svg { flex: none; transform: translateY(-1px); }
 
 /* ── The closing wordmark ──
    Sized to fill the width and sit almost on the bottom edge. The mask is the

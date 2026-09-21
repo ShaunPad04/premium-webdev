@@ -6,6 +6,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { MENU, directionsHref, socials } from "@/lib/nav";
 import { addressLines, openingSummary, phoneDisplay, shop } from "@/lib/shop";
+import { SocialMark } from "./SocialMark";
 import { useIsDrawer } from "@/lib/useIsDrawer";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
@@ -418,9 +419,18 @@ export function CornerMenu() {
                             href={sn.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-bone/85 underline decoration-bone/25 underline-offset-4 transition-colors hover:text-bone"
+                            /* The mark beside the label, same as the footer,
+                               from the same SocialMark component — the client
+                               asked for the logos here too. min-h-[44px]
+                               because these are the last tap targets in the
+                               panel and were 20px tall as bare text.
+                               The underline goes with the icon: a glyph and
+                               an underlined word together read as two
+                               controls, and the whole row is one link. */
+                            className="inline-flex min-h-[44px] items-center gap-2 text-[0.6875rem] uppercase tracking-[0.12em] text-bone/85 transition-colors hover:text-bone"
                           >
-                            {sn.name}
+                            <SocialMark name={sn.name} />
+                            <span>{sn.name}</span>
                           </a>
                         </li>
                       ))}
