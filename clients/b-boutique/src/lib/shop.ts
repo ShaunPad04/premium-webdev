@@ -96,11 +96,19 @@ export const hours: readonly { day: string; short: string; hours: Hours }[] = [
   { day: "Sunday",    short: "Sun", hours: { open: 10, close: 16 } },
 ];
 
-/** 12-hour display for the hours table. Kept: Visit prints every row. */
+/** 24-hour display for the hours table. Visit prints every row.
+ *
+ *  Changed from 12-hour on 2026-09-21 at the client's instruction: "10:00 -
+ *  16:00" rather than "10am — 4pm". It is the register a shop sign and a
+ *  Google listing use, it is zero-padded so every row in the Visit table is
+ *  the same width, and it removes the am/pm ambiguity that a tired 4pm/4am
+ *  typo would otherwise hide.
+ *
+ *  One definition, here, so the change reaches the hero, the FAQ, the Visit
+ *  table, the meta description and the structured data in one edit — which is
+ *  the whole reason this function exists. See the note on openingSummary. */
 export function formatHour(h: number): string {
-  const suffix = h < 12 ? "am" : "pm";
-  const twelve = h % 12 === 0 ? 12 : h % 12;
-  return `${twelve}${suffix}`;
+  return `${String(h).padStart(2, "0")}:00`;
 }
 
 /** The opening times as one sentence, derived from `hours` and never written
@@ -134,7 +142,10 @@ export function openingSummary(): string {
       : open.length > 1 && uniform
         ? `${open[0].day} to ${open[open.length - 1].day}`
         : open.map((d) => d.day).join(", ");
-  const time = `${formatHour(first.open)} — ${formatHour(first.close)}`;
+  /* A plain hyphen, not the em dash this used to carry. The client wrote the
+     format she wanted as "10:00 - 16:00"; an em dash in a time range reads as
+     a pause in a sentence rather than as "to". */
+  const time = `${formatHour(first.open)} - ${formatHour(first.close)}`;
   const shut =
     closed.length === 0
       ? ""

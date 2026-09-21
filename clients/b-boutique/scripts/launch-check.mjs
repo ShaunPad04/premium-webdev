@@ -91,9 +91,18 @@ if (/legalEntity:\s*""/.test(policies)) {
 }
 
 /* ── 3. Invented words ──────────────────────────────────────────────────── */
-const pending = flagCount(read('src/lib/testimonials.ts'), 'pending');
-if (pending > 0) {
-  block(`${pending} invented testimonials`, 'src/lib/testimonials.ts — words attributed to customers who did not say them.');
+/* The review rail was REMOVED on 2026-09-21: the client has three reviews,
+   not the six the page was showing, and all six were invented. Same inversion
+   as the brand band below, for the same reason — `read()` returns an empty
+   string for a path that does not exist, so a count of `pending` in a deleted
+   file would pass quietly forever. The blocker now fires if the quotes come
+   back, and the count check comes back with them. */
+if (existsSync(join(ROOT, 'src/lib/testimonials.ts'))) {
+  const pending = flagCount(read('src/lib/testimonials.ts'), 'pending');
+  block(
+    pending > 0 ? `${pending} invented testimonials` : 'The review rail is back',
+    'src/lib/testimonials.ts — words attributed to customers who did not say them. The shop has three real reviews; anything beyond them is fiction on a trading business.',
+  );
 }
 for (const [file, label] of [
   ['src/lib/faq.ts', 'FAQ answers'],

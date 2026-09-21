@@ -89,8 +89,10 @@ const description =
 /* Indexing is OFF until someone deliberately turns it on.
  *
  * This site is a concept build on a public production URL. It carries
- * placeholder testimonials, six FAQ answers still reading CLIENT TO CONFIRM,
+ * twenty-six invented prices, FAQ answers still reading CLIENT TO CONFIRM,
  * and LocalBusiness structured data naming the real shop at its real address.
+ * (The placeholder testimonials that used to head this list are gone — the
+ * review rail was deleted on 2026-09-21. Nothing else on it has moved.)
  * Google cannot tell a demo from a shopfront: indexed, it would answer
  * "opening hours for B Boutique" with copy nobody has approved, and a wrong
  * answer attached to a real business is worse than no answer.

@@ -50,14 +50,44 @@ import { ImageSlot, type Tone } from "./ImageSlot";
    plainly alive, slow enough that a name stays readable while it passes and
    nothing drags itself out from under the piece you were looking at. */
 const SPEED = 26;
-const RESUME_AFTER = 9000; /* it stays out of the way this long after a touch */
+/* Long enough for an arrow button's smooth scrollBy to land, and no longer.
+ *
+ * This was 9000ms, and it was bound to a wheel handler on the rail as well as
+ * to the arrows. That combination is why the rail read as broken: scrolling
+ * the PAGE with the cursor anywhere over the rail fires `wheel` on it, so the
+ * ordinary act of arriving at the section stopped the drift for nine seconds
+ * — which is roughly how long it takes to read the section and scroll on. The
+ * client's instruction is that it should stop on hover and otherwise move, so
+ * the wheel handler is gone and this is now only what the arrows need.
+ *
+ * A drag needs no allowance of its own: dragging means a pointer is on the
+ * rail, and a pointer on the rail is already the hover pause. */
+const RESUME_AFTER = 700;
+/** Time constant for the glide in and out of a hover pause, in seconds.
+ *  See the easing note in the drift loop. */
+const EASE_TAU = 0.2;
 
 export function NewInRail() {
   const rail = useRef<HTMLUListElement>(null);
   /* The wrap distance is measured off these two, not hard-coded. */
   const firstItem = useRef<HTMLLIElement>(null);
   const firstClone = useRef<HTMLLIElement>(null);
+  /* "This rail is under script control", NOT "it is moving right now".
+   *
+   * The distinction is the second half of the smooth-stop fix. The class
+   * turns scroll-snap off, and it used to be cleared the moment the drift
+   * paused — so a pointer landing on the rail handed a mandatory snap back to
+   * the browser mid-glide, and it immediately dragged the nearest card flush
+   * against the gutter. That is the backwards jolt the client reported, and
+   * it is not the easing: it is the browser correcting a position the script
+   * had legitimately left between two cards.
+   *
+   * So the flag now tracks the loop's existence rather than its velocity. It
+   * goes off only when the drift genuinely ends — reduced motion, an unmount,
+   * a resize re-measure — at which point snap is wanted again. */
   const [drifting, setDrifting] = useState(false);
+  /* Set by the drift loop so the pointer-leave effect can wake it. */
+  const resumeRef = useRef<(() => void) | null>(null);
   /* Bumped on resize so the drift re-measures its wrap distance at the new
      breakpoint instead of running on a stale one. */
   const [resizeTick, setResizeTick] = useState(0);
@@ -93,11 +123,11 @@ export function NewInRail() {
 
   /* The rail walks itself along, a fraction of a pixel at a time.
    *
-   * It stops for: a pointer over it, focus inside it, a hidden tab, the
-   * section being off screen, reduced motion, and any deliberate interaction
-   * (for RESUME_AFTER). That last one
-   * matters most — nothing is worse than a carousel that drags itself out
-   * from under the piece you were looking at.
+   * The only stop a visitor can see is a pointer on the rail, or focus inside
+   * it. The three others are invisible by construction: a hidden tab and an
+   * off-screen section stop work nobody could watch, and reduced motion is the
+   * setting asking for it. An arrow click buys RESUME_AFTER so its smooth
+   * scroll is not fought frame by frame.
    *
    * WCAG 2.2.2 wants a way to pause motion that runs past five seconds.
    * Hovering, focusing, or simply touching the rail all do it here; there is
@@ -109,13 +139,27 @@ export function NewInRail() {
    * original card and its clone is exactly one set plus one gap, whatever the
    * breakpoint has done to the card widths. Reset by that and the seam is
    * invisible, because the content either side of it is the same content. */
+  /* `hovered` is deliberately NOT in the dependency list below. It is read
+     through a ref inside the loop instead, so a pointer arriving on the rail
+     changes the loop's target velocity rather than tearing the loop down and
+     rebuilding it. Restarting the effect is what made the stop instant. */
+  const pausedRef = useRef(false);
+  pausedRef.current = hovered;
+
   useEffect(() => {
-    if (reduced || hovered || tabHidden || !inView) return;
+    if (reduced || tabHidden || !inView) return;
     const since = Date.now() - touchedAt;
     const delay = since < RESUME_AFTER ? RESUME_AFTER - since : 0;
 
     let raf = 0;
     let last = 0;
+    /* Current speed in px/s, eased toward its target rather than set to it.
+       This is the whole of the fix for the hard stop: the rail was going from
+       26px/s to nothing between two frames, which reads as a freeze, and the
+       snap re-engaging on the same frame then pulled the nearest card flush —
+       the backwards jolt. Now it decelerates into the pause and accelerates
+       out of it, and the snap never re-engages (see `is-drifting` below). */
+    let vel = 0;
     /* The position is tracked here as a float rather than read back off the
        element, and that is load-bearing rather than tidiness. This scroller
        rounds scrollLeft to whole pixels — write 40.5, read 41 — so at 26px/s
@@ -166,13 +210,47 @@ export function NewInRail() {
         hand back a gap of seconds; clamped so it never lurches on return */
       last = now;
 
-      if (loop > 0) {
-        pos += SPEED * dt;
+      /* Exponential approach to the target speed, framerate-independent.
+         1 - e^(-dt/TAU) is the fraction of the remaining gap to close this
+         frame; using dt rather than a fixed factor means a 120Hz display and
+         a 60Hz one decelerate over the same number of SECONDS rather than the
+         same number of frames. TAU is the time constant: the gap closes to
+         ~63% in one TAU, so the glide settles in a little over half a second
+         — long enough to read as easing, short enough that a pointer landing
+         on a card does not feel ignored. */
+      const target = pausedRef.current ? 0 : SPEED;
+      vel += (target - vel) * (1 - Math.exp(-dt / EASE_TAU));
+      /* Below a twentieth of a pixel per second nothing more will ever be
+         painted, so settle exactly on zero rather than approaching it for the
+         rest of the session. */
+      if (target === 0 && vel < 0.05) vel = 0;
+
+      if (loop > 0 && vel > 0) {
+        pos += vel * dt;
         if (pos >= start + loop) pos -= loop;
         el.scrollLeft = pos;
       }
+
+      /* Fully stopped and asked to stay stopped: give the frame budget back
+         until something changes. The effect does not tear down, so nothing is
+         re-measured and the position is not lost — `resume` picks the loop up
+         exactly where it left off. */
+      if (target === 0 && vel === 0) {
+        raf = 0;
+        return;
+      }
       raf = requestAnimationFrame(step);
     };
+
+    /* Called when the pointer leaves. The loop may have parked itself above,
+       in which case it needs waking; if it is still gliding to a halt it is
+       already running and this is a no-op. */
+    const resume = () => {
+      if (raf || pausedRef.current) return;
+      last = 0;
+      raf = requestAnimationFrame(step);
+    };
+    resumeRef.current = resume;
 
     const begin = window.setTimeout(() => {
       setDrifting(true);
@@ -190,9 +268,18 @@ export function NewInRail() {
     return () => {
       window.clearTimeout(begin);
       cancelAnimationFrame(raf);
+      resumeRef.current = null;
       setDrifting(false);
     };
-  }, [reduced, hovered, tabHidden, inView, touchedAt, resizeTick]);
+    /* `hovered` is absent on purpose — see pausedRef above. */
+  }, [reduced, tabHidden, inView, touchedAt, resizeTick]);
+
+  /* Wake the parked loop when the pointer leaves. Hover is handled inside the
+     loop rather than by restarting the effect, so this is the one thing that
+     has to reach in from outside. */
+  useEffect(() => {
+    if (!hovered) resumeRef.current?.();
+  }, [hovered]);
 
   useEffect(() => {
     const onResize = () => setResizeTick((v) => v + 1);
@@ -215,14 +302,12 @@ export function NewInRail() {
       ref={section}
       aria-labelledby="newin-heading"
       className="newin"
-      /* Deliberately no onPointerEnter here. Pausing on the whole section made
-         the rail stop for a cursor resting anywhere near it — over the
-         heading, the arrows, the footnote, or the empty gutter beside a card —
-         which reads as broken rather than considered. The pause now lives on
-         the photographs themselves, below: you stop the rail by looking at a
-         piece, which is the only reason to want it stopped. Focus still pauses
-         from here, because a keyboard user tabbing in has the same intent and
-         no pointer to express it with. */
+      /* Deliberately no onPointerEnter on the SECTION. Pausing here made the
+         rail stop for a cursor resting anywhere near it — over the heading,
+         the footnote, or the empty gutter — which reads as broken rather than
+         considered. The pointer pause lives on the rail itself, below.
+         Focus still pauses from here, because a keyboard user tabbing in has
+         the same intent and no pointer to express it with. */
       onFocusCapture={() => setHovered(true)}
       onBlurCapture={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setHovered(false);
@@ -263,9 +348,16 @@ export function NewInRail() {
       <ul
         id="newin-rail"
         ref={rail}
-        onPointerDown={handled}
-        onKeyDown={handled}
-        onWheel={handled}
+        /* The whole rail is the hover target, not each photograph.
+           It was on the photographs, which meant the 16px gap between two
+           cards resumed the drift for a frame or two as the cursor crossed
+           it — a twitch under a pointer that had not left the rail. The <ul>
+           is exactly the cards and their gaps and nothing else, so it is the
+           honest boundary for "the pointer is on the carousel".
+           No onWheel: a wheel event here is almost always the page being
+           scrolled past, not the rail being scrolled. See RESUME_AFTER. */
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
         tabIndex={0}
         aria-label="New arrivals"
         className={`newin-rail${drifting ? " is-drifting" : ""}`}
@@ -283,15 +375,7 @@ export function NewInRail() {
               className="newin-item"
               style={{ "--i": i } as React.CSSProperties}
             >
-              <div
-              className="newin-media"
-              /* The hover target is the image, not the card and not the
-                 section. Crossing the 16px gap between two cards resumes the
-                 drift for a frame or two — at 26px/s that is under 3px, and
-                 the alternative (a debounce) buys nothing you can see. */
-              onPointerEnter={() => setHovered(true)}
-              onPointerLeave={() => setHovered(false)}
-            >
+              <div className="newin-media">
                 <ImageSlot
                   tone={piece.tone as Tone}
                   seed={i + 11}
@@ -306,7 +390,21 @@ export function NewInRail() {
                   className="absolute inset-0 h-full w-full"
                 />
               </div>
-              <p className="newin-cat">{piece.category}</p>
+              {/* One line, and it is the piece.
+                  It used to be category-then-name — "JACKETS" over "Tailored
+                  camel blazer". The client asked for the specific product
+                  instead, in her words "'Italian Blue Knitwear', etc", and
+                  she is right: a rail headed New in this week that labels a
+                  card JACKETS is answering a question nobody asked. The
+                  category is already the nav, the category pages and the
+                  shop's own filter; here it was a second, vaguer label above
+                  the real one.
+                  The names themselves are still ours, not hers — see the note
+                  on `newIn` in lib/shop.ts. They describe what is in the
+                  photograph and claim no colour, origin, fibre or brand,
+                  which is exactly what "Italian Blue Knitwear" would claim
+                  three times over. They are replaced, not edited, when her
+                  real list arrives. */}
               <p className="newin-name">{piece.name}</p>
             </li>
           )),

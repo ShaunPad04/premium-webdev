@@ -62,7 +62,10 @@ export function Visit() {
                   <dt>{d.day}</dt>
                   <dd className={d.hours ? "" : "is-closed"}>
                     {d.hours
-                      ? `${formatHour(d.hours.open)} — ${formatHour(d.hours.close)}`
+                      /* Hyphen, matching openingSummary — the Visit table and
+                         the one-line summary must not punctuate the same fact
+                         two different ways on the same page. */
+                      ? `${formatHour(d.hours.open)} - ${formatHour(d.hours.close)}`
                       : "Closed"}
                   </dd>
                 </div>

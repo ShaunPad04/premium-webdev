@@ -712,9 +712,22 @@ body {
 /* The rouge earns its place here rather than anywhere decorative: the one
    control on the hero, filling with the shop's own red on hover. 9.33:1 with
    paper on it, measured. */
+/* Ink, not rouge. Changed 2026-09-21 at the client's prompting, and she was
+   right on the facts as well as the taste.
+   The rouge's whole justification, written into CLAUDE.md, was that it is
+   "the red already sampled from her own hero photograph" — a fact about her
+   shop rather than a decision made in a browser. That photograph is GONE: the
+   hero became the five-slide Paris slideshow the same week, and there is no
+   red anywhere in any of the five frames. So a saturated #8A070B fill was
+   arriving on a desaturated warm-grey photograph with nothing in the picture
+   to answer it, which is exactly how a considered accent turns into a generic
+   Buy Now button.
+   The warm ink is the site's own text colour, so the button reads as a
+   printed label on the photograph. The rouge is untouched everywhere else —
+   it is retired from this one control, not from the palette. */
 .hero-cta:hover,
 .hero-cta:focus-visible {
-  background: var(--bb-rouge);
+  background: var(--bb-black);
   color: var(--bb-white-pure);
 }
 
@@ -752,223 +765,196 @@ body {
 
    Where scroll-driven animations are unsupported, nothing runs and the
    approved static hero is what shows — which is the correct fallback. */
-/* ── Testimonials ─────────────────────────────────────────────────────────
-   The black break between two cool-white sections. Split composition, no
-   container, no card, no rounded anything — the photograph and the quote are
-   one thing. */
-.tm {
-  /* Flipped to light 2026-09-21 with the Rouge re-theme. Was a black
-     break between two light sections; the page is light-dominant now, so
-     the dark chapters are .pov, .cats, the statement band and the footer. */
+/* ── Service — come in, or have it sent ───────────────────────────────────
+   Replaced the review rail on 2026-09-21. The client has three reviews, not
+   the six the page was showing, and all six were invented; see Service.tsx
+   for the full reasoning. The COMPOSITION is deliberately unchanged — split,
+   photograph left, editorial right, no container and no card — because the
+   page's rhythm was built around a full-bleed split in this position and
+   swapping it for a narrower band would have moved everything under it.
+
+   The classes were renamed tm-* to svc-* rather than left alone. A block
+   called `tm-card-quote` holding a delivery price is the exact drift this
+   project keeps being caught by. */
+.svc {
   background: var(--bb-white);
   color: var(--bb-black);
   display: flex;
   flex-direction: column;
-  touch-action: pan-y;   /* the page still scrolls vertically through a swipe */
+  /* clip rather than hidden: hidden would make this a scroll container,
+     which changes how anything inside it can be scrolled into view. */
+  overflow-x: clip;
 }
 
 @media (min-width: 1024px) {
-  .tm { flex-direction: row; align-items: stretch; min-height: 650px; }
-  .tm-media { flex: 0 0 47%; }
-  /* min-width: 0 is load-bearing, not tidiness.
-     A flex item defaults to min-width: auto, so it refuses to shrink below
-     its own content's minimum — and this column's content is a rail defined
-     as `calc(100% + gutter)` of that same column. The two chased each other:
-     the column settled 50px wider than its 53% at 1440 and 115px wider at
-     1280, and the page grew a horizontal scrollbar. Measured before and
-     after: document scrollWidth 1490 -> 1440 at 1440, 1395 -> 1280 at 1280. */
-  .tm-body  { flex: 1 1 53%; min-width: 0; display: flex; align-items: center; }
+  .svc { flex-direction: row; align-items: stretch; min-height: 650px; }
+  .svc-media { flex: 0 0 47%; }
+  /* min-width: 0 is load-bearing. A flex item defaults to min-width: auto and
+     refuses to shrink below its content's minimum; the column this replaces
+     grew the page a horizontal scrollbar without it. */
+  .svc-body { flex: 1 1 53%; min-width: 0; display: flex; align-items: center; }
 }
 
-/* The rail deliberately bleeds past the text column into the section's right
-   gutter. `clip` rather than `hidden`: hidden would make this a scroll
-   container, which changes how anything inside it can be scrolled into view;
-   clip just stops the bleed becoming page-wide overflow. */
-.tm { overflow-x: clip; }
-
-.tm-media { position: relative; overflow: hidden; aspect-ratio: 4 / 3; }
-@media (min-width: 1024px) { .tm-media { aspect-ratio: auto; } }
-@media (max-width: 1023px) { .tm-media { aspect-ratio: 3 / 2; } }
+.svc-media { position: relative; overflow: hidden; aspect-ratio: 4 / 3; }
+@media (min-width: 1024px) { .svc-media { aspect-ratio: auto; } }
+@media (max-width: 1023px) { .svc-media { aspect-ratio: 3 / 2; } }
 
 /* Crossfade with a breath of scale. The panel never slides across — that
    reads as a slideshow; this reads as one composition changing its mind. */
-.tm-shot {
+.svc-shot {
   position: absolute;
   inset: 0;
   opacity: 0;
   transform: scale(1.022);
   transition: opacity 760ms var(--bb-ease), transform 760ms var(--bb-ease);
 }
-.tm-shot.is-active  { opacity: 1; transform: scale(1); }
+.svc-shot.is-active { opacity: 1; transform: scale(1); }
 
-.tm-shot img {
-  /* Light touch: this photography is already black marble and brass, so it
-     sits on the black without much help. Enough to sink it behind the type. */
+.svc-shot img {
+  /* Light touch: this photography is already black marble and brass. Enough
+     to sink it behind the type without recolouring the room. */
   filter: grayscale(22%) brightness(0.86) contrast(1.02);
 }
 
-.tm-body { padding: clamp(40px, 6vw, 90px) 18px clamp(42px, 5vw, 80px); }
-@media (min-width: 768px) { .tm-body { padding-inline: clamp(40px, 6vw, 90px); } }
+.svc-body { padding: clamp(40px, 6vw, 90px) 18px clamp(42px, 5vw, 80px); }
+@media (min-width: 768px) { .svc-body { padding-inline: clamp(40px, 6vw, 90px); } }
 
-.tm-inner { width: 100%; max-width: 640px; }
+.svc-inner { width: 100%; max-width: 640px; }
 
-.tm-eyebrow {
+.svc-eyebrow {
   font-size: 9px;
   font-weight: 600;
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  /* Ink alpha, not white: this section is light since the Rouge re-theme.
-     Measured .75 -> 7.75:1 on paper. */
+  /* Ink alpha, not white: this section is light. Measured .75 -> 7.75:1 on
+     paper. */
   color: rgba(26, 20, 22, 0.75);
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 
-/* The stage reserves the tallest slide's height, so a slide change never
-   moves the controls or shifts anything below the section. */
+/* The section's one editorial moment, and the only Bodoni in it. The list
+   below is utility and is set in Inter — one face per role. */
+.svc-h2 {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  font-size: clamp(30px, 3.6vw, 46px);
+  line-height: 1.06;
+  letter-spacing: -0.022em;
+  color: var(--bb-black);
+  margin: 0 0 clamp(32px, 3.4vw, 46px);
+  max-width: 14ch;
+  text-wrap: balance;
+}
+.svc-h2 em { font-style: italic; }
 
-
-
-/* ── The review rail ──────────────────────────────────────────────────────
-   The quotes move on an infinite marquee rather than sitting in a one-at-a-
-   time carousel. Cards, but not card-shaped: DESIGN.md says the system is flat
-   and square, so this is a hairline box on the section's own black — no
-   radius, no shadow, no surface change. What separates one quote from the next
-   is a rule, which is how everything else on this page separates things.
-
-   The mask is applied here rather than through the component's own gradient
-   overlay, and the component's overlay is now switched off at the call site —
-   it was not, so for one commit BOTH ran and the ends of the rail carried two
-   stacked fades. That is why the first card read as broken rather than as
-   travelling. A mask on the scrolling viewport does the job with nothing added
-   to the DOM, and matches the brand rail under the hero, which fades the same
-   way for the same reason. `> div:first-child` is the component's
-   overflow-hidden viewport — coupled to its internals, and noted here so that
-   a version bump knows to check it.
-
-   In px rather than percentages, and equal at both ends. A percentage fade is
-   a different physical width on every screen: 2% is 8px on a phone, where the
-   rail is the whole viewport and needs a real edge, and 26px on a wide
-   desktop. 24px is the width that reads as an edge without eating a word. */
-.tm-rail > div:first-child {
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+/* No bullets, no numbers from the browser — the index is rendered as type so
+   it can be tracked and sized like every other piece of micro-copy here. */
+.svc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--bb-light-border);
 }
 
-/* The rail is the one thing in this column that runs to the edge of the
-   section, at every width. Below 768 that means undoing .tm-body's 18px
-   padding so a card enters and leaves at the screen edge rather than at an
-   invisible margin 18px inside it — a marquee that stops short of the edge
-   reads as clipped. Above it, the rail runs on into the right gutter: the
-   column is sized for a paragraph, 640px, which fits two cards and a sliver,
-   and bleeding shows three, which is what makes it a wall of reviews rather
-   than a pair.
-
-   Only the rail bleeds. The eyebrow and the notice stay on the measure, so
-   the column still has an edge to read against. */
-.tm-rail {
-  width: calc(100% + 36px);
-  margin-inline: -18px;
-  max-width: none;
+/* A hairline between rows, which is how everything else on this page
+   separates things. No box, no fill, no radius: the rule IS the component. */
+.svc-row {
+  display: grid;
+  grid-template-columns: 2.6rem 1fr;
+  gap: 0 14px;
+  padding: clamp(20px, 2.2vw, 28px) 0;
+  border-bottom: 1px solid var(--bb-light-border);
 }
 
 @media (min-width: 768px) {
-  .tm-rail {
-    width: calc(100% + clamp(40px, 6vw, 90px));
-    margin-inline: 0;
-  }
+  .svc-row { grid-template-columns: 3.2rem 1fr; gap: 0 20px; }
 }
 
-/* Sized so the rail always shows more than one quote — a marquee carrying a
-   single card at a time is a slideshow with extra steps.
-   At 390 that is 268px against a 390px viewport: one quote and a clear third
-   of the next, so the direction of travel is obvious.
-   At 1024+ it is a fixed 320, because the column has stopped growing. */
-.tm-card {
-  width: min(69vw, 340px);
-  height: 100%;
-  margin: 0;
-  padding: 26px 24px 22px;
-  border: 1px solid var(--bb-light-border);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 20px;
+.svc-num {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.7;
+  letter-spacing: 0.16em;
+  /* grey-dark, not grey-mid: grey-mid measures 2.95:1 on paper, a straight
+     fail. This is decorative but it is still readable type. */
+  color: var(--bb-grey-dark);
+  padding-top: 3px;
 }
 
-@media (min-width: 768px)  { .tm-card { width: min(46vw, 340px); } }
-@media (min-width: 1024px) { .tm-card { width: 320px; } }
+.svc-row-body { min-width: 0; }
 
-/* Bodoni, because a quote is the one place in this column that is editorial
-   rather than utility — but at a fraction of the old 52px display size. At
-   that scale one quote filled the column; at this one, three do, which is the
-   point of showing them on a rail. */
-.tm-card-quote {
+.svc-row-title {
+  margin: 0 0 6px;
+  font-size: clamp(15px, 1.15vw, 17px);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--bb-black);
+}
+
+.svc-row-text {
   margin: 0;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
-  font-weight: 400;
-  font-size: clamp(17px, 1.35vw, 20px);
-  line-height: 1.42;
-  letter-spacing: -0.01em;
+  font-size: clamp(14px, 1.05vw, 15px);
+  line-height: 1.5;
   color: var(--bb-black);
   text-wrap: pretty;
 }
 
-.tm-card-meta { display: flex; flex-direction: column; gap: 5px; }
-
-.tm-card-name {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--bb-black);
-}
-
-/* Quieter than the name, and tracked open as it quietens — a line pushed back
-   rather than merely shrunk. Never below 9px. */
-.tm-card-source {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  /* grey-dark, not grey-mid: this section is light now, and grey-mid
-     measures 2.95:1 on paper — a straight fail. */
+/* The second line of each row is the qualifier — the free-delivery threshold,
+   who pays return postage. Quieter than the claim above it, never quieter
+   than AA: grey-dark measures 7.04:1 on paper. */
+.svc-row-meta {
+  margin: 3px 0 0;
+  font-size: clamp(13px, 1vw, 14px);
+  line-height: 1.5;
   color: var(--bb-grey-dark);
+  text-wrap: pretty;
 }
 
-/* The internal marker. Same convention as the newsletter and socials markers:
-   impossible to mistake for content, and it disappears on its own the moment
-   `pending` is removed from the data. */
-.tm-pending {
-  margin-top: 26px;
+/* The same gesture the Visit CTA uses: the glyph moves on hover, the target
+   does not, and nothing dims to say it is live. */
+.svc-row-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  min-height: 24px;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--bb-black);
-  border: 1px solid var(--bb-light-border);
-  padding: 8px 12px;
-  display: inline-block;
+  border-bottom: 1px solid var(--bb-light-border);
+  padding-bottom: 3px;
+  transition: border-color 260ms var(--bb-ease);
 }
 
+.svc-row-link:hover { border-color: var(--bb-black); }
 
-/* The arrow leans the way it will take you. This is the gesture the Visit CTA
-   already uses (`.visit-cta:hover .visit-cta-arrow`), and the carousel was the
-   one place on the page that answered a hover by fading itself to 55% instead
-   — dimming a control to say it is live, which is the wrong way round. The
-   glyph moves; the 44px target does not. */
+.svc-row-arrow {
+  display: inline-block;
+  transition: transform 300ms var(--bb-ease);
+}
 
-/* Entrance, once. The slide transitions above are separate and unaffected. */
+.svc-row-link:hover .svc-row-arrow { transform: translateX(4px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .svc-row-arrow { transition: none; }
+}
+
+/* Entrance, once. The crossfade above is separate and unaffected. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .tm-media {
-      animation: tm-fade 800ms var(--bb-ease) both;
+    .svc-media {
+      animation: svc-fade 800ms var(--bb-ease) both;
       animation-timeline: view();
       animation-range: entry var(--bb-enter) entry var(--bb-settle);
     }
-    /* The copy follows the photograph by one place. Everything inside it —
-       eyebrow, quote, name, counter, controls — moves as this one block; five
-       separately staggered elements would turn a quote into a title sequence. */
-    .tm-inner {
-      animation: tm-in 800ms var(--bb-ease) both;
+    /* The copy follows the photograph by one place, and moves as one block.
+       Separately staggering the eyebrow, the heading and three rows would
+       turn a delivery price into a title sequence. */
+    .svc-inner {
+      animation: svc-in 800ms var(--bb-ease) both;
       animation-timeline: view();
       animation-range:
         entry calc(var(--bb-enter) + var(--bb-step))
@@ -977,12 +963,13 @@ body {
   }
 }
 
-@keyframes tm-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes tm-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes svc-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes svc-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .tm-shot { transition: none; }
+  .svc-shot { transition: none; }
 }
+
 
 /* ── Homeware ─────────────────────────────────────────────────────────────
    Same cool white as New In. The only thing between them is a hairline: the
@@ -1365,18 +1352,14 @@ body {
   transform: scale(1.018);
 }
 
-.newin-cat {
-  margin-top: 17px;
-  font-size: 9px;
-  font-weight: 600;
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--bb-grey-dark);
-}
-
+/* `.newin-cat` — the uppercase category eyebrow — was removed on 2026-09-21 at
+   the client's instruction: the card names the piece, not its department.
+   Its 17px top margin moves here, because that gap was between the photograph
+   and the first line of type rather than between the two lines. Deleting the
+   rule without moving the margin would have pulled the name up against the
+   image by 11px on every card. */
 .newin-name {
-  margin-top: 6px;
+  margin-top: 17px;
   font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
   font-weight: 400;
   font-size: clamp(16px, 1.2vw, 19px);

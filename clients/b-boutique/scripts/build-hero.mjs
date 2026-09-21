@@ -43,11 +43,29 @@ await mkdir("public/img/hero", { recursive: true });
 
 const slides = ["1-paris", "2-street", "3-terrace", "4-flowers", "5-sea"];
 
-/* 1800 for the landscape file and 1100 for the portrait one, matching what
-   the single-image hero shipped before the slideshow — so the comparison
-   against it is like for like rather than flattering. */
-const DESKTOP_W = 1800;
-const MOBILE_W = 1100;
+/* ── 2026-09-21, second correction: stop downscaling below the source ──────
+ *
+ * These were 1800 and 1100, chosen to match what the single-image hero had
+ * shipped before the slideshow, so the comparison against it could not
+ * flatter. That guard did its job — but matching the old number is not the
+ * same as being right, and it left real pixels on the floor: the landscape
+ * sources are 2048 wide and the portrait ones 1536, so every slide was being
+ * thrown away at 88% and 72% respectively before it was ever encoded.
+ *
+ * It shows on a high-DPR display, which is most of them. A full-bleed hero on
+ * a DPR-2 laptop at 1440 CSS px wants 2880 device pixels across; 1800 is 62%
+ * of that and reads soft. 2048 is 71% — still short, and it is as far as the
+ * source goes. Upscaling past it would add file size and no detail, so this
+ * is the ceiling until a larger original exists, and saying so is more useful
+ * than quietly interpolating.
+ *
+ * The phone case is now fully covered rather than nearly: 1536 against the
+ * 1170 device pixels a DPR-3 390px phone asks for. 1100 was 94% of it.
+ *
+ * The caps below are a ceiling, not a target. `withoutEnlargement` means a
+ * source smaller than the cap is used at its own size and never stretched. */
+const DESKTOP_W = 2048;
+const MOBILE_W = 1536;
 const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
 
 for (const name of slides) {

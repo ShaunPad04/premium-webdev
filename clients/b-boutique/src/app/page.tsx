@@ -5,7 +5,7 @@ import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import { NewInRail } from "@/components/NewInRail";
 import { Homeware } from "@/components/Homeware";
-import { Testimonials } from "@/components/Testimonials";
+import { Service } from "@/components/Service";
 import { Faq } from "@/components/Faq";
 import { Visit } from "@/components/Visit";
 import { Footer } from "@/components/Footer";
@@ -38,8 +38,11 @@ export default function Home() {
         <NewInRail />
         {/* 04 A second world — homeware */}
         <Homeware />
-        {/* The customer voice — the black break between two light sections */}
-        <Testimonials />
+        {/* How buying from the shop works — hours, delivery, returns. Was a
+            rail of six invented customer quotes until 2026-09-21; the client
+            has three real reviews, not six, and three is not a wall of
+            reviews. See Service.tsx. */}
+        <Service />
         {/* 05 The practical questions, once they are interested */}
         <Faq />
         {/* 06 The ask — a postcode, not a basket */}
