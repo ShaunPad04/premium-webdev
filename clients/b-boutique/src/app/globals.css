@@ -813,7 +813,11 @@ body {
   background: var(--bb-white);
   color: var(--bb-black-soft);
   border-top: 1px solid var(--bb-light-border);
-  padding-block: 96px 108px;
+  /* Trimmed from 96/108 on 2026-09-21. This section measured 1.03 screens on
+     the client's display and 2.31 at 768 — the tallest thing on the page
+     except the FAQ, which holds eight questions to this one's single
+     paragraph. */
+  padding-block: 80px 88px;
   padding-inline: 18px;
   scroll-margin-top: 96px;
 }
@@ -825,13 +829,50 @@ body {
 @media (min-width: 1024px) {
   .hw-inner {
     flex-direction: row;
-    align-items: flex-start;
+    /* Centred, not flex-start. The copy is 375px of type against a 776px
+       media column, so top-aligning dropped the whole 400px difference into
+       one lump under the text. Centred, the same whitespace sits above and
+       below and reads as a margin rather than as a gap. */
+    align-items: center;
     gap: clamp(48px, 5vw, 96px);
+    /* Capped and centred, and it only bites above about 1520px.
+       At 1440 the content is 1224 wide against a 1400 cap, so that case —
+       which is the tuned one — is untouched. Above it, the media cap would
+       otherwise leave the type and the photographs stranded at opposite
+       gutters with ~600px of dead air between them: measured 246px of pure
+       slack at 1920 before this. This is a section-level cap, not the page
+       container DESIGN.md rules out; the gutters still run full width. */
+    max-width: 1400px;
+    margin-inline: auto;
   }
   /* Type takes a third, photographs two thirds — the imagery has to hold more
-     visual area than the words or this reads as a text section with pictures. */
-  .hw-copy  { flex: 0 0 32%; padding-top: 8px; }
-  .hw-media { flex: 1 1 auto; min-width: 0; }
+     visual area than the words or this reads as a text section with pictures.
+
+     Widened from 32% to 38% on 2026-09-21. This single edit works on the
+     height from both ends: a narrower media column makes .hw-a shorter, and a
+     wider type column makes the text block taller, so the two columns move
+     toward each other instead of only one of them moving. */
+  .hw-copy  { flex: 0 0 38%; min-width: 0; }
+  /* THE CAP. Without it .hw-a is a 3:4 portrait in a column that tracks the
+     viewport, so its height tracks the viewport too — 552px at 1440, 767px
+     at 1920, and no ceiling. Capping the REGION rather than .hw-a itself is
+     deliberate: the three photographs are tuned as fractions of this region
+     (A ~54%, B ~34%, C ~27%), so a narrower region scales all three together,
+     where a max-height on .hw-a alone would break its ratio against B and C
+     and pull the composition apart. */
+  .hw-media {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 700px;
+    /* The cap leaves slack on a wide screen — measured 246px at 1920 — and
+       with the default flex-start that slack lands at the RIGHT edge, so the
+       photographs stop short of the gutter and the whole section reads as
+       having drifted left. margin-left: auto moves it between the columns
+       instead: both are anchored to their own gutter and the extra width
+       becomes air between type and pictures, which is what an editorial
+       spread wants anyway. */
+    margin-left: auto;
+  }
 }
 
 .hw-eyebrow {
@@ -989,10 +1030,25 @@ body {
    cards, and drops the parallax: the travel is a larger share of a small
    viewport and reads as jitter rather than depth. */
 @media (max-width: 1023px) {
-  .hw-media { grid-template-columns: 1fr; gap: 22px; }
-  .hw-a { aspect-ratio: 4 / 5; width: 100%; }
-  .hw-b { aspect-ratio: 4 / 5; width: 72%; margin-left: auto; }
-  .hw-c { aspect-ratio: 1 / 1; width: 60%; margin-left: 0; }
+  /* Two across, not three stacked. This block used to be a single column,
+     so all three photographs ran full width one under another — 1837px of
+     images at 768, which is what made this section 2.31 screens tall there.
+     That is the larger of the two faults and it is invisible on a desktop
+     screenshot, which is why it survived.
+
+     A spans the row; B and C sit beside each other beneath it. .hw-stack is
+     display: contents so its two children become grid items of .hw-media
+     rather than a nested single-column stack — it is a plain div carrying no
+     semantics, so nothing leaves the accessibility tree with it. */
+  .hw-media { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .hw-stack { display: contents; }
+  /* LANDSCAPE here, not the 4:5 portrait it was. A full-width portrait is
+     precisely what makes a phone scroll for a screen and a half. */
+  .hw-a { grid-column: 1 / -1; aspect-ratio: 3 / 2; width: 100%; }
+  /* The 72%/60% widths and the margin-left flips existed to break up a
+     vertical run of three. There is no vertical run now, so they go: two
+     equal squares side by side is the composition. */
+  .hw-b, .hw-c { aspect-ratio: 1 / 1; width: 100%; margin: 0; }
 }
 
 /* ── New in this week ─────────────────────────────────────────────────────
