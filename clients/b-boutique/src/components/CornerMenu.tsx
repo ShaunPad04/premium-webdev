@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { MENU, directionsHref, socials } from "@/lib/nav";
-import { addressLines, openingSummary, shop } from "@/lib/shop";
+import { addressLines, openingSummary, phoneDisplay, shop } from "@/lib/shop";
 import { useIsDrawer } from "@/lib/useIsDrawer";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
@@ -245,11 +245,24 @@ export function CornerMenu() {
               role="dialog"
               aria-modal="true"
               aria-label="Menu"
-              className="pointer-events-auto fixed inset-y-0 right-0 z-50 h-svh max-h-svh w-[min(24rem,100vw)] origin-right overflow-hidden rounded-l-[22px] bg-panel text-bone shadow-[0_30px_80px_rgba(0,0,0,.6)] sm:inset-y-auto sm:right-6 sm:top-5 sm:h-auto sm:max-h-[calc(100svh-2.5rem)] sm:w-[24rem] sm:origin-top-right sm:rounded-[22px] lg:right-8"
+              /* SQUARE, and that is the single biggest change here.
+                 This carried rounded-l-[22px] / sm:rounded-[22px] and a
+                 0 30px 80px / .6 drop shadow. DESIGN.md is explicit that the
+                 system is flat and square with no card vocabulary — every
+                 other surface on this site has a hard corner and a hairline
+                 — so a 22px-radius drawer under a heavy shadow was the one
+                 element announcing that it came from somewhere else. That is
+                 what the client was reading as "a cheap web designer": not
+                 any single detail being ugly, but this panel not belonging to
+                 the same site as the page behind it.
+                 The shadow is kept but quietened, and a hairline does the
+                 work of separating the panel from the photograph, which is
+                 how everything else here separates things. */
+              className="pointer-events-auto fixed inset-y-0 right-0 z-50 h-svh max-h-svh w-[min(24rem,100vw)] origin-right overflow-hidden border-l border-bone/15 bg-panel text-bone shadow-[0_18px_60px_rgba(0,0,0,.45)] sm:inset-y-auto sm:right-6 sm:top-5 sm:h-auto sm:max-h-[calc(100svh-2.5rem)] sm:w-[24rem] sm:origin-top-right sm:border sm:border-bone/15 lg:right-8"
               {...panelMotion}
             >
               <div className="grain relative flex h-full max-h-svh flex-col overflow-y-auto p-6 pt-20 sm:h-auto sm:max-h-[calc(100svh-2.5rem)] sm:pt-[5.5rem]">
-                <p className="mb-3 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-bone/50">
+                <p className="mb-3 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-bone/70">
                   Navigation
                 </p>
 
@@ -271,12 +284,24 @@ export function CornerMenu() {
                         onClick={close}
                         className="group flex min-h-[44px] items-center gap-3.5 py-2.5 transition-[padding] duration-200 ease-out hover:pl-1.5 focus-visible:pl-1.5"
                       >
-                        <span className="w-6 shrink-0 font-mono text-[0.625rem] leading-none text-bone/50 transition-colors duration-200 group-hover:text-gold-lift group-focus-visible:text-gold-lift">
+                        <span className="w-6 shrink-0 font-mono text-[0.625rem] leading-none text-bone/65 transition-colors duration-200 group-hover:text-gold-lift group-focus-visible:text-gold-lift">
                           {item.n}
                         </span>
-                        {/* Heavy grotesque in caps — the reference's defining
-                            character. 29px / 800 / 0.98 / -0.02em. */}
-                        <span className="font-grotesk text-[1.6rem] font-extrabold uppercase leading-[0.98] tracking-[-0.02em] sm:text-[1.8rem]">
+                        {/* Bodoni, sentence case, regular weight.
+                            It was `font-grotesk text-[1.6rem] font-extrabold
+                            uppercase` — 29px of extrabold grotesque caps. That
+                            is a streetwear or agency register, and it is the
+                            loudest type on a womenswear boutique whose signed-
+                            off display face is a Didone. The menu was shouting
+                            SHOP / WOMENSWEAR / ACCESSORIES in a voice the rest
+                            of the site never uses.
+                            The typography table in CLAUDE.md gives large
+                            editorial statements to Bodoni via `.display`, and
+                            a full-height navigation panel is exactly that: it
+                            is the most editorial surface on the site, not a
+                            utility list. Caps also cost the descenders and
+                            ascenders a Didone is built around. */}
+                        <span className="display text-[1.5rem] font-normal leading-[1.08] tracking-[-0.02em] sm:text-[1.7rem]">
                           {item.label}
                         </span>
                         <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"
@@ -314,14 +339,14 @@ export function CornerMenu() {
                   {/* Contact set in monospace, matching the reference's
                       utility register. Real address and hours only — no
                       social accounts are held anywhere in this project. */}
-                  <p className="mb-2.5 mt-8 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-bone/50">
+                  <p className="mb-2.5 mt-8 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-bone/70">
                     Contact
                   </p>
                   {/* Rendered only once real details exist — see lib/shop.ts */}
                   {shop.email ? (
                     <a
                       href={`mailto:${shop.email}`}
-                      className="mb-1 block font-mono text-[0.6875rem] leading-[1.75] text-bone/75 transition-colors hover:text-bone"
+                      className="flex min-h-[44px] items-center text-[0.75rem] leading-[1.8] text-bone/85 transition-colors hover:text-bone"
                     >
                       {shop.email}
                     </a>
@@ -329,12 +354,18 @@ export function CornerMenu() {
                   {shop.phone ? (
                     <a
                       href={`tel:${shop.phone.replace(/\s+/g, "")}`}
-                      className="mb-2 block font-mono text-[0.6875rem] leading-[1.75] text-bone/75 transition-colors hover:text-bone"
+                      className="flex min-h-[44px] items-center text-[0.75rem] leading-[1.8] text-bone/85 transition-colors hover:text-bone"
                     >
-                      {shop.phone}
+                      {/* phoneDisplay, not the raw field. This printed
+                          07305534342 as one unbroken eleven-digit run while
+                          every other phone number on the site reads
+                          07305 534342 — the client spotted it in the menu.
+                          The href keeps the raw digits, which is what tel:
+                          wants; only the visible text is grouped. */}
+                      {phoneDisplay}
                     </a>
                   ) : null}
-                  <address className="not-italic font-mono text-[0.6875rem] leading-[1.75] text-bone/75">
+                  <address className="mt-2 not-italic text-[0.75rem] leading-[1.8] text-bone/85">
                     {addressLines.map((l) => (
                       <span key={l} className="block">
                         {l}
@@ -351,7 +382,7 @@ export function CornerMenu() {
                       this one was a hardcoded string and the sweep missed it.
                       openingSummary() reads the same hours table the Visit
                       section and the JSON-LD read, so it cannot drift again. */}
-                  <p className="mt-2.5 font-mono text-[0.6875rem] leading-[1.75] text-bone/60">
+                  <p className="mt-2.5 text-[0.75rem] leading-[1.8] text-bone/80">
                     {openingSummary()}
                   </p>
 
@@ -364,7 +395,7 @@ export function CornerMenu() {
                             href={sn.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-bone/70 underline decoration-bone/25 underline-offset-4 transition-colors hover:text-bone"
+                            className="font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-bone/85 underline decoration-bone/25 underline-offset-4 transition-colors hover:text-bone"
                           >
                             {sn.name}
                           </a>
