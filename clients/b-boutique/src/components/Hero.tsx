@@ -1,6 +1,6 @@
 import { openingSummary, shop } from "@/lib/shop";
 
-import { HeroPicture } from "./HeroPicture";
+import { HeroSlideshow } from "./HeroSlideshow";
 
 /* The campaign hero.
  *
@@ -86,7 +86,7 @@ export function Hero() {
       </h1>
 
       <div className="hero-media absolute inset-0 -z-10">
-        <HeroPicture />
+        <HeroSlideshow />
       </div>
 
       {/* The scrim. Two jobs, and it grew a second one on 2026-09-21.

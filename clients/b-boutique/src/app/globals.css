@@ -450,6 +450,54 @@ body {
    asserted — and the scrim is sized to the copy rather than washed over the
    whole frame, because the red is the point of the picture. */
 
+/* The slideshow stack.
+ *
+ * Every slide occupies the same box; only opacity separates them, because
+ * opacity is compositor-only and a cross-fade on five full-bleed
+ * photographs is the one place on this page where paying for a repaint
+ * would actually show.
+ *
+ * The transition is on `.hero-slide`, not on an `animation`, so a slide
+ * that mounts late (slides 2-5 appear a tick after first paint) fades in
+ * from its resting state rather than replaying a keyframe from the start.
+ *
+ * 1.4s is deliberately much slower than the site's interaction durations.
+ * This is ambient rather than responsive — nobody pressed anything — and at
+ * the site's usual ~300ms it reads as a jump cut. */
+.hero-slides {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1400ms var(--bb-ease);
+}
+
+.hero-slide[data-active] {
+  opacity: 1;
+}
+
+.hero-slide > picture,
+.hero-slide img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Reduced motion renders one slide and never starts the timer, so there is
+   nothing to cross-fade. Pinning it to full opacity means that lone slide is
+   visible even though the component never sets data-active on a static
+   render, and collapsing the duration is belt and braces. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide {
+    opacity: 1;
+    transition-duration: 0ms;
+  }
+}
+
 /* The scrim, sized to the copy rather than washed over the whole frame.
  *
  * Two gradients, not one. The foot closes the seam with the band below and
@@ -504,9 +552,27 @@ body {
    gradient tuned for a phone ever reaches. Measured with the first attempt,
    the headline came back at 1.53:1 at 1440 and 2.00:1 at 768 while the body
    copy below it was already clearing 9:1. The fix was reach, not strength. */
+/* Each block below carries a THIRD layer: a soft radial sitting roughly
+   where the headline lands, listed first so it renders on top of the two
+   linears.
+   It was briefly a `::before` on `.hero-line` itself, sized to the text.
+   That failed visibly — a radial inside a wide, short box cannot reach
+   transparent before it meets the box edge, so it drew a rectangle around
+   the headline. Both the client and a screenshot caught it immediately.
+   On `.hero-scrim`, which is `inset: 0`, the ellipse has the whole frame to
+   fade out into and there is no edge to find. The centre is placed at the
+   headline's measured position: it sits at `bottom: clamp(150px, 26vh,
+   260px)` and runs two lines, which puts its middle near 62% down at
+   desktop heights and near 68% at tablet ones. */
 @media (min-width: 768px) {
   .hero-scrim {
     background:
+      radial-gradient(
+        58% 34% at 24% 68%,
+        rgba(26, 20, 22, 0.52) 0%,
+        rgba(26, 20, 22, 0.3) 46%,
+        transparent 100%
+      ),
       linear-gradient(
         to top,
         rgba(26, 20, 22, 0.86) 0%,
@@ -527,6 +593,13 @@ body {
 @media (min-width: 1280px) {
   .hero-scrim {
     background:
+      radial-gradient(
+        72% 46% at 26% 62%,
+        rgba(26, 20, 22, 0.78) 0%,
+        rgba(26, 20, 22, 0.56) 40%,
+        rgba(26, 20, 22, 0.24) 70%,
+        transparent 100%
+      ),
       linear-gradient(
         to top,
         rgba(26, 20, 22, 0.8) 0%,
