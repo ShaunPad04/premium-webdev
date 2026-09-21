@@ -30,6 +30,22 @@ export function ShopSearch({ items }: { items: Product[] }) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
+  /* Seed from `?q=`, so the header's search panel has somewhere to hand off
+     to. Added 2026-09-21 with NavSearch: the panel shows six results and
+     offers "see all N in the shop", and that link has to arrive here
+     filtered or it is a promise the page does not keep.
+     Read from `window.location` inside an effect rather than with
+     `useSearchParams`, which on a statically rendered route needs a Suspense
+     boundary whose fallback cannot itself read the params. Nothing is lost
+     by doing it a frame later: the filtering is client-side either way, so
+     these results were never in the server HTML.
+     Once, on mount — after that the field is the user's, and re-applying the
+     URL would fight their typing. */
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("q");
+    if (q) setQuery(q);
+  }, []);
+
   const results = useMemo(() => searchProducts(items, query), [items, query]);
 
   const searching = query.trim().length > 0;

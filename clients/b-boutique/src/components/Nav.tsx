@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { PRIMARY } from "@/lib/nav";
 import { BagLink } from "./BagLink";
 import { CornerMenu } from "./CornerMenu";
+import { NavSearch } from "./NavSearch";
 
 /* The campaign header.
  *
@@ -133,20 +134,19 @@ export function Nav() {
               bag when the shop was built, and search on 2026-09-06 when /shop
               gained a field that actually filters the catalogue.
 
-              So SEARCH is a link to that field rather than a button that
-              opens an overlay: the results are the shop's own grid, on the
-              shop's own page, and a modal would be a second place for the
-              catalogue to live. next/link, and "/shop#find" with the slash,
-              for the same reason as the wordmark above — a bare fragment
-              means a section of whatever page you are on. */}
-          <Link
-            href="/shop#find"
-            /* py-3 turns a 10px line into a 44px target without moving it,
-               the same trick the wordmark and MENU use. */
-            className="hidden select-none py-3 text-[10px] font-semibold uppercase leading-none tracking-[0.14em] text-bb-white/70 transition-colors hover:text-bb-white lg:inline-block"
-          >
-            Search
-          </Link>
+              SEARCH was a link to that field — `/shop#find` — which kept the
+              catalogue in exactly one place but threw away whatever page you
+              were on to get there. The client asked for that to stop, and it
+              is a fair objection: somebody halfway down /about who wants to
+              know whether there is a camel coat should not lose /about to
+              find out.
+
+              It is now a panel that opens under the header, in NavSearch. The
+              rule the link was protecting is untouched — the panel calls the
+              same `searchProducts` over the same catalogue /shop filters, so
+              this is a second SURFACE onto the search, never a second copy of
+              it. */}
+          <NavSearch />
           <BagLink />
 
           <CornerMenu />

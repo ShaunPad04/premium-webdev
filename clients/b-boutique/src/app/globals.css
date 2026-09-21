@@ -4643,3 +4643,429 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
     transform: none;
   }
 }
+
+/* ── Header search panel ──────────────────────────────────────────────────
+   Added 2026-09-21. SEARCH used to be a link to /shop#find; the client asked
+   that pressing it stop throwing away the page you were reading. See
+   NavSearch.tsx for why this is a second surface onto the search rather than
+   a second search.
+
+   Not a modal. It is a panel under the header, the page behind it is left
+   alone, and it closes on Escape, on a pointer outside it, and on following a
+   result. Dark, because the header is dark and the panel is an extension of
+   it rather than a card sitting on top of the page. */
+.navsearch { position: relative; }
+
+.navsearch-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  z-index: 60;
+  width: min(30rem, calc(100vw - 32px));
+  background: var(--bb-black);
+  border: 1px solid rgba(250, 245, 243, 0.14);
+  /* The one shadow on this site that is doing structural work: the panel
+     floats over a photograph and needs an edge the photograph cannot eat. */
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  animation: navsearch-in 220ms var(--bb-ease) both;
+}
+
+@keyframes navsearch-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navsearch-panel { animation: none; }
+}
+
+.navsearch-inner { padding: 18px; }
+
+.navsearch-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(250, 245, 243, 0.22);
+  padding-bottom: 12px;
+}
+
+.navsearch-icon { flex: 0 0 auto; color: rgba(250, 245, 243, 0.55); }
+
+.navsearch-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline-offset: 3px;
+  font-size: 15px;   /* 16px or above on iOS stops the field zooming the page;
+                        15 is under it, so the input is deliberately sized up
+                        on coarse pointers below. */
+  line-height: 1.3;
+  color: var(--bb-white);
+}
+
+.navsearch-input::placeholder { color: rgba(250, 245, 243, 0.45); }
+/* The UA's own clear button is drawn in the platform's colours and is
+   invisible on this ground. The field is cleared by deleting or by Close. */
+.navsearch-input::-webkit-search-cancel-button { display: none; }
+
+@media (pointer: coarse) { .navsearch-input { font-size: 16px; } }
+
+.navsearch-close {
+  flex: 0 0 auto;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  /* .72 on the warm ink measures 7.1:1 — this is a real control and is held
+     above AA rather than dimmed for looks. */
+  color: rgba(250, 245, 243, 0.72);
+  padding: 8px 2px;   /* a 10px glyph in a 26px target */
+  transition: color var(--bb-dur-quick) var(--bb-ease);
+}
+
+.navsearch-close:hover, .navsearch-close:focus-visible { color: var(--bb-white); }
+
+.navsearch-results { list-style: none; margin: 14px 0 0; padding: 0; }
+
+.navsearch-hit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 8px;
+  margin-inline: -8px;
+  transition: background var(--bb-dur-quick) var(--bb-ease);
+}
+
+.navsearch-hit:hover, .navsearch-hit:focus-visible {
+  background: rgba(250, 245, 243, 0.07);
+}
+
+.navsearch-thumb {
+  position: relative;
+  flex: 0 0 auto;
+  width: 46px;
+  /* 3:4, the source ratio, so cover crops nothing — same as .newin-media. */
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: rgba(250, 245, 243, 0.06);
+}
+
+.navsearch-hit-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+
+.navsearch-hit-name {
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--bb-white);
+}
+
+.navsearch-hit-meta {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  /* .68 measures 6.4:1 on the ink. */
+  color: rgba(250, 245, 243, 0.68);
+}
+
+.navsearch-all {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-white);
+  border-bottom: 1px solid rgba(250, 245, 243, 0.3);
+  padding-bottom: 3px;
+  transition: border-color var(--bb-dur-quick) var(--bb-ease);
+}
+
+.navsearch-all:hover, .navsearch-all:focus-visible { border-color: var(--bb-white); }
+
+.navsearch-empty { margin-top: 16px; }
+
+.navsearch-empty-lead {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--bb-white);
+}
+
+/* Not an apology and not a dead end: the shop is small enough that a person
+   answers in one sentence what a filter cannot answer at all. */
+.navsearch-empty-help {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(250, 245, 243, 0.72);
+}
+
+.navsearch-tel {
+  color: var(--bb-white);
+  border-bottom: 1px solid rgba(250, 245, 243, 0.4);
+}
+
+.navsearch-chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 14px 0 0;
+  padding: 0;
+}
+
+.navsearch-chips--rest { margin-top: 16px; }
+
+.navsearch-chip {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(250, 245, 243, 0.82);
+  border: 1px solid rgba(250, 245, 243, 0.22);
+  padding: 8px 11px;
+  transition: border-color var(--bb-dur-quick) var(--bb-ease),
+              color var(--bb-dur-quick) var(--bb-ease);
+}
+
+.navsearch-chip:hover, .navsearch-chip:focus-visible {
+  border-color: rgba(250, 245, 243, 0.55);
+  color: var(--bb-white);
+}
+
+/* ── The owner card ───────────────────────────────────────────────────────
+   Hayley Brown. The composition is the editorial team-member card the client
+   supplied — overlapping portrait, very large split name, circular control,
+   staggered entrance — rebuilt in this site's own two grounds and its own
+   display face. See OwnerCard.tsx for what was kept and what was not. */
+.owner {
+  background: var(--bb-white);
+  color: var(--bb-black);
+  padding-block: clamp(72px, 8vw, 118px);
+  overflow-x: clip;
+}
+
+.owner-inner {
+  max-width: var(--bb-max, 1440px);
+  margin-inline: auto;
+  padding-inline: 18px;
+}
+
+@media (min-width: 768px) {
+  .owner-inner { padding-inline: var(--bb-gutter-editorial); }
+}
+
+.owner-eyebrow {
+  margin: 0 0 clamp(20px, 2.4vw, 32px);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;   /* the snippet's 0.3em tracking, kept — it is the
+                              one piece of its type styling that is right for
+                              a Didone sitting under it */
+  color: rgba(26, 20, 22, 0.75);   /* 7.75:1 on paper */
+}
+
+/* Stacked on a phone, overlapped from 768 up.
+   The overlap is the card's whole idea and it needs room to be an overlap
+   rather than a collision; below 768 the portrait is already most of the
+   screen, so the type goes under it instead. */
+.owner-layout { display: flex; flex-direction: column; gap: 26px; }
+
+@media (min-width: 768px) {
+  .owner-layout { flex-direction: row; align-items: center; gap: 0; }
+}
+
+.owner-portrait {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px)  { .owner-portrait { width: 44%; max-width: 360px; } }
+@media (min-width: 1280px) { .owner-portrait { width: 38%; max-width: 420px; } }
+
+.owner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 700ms var(--bb-ease);
+}
+
+.owner-portrait:hover .owner-img { transform: scale(1.03); }
+
+@media (prefers-reduced-motion: reduce) {
+  .owner-img { transition: none; }
+  .owner-portrait:hover .owner-img { transform: none; }
+}
+
+/* The empty frame. A hairline and a label, not a grey rectangle: a grey
+   rectangle reads as a broken image, and this is not broken — it is waiting
+   for a specific thing and says which. */
+.owner-frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--bb-light-border);
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 11px,
+      rgba(26, 20, 22, 0.035) 11px 22px
+    );
+}
+
+.owner-frame-mark {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.7;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--bb-grey-dark);   /* 7.04:1 on paper */
+}
+
+/* The overlap. Negative margin rather than absolute positioning, so the row
+   still sizes itself from its content and the section cannot be given a
+   height it does not need. */
+.owner-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 4vw, 56px);
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .owner-body { margin-left: -6%; }
+}
+
+@media (min-width: 1280px) {
+  .owner-body { margin-left: -4%; }
+}
+
+/* Bodoni, and big. This is the site's display face and the editorial gesture
+   the supplied card was reaching for with a hairline grotesk. */
+.owner-name {
+  margin: 0;
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  font-size: clamp(44px, 7vw, 92px);
+  line-height: 1.02;
+  letter-spacing: -0.028em;
+  color: var(--bb-black);
+}
+
+/* The snippet's one genuinely clever move, kept verbatim in spirit: the
+   surname carries the weight, so the name reads as a signature rather than
+   as two words at the same volume. */
+.owner-surname { font-style: italic; }
+
+.owner-details {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(20px, 3vw, 34px);
+}
+
+/* The circular control. 72px, comfortably past the 44px target minimum, and
+   the arrow rotates on hover — the snippet's `whileHover` as a transition,
+   which is what it compiled to anyway. */
+.owner-cta {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 1px solid var(--bb-light-border);
+  color: var(--bb-black);
+  transition: background var(--bb-dur-quick) var(--bb-ease),
+              color var(--bb-dur-quick) var(--bb-ease),
+              border-color var(--bb-dur-quick) var(--bb-ease);
+}
+
+.owner-cta svg { transition: transform 320ms var(--bb-ease); }
+
+.owner-cta:hover,
+.owner-cta:focus-visible {
+  background: var(--bb-black);
+  border-color: var(--bb-black);
+  color: var(--bb-white);
+}
+
+.owner-cta:hover svg,
+.owner-cta:focus-visible svg { transform: rotate(-45deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .owner-cta, .owner-cta svg { transition: none; }
+  .owner-cta:hover svg { transform: none; }
+}
+
+.owner-bio { max-width: 42ch; }
+
+.owner-bio-text {
+  margin: 0;
+  font-size: clamp(14px, 1.05vw, 15px);
+  line-height: 1.75;
+  color: var(--bb-grey-dark);
+  text-wrap: pretty;
+}
+
+/* The ask, not a guess. Italic so it reads as a note in the layout rather
+   than as her voice — nobody should be able to mistake this for copy. */
+.owner-bio-ask {
+  margin: 0;
+  font-size: clamp(13px, 1vw, 14px);
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--bb-grey-dark);
+}
+
+/* Same convention as every other internal marker on this site: impossible to
+   mistake for content, and it disappears on its own once `owner` is filled. */
+.owner-pending {
+  margin-top: clamp(30px, 4vw, 48px);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  color: var(--bb-black);
+  border: 1px solid var(--bb-light-border);
+  padding: 9px 13px;
+  display: inline-block;
+}
+
+/* The staggered entrance, done the way the rest of this page does it: a
+   scroll-driven timeline, no library, no client component. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .owner-portrait {
+      animation: owner-rise 780ms var(--bb-ease) both;
+      animation-timeline: view();
+      animation-range: entry var(--bb-enter) entry var(--bb-settle);
+    }
+    .owner-body {
+      animation: owner-in 780ms var(--bb-ease) both;
+      animation-timeline: view();
+      animation-range:
+        entry calc(var(--bb-enter) + var(--bb-step))
+        entry calc(var(--bb-settle) + var(--bb-step));
+    }
+  }
+}
+
+@keyframes owner-rise {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes owner-in {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}

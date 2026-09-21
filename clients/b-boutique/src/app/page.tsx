@@ -5,6 +5,7 @@ import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import { NewInRail } from "@/components/NewInRail";
 import { Homeware } from "@/components/Homeware";
+import { OwnerCard } from "@/components/OwnerCard";
 import { Service } from "@/components/Service";
 import { Faq } from "@/components/Faq";
 import { Visit } from "@/components/Visit";
@@ -38,10 +39,17 @@ export default function Home() {
         <NewInRail />
         {/* 04 A second world — homeware */}
         <Homeware />
-        {/* How buying from the shop works — hours, delivery, returns. Was a
-            rail of six invented customer quotes until 2026-09-21; the client
-            has three real reviews, not six, and three is not a wall of
-            reviews. See Service.tsx. */}
+        {/* The person. This is the slot the six invented customer quotes
+            occupied until 2026-09-21 — the client has three real reviews,
+            not six, and a section whose composition argues "many people say
+            this" is weaker with three than with none. She asked for an
+            editorial owner card here instead, which is the better answer to
+            the same question: an independent boutique's credibility is a
+            named person, not a wall of anonymous praise. */}
+        <OwnerCard />
+        {/* How buying from the shop works — hours, delivery, returns. It
+            follows the owner card deliberately: who she is, then how it
+            works. Every line derives from confirmed data. See Service.tsx. */}
         <Service />
         {/* 05 The practical questions, once they are interested */}
         <Faq />

@@ -56,6 +56,44 @@ export const shop = {
   country: "GB",
 } as const;
 
+/** The owner.
+ *
+ *  ── NAME AND ROLE: CONFIRMED BY THE CLIENT 2026-09-21 ──────────────────
+ *  Hayley Brown, Shop Owner. Given directly, in chat.
+ *
+ *  This is the first named person on the site, and lib/about.ts says in its
+ *  header that a founder's name is "deliberately NOT here, in any form" —
+ *  because an invented biography of a named business at a real address is a
+ *  false statement about a real person. That prohibition was about INVENTING
+ *  one. It is answered now, not broken: the name came from the client.
+ *
+ *  ── WHAT IS STILL MISSING, AND MUST NOT BE FILLED IN ───────────────────
+ *  `portrait` and `bio` are empty on purpose and the component renders a
+ *  visible CLIENT INPUT REQUIRED marker while either is.
+ *
+ *  Do NOT put a stock photograph in `portrait`. The card presents whatever
+ *  is in that frame as a photograph of Hayley Brown; a stranger's face from
+ *  an image CDN there is not a placeholder, it is a picture of somebody else
+ *  labelled with her name on her own shop's website. The client said he
+ *  would send one.
+ *
+ *  Do NOT write `bio`. A sentence about how she buys, how long she has been
+ *  trading or what she cares about is a biography of a real person, and the
+ *  plausible version is the dangerous one — nothing about well-written prose
+ *  signals that nobody said it. Her words or nothing. */
+export const owner = {
+  firstName: "Hayley",
+  lastName: "Brown",
+  role: "Shop Owner",
+  /** ImageSlot key or public path. EMPTY — awaiting the client's photograph. */
+  portrait: "" as string,
+  /** EMPTY — awaiting the client's own words. Never write one. */
+  bio: "" as string,
+} as const;
+
+/** True while the owner card is still missing something only she can supply. */
+export const ownerPending = !owner.portrait || !owner.bio;
+
 export const addressLines = [shop.street, shop.town, shop.postcode];
 
 /** The phone number as it is printed on the page.
