@@ -6,6 +6,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { MENU, directionsHref, socials } from "@/lib/nav";
 import { addressLines, openingSummary, shop } from "@/lib/shop";
+import { useIsDrawer } from "@/lib/useIsDrawer";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -33,6 +34,8 @@ export function CornerMenu() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const reduced = usePrefersReducedMotion();
+  /* Geometry is CSS; this is only for the entrance. See the hook. */
+  const isDrawer = useIsDrawer();
   const panelId = useId();
   const trigger = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
@@ -110,12 +113,23 @@ export function CornerMenu() {
   const panelMotion = reduced
     ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 },
         transition: { duration: 0.01 } }
-    : {
-        initial: { opacity: 0, scale: 0.92, y: -10 },
-        animate: { opacity: 1, scale: 1, y: 0 },
-        exit: { opacity: 0, scale: 0.96, y: -6, transition: { duration: 0.28, ease: EASE } },
-        transition: { duration: 0.55, ease: EASE },
-      };
+    : isDrawer
+      ? /* A drawer slides along the edge it is attached to. Scaling it out of
+           its top-right corner — which is what the card entrance does — makes
+           a full-height panel appear to grow out of the wall, and reads as a
+           glitch rather than as a movement. x only, no scale, no y. */
+        {
+          initial: { opacity: 0, x: 40 },
+          animate: { opacity: 1, x: 0 },
+          exit: { opacity: 0, x: 28, transition: { duration: 0.26, ease: EASE } },
+          transition: { duration: 0.42, ease: EASE },
+        }
+      : {
+          initial: { opacity: 0, scale: 0.92, y: -10 },
+          animate: { opacity: 1, scale: 1, y: 0 },
+          exit: { opacity: 0, scale: 0.96, y: -6, transition: { duration: 0.28, ease: EASE } },
+          transition: { duration: 0.55, ease: EASE },
+        };
 
   return (
     <>
@@ -198,10 +212,32 @@ export function CornerMenu() {
               aria-hidden="true"
             />
 
-            {/* right-[18px] / sm:right-6 / lg:right-8 are the header's own
-                horizontal padding, so the panel's right edge lands on the
-                same line as the CLOSE button above it at every breakpoint,
-                and keeps doing so at any width. */}
+            {/* ── Two shapes, one panel ────────────────────────────────────
+                BELOW 640 it is a drawer: flush to the right edge, flush top
+                and bottom, square on the right and rounded on the left only.
+
+                It was a 384px corner card at every width, and a corner card
+                on a phone has no corner to sit in. Measured on the shipped
+                build at 898px tall: below 421 the width formula was still on
+                its vw term so the margins stayed even by luck, and from 421
+                up it hit the 384 cap and went lopsided — 30px left against
+                18 right at 432, 98 against 18 at 500, 237 against 18 at 639
+                — while never being more than 85% of the viewport tall, so it
+                floated with background showing underneath. That is what the
+                client photographed.
+
+                A drawer has no margins, so it cannot have uneven ones.
+
+                AT 640 AND ABOVE nothing changes: the corner card, its 24/32px
+                inset, and its right edge landing on the same line as the
+                CLOSE button above it. right-[18px] / sm:right-6 / lg:right-8
+                are the header's own horizontal padding, which is what keeps
+                that true at any width.
+
+                The height moved off an inline style and onto classes so the
+                two can differ. The inner scroller's max-height had to move
+                with it — left behind, it clamps the drawer to the card's
+                height and the drawer is full-height in name only. */}
             <motion.div
               key="panel"
               id={panelId}
@@ -209,11 +245,10 @@ export function CornerMenu() {
               role="dialog"
               aria-modal="true"
               aria-label="Menu"
-              className="pointer-events-auto fixed right-[18px] top-3 z-50 w-[min(24rem,calc(100vw-2.25rem))] origin-top-right overflow-hidden rounded-[22px] bg-panel text-bone shadow-[0_30px_80px_rgba(0,0,0,.6)] sm:right-6 sm:top-5 lg:right-8"
-              style={{ maxHeight: "calc(100svh - 1.5rem)" }}
+              className="pointer-events-auto fixed inset-y-0 right-0 z-50 h-svh max-h-svh w-[min(24rem,100vw)] origin-right overflow-hidden rounded-l-[22px] bg-panel text-bone shadow-[0_30px_80px_rgba(0,0,0,.6)] sm:inset-y-auto sm:right-6 sm:top-5 sm:h-auto sm:max-h-[calc(100svh-2.5rem)] sm:w-[24rem] sm:origin-top-right sm:rounded-[22px] lg:right-8"
               {...panelMotion}
             >
-              <div className="grain relative flex max-h-[calc(100svh-1.5rem)] flex-col overflow-y-auto p-6 pt-20 sm:pt-[5.5rem]">
+              <div className="grain relative flex h-full max-h-svh flex-col overflow-y-auto p-6 pt-20 sm:h-auto sm:max-h-[calc(100svh-2.5rem)] sm:pt-[5.5rem]">
                 <p className="mb-3 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-bone/50">
                   Navigation
                 </p>

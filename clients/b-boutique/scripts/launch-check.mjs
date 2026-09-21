@@ -102,10 +102,19 @@ for (const [file, label] of [
   const n = flagCount(read(file), 'temporary');
   if (n > 0) block(`${n} unconfirmed ${label}`, `${file} — stated as shop policy or shop history, confirmed by nobody.`);
 }
-if (/NOT CONFIRMED STOCKISTS/.test(read('src/lib/brands.ts'))) {
+/* The brand logo band was REMOVED on 2026-09-21: the client confirmed the
+   shop stocks no big labels, and the homepage was showing eight other
+   companies' registered trademarks under a heading reading "Brands in store".
+
+   This check used to read `src/lib/brands.ts` for the string NOT CONFIRMED
+   STOCKISTS. It is not deleted with the file, because `read()` returns an
+   empty string for a path that does not exist — so the check would have gone
+   on passing quietly forever, which is worse than having no check. It is
+   inverted instead: the blocker now fires if the logos COME BACK. */
+if (existsSync(join(ROOT, 'src/lib/brands.ts')) || existsSync(join(ROOT, 'public/img/brands'))) {
   block(
-    'The brands rail is still marked NOT CONFIRMED',
-    'src/lib/brands.ts — naming a label the shop does not stock is a claim that gets a letter.',
+    'The brand logo band is back',
+    'src/lib/brands.ts / public/img/brands — the shop stocks no named labels, so a logo on this page is a claim about eight third parties that gets a letter.',
   );
 }
 

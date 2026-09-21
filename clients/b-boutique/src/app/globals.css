@@ -271,8 +271,18 @@ body {
 /* ── Brand marquee ────────────────────────────────────────────────────────
    A thin band, hairline-ruled top and bottom, sitting straight under the hero
    with nothing between them. */
-.brand-rail {
-  --rail-scale: 0.78;
+/* ── Statement band ────────────────────────────────────────────
+   The band under the hero. Was `.brand-*` and carried eight brand logos; the
+   shop does not stock those labels, so the logos are gone and the classes
+   were renamed with them — a band called `brand-rail` containing no brands is
+   the drift this project keeps getting caught by.
+
+   The marquee is unchanged: same height, same 38s pass, same seamless -50%
+   loop, same edge masks, same reduced-motion fallback. What went with the
+   logos is `.brand-rail-mark`, which painted each trademark as a CSS mask
+   sized to its own measured ink bounds through six custom properties. Text
+   sits on a baseline already, so none of that is needed. */
+.stmt-rail {
   background: var(--bb-black);
   border-top: 1px solid var(--bb-dark-border);
   border-bottom: 1px solid var(--bb-dark-border);
@@ -282,41 +292,56 @@ body {
   overflow: hidden;
 }
 
-@media (min-width: 640px) {
-  .brand-rail { --rail-scale: 1; height: 68px; }
-}
+@media (min-width: 640px) { .stmt-rail { height: 68px; } }
 
-.brand-viewport {
+.stmt-viewport {
   width: 100%;
   overflow: hidden;
-  /* Narrow fades at both ends so marks arrive and leave rather than being
+  /* Narrow fades at both ends so items arrive and leave rather than being
      clipped by the viewport edge. Wide fades read as fog. */
   -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
   mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
 }
 
-.brand-track {
+.stmt-track {
   display: flex;
   width: max-content;
-  /* 38s for one full pass of the doubled track. Slow enough to read a mark as
-     it goes by, which is the entire job of this band. */
-  animation: brand-marquee 38s linear infinite;
+  /* 38s for one full pass of the doubled track. Slow enough to read a phrase
+     as it goes by, which is the entire job of this band. */
+  animation: stmt-marquee 38s linear infinite;
 }
 
-.brand-set {
+.stmt-set {
   display: flex;
   align-items: center;
   flex: 0 0 auto;
 }
 
-.brand-item {
+.stmt-item {
   display: flex;
   align-items: center;
   gap: clamp(26px, 3.4vw, 54px);
   padding-inline-end: clamp(26px, 3.4vw, 54px);
 }
 
-.brand-sep {
+.stmt-text {
+  /* The header's register — small, tracked caps in Inter — rather than the
+     editorial Bodoni. This band is a label, not a statement to be read as
+     one; Bodoni at 12px on a 60px band would be a headline pretending to be
+     metadata. --bb-grey-light is a dark-section colour: the band is
+     --bb-black and it is the same grey the logos were painted in. */
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--bb-grey-light);
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) { .stmt-text { font-size: 12px; } }
+
+.stmt-sep {
   color: var(--bb-grey-dark);
   font-size: 12px;
   line-height: 1;
@@ -325,42 +350,26 @@ body {
 
 /* -50% lands copy two exactly where copy one began, so the loop has no seam
    and needs nothing hidden. */
-@keyframes brand-marquee {
+@keyframes stmt-marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
 
 /* Reduced motion: the band stops. It becomes an ordinary scrollable row —
-   every brand is still there, still readable, just not moving. */
+   every phrase is still there, still readable, just not moving. */
 @media (prefers-reduced-motion: reduce) {
-  .brand-rail { height: auto; padding-block: 14px; }
-  .brand-viewport {
+  .stmt-rail { height: auto; padding-block: 14px; }
+  .stmt-viewport {
     overflow-x: auto;
     -webkit-mask-image: none;
     mask-image: none;
     scrollbar-width: none;
   }
-  .brand-viewport::-webkit-scrollbar { display: none; }
-  .brand-track { animation: none; }
+  .stmt-viewport::-webkit-scrollbar { display: none; }
+  .stmt-track { animation: none; }
   /* The duplicate exists only to make the loop seamless; with no loop it is
-     just the same eight brands announced twice to nobody's benefit. */
-  .brand-track .brand-set[aria-hidden="true"] { display: none; }
-}
-
-.brand-rail-mark {
-  --c: calc(var(--cap) * var(--rail-scale));
-  display: block;
-  height: var(--c);
-  width: calc(var(--c) * var(--iw));
-  background-color: var(--bb-grey-light);
-  -webkit-mask-image: var(--mark);
-  mask-image: var(--mark);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: calc(var(--c) * var(--mw)) calc(var(--c) * var(--mh));
-  mask-size: calc(var(--c) * var(--mw)) calc(var(--c) * var(--mh));
-  -webkit-mask-position: calc(-1 * var(--c) * var(--ox)) calc(-1 * var(--c) * var(--oy));
-  mask-position: calc(-1 * var(--c) * var(--ox)) calc(-1 * var(--c) * var(--oy));
+     the same phrases announced twice to nobody's benefit. */
+  .stmt-track .stmt-set[aria-hidden="true"] { display: none; }
 }
 
 /* ── Hero scroll interaction ─────────────────────────────────────────────

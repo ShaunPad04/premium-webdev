@@ -108,9 +108,6 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
     items: [
       { n: "", label: "About us", href: "/about" },
       { n: "", label: "The Rails", href: "/#rails" },
-      /* #brands became a real anchor when the marquee was rebuilt; it was
-         reachable from the header but not from here. */
-      { n: "", label: "Brands", href: "/#brands" },
       { n: "", label: "Questions", href: "/#faq" },
       { n: "", label: "Visit Us", href: "/#visit" },
       { n: "", label: "Contact", href: "/contact" },
@@ -138,9 +135,11 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
  *  landing on the home page's rails, which is what they promised and did not
  *  deliver. Contact is new and has a page and a phone number behind it.
  *
- *  Nothing was taken out. Brands still points at the home page's brand rail,
- *  which is where the logos are; it is "/#brands" rather than "#brands" for
- *  the reason given above MENU — the header is on five routes now. */
+ *  BRANDS WAS REMOVED on 2026-09-21, from here and from the corner menu.
+ *  It pointed at the home page's logo band, and the shop does not stock
+ *  those labels — see lib/statements.ts. A menu entry reading "Brands" that
+ *  lands on a band naming none is a broken promise in the navigation, so the
+ *  entry went with the logos rather than being repointed at nothing. */
 /** What hangs under a header item that has a menu.
  *
  *  Every href is a real page. These were anchors into /clothing until the
@@ -165,7 +164,6 @@ export const PRIMARY = [
   { label: "New In", href: "/#new-in" },
   { label: "Clothing", href: "/clothing", menu: CLOTHING_MENU },
   { label: "Accessories", href: "/accessories" },
-  { label: "Brands", href: "/#brands" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ] as const;

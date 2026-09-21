@@ -89,7 +89,7 @@ costs a review cycle and risks undoing a deliberate fix.
 | 6 | **The focus ring is `currentColor`.** | A fixed token cannot work: the ring runs over a black header, a photograph, a cool-white FAQ and a black footer. `var(--gold)` went black-on-black over the hero the moment gold was retired. Focusable text already contrasts with its own background, so borrowing its colour inherits that. Do not introduce a special focus colour. |
 | 7 | **Hero parallax: ~32px desktop, ~11px mobile.** | Same travel eats far more of a taller crop seen through a shorter window, hence the two figures. |
 | 9 | **The address is confirmed: 18 Sea View Street, Cleethorpes, DN35 8EZ.** | Client-confirmed 2026-09-02. The original brief said DN35 8HY; that is wrong and must never return. Neither may "6 Market Street", which belongs to a different project. Every address on the site derives from `shop.ts` — change it there or nowhere. The **parking claim** ("on-street parking at the top, Market Place car park a two-minute walk") was a separate, still-UNVERIFIED claim and has now been removed from both Visit and the FAQ. Do not reinstate it, or invent parking availability, prices, walking times, street rules or car park names, until the client confirms it in their own words. |
-| 8 | **No hero scale, no hero pinning.** | The 140vh sticky track is gone: it moved nothing for 40vh and put a blank spacer before the brand rail. The hero is exactly 100svh and the rail begins at its bottom edge. |
+| 8 | **No hero scale, no hero pinning.** | The 140vh sticky track is gone: it moved nothing for 40vh and put a blank spacer before the band under the hero. The hero is exactly 100svh and the band begins at its bottom edge. (That band carried brand logos when this was written; it is the statement rail now, and the decision is unaffected.) |
 | 10 | **The phone number is confirmed: 07305534342.** | Given by the client in chat, 2026-09-06. It lives in `shop.ts` and nowhere else; `phoneDisplay` groups it as `07305 534342` for reading while `tel:` links use the raw digits. **Email confirmed 2026-09-20: bboutiquecleethorpes@gmail.com**, and she asked for it to be SHOWN on the site rather than kept behind the form. Setting it does not wire up the contact form — that still needs `CONTACT_TO`, `CONTACT_FROM` and `RESEND_API_KEY`. |
 | 11 | **The contact form must never report success without a send.** | `/api/contact` answers 503 `not_configured` until `CONTACT_TO`, `CONTACT_FROM` and `RESEND_API_KEY` all exist, and the form shows a plainly worded failure plus the phone number. Do not "fix" this by faking a thank-you, by removing the form, or by pointing it at a guessed address. Setting those three variables is a launch BLOCKER; see `.env.example`. |
 | 12 | **Money is integers in pence, everywhere.** | `0.1 + 0.2` is not `0.3` in binary floating point, and a basket totalling £74.99999999 is a rounding bug waiting to be charged to somebody. Prices are `priceP` integers from the catalogue to the provider; the single division is `formatPrice` for display, and one more at the very edge where SumUp's API wants a decimal. Never store, add or compare money as pounds. |
@@ -149,13 +149,34 @@ carries what she actually said in its `ask`, so the gap is specific:
 `X | no colour | no price | no sizes/counts`. Every price in `catalogue.ts` is
 still invented, no colour is confirmed, and no count exists. Until that
 arrives the shop cannot take money, and 26 products plus 26 colours are two
-of the eight remaining launch blockers.
+of the seven remaining launch blockers.
 
-**No wholesalers named** ("no."), which leaves the brands rail marked NOT
-CONFIRMED and leaves the supplier-imagery plan with no source. She answered
-that image permission is "already held" — held from whom, if no supplier is
-named? That contradiction needs resolving before any supplier photograph goes
-on the site.
+**No wholesalers named** ("no."), and on **2026-09-21** the client confirmed
+the shop does not stock big labels at all — "just affordable clothing".
+
+**That settled the brands rail: it is deleted, not parked.** The homepage had
+been showing eight real companies' registered trademarks — Mos Mosh, Rino &
+Pelle, Part Two, b.young, Ichi, Nümph, Saint Tropez, Selected Femme — under a
+heading reading "Brands in store", on a real trading business's website.
+`lib/brands.ts` had carried NOT CONFIRMED STOCKISTS since the day it was
+written. That is a false statement about the shop and about eight third
+parties, so `BrandRail.tsx`, `lib/brands.ts` and all nine files in
+`public/img/brands/` are gone, along with both "Brands" entries in the
+navigation — a menu offering Brands that lands on a band naming none is a
+broken promise. The band under the hero is now `StatementRail`, whose every
+phrase derives from `shop.ts` or from the shop describing itself. See
+`lib/statements.ts`.
+
+**The launch check for this was INVERTED rather than deleted.** It used to
+read `lib/brands.ts` for the string NOT CONFIRMED STOCKISTS; with the file
+gone, `read()` returns an empty string and the check would have passed quietly
+forever. It now blocks if `lib/brands.ts` or `public/img/brands/` comes back.
+Tested in both directions: 8 blockers with either present, 7 with neither.
+
+The supplier-imagery plan still has no source. She answered that image
+permission is "already held" — held from whom, if no supplier is named? That
+contradiction needs resolving before any supplier photograph goes on the
+site.
 
 **ICO: not registered.** She confirmed this. A shop taking names, addresses
 and emails for orders is processing personal data, and most UK businesses
@@ -307,8 +328,10 @@ above describes a site that is not the finished one.
 ## `pnpm launch-check`
 
 The list below, as a command. It reads the source and exits non-zero while
-anything invented, unconfirmed or self-contradicting remains — 10 blockers as
-of 2026-09-08, which is the correct answer today.
+anything invented, unconfirmed or self-contradicting remains — **7 blockers
+as of 2026-09-21**, which is the correct answer today. It was 10 on
+2026-09-08; delivery and returns were answered by the client on 2026-09-20,
+and the brands rail was deleted on 2026-09-21.
 
 **Deliberately NOT part of `pnpm verify`.** Verify runs several times a day and
 must stay green; a gate that fails on every run for a known, correct reason

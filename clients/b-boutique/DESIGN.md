@@ -120,8 +120,9 @@ red that is allowed to be the only warm thing on the page.
   already existing in the artwork.
 
 ### Neutral
-- **True Black** (`#050505`): The dominant ground. Header, brand rail, the
-  manifesto section, testimonials, Visit and the footer all sit on it. Not
+- **True Black** (`#050505`): The dominant ground. Header, the statement band
+  under the hero, the manifesto section, testimonials, Visit and the footer
+  all sit on it. Not
   `#000` — a hair off pure, so large fields do not read as a void.
 - **Soft Black** (`#090909`) and **Raised Black** (`#0D0D0D`): The only depth
   mechanism in the system. Raised black is a surface lifted off the ground by

@@ -1,6 +1,6 @@
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
-import { BrandRail } from "@/components/BrandRail";
+import { StatementRail } from "@/components/StatementRail";
 import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import { NewInRail } from "@/components/NewInRail";
@@ -19,16 +19,17 @@ export default function Home() {
       <main id="main" className="flex-1">
         {/* The numbers below are the eyebrow each section actually prints, so
             this list and the page read the same. They run 01–06 over the six
-            numbered sections in document order; Hero and BrandRail carry no
-            section number (BrandRail's "01 — 08" is a count of the logos on
-            its own rail, not a place in this sequence). Renumber both ends
+            numbered sections in document order; Hero and StatementRail carry
+            no section number — the band under the hero is a breath between
+            two sections, not a place in this sequence. Renumber both ends
             together, or the page starts lying about itself — a stale copy of
             this list is how Visit and the FAQ both ended up at 05. */}
 
         {/* Hook — what this is */}
         <Hero />
-        {/* A breath — the labels on the rails, moving slowly */}
-        <BrandRail />
+        {/* A breath — what the shop is, moving slowly. Was eight brand
+            logos until 2026-09-21; see lib/statements.ts for why they went. */}
+        <StatementRail />
         {/* 01 Editorial interlude — the statement, lit word by word */}
         <PointOfView />
         {/* 02 The rails — the heroic interaction */}
