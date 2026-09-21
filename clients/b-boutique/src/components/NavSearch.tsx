@@ -39,7 +39,9 @@ import { ImageSlot, type Tone } from "./ImageSlot";
  * list, which is the trap `newIn` avoids by carrying no price at all.
  *
  * The empty result is not a dead end and is not an apology. It carries the
- * confirmed phone number and the category chips, exactly as `/shop` does, and
+ * confirmed EMAIL ADDRESS — the phone number until 2026-09-21, when the
+ * client asked for numbers to come off the site, which makes this the only
+ * remaining route — and the category chips, exactly as `/shop` does, and
  * the chips are checked against the catalogue at render so a suggestion can
  * never point at an empty shelf. A colour search finding nothing is the
  * honest answer until the client supplies colours; see lib/search.ts. */

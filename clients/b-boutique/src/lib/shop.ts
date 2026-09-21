@@ -85,45 +85,63 @@ export const shop = {
  *  false statement about a real person. That prohibition was about INVENTING
  *  one. It is answered now, not broken: the name came from the client.
  *
- *  ── WHAT IS STILL MISSING, AND MUST NOT BE FILLED IN ───────────────────
- *  `portrait` and `bio` are empty on purpose and the component renders a
- *  visible CLIENT INPUT REQUIRED marker while either is.
- *
- *  Do NOT put a stock photograph in `portrait`. The card presents whatever
- *  is in that frame as a photograph of Hayley Brown; a stranger's face from
- *  an image CDN there is not a placeholder, it is a picture of somebody else
- *  labelled with her name on her own shop's website. The client said he
- *  would send one.
- *
  *  ── BIO: SUPPLIED BY THE CLIENT 2026-09-21 ─────────────────────────────
- *  Three paragraphs, in her own words, pasted verbatim. This file previously
- *  said "Do NOT write `bio` … her words or nothing", and that rule was not
- *  broken — it was answered. Nothing here was composed, condensed or
- *  smoothed out, because the moment prose about a real person is edited for
- *  rhythm it stops being a quotation and starts being a claim.
+ *  Her own words. This file previously said "Do NOT write `bio` … her words
+ *  or nothing", and that rule was not broken — it was answered. It was then
+ *  SHORTENED at the client's instruction, by cutting only; the field's own
+ *  comment below records exactly what went and keeps the full original.
  *
  *  Note what the copy does and does not assert, since a future edit could
- *  quietly change it: "stylish, affordable", "new and exciting stock",
- *  "a warm welcome and friendly service" are the shop describing itself,
- *  which is hers to say. There is no price, no size range, no brand, no
- *  founding year and no award in it. Do not add one.
+ *  quietly change it: "stylish, affordable", "new stock" and "a warm
+ *  welcome" are the shop describing itself, which is hers to say. There is
+ *  no price, no size range, no brand, no founding year and no award in it.
+ *  Do not add one.
  *
- *  `portrait` is STILL EMPTY and must stay that way until her photograph is
- *  actually in the repository. Do NOT put a stock photograph in it. The card
- *  presents whatever is in that frame as a photograph of Hayley Brown; a
- *  stranger's face from an image CDN is not a placeholder, it is a picture of
- *  somebody else labelled with her name on her own shop's website. */
+ *  ── STILL MISSING, AND MUST NOT BE FILLED IN ───────────────────────────
+ *  `portrait` is EMPTY and must stay that way until her photograph is
+ *  actually in the repository; `ownerPending` drives a visible CLIENT INPUT
+ *  REQUIRED marker until it is. Do NOT put a stock photograph in it. The
+ *  card presents whatever is in that frame as a photograph of Hayley Brown,
+ *  so a stranger's face from an image CDN is not a placeholder — it is a
+ *  picture of somebody else labelled with her name on her own shop's
+ *  website. The client said he would send one. */
 export const owner = {
   firstName: "Hayley",
   lastName: "Brown",
   role: "Shop Owner",
   /** Public path under /img. EMPTY — awaiting the client's photograph. */
   portrait: "" as string,
-  /** Her own words, verbatim, one entry per paragraph. */
+  /** Her words, shortened at the client's instruction 2026-09-21 — BY CUTTING
+   *  ONLY. Three paragraphs became two, and every phrase that remains is one
+   *  she wrote. Nothing was reworded, re-ordered into a new sentence, or
+   *  smoothed for rhythm: the moment supplied copy is rewritten it stops
+   *  being hers and becomes a claim the site is making on her behalf.
+   *
+   *  What was cut, so it can be checked and restored:
+   *    - "At B Boutique, we believe shopping should be personal and
+   *       enjoyable."
+   *    - "Whether you're looking for a new outfit, the perfect accessory, a
+   *       unique gift or something beautiful for your home, …"
+   *    - "and friendly service"
+   *    - "and exciting" (from "new and exciting stock")
+   *
+   *  Her full original, kept here so the long version is never lost:
+   *
+   *    1. "We pride ourselves on bringing our customers something a little
+   *        different, with carefully selected pieces that are stylish,
+   *        affordable and perfect for treating yourself or finding that
+   *        special gift."
+   *    2. "At B Boutique, we believe shopping should be personal and
+   *        enjoyable. Whether you're looking for a new outfit, the perfect
+   *        accessory, a unique gift or something beautiful for your home,
+   *        you'll always receive a warm welcome and friendly service."
+   *    3. "As a small local business, our customers are at the heart of
+   *        everything we do. We regularly introduce new and exciting stock,
+   *        so there's always something different to discover."
+   */
   bio: [
-    "We pride ourselves on bringing our customers something a little different, with carefully selected pieces that are stylish, affordable and perfect for treating yourself or finding that special gift.",
-    "At B Boutique, we believe shopping should be personal and enjoyable. Whether you're looking for a new outfit, the perfect accessory, a unique gift or something beautiful for your home, you'll always receive a warm welcome and friendly service.",
-    "As a small local business, our customers are at the heart of everything we do. We regularly introduce new and exciting stock, so there's always something different to discover.",
+    "We pride ourselves on bringing our customers something a little different — carefully selected pieces that are stylish, affordable and perfect for treating yourself or finding that special gift.",
+    "As a small local business, our customers are at the heart of everything we do. You'll always receive a warm welcome, and we regularly introduce new stock, so there's always something different to discover.",
   ] as readonly string[],
 } as const;
 

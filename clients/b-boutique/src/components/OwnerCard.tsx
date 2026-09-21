@@ -49,8 +49,13 @@ import { owner, ownerPending, shop } from "@/lib/shop";
  * stranger. It is not in here and must not be: this card labels whatever is
  * in that frame "Hayley Brown, Shop Owner" on her own shop's website, so a
  * stock face is not a placeholder — it is a photograph of somebody else
- * presented as her. The same goes for the bio. Both are CLIENT INPUT
- * REQUIRED and the marker below says so on screen until they arrive. */
+ * presented as her.
+ *
+ * The BIO is no longer waiting: the client supplied three paragraphs on
+ * 2026-09-21 and they are printed verbatim, so only the photograph is
+ * outstanding and the on-screen marker says exactly that. (This comment used
+ * to read "the same goes for the bio. Both are CLIENT INPUT REQUIRED" — it is
+ * corrected here rather than left to be believed.) */
 export function OwnerCard() {
   const fullName = `${owner.firstName} ${owner.lastName}`;
 
