@@ -4957,12 +4957,21 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   min-width: 0;
 }
 
+/* NO overlap, and this is a correction made the moment the real photograph
+   went in. The supplied card's gesture is the type sitting ON the picture,
+   and that was kept while the frame was an empty hatched box — where it
+   looked fine, because there was nothing behind the letters.
+   Her photograph is a dark studio portrait and the name is set in the warm
+   INK. Rendered, the "H" of Hayley and the "B" of Brown landed on near-black
+   and were simply gone, and the circular contact control was half-buried
+   behind the image. Dark type on a dark photograph is not a gesture, it is
+   an unreadable name — and it is the owner's name.
+   The composition survives the change: the portrait still anchors the left,
+   the name is still very large, and the two still read as one block. It is a
+   clean split now rather than an overlap. Put the overlap back only with a
+   light photograph AND the contrast measured on the exact crop. */
 @media (min-width: 768px) {
-  .owner-body { margin-left: -6%; }
-}
-
-@media (min-width: 1280px) {
-  .owner-body { margin-left: -4%; }
+  .owner-body { margin-left: clamp(28px, 4vw, 56px); }
 }
 
 /* Bodoni, and big. This is the site's display face and the editorial gesture
@@ -4982,10 +4991,30 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    as two words at the same volume. */
 .owner-surname { font-style: italic; }
 
+/* Stacked on a phone, side by side from 640.
+   The control and the copy sat in one row at every width, which on a 390px
+   screen left the paragraph sharing the line with a 72px circle and running
+   at about 30 characters — well under the 45-75 a paragraph wants, and it
+   showed as a tall thin column of broken-up sentences. The circle goes above
+   the copy instead, and the copy gets the full measure. */
 .owner-details {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  gap: clamp(20px, 3vw, 34px);
+  gap: clamp(20px, 3vw, 28px);
+}
+
+/* 1024, not 640. At 768 and at 900 the portrait already takes 44% of the row,
+   so putting the control back beside the copy squeezed the paragraph to 34
+   characters at 768 and 42 at 900 — WORSE than the phone it was meant to
+   improve on. Measured at 390/640/768/900/1024/1440/1920 rather than assumed;
+   every width now lands in the 45-75 band. The row only earns its place once
+   there is room for both. */
+@media (min-width: 1024px) {
+  .owner-details {
+    flex-direction: row;
+    gap: clamp(20px, 3vw, 34px);
+  }
 }
 
 /* The circular control. 72px, comfortably past the 44px target minimum, and

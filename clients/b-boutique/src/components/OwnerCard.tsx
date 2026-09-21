@@ -67,12 +67,27 @@ export function OwnerCard() {
         <div className="owner-layout">
           <div className="owner-portrait">
             {owner.portrait ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={owner.portrait}
-                alt={`${fullName}, ${owner.role.toLowerCase()} of ${shop.name}`}
-                className="owner-img"
-              />
+              /* A <picture>, like the hero, so a browser picks AVIF before
+                 any request goes out. No object-position: the file is
+                 cropped to this frame's 3:4 by scripts/build-owner.mjs, so
+                 it fills exactly and her face cannot be re-cropped by a
+                 later change to the CSS. */
+              <picture>
+                <source type="image/avif" srcSet={`/img/owner/${owner.portrait}.avif`} />
+                <source type="image/webp" srcSet={`/img/owner/${owner.portrait}.webp`} />
+                <img
+                  src={`/img/owner/${owner.portrait}.jpg`}
+                  /* Names her and her role. It does not describe her
+                     appearance, her age or her clothes — none of that is the
+                     information a reader needs here, and a photograph of a
+                     real person is not a place to narrate. */
+                  alt={`${fullName}, ${owner.role.toLowerCase()} of ${shop.name}`}
+                  width={487}
+                  height={649}
+                  decoding="async"
+                  className="owner-img"
+                />
+              </picture>
             ) : (
               /* Not a grey box pretending to be a photograph, and not a
                  stranger's face. An empty frame that says what it is

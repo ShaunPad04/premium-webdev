@@ -97,20 +97,36 @@ export const shop = {
  *  no price, no size range, no brand, no founding year and no award in it.
  *  Do not add one.
  *
- *  ── STILL MISSING, AND MUST NOT BE FILLED IN ───────────────────────────
- *  `portrait` is EMPTY and must stay that way until her photograph is
- *  actually in the repository; `ownerPending` drives a visible CLIENT INPUT
- *  REQUIRED marker until it is. Do NOT put a stock photograph in it. The
- *  card presents whatever is in that frame as a photograph of Hayley Brown,
- *  so a stranger's face from an image CDN is not a placeholder — it is a
- *  picture of somebody else labelled with her name on her own shop's
- *  website. The client said he would send one. */
+ *  ── PORTRAIT: SUPPLIED BY THE CLIENT 2026-09-21 ────────────────────────
+ *  It is in, so `ownerPending` is now false and the CLIENT INPUT REQUIRED
+ *  marker no longer renders. Nothing was ever substituted while waiting,
+ *  which was the whole point of holding the frame empty: the card presents
+ *  whatever is in it as a photograph of Hayley Brown, so a stock face would
+ *  not have been a placeholder — it would have been a picture of somebody
+ *  else labelled with her name on her own shop's website.
+ *
+ *  The one caveat, recorded rather than hidden: the source is 487px wide
+ *  against a frame that is up to 420 CSS px, so a DPR-2 display gets 58% of
+ *  the pixels it wants. Sharp on a standard screen, soft on a retina one.
+ *  A larger original replaces assets/owner/hayley-source.jpg and
+ *  `node scripts/build-owner.mjs` regenerates everything. */
 export const owner = {
   firstName: "Hayley",
   lastName: "Brown",
   role: "Shop Owner",
-  /** Public path under /img. EMPTY — awaiting the client's photograph. */
-  portrait: "" as string,
+  /** Basename under /img/owner. The .avif/.webp/.jpg variants are built by
+   *  scripts/build-owner.mjs from assets/owner/hayley-source.jpg.
+   *
+   *  SUPPLIED BY THE CLIENT 2026-09-21. It is her photograph, cropped to the
+   *  card's 3:4 frame at build time and not otherwise altered — no
+   *  retouching, no recolouring, no filter.
+   *
+   *  It is black and white where the rest of the site's photography is warm
+   *  colour. That is how she sent it and it is left alone: a portrait reads
+   *  as a deliberate editorial choice against the paper ground, and tinting
+   *  somebody's photograph to match a palette is not a colour correction, it
+   *  is editing a picture of a person. */
+  portrait: "hayley" as string,
   /** Her words, shortened at the client's instruction 2026-09-21 — BY CUTTING
    *  ONLY. Three paragraphs became two, and every phrase that remains is one
    *  she wrote. Nothing was reworded, re-ordered into a new sentence, or
