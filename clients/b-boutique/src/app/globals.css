@@ -2733,6 +2733,16 @@ body {
   aspect-ratio: 3 / 4;
   overflow: hidden;
   background: var(--bb-black-raised);
+  /* Capped 2026-09-21: the client could not fit one of these on his screen.
+     A fixed aspect-ratio against a width that scales with the viewport has
+     no ceiling — measured at 1920x900 this rendered 968x1291, so the card
+     was 43% taller than the whole window and the name under it could not be
+     seen with the photograph. At 1440 it was 702x936, also over.
+     svh not vh, so a mobile browser's collapsing toolbar cannot re-introduce
+     the overflow it is here to prevent. The frame stops growing and the
+     photograph crops inside it — `.cat-img` is inset-0 with object-fit:
+     cover, so the crop opens from the centre and no layout moves. */
+  max-height: min(78svh, 760px);
 }
 
 .cat-img {
@@ -2823,6 +2833,12 @@ body {
   aspect-ratio: 4 / 5;
   overflow: hidden;
   background: var(--bb-black-raised);
+  /* Same ceiling, same reason as .cat-media — this is the image the client
+     screenshotted. Measured 874x1165 at 1920x900 and 636x849 at 1440x900:
+     the lead photograph and the paragraph set beside it could not be on
+     screen together, which is the one thing this split composition exists
+     to do. */
+  max-height: min(78svh, 760px);
 }
 @media (min-width: 1024px) { .acc-lead-media { aspect-ratio: 3 / 4; } }
 
