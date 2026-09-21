@@ -242,10 +242,27 @@ export const moreStock = [
  *  what the panels add lives here: the photograph, its alt text and the
  *  displayed number.
  *
- *  `href` was "#visit" for all five while no category route existed. There is
- *  one now — /clothing/<slug> — and CategoryGrid links to it directly, so
- *  these hrefs are unused by the rails. Left in place rather than deleted:
- *  the field is part of the shape, and a future consumer will want it.
+ *  ── `href`, and a comment that was wrong for a fortnight ──────────────────
+ *  This used to read: *"`href` was "#visit" for all five while no category
+ *  route existed. There is one now — /clothing/<slug> — and CategoryGrid
+ *  links to it directly, so these hrefs are unused by the rails."*
+ *
+ *  The last clause was false. `CategoryGrid` does build its own
+ *  `/clothing/${slug}` link and ignores this field — but `HorizontalRails`,
+ *  the "Shop by category" rail on the home page, renders
+ *  `<a href={c.href}>`. So every category card on the home page pointed at
+ *  "#visit" and scrolled the reader to the address block instead of opening
+ *  the category. The client reported it; a route crawl found it because the
+ *  bare fragment stood out against the project's own /#section rule.
+ *
+ *  The lesson worth keeping: "this field is unused" is a claim about the
+ *  whole codebase, and it went stale the moment a second consumer appeared.
+ *  These now carry real targets, so a future consumer inherits a correct
+ *  value rather than a decorative one.
+ *
+ *  Accessories points at /accessories, NOT /clothing/accessories, which is a
+ *  404: `clothingCards` in lib/pages.ts deliberately excludes it, because a
+ *  clothing page that lists handbags is not a clothing page.
  *
  *  The images are the final approved assets: real WebP, 2048x2731, 3:4,
  *  full colour at source. The monochrome resting state is a CSS filter, never
@@ -277,7 +294,7 @@ export const featured = [
     name: "Jackets",
     image: "/img/category-jackets.webp",
     alt: "Model wearing a structured black jacket",
-    href: "#visit",
+    href: "/clothing/jackets",
   },
   {
     slug: "trousers",
@@ -285,7 +302,7 @@ export const featured = [
     name: "Trousers",
     image: "/img/category-trousers.webp",
     alt: "Model wearing tailored black trousers",
-    href: "#visit",
+    href: "/clothing/trousers",
   },
   {
     slug: "dresses",
@@ -293,7 +310,7 @@ export const featured = [
     name: "Dresses",
     image: "/img/category-dresses.webp",
     alt: "Model wearing a black midi dress",
-    href: "#visit",
+    href: "/clothing/dresses",
   },
   {
     slug: "knitwear",
@@ -301,7 +318,7 @@ export const featured = [
     name: "Knitwear",
     image: "/img/category-knitwear.webp",
     alt: "Model wearing charcoal knitwear",
-    href: "#visit",
+    href: "/clothing/knitwear",
   },
   {
     slug: "accessories",
@@ -309,6 +326,6 @@ export const featured = [
     name: "Accessories",
     image: "/img/category-accessories.webp",
     alt: "Model carrying a structured black handbag",
-    href: "#visit",
+    href: "/accessories",
   },
 ] as const;
