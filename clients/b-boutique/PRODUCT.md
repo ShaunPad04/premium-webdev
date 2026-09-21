@@ -63,18 +63,26 @@ principle below, and it is the reason the shop is still not switched on.
 
 ## Brand Personality
 
-Assured, cool and unfussy. A fashion gallery rather than a jewellery box.
+Assured, warm and unfussy. A good room rather than a jewellery box.
+
+*Updated 2026-09-21. This read "assured, cool and unfussy — a fashion gallery"
+and the client asked for the opposite of the cool half: a womenswear boutique
+for women of all sizes, "somewhat girly but not childlike", still premium.
+"Cool" was the word doing the most work in the old visual direction and it is
+the word that had to go. Everything else here was right and is kept.*
 
 The voice is plain-spoken and specific. It says "Wide, tailored, and cut to
 actually fit" and "For a street that faces the sea" — concrete, faintly dry,
-never breathless. It does not use luxury adjectives to manufacture prestige,
-and it never oversells. Where a fact is not known, the site says so or says
-nothing; it does not fill the gap with warmth.
+never breathless. **It does not use adjectives to manufacture a position**, and
+it never oversells. That rule is what keeps warmth from becoming gush, and it
+is why the hero says "For every woman who walks in" rather than naming a size
+range nobody has confirmed. Where a fact is not known, the site says so or
+says nothing.
 
-Three words: **assured, cool, exact.**
+Three words: **assured, warm, exact.**
 
-Emotionally the page should feel like a well-lit room with good things in it
-and nobody hovering. Confidence without pressure.
+Emotionally the page should feel like a well-lit room with good things in it,
+somebody pleased to see you, and nobody hovering. Welcome without pressure.
 
 ## Anti-references
 
@@ -84,11 +92,22 @@ not because they are generic good taste.
 - **The default boutique website.** Playfair Display plus Montserrat, cream and
   champagne, a gold-foil monogram. This is the first thing anyone produces for
   "luxury boutique" and it is precisely what this site rejects.
-- **Warm luxury signifiers.** No brown, tan, beige, cream, champagne or gold in
-  the UI. The original palette was drawn from the shop's own black marble and
-  brass and it read brown wherever two surfaces met; the approved direction is
-  a cool fashion-gallery white against a true black. The only warm colour on
-  the site comes out of the hero photograph itself, where it is real.
+- **Warm luxury signifiers.** *Restated 2026-09-21 rather than deleted. The
+  site went warm and light-dominant that day at the client's request, which
+  retires the "cool gallery" half of this rule and makes the other half more
+  load-bearing, not less.*
+
+  Still banned, without exception: **brown, tan, beige, cream, champagne and
+  gold.** These are the signifiers a warm boutique palette drifts into, and
+  the drift is now downhill rather than uphill. The paper is `#FAF5F3`, which
+  leans PINK — measured, a green-to-blue gap of 2. Cream has a large
+  green-to-blue gap and that is exactly what makes it read yellow and bridal.
+  A warm white is not permission for a warm beige.
+
+  The warmth is carried by one colour, `#8A070B`, and it is not a choice
+  anybody made: it was sampled from the shop's own hero photograph. The rule
+  underneath has not moved at all — **the site's warm colour has to be real
+  before it can be used.**
 - **Commerce the shop cannot honour.** *This anti-reference used to read "faked
   commerce: no cart state, no checkout, no search backend", and it was rewritten
   rather than deleted when all three became real. The rule underneath it never

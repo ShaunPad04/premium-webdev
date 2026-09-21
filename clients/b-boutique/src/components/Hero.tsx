@@ -1,3 +1,5 @@
+import { openingSummary, shop } from "@/lib/shop";
+
 import { HeroPicture } from "./HeroPicture";
 
 /* The campaign hero.
@@ -48,21 +50,39 @@ export function Hero() {
       id="top"
       className="hero relative isolate w-full overflow-hidden bg-bb-black"
     >
-      {/* The page's only h1, and deliberately not visible.
+      {/* The page's only h1, and visible again since 2026-09-21.
+
+       * It was sr-only because the approved hero was the photograph and
+       * nothing else — the client took the categories and SCROLL off on
+       * 2026-09-06 and that became locked decision 5. She has now asked for
+       * a different hero, which reopens it; the decision table is updated in
+       * the same commit rather than left to contradict this file.
        *
-       * The approved hero is the photograph and nothing else — no type at all
-       * since 2026-09-06 — so this cannot be shown without breaking that. But
-       * the page had no h1 at all: eleven h2s and no top-level landmark, which
-       * leaves a screen-reader user navigating by heading with nothing to land
-       * on, and throws away the strongest on-page signal the day indexing is
-       * switched on. axe does not flag it — page-has-heading-one is a best-practice
-       * rule, not WCAG A/AA — so the suite stayed green while it was missing.
+       * The visible line is the statement. The continuation is sr-only so the
+       * heading still names the business, the category and the street for a
+       * screen reader and for the day indexing is switched on — a display
+       * line alone is a weak h1, and splitting it this way costs nothing.
        *
-       * Every word here is a confirmed fact, and it says what the shop is and
-       * where it is. No claim that is not already true elsewhere on the page. */}
-      <h1 className="sr-only">
-        B Boutique — independent womenswear, accessories and homeware on Sea
-        View Street, Cleethorpes
+       * ── The copy, and the one trap in it ─────────────────────────────────
+       * She asked for the site to speak to women of ALL SIZES. The obvious
+       * move is to print a size range, and it is the wrong one: the only size
+       * statement on this site is in lib/faq.ts, it is marked
+       * `temporary: true`, and "size 8 to a size 18" is demo copy nobody has
+       * confirmed. Printing it on the hero would turn an unconfirmed number
+       * into the loudest promise on the page.
+       *
+       * So the welcome is carried by the words rather than by a number.
+       * "For every woman who walks in" is positioning in her own register —
+       * it claims nothing a customer could arrive and find untrue. */}
+      <h1 className="hero-line">
+        For every woman
+        <br />
+        who walks <em>in</em>.
+        <span className="sr-only">
+          {" "}
+          — B Boutique, independent womenswear, accessories and homeware on
+          Sea View Street, Cleethorpes.
+        </span>
       </h1>
 
       <div className="hero-media absolute inset-0 -z-10">
@@ -76,28 +96,30 @@ export function Hero() {
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[22%]"
         style={{
           background:
-            "linear-gradient(to top, rgba(5,5,5,.66) 0%, rgba(5,5,5,.20) 55%, transparent 100%)",
+            "linear-gradient(to top, rgba(26, 20, 22, .66) 0%, rgba(26, 20, 22, .20) 55%, transparent 100%)",
         }}
       />
 
-      {/* Nothing is placed on the photograph any more.
+      {/* The copy sits bottom-left, where the photograph is its own colour
+          rather than a face. The scrim below is what makes it legible over a
+          picture — contrast against a photograph cannot be measured as a
+          token pair, so it is bought with a gradient rather than asserted. */}
+      <div className="hero-copy">
+        <p className="hero-sub">
+          Independent womenswear, accessories and homeware.
+        </p>
+        <p className="hero-where">
+          {shop.street}, {shop.town} · {openingSummary()}
+        </p>
+        <a href="/shop" className="hero-cta">
+          <span>See what is in</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4"
+              strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
+      </div>
 
-          The three category labels that sat at the left edge — WOMENSWEAR,
-          ACCESSORIES, HOMEWARE — and the SCROLL cue at the bottom were both
-          removed on the client's instruction (2026-09-06). The header keeps
-          its own navigation; that was explicitly not to be touched, and it is
-          untouched.
-
-          The routes are not lost: the header and the corner menu both carry
-          navigation to the same places (Clothing and Accessories to the rails,
-          and the menu to Homeware), and HERO_CATEGORIES is still exported from
-          lib/nav.ts if these three labels are ever wanted back here. SCROLL
-          had no content to lose.
-
-          What went with them, because each existed only to serve them: the
-          left and right edge gradients, the hairline under SCROLL, and the
-          hero-left / hero-scroll drift keyframes in globals.css. The
-          photograph keeps its own parallax. */}
     </section>
   );
 }

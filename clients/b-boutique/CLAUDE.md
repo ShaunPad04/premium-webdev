@@ -33,20 +33,35 @@ So: **when the product changes, refresh them in the same pass.** Run
 A design brief that disagrees with the code is worse than none, because it
 passes the gate and gets believed.
 
-# Typography — APPROVED, do not change
+# Typography — APPROVED, reopened once by the client
 
 Signed off by the client 2026-09-01; the wordmark MOVED 2026-09-02.
 
-The large `B Boutique` wordmark is no longer in the hero — the approved hero
-was the photograph with small type placed on it, and as of 2026-09-06 it is the
-photograph and nothing else (see locked decision 5). The giant
-wordmark now lives once, at the very end of the page, in the footer. That
+**Reopened 2026-09-21, by her, and only partly.** She asked for new
+typography and a new theme for a womenswear boutique. Bodoni Moda was KEPT —
+it is a Didone, which is already the fashion-magazine letterform and the most
+feminine thing on the site, and keeping it preserved her own sign-off. What
+changed is that **the italic axis is switched on** (`layout.tsx`), which is
+the day the comment in that file had been waiting for. Use it sparingly: the
+hero statement and pull quotes, never body copy, never a whole heading. If a
+sweep ever finds no element computing `font-style: italic`, take the axis
+back out — it is 25 KB on the critical path.
+
+Inter is unchanged and stays the quiet half.
+
+The large `B Boutique` wordmark is no longer in the hero. The giant
+wordmark lives once, at the very end of the page, in the footer.
+
+*The hero DOES carry type again as of 2026-09-21 (locked decision 5), but it
+is a statement, not a wordmark. The two are different things and the rule
+below is about the wordmark: there is exactly one giant `B Boutique` on this
+site and it is the footer sign-off.* That
 footer wordmark is the source of truth for this treatment. Do not reintroduce a
 giant wordmark to the hero; it was removed deliberately.
 
 Preserve: high-contrast luxury fashion serif character · tall elegant
 proportions · the current thin/thick stroke contrast · editorial presence ·
-the cream/ivory treatment on the red hero.
+the paper-on-red treatment where it sits over the hero photograph.
 
 Do not make it heavier, more generic, more traditional, more condensed or more
 decorative. Do not offer alternative wordmark typography again — that decision
@@ -85,7 +100,7 @@ costs a review cycle and risks undoing a deliberate fix.
 | 2 | ~~**The hero philosophy copy wraps naturally.**~~ **SUPERSEDED 2026-09-05: the hero philosophy line is removed.** | The client asked for it to be taken off the hero. The hero is now the photograph alone — the categories and SCROLL followed on 2026-09-06, see row 5. The words are not lost — they are the manifesto in `PointOfView.tsx`, section 01, verbatim, which is the only place they now appear as a statement. **Do not put them back on the hero**, and do not remove them from PointOfView. The original wrapping decision is kept above only so nobody re-litigates it if the line ever returns somewhere. |
 | 3 | ~~**SEARCH and BAG (0) are inert `<span>`s.**~~ **FULLY SUPERSEDED 2026-09-06: both are real.** | The rule said to swap in a real control "the day either becomes real". BAG became real when the shop was built and is an `<a>` to `/bag` with a live count. SEARCH became real later the same day: `/shop` carries a field that filters the catalogue (`lib/search.ts`, `ShopSearch.tsx`), so the header's SEARCH is now a `next/link` to `/shop#find` with no aria-hidden. Neither span remains. The underlying rule is what is locked, not the spans: **never fake cart state, checkout, or a search that finds things the shop does not have.** |
 | 4 | **`LocalTime.tsx` stays.** | Unused since the header lost the Cleethorpes clock. Unrelated code is not deleted as a side effect of other work. |
-| 5 | ~~**The mobile hero category placement stays.**~~ **SUPERSEDED 2026-09-06: the hero category labels are removed entirely.** | The client asked for WOMENSWEAR, ACCESSORIES and HOMEWARE to be taken off the left of the hero, and for SCROLL to be taken off the bottom. The hero is now the photograph alone. **The header was explicitly to be left alone and nothing was taken out of it** — it keeps NEW IN / CLOTHING / ACCESSORIES / BRANDS / ABOUT, and gained CONTACT on 2026-09-06 when the contact page was built. The corner menu still routes to Homeware. `HERO_CATEGORIES` remains exported from `lib/nav.ts` in case the labels are ever wanted back. The placement decision is kept above only so nobody re-litigates it if they return. |
+| 5 | ~~**The hero is the photograph alone.**~~ **SUPERSEDED AGAIN 2026-09-21: the hero carries type once more, at the client's request.** She asked for a different hero as part of the Rouge re-theme, which reopens this row. It is now an editorial hero: a Bodoni statement with one word in the newly-unlocked italic, the confirmed descriptor and address beneath it, and one control. The photograph is a single swappable slot, because her real images are still being produced. **The copy carries no size range** — the only size statement on this site is `temporary: true` demo copy in `lib/faq.ts`, and printing an unconfirmed number as the loudest line on the page is the one trap in this brief. The 2026-09-06 history is kept below so nobody re-litigates it. ~~**SUPERSEDED 2026-09-06: the hero category labels are removed entirely.**~~ | The client asked for WOMENSWEAR, ACCESSORIES and HOMEWARE to be taken off the left of the hero, and for SCROLL to be taken off the bottom. The hero is now the photograph alone. **The header was explicitly to be left alone and nothing was taken out of it** — it keeps NEW IN / CLOTHING / ACCESSORIES / BRANDS / ABOUT, and gained CONTACT on 2026-09-06 when the contact page was built. The corner menu still routes to Homeware. `HERO_CATEGORIES` remains exported from `lib/nav.ts` in case the labels are ever wanted back. The placement decision is kept above only so nobody re-litigates it if they return. |
 | 6 | **The focus ring is `currentColor`.** | A fixed token cannot work: the ring runs over a black header, a photograph, a cool-white FAQ and a black footer. `var(--gold)` went black-on-black over the hero the moment gold was retired. Focusable text already contrasts with its own background, so borrowing its colour inherits that. Do not introduce a special focus colour. |
 | 7 | **Hero parallax: ~32px desktop, ~11px mobile.** | Same travel eats far more of a taller crop seen through a shorter window, hence the two figures. |
 | 9 | **The address is confirmed: 18 Sea View Street, Cleethorpes, DN35 8EZ.** | Client-confirmed 2026-09-02. The original brief said DN35 8HY; that is wrong and must never return. Neither may "6 Market Street", which belongs to a different project. Every address on the site derives from `shop.ts` — change it there or nowhere. The **parking claim** ("on-street parking at the top, Market Place car park a two-minute walk") was a separate, still-UNVERIFIED claim and has now been removed from both Visit and the FAQ. Do not reinstate it, or invent parking availability, prices, walking times, street rules or car park names, until the client confirms it in their own words. |
@@ -96,6 +111,47 @@ costs a review cycle and risks undoing a deliberate fix.
 | 13 | **The server prices the bag, never the browser.** | `/api/checkout` takes slugs, sizes and quantities and ignores anything else the client sends. A total posted from a browser is a total somebody sets to 1p. Verified: a request carrying a forged `priceP` is accepted and the field is simply not read. |
 | 14 | **The shop must never confirm an order it did not take.** | `/api/checkout` answers 503 `not_configured` until `SUMUP_API_KEY`, `SUMUP_MERCHANT_CODE` and `NEXT_PUBLIC_SITE_URL` all exist, and the bag says plainly that nothing has been charged. Landing on `/checkout/success` means a browser followed a URL, not that money moved, so **the page asks SumUp rather than reading the URL**: `GET /v0.1/checkouts?checkout_reference=…`, authenticated, server-side (`lib/sumup.ts`). PAID, FAILED/EXPIRED and "we could not find out" are three different pages, and the bag is emptied on PAID alone. **Correction, 2026-09-08:** this row previously said a webhook was the proof. SumUp publishes no payment webhook — see the SumUp section below — so the query is the mechanism, not a placeholder for one. |
 | 15 | **Every price in `lib/catalogue.ts` is invented.** | Nobody has supplied a price list, a size run or a stock count. Under the Consumer Protection from Unfair Trading Regulations a displayed price is what a customer is entitled to pay, so these are more dangerous than the invented testimonials. `demo: true` on every product drives a visible notice; the site is noindex; and no payment provider is configured. **Replace every price with the client's own before any of those three change.** |
+
+## The Rouge re-theme — 2026-09-21
+
+The client asked for the site to read as a womenswear boutique rather than a
+cool gallery: for **women of all different sizes**, **somewhat girly but not
+childlike**, still premium. The old direction was a deliberate cool
+fashion-gallery system, and warmth was precisely what it excluded.
+
+**Rouge, light-dominant.** Warm paper `#FAF5F3` — leaning pink, never yellow,
+because yellow is cream and cream is banned — against a warm ink `#1A1416`.
+The signature colour is `#8A070B`, **the red already sampled from her own hero
+photograph**, promoted from "only inside the artwork" to a real UI colour. It
+is the one choice in this palette that is a fact about her shop rather than a
+decision somebody made in a browser.
+
+**The cliché this was built against.** "Girly premium boutique" has one reflex
+answer, and running the project's own design-data lookup for this brief
+returned it in full: Playfair + Montserrat, Cormorant + Montserrat, `#A16207`
+gold, `#FDF2F8`/`#EC4899` blush-on-blush, Great Vibes script, and slate. Every
+one of those is already banned here. The lookup confirmed the cliché rather
+than escaping it, which is why the escape route had to be argued rather than
+searched for.
+
+**Two rouges, not one.** `--bb-rouge` measures 9.33:1 on paper and **1.83:1 on
+ink — invisible**. Dark sections use `--bb-rouge-lift` (5.32:1 on ink), which
+goes rose because a red lightened enough to clear a dark ground always does.
+Same one-colour-one-ground discipline as the greys.
+
+**Grounds.** Light is the default. Dark is punctuation: the header, the
+statement band, the manifesto, the category grid, the footer. Testimonials,
+Visit and the About philosophy flipped to paper.
+
+**What a token swap could not reach, and how it was caught.** Nine hardcoded
+`rgba(255,255,255,…)` values sat inside the flipped sections and went
+invisible — the tokens could not touch them. A live contrast sweep over every
+visible text node found them; axe did not. Axe DID catch one the sweep's
+filters had skipped (`.about-lines`, serious, three widths), so both were
+needed. Twenty-eight hardcoded cool blacks were warmed to the new ink, with
+every alpha re-measured first to confirm it still cleared AA.
+
+---
 
 ## What the client confirmed — 2026-09-20
 

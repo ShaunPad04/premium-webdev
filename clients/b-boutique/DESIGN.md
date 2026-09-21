@@ -1,16 +1,19 @@
 ---
 name: B Boutique
-description: A cool fashion-gallery system in true black and bone, where the only warm colour comes out of the photography.
+description: A warm, light-dominant boutique system — rouge on paper, with the shop's own red promoted from the photography into the interface.
 colors:
-  black: "#050505"
-  black-soft: "#090909"
-  black-raised: "#0D0D0D"
-  white: "#F5F5F2"
-  white-pure: "#FAFAF8"
-  grey-light: "#D8D8D4"
-  grey-mid: "#979793"
-  grey-dark: "#646460"
-  red: "#8A070B"
+  black: "#1A1416"        # warm near-black. NOT true black — see note below
+  black-soft: "#241C1F"
+  black-raised: "#2E2429"
+  white: "#FAF5F3"        # warm paper, leaning PINK not yellow
+  white-pure: "#FDFAF9"
+  grey-light: "#DCD4D2"
+  grey-mid: "#9A8F8D"     # DARK grounds only — 2.95:1 on paper
+  grey-dark: "#6B5F5E"    # LIGHT grounds only — 2.96:1 on ink
+  red: "#8A070B"          # sampled from the hero photograph, never invented
+  rouge: "#8A070B"        # LIGHT grounds only — 9.33:1 on paper, 1.83:1 on ink
+  rouge-deep: "#6E0509"   # hover on light — 11.69:1 on paper
+  rouge-lift: "#DE6376"   # DARK grounds only — 5.32:1 on ink
 typography:
   display:
     fontFamily: "Bodoni Moda, Libre Bodoni, Bodoni 72, Didot, serif"
@@ -120,9 +123,11 @@ red that is allowed to be the only warm thing on the page.
   already existing in the artwork.
 
 ### Neutral
-- **True Black** (`#050505`): The dominant ground. Header, the statement band
-  under the hero, the manifesto section, testimonials, Visit and the footer
-  all sit on it. Not
+- **Warm ink** (`#1A1416`): No longer the dominant ground — the site went
+  light-dominant on 2026-09-21. Dark is punctuation now: the header, the
+  statement band under the hero, the manifesto, the category grid and the
+  footer. Testimonials, Visit and the About philosophy all flipped to paper.
+  It is a WARM near-black, not
   `#000` — a hair off pure, so large fields do not read as a void.
 - **Soft Black** (`#090909`) and **Raised Black** (`#0D0D0D`): The only depth
   mechanism in the system. Raised black is a surface lifted off the ground by

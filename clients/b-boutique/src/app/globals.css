@@ -8,45 +8,100 @@
    ============================================================ */
 
 :root {
-  /* ── bb primitives — the single source of truth ────────────────────────
-     Cool, not warm. The room this was originally drawn from (black marble,
-     brass rails, a bone floor) gave a palette that read brown wherever two
-     surfaces met; the approved direction is a cool fashion-gallery white
-     against a true black, with the only warm colour coming out of the hero
-     photograph itself. No brown, tan, beige, cream, champagne or gold UI. */
-  --bb-black:        #050505;
-  --bb-black-soft:   #090909;
-  --bb-black-raised: #0D0D0D;
+  /* ── bb primitives — the single source of truth ─────────────────────
+     ROUGE. Warm, light-dominant, and built around the one red that was
+     already here.
 
-  --bb-white:        #F5F5F2;
-  --bb-white-pure:   #FAFAF8;
+     ── What this replaced, and why ──────────────────────────────────────
+     A cool fashion-gallery system: true black #050505 against a cool bone
+     #F5F5F2, with warm colour appearing only inside the photographs. It was
+     precise and it was cold, and the client asked on 2026-09-21 for a
+     womenswear boutique rather than a gallery — for women of all sizes,
+     "somewhat girly but not childlike", still premium. Warmth is exactly
+     what the old system excluded on purpose, so the exclusion is what had
+     to go.
 
-  --bb-grey-light:   #D8D8D4;
-  --bb-grey-mid:     #979793;
-  --bb-grey-dark:    #646460;
+     ── The cliche this is built to avoid ────────────────────────────────
+     "Girly premium boutique" has one reflex answer and this project already
+     banned it in writing: Playfair plus Montserrat, cream, champagne, gold
+     foil, a script face. Running the design-data lookup for this brief
+     returned exactly that, plus blush-on-blush #FDF2F8/#EC4899 and slate.
+     All of it stays banned. NO cream, champagne, gold, tan or beige.
+
+     The way out is a red lip. It is the most grown-up feminine signal there
+     is, it is none of pink, pastel or gold, and — the part that matters
+     most here — IT IS NOT INVENTED. --red below was sampled from the shop's
+     own hero photograph long before this re-theme. The change is promoting
+     it from "the only warm colour, and only inside the artwork" to a real
+     colour in the interface.
+
+     ── The names did not change, the values did ─────────────────────────
+     --bb-black is a warm near-black now, not #050505, and --bb-white is a
+     warm paper. The names are kept because 107 and 70 call sites read them
+     and a rename buys nothing: a very dark warm grey is still honestly
+     "black", unlike the brand-rail-with-no-brands case that was renamed
+     yesterday. Re-pointing here turns the whole site warm in one place
+     rather than in a hundred edits — which is what this indirection was
+     built for, in the other direction. */
+
+  /* Warm near-black. True black against a warm paper reads as a hole
+     punched in the page rather than as ink on it. */
+  --bb-black:        #1A1416;
+  --bb-black-soft:   #241C1F;
+  --bb-black-raised: #2E2429;
+
+  /* Warm white that leans PINK, not yellow. The difference is the whole
+     brief: measured, #FAF5F3 is R250 G245 B243 — a red-to-blue spread of 7
+     with a green-to-blue gap of only 2. Cream has a large green-to-blue gap,
+     which is what makes it read yellow, bridal and banned. */
+  --bb-white:        #FAF5F3;
+  --bb-white-pure:   #FDFAF9;
+
+  --bb-grey-light:   #DCD4D2;
+  --bb-grey-mid:     #9A8F8D;
+  --bb-grey-dark:    #6B5F5E;
 
   --bb-dark-border:  rgba(255, 255, 255, 0.14);
-  --bb-light-border: rgba(10, 10, 10, 0.14);
+  --bb-light-border: rgba(26, 20, 22, 0.14);
 
-  /* Measured, not assumed. Each grey is safe on exactly ONE ground:
-       grey-mid   6.95:1 on black   ·  2.68:1 on white  <- FAILS on light
-       grey-dark  5.44:1 on white   ·  3.43:1 on black  <- large text only
-     So: grey-mid is a dark-section colour, grey-dark a light-section one.
-     Do not swap them. For muted text at an opacity instead: white/55 is
-     5.82:1 on black, black/65 is 6.42:1 on white — both clear AA. */
+  /* Measured in a live render, not assumed, and each value is recorded
+     against the ground it is safe on — the rule this project already had,
+     carried over with new numbers because warming every colour invalidated
+     every old one:
 
-  /* The hero's own red, sampled from the photograph rather than guessed.
-     The one warm colour in the system, and it earns its place by being in
-     the artwork already. --bb-white clears 9.09:1 on it. */
-  --red: #8A070B;
+       ink on paper          17.08:1     paper on ink        17.08:1
+       rouge on paper         9.33:1     paper on rouge       9.33:1
+       grey-dark on paper     5.76:1  ·  on paper-deep  5.23:1   LIGHT only
+       grey-mid on ink        5.79:1  ·  on paper       2.95:1   DARK only
+       rouge-lift on ink      5.32:1  ·  on paper       3.21:1   DARK only
 
-  /* ── legacy semantic names, re-pointed ────────────────────────────────
-     Twenty components already reference these. Re-pointing them here turns
-     the whole site cool in one place rather than in a hundred edits, and
-     keeps this commit reviewable. New work should use the bb-* names. */
+     grey-mid and grey-dark are still NOT interchangeable. They swapped
+     ground-safety in the old palette too and the failure mode is identical:
+     a grey that passes on one ground fails on the other. */
+
+  /* ── The rouge ──────────────────────────────────────────────
+     Sampled from the hero photograph. Unchanged by this re-theme, which is
+     the point: the site's signature colour is a fact about her shop rather
+     than a decision anybody made in a browser.
+
+     IT ONLY WORKS ON LIGHT. Measured: 9.33:1 on paper, and 1.83:1 on ink —
+     a straight fail, invisible. Dark sections use --bb-rouge-lift, which
+     goes rose because a red lightened enough to clear a dark ground always
+     does. That is the same one-colour-one-ground discipline as the greys,
+     and the reason there are two of these rather than one. */
+  --red:             #8A070B;
+  --bb-rouge:        var(--red);
+  --bb-rouge-deep:   #6E0509;   /* hover, on light: 11.69:1 on paper */
+  --bb-rouge-lift:   #DE6376;   /* the dark-ground twin: 5.32:1 on ink */
+
+  /* ── legacy semantic names, re-pointed ───────────────────────────
+     Twenty components already reference these. Re-pointing them here turned
+     the whole site cool in one edit once; it turns it warm in one edit now.
+     That is the entire reason this indirection exists. New work should use
+     the bb-* names. */
   --onyx:       var(--bb-black);
   --onyx-lift:  var(--bb-black-raised);
-  --onyx-veil:  var(--bb-grey-dark);   /* muted text on light: 5.44:1 */
+  --onyx-veil:  var(--bb-grey-dark);   /* muted text on light: 5.76:1 */
 
   /* bone was the LIGHTER of the pair and bone-deep the darker band behind
      Homeware. white-pure is lighter than white, so the pair maps in that
@@ -55,9 +110,12 @@
   --bone-deep:  var(--bb-white);
   --bone-line:  var(--bb-grey-light);
 
-  /* There is no gold any more. These two names survive only because
-     components still call them, and both now resolve to maximum contrast
-     against the ground they were chosen for. Delete on sight. */
+  /* There is no gold, and under a warm palette that matters MORE rather than
+     less: gold is the single signifier this direction is most at risk of
+     drifting into, and it is named in the anti-reference. These two survive
+     only because components still call them. Both resolve to maximum
+     contrast against the ground they were chosen for. Delete on sight, and
+     never re-point either at an actual gold. */
   --gold:       var(--bb-black);   /* was #8A6A2C — on light grounds */
   --gold-lift:  var(--bb-white);   /* was #D4B06A — on dark grounds  */
 
@@ -117,6 +175,11 @@
   --color-gold: var(--gold);
   --color-gold-lift: var(--gold-lift);
   --color-red: var(--red);
+  /* Two rouges, because one cannot work on both grounds — see the token
+     block. bb-rouge is light-ground only, bb-rouge-lift dark-ground only. */
+  --color-bb-rouge: var(--bb-rouge);
+  --color-bb-rouge-deep: var(--bb-rouge-deep);
+  --color-bb-rouge-lift: var(--bb-rouge-lift);
   --color-ink-deep: var(--ink-deep);
   --color-panel: var(--panel);
   --color-panel-lift: var(--panel-lift);
@@ -342,7 +405,10 @@ body {
 @media (min-width: 640px) { .stmt-text { font-size: 12px; } }
 
 .stmt-sep {
-  color: var(--bb-grey-dark);
+  /* grey-MID. This band is dark, and grey-dark is the light-ground grey:
+     measured 2.96:1 here, a straight fail. Caught by a live contrast sweep,
+     not by axe. */
+  color: var(--bb-grey-mid);
   font-size: 12px;
   line-height: 1;
   user-select: none;
@@ -372,6 +438,119 @@ body {
   .stmt-track .stmt-set[aria-hidden="true"] { display: none; }
 }
 
+/* ── Hero copy ────────────────────────────────────────────────────────────
+   The hero carried no type at all from 2026-09-06 until the client asked for
+   a different one on 2026-09-21. It is an editorial hero now: a statement, the
+   confirmed facts underneath it, and a way in.
+
+   Everything sits bottom-left, where the photograph is its own colour rather
+   than a face, and every piece of it is laid over a scrim. Contrast against a
+   photograph cannot be measured as a token pair the way the rest of this
+   system is, so legibility here is BOUGHT with a gradient rather than
+   asserted — and the scrim is sized to the copy rather than washed over the
+   whole frame, because the red is the point of the picture. */
+.hero-line {
+  position: absolute;
+  left: 18px;
+  bottom: clamp(150px, 26vh, 260px);
+  z-index: 1;
+  max-width: 15ch;
+  margin: 0;
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  font-size: clamp(42px, 7vw, 104px);
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  color: var(--bb-white-pure);
+  text-wrap: balance;
+}
+
+/* The italic, and the whole reason the axis was switched back on. ONE word.
+   A Bodoni italic is the strongest feminine move available on a face that is
+   already approved, and it stops being a move the moment it is a whole line.
+   If this is ever the only italic left on the site, take the axis back out of
+   layout.tsx — 25 KB on the critical path for one word is not a trade. */
+.hero-line em {
+  font-style: italic;
+  font-synthesis: none;   /* never a slanted roman standing in for the real italic */
+}
+
+.hero-copy {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: clamp(38px, 7vh, 72px);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .hero-line { left: var(--bb-gutter-editorial); }
+  .hero-copy { left: var(--bb-gutter-editorial); right: var(--bb-gutter-editorial); }
+}
+
+.hero-sub {
+  margin: 0;
+  max-width: 34ch;
+  font-size: clamp(14px, 1.15vw, 16px);
+  line-height: 1.55;
+  color: var(--bb-white-pure);
+  text-wrap: pretty;
+}
+
+.hero-where {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  /* grey-light, not grey-mid: this sits on a photograph, which is darker and
+     noisier than a flat ground, so it takes the lighter of the two. */
+  color: var(--bb-grey-light);
+}
+
+.hero-cta {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 18px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bb-black);
+  background: var(--bb-white-pure);
+  transition: background var(--bb-dur-quick) var(--bb-ease),
+              color var(--bb-dur-quick) var(--bb-ease),
+              transform 160ms var(--bb-ease);
+}
+
+/* The rouge earns its place here rather than anywhere decorative: the one
+   control on the hero, filling with the shop's own red on hover. 9.33:1 with
+   paper on it, measured. */
+.hero-cta:hover,
+.hero-cta:focus-visible {
+  background: var(--bb-rouge);
+  color: var(--bb-white-pure);
+}
+
+.hero-cta svg { transition: transform var(--bb-dur-quick) var(--bb-ease); }
+.hero-cta:hover svg, .hero-cta:focus-visible svg { transform: translateX(3px); }
+.hero-cta:active { transform: scale(0.97); }
+
+@media (hover: none), (pointer: coarse) {
+  .hero-cta:hover { background: var(--bb-white-pure); color: var(--bb-black); }
+  .hero-cta:hover svg { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta, .hero-cta svg { transition: none; }
+}
+
 /* ── Hero scroll interaction ─────────────────────────────────────────────
    The hero pins inside a slightly taller track and deconstructs as the track
    passes: the photograph creeps closer, the secondary copy recedes, and the
@@ -398,8 +577,11 @@ body {
    container, no card, no rounded anything — the photograph and the quote are
    one thing. */
 .tm {
-  background: var(--bb-black);
-  color: var(--bb-white);
+  /* Flipped to light 2026-09-21 with the Rouge re-theme. Was a black
+     break between two light sections; the page is light-dominant now, so
+     the dark chapters are .pov, .cats, the statement band and the footer. */
+  background: var(--bb-white);
+  color: var(--bb-black);
   display: flex;
   flex-direction: column;
   touch-action: pan-y;   /* the page still scrolls vertically through a swipe */
@@ -456,7 +638,9 @@ body {
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: rgba(255, 255, 255, 0.72);
+  /* Ink alpha, not white: this section is light since the Rouge re-theme.
+     Measured .75 -> 7.75:1 on paper. */
+  color: rgba(26, 20, 22, 0.75);
   margin-bottom: 28px;
 }
 
@@ -525,7 +709,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 26px 24px 22px;
-  border: 1px solid var(--bb-dark-border);
+  border: 1px solid var(--bb-light-border);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -546,7 +730,7 @@ body {
   font-size: clamp(17px, 1.35vw, 20px);
   line-height: 1.42;
   letter-spacing: -0.01em;
-  color: var(--bb-white);
+  color: var(--bb-black);
   text-wrap: pretty;
 }
 
@@ -556,7 +740,7 @@ body {
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.02em;
-  color: var(--bb-white);
+  color: var(--bb-black);
 }
 
 /* Quieter than the name, and tracked open as it quietens — a line pushed back
@@ -566,7 +750,9 @@ body {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--bb-grey-mid);
+  /* grey-dark, not grey-mid: this section is light now, and grey-mid
+     measures 2.95:1 on paper — a straight fail. */
+  color: var(--bb-grey-dark);
 }
 
 /* The internal marker. Same convention as the newsletter and socials markers:
@@ -577,8 +763,8 @@ body {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--bb-white);
-  border: 1px solid var(--bb-dark-border);
+  color: var(--bb-black);
+  border: 1px solid var(--bb-light-border);
   padding: 8px 12px;
   display: inline-block;
 }
@@ -1444,8 +1630,11 @@ body {
    The last dark chapter before the footer. Cool white FAQ stops, black
    begins — no divider, no transition band. */
 .visit {
-  background: var(--bb-black);
-  color: var(--bb-white);
+  /* Flipped to light 2026-09-21. This is the page's closing ask — an
+     address and a door — and on a light-dominant site it reads as an
+     invitation rather than as a slab. */
+  background: var(--bb-white);
+  color: var(--bb-black);
   padding-block: 80px 88px;
   padding-inline: 18px;
   scroll-margin-top: 96px;
@@ -1469,7 +1658,7 @@ body {
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(26, 20, 22, 0.72);
   margin-bottom: 22px;
 }
 
@@ -1484,7 +1673,7 @@ body {
   font-size: clamp(38px, 4vw, 58px);
   line-height: 0.98;
   letter-spacing: -0.025em;
-  color: var(--bb-white);
+  color: var(--bb-black);
 }
 @media (min-width: 640px) { .visit-address { font-size: clamp(42px, 4vw, 58px); } }
 
@@ -1497,13 +1686,13 @@ body {
   margin-top: 34px;
   min-height: 44px;
   padding: 0 22px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(26, 20, 22, 0.42);
   border-radius: 0;
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: var(--bb-white);
+  color: var(--bb-black);
   transition:
     background var(--bb-dur-quick) var(--bb-ease),
     color var(--bb-dur-quick) var(--bb-ease),
@@ -1511,7 +1700,7 @@ body {
     transform var(--bb-dur-quick) var(--bb-ease);
 }
 .visit-cta:hover,
-.visit-cta:focus-visible { background: var(--bb-white); color: var(--bb-black); border-color: var(--bb-white); }
+.visit-cta:focus-visible { background: var(--bb-black); color: var(--bb-white); border-color: var(--bb-black); }
 /* The one press state in the section. Without it the button inverts on hover
    and then does nothing at all on the click itself — the moment it most needs
    to answer. Scale, not a colour change, because the colour is already spent
@@ -1532,7 +1721,7 @@ body {
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.17em;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(26, 20, 22, 0.72);
   margin-bottom: 16px;
 }
 
@@ -1544,17 +1733,17 @@ body {
   justify-content: space-between;
   gap: 24px;
   padding-block: 9px;
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-top: 1px solid var(--bb-light-border);
   font-size: 12px;
 }
-.visit-hours-row:last-child { border-bottom: 1px solid rgba(255, 255, 255, 0.14); }
-.visit-hours-row dt { color: rgba(255, 255, 255, 0.58); }   /* 6.89:1 on --bb-black */
-.visit-hours-row dd { color: var(--bb-white); font-variant-numeric: tabular-nums; }
+.visit-hours-row:last-child { border-bottom: 1px solid var(--bb-light-border); }
+.visit-hours-row dt { color: rgba(26, 20, 22, 0.72); }   /* 6.89:1 on --bb-black */
+.visit-hours-row dd { color: var(--bb-black); font-variant-numeric: tabular-nums; }
 /* .50, not .40. Measured on --bb-black: white/.40 composites to rgb(105,105,105)
    and lands at 3.71:1, under the 4.5:1 AA floor this 12px cell needs — the one
    value in the section that was never checked. .50 is 5.30:1 and still reads
    quieter than the days beside it, which is all the .40 was for. */
-.visit-hours-row dd.is-closed { color: rgba(255, 255, 255, 0.5); }
+.visit-hours-row dd.is-closed { color: rgba(26, 20, 22, 0.65); }
 
 /* ── The map panel ── */
 .vm-panel {
@@ -1638,8 +1827,8 @@ body {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(to top, rgba(5, 5, 5, 0.55) 0%, rgba(5, 5, 5, 0.12) 42%, transparent 70%),
-    rgba(5, 5, 5, 0.18);
+    linear-gradient(to top, rgba(26, 20, 22, 0.55) 0%, rgba(26, 20, 22, 0.12) 42%, transparent 70%),
+    rgba(26, 20, 22, 0.18);
 }
 
 .vm-expand {
@@ -2179,6 +2368,8 @@ body {
   /* white/55 measures 5.82:1 on --bb-black — clear AA, and quieter than the
      heading it sits under. --bb-grey-mid would also pass here at 6.95:1 but
      reads flat against the h1 at this size. */
+  /* Ink alpha, not white: this section is light since the Rouge re-theme.
+     Measured .75 -> 7.75:1 on paper. */
   color: rgba(255, 255, 255, 0.72);
   text-wrap: pretty;
 }
@@ -2252,7 +2443,7 @@ body {
   font-size: clamp(14px, 1.05vw, 16px);
   line-height: 1.65;
   /* 6.42:1 on bone — quieter than body copy without dropping under AA. */
-  color: rgba(10, 10, 10, 0.65);
+  color: rgba(26, 20, 22, 0.65);
   text-wrap: pretty;
 }
 
@@ -2260,7 +2451,7 @@ body {
   max-width: 62ch;
   font-size: clamp(15px, 1.1vw, 17px);
   line-height: 1.68;
-  color: rgba(10, 10, 10, 0.82);
+  color: rgba(26, 20, 22, 0.82);
   text-wrap: pretty;
 }
 .page-body + .page-body { margin-top: 18px; }
@@ -2273,7 +2464,7 @@ body {
   margin-top: 22px;
   font-size: 13px;
   line-height: 1.6;
-  color: rgba(10, 10, 10, 0.65);
+  color: rgba(26, 20, 22, 0.65);
 }
 
 /* Same marker convention as the FAQ and the testimonials: impossible to read
@@ -2361,7 +2552,7 @@ body {
   margin-top: 7px;
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(10, 10, 10, 0.65);
+  color: rgba(26, 20, 22, 0.65);
   max-width: 34ch;
 }
 
@@ -2419,7 +2610,7 @@ body {
 .acc-lead-copy .page-body { margin-top: 22px; }
 
 /* ── /about ────────────────────────────────────────────────────────────── */
-.about-philosophy { background: var(--bb-black); color: var(--bb-white); }
+.about-philosophy { background: var(--bb-white); color: var(--bb-black); }
 
 .about-phil-inner {
   display: flex;
@@ -2455,12 +2646,16 @@ body {
   flex-direction: column;
   gap: 3px;
   padding-left: 22px;
-  border-left: 1px solid var(--bb-dark-border);
+  /* Light-ground values since .about-philosophy flipped on 2026-09-21.
+     grey-mid measures 2.95:1 on paper and axe caught it as a serious
+     violation on three widths — the same one-colour-one-ground rule the
+     token block states, broken by a section changing underneath it. */
+  border-left: 1px solid var(--bb-light-border);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--bb-grey-mid);
+  color: var(--bb-grey-dark);
 }
 
 .about-blocks {
@@ -2577,7 +2772,7 @@ body {
   transition: border-color var(--bb-dur-quick) var(--bb-ease);
 }
 .cf-input::placeholder { color: var(--bb-grey-dark); }
-.cf-input:hover { border-bottom-color: rgba(10, 10, 10, 0.34); }
+.cf-input:hover { border-bottom-color: rgba(26, 20, 22, 0.34); }
 .cf-input:focus-visible {
   outline: none;
   border-bottom-color: var(--bb-black);
@@ -2673,22 +2868,22 @@ body {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--bb-grey-mid);
+  color: var(--bb-grey-dark);
 }
 
 .visit-phone-link {
   font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
   font-size: clamp(21px, 2.2vw, 28px);
   line-height: 1;
-  color: var(--bb-white);
+  color: var(--bb-black);
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  border-bottom: 1px solid rgba(26, 20, 22, 0.30);
   padding-bottom: 5px;
   width: fit-content;
   transition: border-color var(--bb-dur-quick) var(--bb-ease);
 }
 .visit-phone-link:hover,
-.visit-phone-link:focus-visible { border-bottom-color: var(--bb-white); }
+.visit-phone-link:focus-visible { border-bottom-color: var(--bb-black); }
 
 /* ── Entrances ─────────────────────────────────────────────────────────────
    Same grammar as every other section: viewport-relative scroll ranges, so
@@ -2811,7 +3006,7 @@ body {
   margin-top: 7px;
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(10, 10, 10, 0.65);
+  color: rgba(26, 20, 22, 0.65);
   max-width: 40ch;
 }
 
@@ -2907,7 +3102,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .nav-menu {
   min-width: 210px;
   padding: 14px 0;
-  background: rgba(5, 5, 5, 0.94);
+  background: rgba(26, 20, 22, 0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   /* Square and hairline, like everything else. The header is the one place on
@@ -2989,6 +3184,8 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  /* Ink alpha, not white: this section is light since the Rouge re-theme.
+     Measured .75 -> 7.75:1 on paper. */
   color: rgba(255, 255, 255, 0.72);
   white-space: nowrap;
   transition: color 160ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
@@ -3101,7 +3298,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   display: block;
   margin-top: 4px;
   font-size: 13px;
-  color: rgba(10, 10, 10, 0.72);
+  color: rgba(26, 20, 22, 0.72);
   font-variant-numeric: tabular-nums;
 }
 
@@ -3138,7 +3335,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin-top: 14px;
   font-size: clamp(15px, 1.3vw, 16.5px);
   line-height: 1.68;
-  color: rgba(10, 10, 10, 0.78);
+  color: rgba(26, 20, 22, 0.78);
 }
 
 /* The legal basis. Small, but not hidden — a customer should be able to read
@@ -3182,7 +3379,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin-top: 9px;
   font-size: 14.5px;
   line-height: 1.6;
-  color: rgba(10, 10, 10, 0.78);
+  color: rgba(26, 20, 22, 0.78);
 }
 
 .pol-close {
@@ -3192,7 +3389,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   max-width: 68ch;
   font-size: 15px;
   line-height: 1.65;
-  color: rgba(10, 10, 10, 0.78);
+  color: rgba(26, 20, 22, 0.78);
 }
 
 /* ── Shop search ───────────────────────────────────────────────────────────
@@ -3227,7 +3424,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   border-bottom: 1px solid var(--bb-light-border);
   transition: border-color var(--bb-dur-quick) var(--bb-ease);
 }
-.find-field:hover { border-bottom-color: rgba(10, 10, 10, 0.34); }
+.find-field:hover { border-bottom-color: rgba(26, 20, 22, 0.34); }
 /* The rule under the whole field responds to the input inside it, rather than
    the input growing a second border of its own inside the first. */
 .find-field:has(.find-input:focus-visible) {
@@ -3318,7 +3515,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin-top: 14px;
   font-size: 15px;
   line-height: 1.6;
-  color: rgba(10, 10, 10, 0.72);
+  color: rgba(26, 20, 22, 0.72);
 }
 .find-empty-tel {
   color: var(--bb-black);
@@ -3359,7 +3556,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .find-empty-alt {
   margin-top: 20px;
   font-size: 13px;
-  color: rgba(10, 10, 10, 0.72);
+  color: rgba(26, 20, 22, 0.72);
 }
 .find-empty-alt a {
   color: var(--bb-black);
@@ -3434,7 +3631,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   max-width: 46ch;
   font-size: 14px;
   line-height: 1.68;
-  color: rgba(10, 10, 10, 0.72);
+  color: rgba(26, 20, 22, 0.72);
 }
 
 /* ── Size and add ─────────────────────────────────────────────────────── */
@@ -3472,7 +3669,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin: 0;
   cursor: pointer;
 }
-.atb-size:hover { border-color: rgba(10, 10, 10, 0.4); }
+.atb-size:hover { border-color: rgba(26, 20, 22, 0.4); }
 .atb-size.is-on { background: var(--bb-black); border-color: var(--bb-black); color: var(--bb-white); }
 /* The ring goes on the label, because the input it belongs to is invisible. */
 .atb-size:has(input:focus-visible) { outline: 2px solid currentColor; outline-offset: 2px; }
@@ -3534,7 +3731,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin: 0 0 8px;
   padding: 16px 18px;
   border: 1px solid var(--bb-light-border);
-  background: rgba(10, 10, 10, 0.03);
+  background: rgba(26, 20, 22, 0.03);
   font-size: 13.5px;
   line-height: 1.6;
 }
@@ -3668,7 +3865,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   text-transform: uppercase;
   color: var(--bb-grey-dark);
 }
-.bag-each { margin-top: 6px; font-size: 13px; color: rgba(10, 10, 10, 0.68); font-variant-numeric: tabular-nums; }
+.bag-each { margin-top: 6px; font-size: 13px; color: rgba(26, 20, 22, 0.68); font-variant-numeric: tabular-nums; }
 
 .bag-qty-input {
   width: 62px;
@@ -3704,7 +3901,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 
 .bag-totals { display: flex; flex-direction: column; gap: 10px; }
 .bag-totals > div { display: flex; justify-content: space-between; gap: 20px; font-size: 14px; }
-.bag-totals dt { color: rgba(10, 10, 10, 0.68); }
+.bag-totals dt { color: rgba(26, 20, 22, 0.68); }
 .bag-totals dd { font-variant-numeric: tabular-nums; }
 
 .bag-total-row {
@@ -3722,7 +3919,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin-top: 18px;
   font-size: 12px;
   line-height: 1.55;
-  color: rgba(10, 10, 10, 0.62);
+  color: rgba(26, 20, 22, 0.62);
 }
 /* Underlined, not colour-only: the surrounding line is already grey and a
    link distinguished by hue alone fails for anyone who cannot see the

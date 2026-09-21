@@ -181,7 +181,7 @@ const FaqSection = React.forwardRef<HTMLElement, FaqSectionProps>(
                 {contactInfo.secondary ? (
                   <a
                     href={contactInfo.secondary.href}
-                    className="inline-flex items-center gap-2 text-[14px] text-bb-grey-dark underline decoration-[rgba(10,10,10,0.25)] underline-offset-4 transition-colors hover:text-bb-black hover:decoration-current"
+                    className="inline-flex items-center gap-2 text-[14px] text-bb-grey-dark underline decoration-[rgba(26,20,22,0.25)] underline-offset-4 transition-colors hover:text-bb-black hover:decoration-current"
                   >
                     {/* Functional rather than decorative: it identifies the
                         link's kind before the address is read. The original's

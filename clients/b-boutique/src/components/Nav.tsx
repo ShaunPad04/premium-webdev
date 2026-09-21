@@ -35,7 +35,7 @@ export function Nav() {
          panel reserves top padding for exactly this. */
       className="fixed inset-x-0 top-0 z-[60] text-bb-white"
       style={{
-        background: scrolled ? "rgba(5,5,5,.90)" : "transparent",
+        background: scrolled ? "rgba(26, 20, 22, .90)" : "transparent",
         backdropFilter: scrolled ? "blur(14px)" : "none",
         WebkitBackdropFilter: scrolled ? "blur(14px)" : "none",
         borderBottom: `1px solid ${scrolled ? "rgba(255,255,255,.10)" : "transparent"}`,
@@ -53,7 +53,7 @@ export function Nav() {
           className="pointer-events-none absolute inset-x-0 top-0 h-[120px]"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(5,5,5,.42) 0%, rgba(5,5,5,.16) 55%, transparent 100%)",
+              "linear-gradient(to bottom, rgba(26, 20, 22, .42) 0%, rgba(26, 20, 22, .16) 55%, transparent 100%)",
           }}
         />
       ) : null}

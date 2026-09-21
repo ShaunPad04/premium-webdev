@@ -25,11 +25,26 @@ import "./globals.css";
 const bodoni = Bodoni_Moda({
   variable: "--font-bodoni",
   subsets: ["latin"],
-  /* Normal only. The italic axis was requested and preloaded — 25 KB on the
-     critical path, competing with the hero image for a throttled connection —
-     and nothing on the site uses it: every italic face reported `unloaded`
-     and a sweep of the rendered page found zero elements computing
-     font-style: italic. Add it back the day something is set in italic. */
+  /* ITALIC IS BACK, 2026-09-21, and this is the day the old comment named.
+     It read: "The italic axis was requested and preloaded — 25 KB on the
+     critical path, competing with the hero image for a throttled connection
+     — and nothing on the site uses it: every italic face reported
+     `unloaded` and a sweep of the rendered page found zero elements
+     computing font-style: italic. Add it back the day something is set in
+     italic."
+
+     That day is now. The client asked for the site to read as a womenswear
+     boutique rather than a gallery, and a Bodoni italic is the single
+     strongest feminine typographic move available on a face that is already
+     approved — it keeps her 2026-09-01 sign-off intact instead of spending a
+     review cycle on a new typeface.
+
+     The 25 KB is a known cost rather than a guess, because the earlier
+     measurement is what recorded it. It is spent deliberately and it is
+     spent SPARINGLY: the hero statement and pull quotes. Never body copy,
+     never a whole heading. If a sweep ever again finds zero elements
+     computing font-style: italic, take it back out. */
+  style: ["normal", "italic"],
 
   /* `preload: false` was tried here and rejected on measurement, and the case
    * against it got stronger on 2026-09-05.
