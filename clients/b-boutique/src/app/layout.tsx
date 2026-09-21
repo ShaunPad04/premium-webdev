@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bodoni_Moda, Inter } from "next/font/google";
+import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
 import "./globals.css";
@@ -213,6 +214,13 @@ export default function RootLayout({
       className={`${bodoni.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bone text-onyx">
+        {/* Every forward navigation lands at the top of the new page; back
+            and forward still restore the reader's place. Here rather than in
+            MotionLayer, which is deferred until the browser goes idle — a
+            click can easily beat that — and here rather than per-page,
+            because twelve copies is twelve chances to miss one. Renders
+            nothing. See ScrollReset.tsx. */}
+        <ScrollReset />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema()) }}
