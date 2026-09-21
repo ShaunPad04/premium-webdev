@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { PRIMARY } from "@/lib/nav";
+import { AnnounceBar } from "./AnnounceBar";
 import { BagLink } from "./BagLink";
 import { CornerMenu } from "./CornerMenu";
 import { NavSearch } from "./NavSearch";
@@ -58,6 +59,30 @@ export function Nav() {
           }}
         />
       ) : null}
+
+      {/* The announcement bar, above the nav row.
+       *
+       * Rendered here rather than per-page: Nav appears on twelve routes and
+       * the bar belongs on all of them, so putting it anywhere else means
+       * twelve places to forget it.
+       *
+       * It COLLAPSES on scroll rather than following the page down. An
+       * announcement that follows a reader forty screens has stopped being an
+       * announcement and become furniture, and the header is fixed, so a
+       * permanent bar would eat a line of every 100svh hero. `scrolled` is
+       * the state the header already keeps for its own background, so this
+       * costs no new listener and cannot drift out of step with it.
+       *
+       * Collapsed by max-height with overflow hidden, and aria-hidden with
+       * it: a screen reader should not be offered a link inside a strip the
+       * page has visibly put away. */}
+      <div
+        className="announce-shell"
+        data-collapsed={scrolled ? "" : undefined}
+        aria-hidden={scrolled ? true : undefined}
+      >
+        <AnnounceBar />
+      </div>
 
       <div className="relative flex h-[72px] items-center justify-between px-[18px] sm:px-6 lg:px-8">
         {/* LEFT — the wordmark, small. The giant one lives in the footer. */}

@@ -127,6 +127,19 @@ export function formatPrice(priceP: number): string {
   return gbp.format(priceP / 100);
 }
 
+/** The same money, without a trailing `.00`.
+ *
+ *  For prose rather than for a basket line. "Free UK delivery on orders over
+ *  £120" is how a shop writes it; "over £120.00" is how a spreadsheet does,
+ *  and the two pence that are never there read as a price that might change.
+ *  A non-round amount keeps its pence — £4.35 stays £4.35 — so this can
+ *  never quietly round a real figure away. */
+export function formatPriceShort(priceP: number): string {
+  return priceP % 100 === 0
+    ? gbp.format(priceP / 100).replace(/\.00$/, "")
+    : gbp.format(priceP / 100);
+}
+
 /** Delivery. CONFIRMED BY THE CLIENT 2026-09-20.
  *
  *  £4.35 on any order, free at £120 and above. Her figures, in her words, and

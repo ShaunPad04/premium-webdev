@@ -5085,3 +5085,92 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   from { opacity: 0; transform: translateX(28px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+
+/* ── Announcement bar ─────────────────────────────────────────────────────
+   Above the nav row, inside the fixed header. Collapses on scroll rather
+   than following the page — see the comment in Nav.tsx. */
+.announce-shell {
+  position: relative;
+  /* Animating max-height rather than height, because `height: auto` is not
+     an animatable value and the bar's height is set by its own type at
+     whatever the reader's font size is. The number is a ceiling the content
+     never reaches, not a measurement. */
+  max-height: 60px;
+  overflow: hidden;
+  transition: max-height 420ms var(--bb-ease), opacity 320ms var(--bb-ease);
+}
+
+.announce-shell[data-collapsed] { max-height: 0; opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .announce-shell { transition: none; }
+}
+
+.announce {
+  /* Solid, not transparent. This strip sits over the top edge of a
+     photograph; at 9px, type this small cannot be made to clear AA against
+     an arbitrary highlight with a scrim, so it gets its own ground. */
+  background: var(--bb-black);
+  border-bottom: 1px solid rgba(250, 245, 243, 0.1);
+}
+
+.announce-list {
+  list-style: none;
+  margin: 0 auto;
+  padding: 9px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: nowrap;
+}
+
+@media (min-width: 640px) { .announce-list { padding-inline: 24px; } }
+@media (min-width: 1024px) { .announce-list { padding-inline: 32px; } }
+
+.announce-item {
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: center;
+  /* .82 on the warm ink measures 8.6:1 — well clear of AA, which matters
+     more here than anywhere: this is 9px type and it is the first thing on
+     every route. */
+  color: rgba(250, 245, 243, 0.82);
+  white-space: nowrap;
+}
+
+/* The second and third lines are held back until there is room for all
+   three on one line. Wrapping a three-item bar onto two rows is what makes
+   an announcement strip look like a notice board. */
+.announce-item--wide { display: none; }
+
+@media (min-width: 900px) {
+  .announce-item--wide { display: block; }
+
+  /* A thin rule between items rather than a bullet or a pipe: the same
+     hairline this site separates everything else with. */
+  .announce-item + .announce-item {
+    margin-left: 22px;
+    padding-left: 22px;
+    border-left: 1px solid rgba(250, 245, 243, 0.2);
+  }
+}
+
+/* The one link in the bar. Underlined on hover only — a permanent underline
+   on 9px tracked caps closes the letterforms up. */
+.announce-link {
+  color: inherit;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: color var(--bb-dur-quick) var(--bb-ease),
+              border-color var(--bb-dur-quick) var(--bb-ease);
+}
+
+.announce-link:hover,
+.announce-link:focus-visible {
+  color: var(--bb-white);
+  border-color: rgba(250, 245, 243, 0.55);
+}
