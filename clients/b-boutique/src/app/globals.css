@@ -5174,3 +5174,72 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   color: var(--bb-white);
   border-color: rgba(250, 245, 243, 0.55);
 }
+
+/* ── Category bar ─────────────────────────────────────────────────────────
+   The rail selector above the product grid on /clothing and every
+   /clothing/[category]. Replaced nine large category photographs that filled
+   more than a screen before a garment appeared. See CategoryBar.tsx. */
+.catbar {
+  margin-bottom: clamp(28px, 3.4vw, 44px);
+  /* A rule under the row ties it to the grid below rather than leaving it
+     floating between two blocks of whitespace. */
+  border-bottom: 1px solid var(--bb-light-border);
+  padding-bottom: clamp(16px, 1.8vw, 22px);
+}
+
+.catbar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Square, hairline, no fill at rest — the same vocabulary as every other
+   control on this site. The count is the only thing that distinguishes these
+   from the nav, and it sits in a quieter colour so the label reads first. */
+.catbar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  /* 44px minimum, met by padding rather than a fixed height, so a label that
+     wraps at a narrow width still owns its whole target. */
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--bb-light-border);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bb-black);
+  transition:
+    border-color var(--bb-dur-quick) var(--bb-ease),
+    background var(--bb-dur-quick) var(--bb-ease),
+    color var(--bb-dur-quick) var(--bb-ease);
+}
+
+.catbar-link:hover,
+.catbar-link:focus-visible { border-color: var(--bb-black); }
+
+/* The page you are on. Solid ink, and `aria-current="page"` in the markup —
+   the state is announced as well as painted, because colour alone cannot
+   answer "where am I". */
+.catbar-link[aria-current="page"] {
+  background: var(--bb-black);
+  border-color: var(--bb-black);
+  color: var(--bb-white);
+}
+
+.catbar-n {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  /* 7.04:1 on paper. Quieter than the label, never quieter than AA. */
+  color: var(--bb-grey-dark);
+}
+
+/* On the ink fill the grey would drop to roughly 1.5:1, so the count borrows
+   the label's own colour at a reduced alpha instead — 8.6:1 on the ink. */
+.catbar-link[aria-current="page"] .catbar-n { color: rgba(250, 245, 243, 0.82); }

@@ -1,3 +1,4 @@
+import { products, productsIn } from "./catalogue";
 import { categories, featured, newIn } from "./shop";
 
 /** What the category pages show, derived rather than re-typed.
@@ -68,6 +69,30 @@ export const accessoriesCard: CategoryCard = fromFeatured("accessories");
  *  sells in person, and stock turns faster than a page does. */
 export function newInFor(categoryNames: readonly string[]) {
   return newIn.filter((p) => categoryNames.includes(p.category));
+}
+
+/** Every clothing product, in catalogue order.
+ *
+ *  Added 2026-09-21, when /clothing stopped being a lookbook of nine large
+ *  category photographs and became what the client asked for: the products.
+ *
+ *  Derived from the catalogue and the category list rather than hand-listed,
+ *  so a product added to a clothing category appears here with no edit, and
+ *  a category renamed in shop.ts cannot silently drop its stock out of this
+ *  page. Accessories and Homeware fall out by not being in the list. */
+export function clothingProducts() {
+  const names = CLOTHING_CATEGORY_NAMES as readonly string[];
+  return products.filter((p) => names.includes(p.category));
+}
+
+/** How many pieces sit in each clothing category, for the category bar.
+ *  A count beside a label is a promise the page then has to keep, so it is
+ *  counted from the catalogue at render rather than written down. */
+export function clothingCounts() {
+  return clothingCards.map((c) => ({
+    ...c,
+    count: productsIn(c.name).length,
+  }));
 }
 
 export const CLOTHING_CATEGORY_NAMES = [

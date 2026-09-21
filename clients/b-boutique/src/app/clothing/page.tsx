@@ -4,10 +4,11 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
-import { CategoryGrid } from "@/components/CategoryGrid";
-import { PieceGrid } from "@/components/PieceGrid";
+import { CategoryBar } from "@/components/CategoryBar";
+import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
-import { CLOTHING_CATEGORY_NAMES, clothingCards, newInFor } from "@/lib/pages";
+import { catalogueIsDemo } from "@/lib/catalogue";
+import { clothingProducts } from "@/lib/pages";
 
 export const metadata: Metadata = {
   title: "Clothing",
@@ -23,16 +24,21 @@ export const metadata: Metadata = {
  * one thing and does another; that was the single most-repeated finding in the
  * design critique.
  *
- * ── What it does NOT do ───────────────────────────────────────────────────
- * It is not a shop. There is no basket, no price, no stock count, no size
- * availability and no per-item page, because none of that exists: the boutique
- * sells in person, and inventing any of it would be inventing facts about a
- * real business. What the page can honestly show is the categories, the pieces
- * that are actually in the data, and where the door is — so that is what it
- * shows, and it says so in as many words rather than leaving the reader
- * hunting for an "add to bag" that is never coming. */
+ * ── 2026-09-21: it stopped being a lookbook ───────────────────────────────
+ * It used to open with nine large category photographs — more than a screen
+ * of doors before a single garment appeared — and put the actual pieces in a
+ * short "in this week" strip below them. The client asked for the opposite,
+ * and was right: somebody who has clicked CLOTHING has already chosen
+ * clothing, and showing them nine more choices is a gate rather than a page.
+ *
+ * It now leads with every clothing product in the catalogue, in the shop's
+ * own dense grid, with the categories as a filter bar above it. The comment
+ * that used to sit here said there was "no price, no per-item page, the
+ * boutique sells in person" — that has been untrue since the shop was built:
+ * there is a /shop/[slug] under every card and a real basket. The prices are
+ * still invented, which is a different problem and is flagged on the page. */
 export default function ClothingPage() {
-  const pieces = newInFor(CLOTHING_CATEGORY_NAMES);
+  const items = clothingProducts();
 
   return (
     <>
@@ -43,35 +49,40 @@ export default function ClothingPage() {
           eyebrow="The rails"
           title="Clothing"
           lede="Coats, jackets, trousers, skirts, dresses, denim, shirts, tops and knitwear. One room, one rail of each, and every piece picked by hand rather than ordered by the pack."
+          aside={
+            <p className="pm-phone">
+              <span className="pm-phone-label">On the rails</span>
+              <span className="pm-phone-number">
+                {items.length} {items.length === 1 ? "piece" : "pieces"}
+              </span>
+            </p>
+          }
         />
 
-        <section aria-labelledby="clothing-cats" className="page-section">
+        <section aria-labelledby="clothing-all" className="page-section">
           <div className="page-inner">
             <div className="page-head">
-              <h2 id="clothing-cats" className="page-h2">
-                What hangs where.
+              <h2 id="clothing-all" className="page-h2">
+                Everything on the rails.
               </h2>
               <p className="page-lede">
-                Nine categories, in the order the rails run through the shop.
+                Stock changes weekly, so this is what is in now rather than a
+                standing range. Everything here can be bought online or seen on
+                the rail. Narrow it by category above.
               </p>
+              {catalogueIsDemo ? (
+                <p className="page-pending">
+                  [Demo prices — every price on this page is invented for this
+                  build and nothing can be charged]
+                </p>
+              ) : null}
             </div>
-            <CategoryGrid cards={clothingCards} />
-          </div>
-        </section>
 
-        <section aria-labelledby="clothing-new" className="page-section is-alt">
-          <div className="page-inner">
-            <div className="page-head">
-              <h2 id="clothing-new" className="page-h2">
-                In this week.
-              </h2>
-              <p className="page-lede">
-                The clothing that has landed most recently. Stock changes
-                weekly, so this is a snapshot rather than a standing range.
-                Everything here can be bought online or seen on the rail.
-              </p>
-            </div>
-            <PieceGrid pieces={pieces} idPrefix="clothing" />
+            {/* The categories, as a filter above the stock rather than nine
+                large photographs in front of it. See CategoryBar.tsx. */}
+            <CategoryBar current="all" />
+
+            <ProductGrid items={items} idPrefix="clothing" />
           </div>
         </section>
 

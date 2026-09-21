@@ -39,29 +39,40 @@ export const MENU: MenuItem[] = [
 
 /** Social accounts.
  *
- *  ⚠ STILL EMPTY, AND THAT IS NOT AN OVERSIGHT.
+ *  ── SUPPLIED BY THE CLIENT 2026-09-21 ────────────────────────────────────
+ *  Both URLs were given directly, in chat, and are pasted verbatim — query
+ *  strings included. `?hl=en` and `?locale=en_GB` are the platforms' own
+ *  language hints; they are harmless, they are what the client handed over,
+ *  and a client-supplied URL is not tidied up on a guess about what is
+ *  safe to drop.
  *
- *  The client has asked for Facebook and Instagram links in the footer and the
- *  whole row is built and waiting for them — icons, layout, the lot. What is
- *  missing is the one thing a developer cannot supply: the actual accounts.
+ *  Note the Facebook URL carries her own name. That is the account as it
+ *  exists, not something composed here.
  *
- *  A guessed handle on a real trading business's site is not a placeholder. It
- *  is a link that sends her customers to a stranger's page, and on Instagram a
- *  plausible guess like `bboutique` or `bboutiquecleethorpes` almost certainly
- *  belongs to somebody. So nothing is guessed and nothing is linked to a
- *  platform's home page as a stand-in.
+ *  This array was deliberately empty until now, and the reason is worth
+ *  keeping: a guessed handle on a real trading business's site is not a
+ *  placeholder, it is a link sending her customers to a stranger's page —
+ *  and `bboutiquecleethorpes` was a "plausible" guess that happened to be
+ *  right, which is exactly why guessing is not a method. It was waited for.
  *
- *  Add the real profile URLs here and the row appears, icons and all:
- *
- *    { name: "Instagram", href: "https://www.instagram.com/…" },
- *    { name: "Facebook",  href: "https://www.facebook.com/…" },
+ *  The footer and the corner menu both render this array only when it has
+ *  entries, so nothing else needed changing to turn the row on.
  *
  *  `name` must stay exactly "Instagram" or "Facebook" — the footer matches on
  *  it to choose the logo, and falls back to the plain name for anything else.
  */
 export type Social = { name: "Instagram" | "Facebook" | (string & {}); href: string };
 
-export const socials: Social[] = [];
+export const socials: Social[] = [
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/bboutiquecleethorpes/?hl=en",
+  },
+  {
+    name: "Facebook",
+    href: "https://www.facebook.com/p/B-Boutique-Cleethorpes-Hayley-Brown-100091972337800/?locale=en_GB",
+  },
+];
 
 /** The address as Google Maps wants it. One definition: the Visit section,
  *  the footer map and the directions link all read this, so the pin can never

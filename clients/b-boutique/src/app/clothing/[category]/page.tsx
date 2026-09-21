@@ -6,6 +6,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
+import { CategoryBar } from "@/components/CategoryBar";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
 import { catalogueIsDemo, productsIn } from "@/lib/catalogue";
@@ -93,6 +94,13 @@ export default async function CategoryPage({
               ) : null}
             </div>
 
+            {/* The sibling rails, at the TOP. They used to be a section at
+                the bottom of this page, under the grid — so moving from
+                Coats to Knitwear meant scrolling past every coat first. The
+                same bar heads /clothing, so the whole set is one tap from
+                any of them. See CategoryBar.tsx. */}
+            <CategoryBar current={card.slug} />
+
             {items.length ? (
               <ProductGrid items={items} idPrefix={`cat-${card.slug}`} />
             ) : (
@@ -109,28 +117,6 @@ export default async function CategoryPage({
                 .
               </p>
             )}
-          </div>
-        </section>
-
-        <section aria-labelledby="cat-more" className="page-section is-alt">
-          <div className="page-inner">
-            <div className="page-head">
-              <h2 id="cat-more" className="page-h2">
-                The other rails.
-              </h2>
-            </div>
-            <ul className="cat-links">
-              {clothingCards
-                .filter((c) => c.slug !== card.slug)
-                .map((c) => (
-                  <li key={c.slug}>
-                    <Link href={`/clothing/${c.slug}`} className="cat-link">
-                      {c.name}
-                      <span className="cat-link-n">{productsIn(c.name).length}</span>
-                    </Link>
-                  </li>
-                ))}
-            </ul>
           </div>
         </section>
 
