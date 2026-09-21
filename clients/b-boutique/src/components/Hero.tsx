@@ -89,16 +89,23 @@ export function Hero() {
         <HeroPicture />
       </div>
 
-      {/* A short foot, so the hero meets the brand rail's black without a
-          visible seam. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[22%]"
-        style={{
-          background:
-            "linear-gradient(to top, rgba(26, 20, 22, .66) 0%, rgba(26, 20, 22, .20) 55%, transparent 100%)",
-        }}
-      />
+      {/* The scrim. Two jobs, and it grew a second one on 2026-09-21.
+       *
+       * It has always closed the seam where the hero meets the band below.
+       * It now also BUYS THE CONTRAST for the copy, because the photograph
+       * changed from a dark red studio frame to a pale Paris street and the
+       * copy is near-white.
+       *
+       * This was measured, not assumed. With the old 22%-tall foot gradient
+       * the new picture gave, at 390px: hero-line worst 1.12:1, hero-sub
+       * 1.38:1, hero-where 1.15:1 — the headline sitting directly on the
+       * white dress, white on white. Unreadable, and a launch blocker.
+       *
+       * Moved out of an inline style and into a class so the strength can
+       * vary by breakpoint, which it has to: at 1440 the copy lands on dark
+       * road and barely needs help, while at 390 the same copy lands on the
+       * dress and needs a great deal. See `.hero-scrim` in globals.css. */}
+      <div aria-hidden="true" className="hero-scrim" />
 
       {/* The copy sits bottom-left, where the photograph is its own colour
           rather than a face. The scrim below is what makes it legible over a

@@ -22,7 +22,14 @@ export function HeroPicture({ className = "" }: { className?: string }) {
           a <picture>, which is the whole reason this component exists. */}
       <img
         src="/img/hero-mobile.jpg"
-        alt="A woman in gold jewellery against a deep red ground"
+        /* Describes the picture, and nothing beyond it. It deliberately does
+           NOT name a garment as stock — the hero is a campaign image, not a
+           product shot, and "white dress" in an alt attribute on a shop's
+           homepage edges toward a claim about what is on the rail. Replaced
+           2026-09-21 with the hero itself; the old text read "A woman in gold
+           jewellery against a deep red ground" and described an image that is
+           no longer on the page. */
+        alt="A woman in white on a Paris street, a red door behind her"
         fetchPriority="high"
         decoding="async"
         style={{ color: "transparent" }}

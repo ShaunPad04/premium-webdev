@@ -449,12 +449,119 @@ body {
    system is, so legibility here is BOUGHT with a gradient rather than
    asserted — and the scrim is sized to the copy rather than washed over the
    whole frame, because the red is the point of the picture. */
+
+/* The scrim, sized to the copy rather than washed over the whole frame.
+ *
+ * Two gradients, not one. The foot closes the seam with the band below and
+ * carries the address line; the left-hand wash carries the headline, which
+ * sits far too high up the frame for a foot gradient to reach.
+ *
+ * Strength is per breakpoint because the need is per breakpoint — measured
+ * against the live render, not guessed. At 1440 the copy lands on dark road
+ * and the picture only needs a little help; at 390 the identical copy lands
+ * on a white dress and needs a great deal. A single value tuned for the
+ * phone would grey out the desktop frame for nothing.
+ *
+ * Warm ink (26,20,22), never neutral black — a cool wash over this palette
+ * turns the paper tones grey and the red toward burgundy. */
+.hero-scrim {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: -10;
+  /* The phone is the hard case and it is worth saying why, because the
+     numbers look extreme next to the desktop block below.
+     On the portrait crop the bottom half of the frame is almost entirely
+     WHITE DRESS, and the copy is near-white. There is no clever placement
+     that avoids it — the garment fills the width. Measured at 390 with the
+     desktop strengths, the headline came back at 2.74:1 worst case and the
+     client reported the clash on sight.
+     So the foot here is deliberately heavy. It reads as a vignette over a
+     dress rather than as damage to the picture, because the part being
+     darkened carries no detail anyone needs. Her face, the red door and the
+     street all sit above 55% and are untouched. */
+  background:
+    linear-gradient(
+      to top,
+      rgba(26, 20, 22, 0.92) 0%,
+      rgba(26, 20, 22, 0.82) 22%,
+      rgba(26, 20, 22, 0.52) 40%,
+      rgba(26, 20, 22, 0.16) 56%,
+      transparent 78%
+    ),
+    linear-gradient(
+      to right,
+      rgba(26, 20, 22, 0.62) 0%,
+      rgba(26, 20, 22, 0.24) 40%,
+      transparent 70%
+    );
+}
+
+/* Both blocks below reach HIGHER up the frame than the phone's does, even
+   though they are weaker overall. That is not a contradiction: the headline
+   sits at `bottom: clamp(150px, 26vh, 260px)`, so on a tall desktop viewport
+   its top edge is around a third of the way up — far above where a foot
+   gradient tuned for a phone ever reaches. Measured with the first attempt,
+   the headline came back at 1.53:1 at 1440 and 2.00:1 at 768 while the body
+   copy below it was already clearing 9:1. The fix was reach, not strength. */
+@media (min-width: 768px) {
+  .hero-scrim {
+    background:
+      linear-gradient(
+        to top,
+        rgba(26, 20, 22, 0.86) 0%,
+        rgba(26, 20, 22, 0.66) 22%,
+        rgba(26, 20, 22, 0.4) 40%,
+        rgba(26, 20, 22, 0.14) 58%,
+        transparent 78%
+      ),
+      linear-gradient(
+        to right,
+        rgba(26, 20, 22, 0.6) 0%,
+        rgba(26, 20, 22, 0.26) 40%,
+        transparent 68%
+      );
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-scrim {
+    background:
+      linear-gradient(
+        to top,
+        rgba(26, 20, 22, 0.8) 0%,
+        rgba(26, 20, 22, 0.56) 20%,
+        rgba(26, 20, 22, 0.32) 36%,
+        rgba(26, 20, 22, 0.1) 54%,
+        transparent 72%
+      ),
+      /* Reaches to 82%, not 62%. At 1440 the headline is 104px Bodoni and its
+         first line runs to roughly 60% of the width, where it met bare pale
+         limestone and measured 2.05:1. Widening the wash was the cheaper fix
+         than darkening the foot further, because the right-hand side of the
+         frame — her face and the red door — stays untouched either way. */
+      linear-gradient(
+        to right,
+        rgba(26, 20, 22, 0.62) 0%,
+        rgba(26, 20, 22, 0.38) 34%,
+        rgba(26, 20, 22, 0.16) 56%,
+        transparent 82%
+      );
+  }
+}
+
 .hero-line {
   position: absolute;
   left: 18px;
   bottom: clamp(150px, 26vh, 260px);
   z-index: 1;
-  max-width: 15ch;
+  /* 15ch let "For every woman" run right across the frame and under the
+     subject's chin on the Paris hero, which is what the client saw. The line
+     cannot move further left — it is already on the 18px gutter — so the fix
+     is to make it WRAP EARLIER rather than to move it. 12ch breaks it after
+     "every" at the widths where the collision happened, and `text-wrap:
+     balance` below keeps the two lines close in length. */
+  max-width: 12ch;
   margin: 0;
   font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
   font-weight: 400;

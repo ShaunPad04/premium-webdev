@@ -279,7 +279,13 @@ const FaqItem = React.forwardRef<
           <motion.span
             aria-hidden="true"
             animate={{ rotate: isOpen ? 180 : 0 }}
-            transition={reduced ? { duration: 0 } : { duration: 0.3, ease: EASE }}
+            /* Matched to the panel above, not left at its old 0.3s. The mark
+               and the row are one gesture; a mark that lands a fifth of a
+               second before the answer does reads as two separate things
+               happening. Same open/close asymmetry for the same reason. */
+            transition={
+              reduced ? { duration: 0 } : { duration: isOpen ? 0.52 : 0.34, ease: EASE }
+            }
             className={cn(
               "shrink-0 transition-colors duration-200",
               isOpen ? "text-bb-black" : "text-bb-grey-dark",
@@ -300,9 +306,14 @@ const FaqItem = React.forwardRef<
                 style={{
                   transform: isOpen ? "scaleY(0)" : "scaleY(1)",
                   transformOrigin: "center",
+                  /* Durations mirror the motion.span that wraps this, so the
+                     plus collapses into a minus at exactly the rate the whole
+                     mark turns. A CSS custom property cannot be read by the
+                     JS tween above, so the curve is restated here — the two
+                     must be changed together. */
                   transition: reduced
                     ? "none"
-                    : "transform 300ms cubic-bezier(0.22,1,0.36,1)",
+                    : `transform ${isOpen ? 520 : 340}ms cubic-bezier(0.22,1,0.36,1)`,
                 }}
               />
             </svg>
@@ -311,18 +322,63 @@ const FaqItem = React.forwardRef<
       </h3>
 
       {/* Always mounted — see the header. `inert` keeps a closed answer out of
-          the accessibility tree while leaving it in the HTML. */}
+          the accessibility tree while leaving it in the HTML.
+
+          ── Why the height and the words animate SEPARATELY ──────────────────
+          This used to be one tween: `{ height: auto, opacity: 1 }` at 0.32s.
+          Both properties therefore reached full value at the same instant,
+          which means the answer was fading up while its own box was still
+          growing underneath it. The eye reads that as a snap — the text is
+          legible long before the row has finished moving, so the motion looks
+          like it arrives late rather than like one gesture.
+
+          Split, it becomes a sequence: the row opens, and the words follow it
+          in. The panel takes 0.52s on the site's easing curve; the paragraph
+          waits 0.14s and then fades over 0.42s with 8px of travel, so it
+          settles just after the height does.
+
+          Closing is deliberately NOT the mirror of opening. It is 0.16s with
+          no delay, because a reader who has decided to close a row wants it
+          gone, and a slow, graceful collapse reads as the interface being
+          reluctant. Open slowly, close briskly.
+
+          The curve is unchanged — EASE, the site's expo-out — because the
+          request was for smoother, not for a different character, and a
+          bounce or an elastic here would fight every other reveal on the
+          page. */}
       <motion.div
         id={panelId}
         inert={!isOpen}
         initial={false}
-        animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-        transition={reduced ? { duration: 0 } : { duration: 0.32, ease: EASE }}
+        animate={{ height: isOpen ? "auto" : 0 }}
+        transition={
+          reduced ? { duration: 0 } : { duration: isOpen ? 0.52 : 0.34, ease: EASE }
+        }
         style={{ overflow: "hidden" }}
       >
-        <p className="max-w-[64ch] pb-7 pr-8 text-[14px] leading-[1.75] text-bb-grey-dark">
+        <motion.p
+          initial={false}
+          animate={{ opacity: isOpen ? 1 : 0, y: isOpen ? 0 : 8 }}
+          transition={
+            reduced
+              ? { duration: 0 }
+              : {
+                  opacity: {
+                    duration: isOpen ? 0.42 : 0.16,
+                    delay: isOpen ? 0.14 : 0,
+                    ease: EASE,
+                  },
+                  y: {
+                    duration: isOpen ? 0.52 : 0.16,
+                    delay: isOpen ? 0.1 : 0,
+                    ease: EASE,
+                  },
+                }
+          }
+          className="max-w-[64ch] pb-7 pr-8 text-[14px] leading-[1.75] text-bb-grey-dark"
+        >
           {answer}
-        </p>
+        </motion.p>
       </motion.div>
     </div>
   );
