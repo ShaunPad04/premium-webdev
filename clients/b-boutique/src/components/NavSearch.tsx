@@ -5,7 +5,7 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { formatPrice, products } from "@/lib/catalogue";
 import { SEARCH_SUGGESTIONS, searchProducts } from "@/lib/search";
-import { shop, phoneDisplay } from "@/lib/shop";
+import { shop } from "@/lib/shop";
 import { ImageSlot, type Tone } from "./ImageSlot";
 
 /* Search, in the header, without leaving the page.
@@ -223,9 +223,13 @@ export function NavSearch() {
                     answer in one sentence what a filter cannot answer at
                     all — and the number is the confirmed one, from shop.ts. */}
                 <p className="navsearch-empty-help">
-                  It may still be in the shop. Ring{" "}
-                  <a href={`tel:${shop.phone}`} className="navsearch-tel">
-                    {phoneDisplay}
+                  {/* Email, not a phone. The number came off the site at the
+                      client's instruction on 2026-09-21, so this is the only
+                      route left — which makes it more important, not less,
+                      that it is here rather than behind the contact form. */}
+                  It may still be in the shop. Email{" "}
+                  <a href={`mailto:${shop.email}`} className="navsearch-tel">
+                    {shop.email}
                   </a>{" "}
                   and ask.
                 </p>

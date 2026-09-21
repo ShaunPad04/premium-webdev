@@ -109,9 +109,18 @@ export function OwnerCard() {
                 </svg>
               </Link>
 
+              {/* Her words, verbatim, one paragraph per entry. Not a
+                  <blockquote>: this is the shop describing itself in the
+                  first person on its own site, not a quotation from
+                  somewhere else, and marking it up as a quote would imply a
+                  source to attribute. */}
               <div className="owner-bio">
-                {owner.bio ? (
-                  <p className="owner-bio-text">{owner.bio}</p>
+                {owner.bio.length ? (
+                  owner.bio.map((para) => (
+                    <p key={para.slice(0, 32)} className="owner-bio-text">
+                      {para}
+                    </p>
+                  ))
                 ) : (
                   <p className="owner-bio-ask">
                     A line or two from Hayley about the shop — in her own
@@ -125,8 +134,9 @@ export function OwnerCard() {
 
         {ownerPending ? (
           <p className="owner-pending">
-            [CLIENT INPUT REQUIRED — a photograph of Hayley and a sentence in
-            her own words. Neither is invented; see `owner` in lib/shop.ts]
+            [CLIENT INPUT REQUIRED — a photograph of Hayley. Her words have
+            arrived and are printed above, verbatim; the frame is still
+            empty. Nothing here is invented; see `owner` in lib/shop.ts]
           </p>
         ) : null}
       </div>

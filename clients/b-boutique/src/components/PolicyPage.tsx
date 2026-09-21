@@ -5,7 +5,7 @@ import { PageMasthead } from "./PageMasthead";
 import { Visit } from "./Visit";
 import type { Policy } from "@/lib/policies";
 import { policyIsIncomplete } from "@/lib/policies";
-import { phoneDisplay, shop } from "@/lib/shop";
+import { shop } from "@/lib/shop";
 
 /* Delivery, Returns, Terms of sale and Privacy all share this page.
  *
@@ -103,8 +103,8 @@ export function PolicyPage({ policy }: { policy: Policy }) {
 
             <p className="pol-close">
               Anything here you are not sure about, ring the shop on{" "}
-              <a href={`tel:${shop.phone}`} className="cf-fail-link">
-                {phoneDisplay}
+              <a href={`mailto:${shop.email}`} className="cf-fail-link">
+                {shop.email}
               </a>
               . It is one room and one telephone; you will speak to somebody
               who can actually answer.

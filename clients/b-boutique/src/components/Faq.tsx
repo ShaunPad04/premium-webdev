@@ -1,6 +1,6 @@
 import { FaqSection } from "@/components/ui/faq-section";
 import { faq, faqTemporary } from "@/lib/faq";
-import { phoneDisplay, shop } from "@/lib/shop";
+import { shop } from "@/lib/shop";
 
 /* The practical questions.
  *
@@ -51,13 +51,15 @@ export function Faq() {
       defaultOpen={0}
       contactInfo={{
         title: "Anything we have not covered?",
+        /* Email only since 2026-09-21 — the client asked for phone numbers
+           to come off the site, so the primary action here is the address
+           rather than a number. The copy changed with it: "ring the shop
+           and someone will actually pick up" is a promise the site can no
+           longer keep. */
         description:
-          "Ring the shop and someone will actually pick up, or send an email and we will come back to you.",
-        buttonText: phoneDisplay,
-        href: `tel:${shop.phone.replace(/\s+/g, "")}`,
-        secondary: shop.email
-          ? { label: shop.email, href: `mailto:${shop.email}` }
-          : undefined,
+          "Send an email and we will come back to you, or come into the shop and ask.",
+        buttonText: shop.email,
+        href: `mailto:${shop.email}`,
       }}
     />
   );

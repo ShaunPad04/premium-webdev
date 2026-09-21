@@ -301,7 +301,30 @@ export function CornerMenu() {
                             is the most editorial surface on the site, not a
                             utility list. Caps also cost the descenders and
                             ascenders a Didone is built around. */}
-                        <span className="display text-[1.5rem] font-normal leading-[1.08] tracking-[-0.02em] sm:text-[1.7rem]">
+                        {/* Bolder, 2026-09-21 — the second correction to this
+                            line, and the client is right both times.
+                            It was 29px extrabold grotesque CAPS, which read
+                            as streetwear on a womenswear boutique. I swung
+                            to Bodoni 400 sentence case and overshot: correct
+                            register, no presence, and the primary navigation
+                            ended up quieter than the body copy under it.
+                            This is the middle position. Still Bodoni, still
+                            sentence case — but larger, and at a REAL 600 off
+                            the variable axis. `.display` pins font-weight 400
+                            with the note "never a faked bold Bodoni", and
+                            that note is about SYNTHETIC bold, which a browser
+                            invents by smearing a 400 face and which destroys
+                            the thick/thin stress. This is not that: no weight
+                            is pinned in layout.tsx, so next/font loads Bodoni
+                            Moda variable across 400-900 and 600 is a drawn
+                            weight that costs no extra download. On a Didone a
+                            heavier axis widens the stems while the hairlines
+                            hold, so the contrast that is the whole reason for
+                            the face gets stronger, not weaker.
+                            Tailwind's font-semibold beats the base-layer
+                            .display rule, which is exactly why CLAUDE.md
+                            insists .display stays in @layer base. */}
+                        <span className="display text-[1.75rem] font-semibold leading-[1.04] tracking-[-0.025em] sm:text-[2rem]">
                           {item.label}
                         </span>
                         <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"

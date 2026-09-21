@@ -25,7 +25,25 @@ export const shop = {
 
      Never guess either value. A wrong number on a real shop's site sends
      customers to a stranger. */
-  phone: "07305534342" as string,
+  /* ── REMOVED AT THE CLIENT'S INSTRUCTION, 2026-09-21 ─────────────────
+     He asked for phone numbers to come off the website. The number itself
+     is NOT deleted from this comment's history — it was client-confirmed on
+     2026-09-06 and is 07305534342 — because removing it from the site is a
+     display decision and may be reversed, while re-confirming a number is a
+     conversation with the client.
+
+     Emptying it HERE rather than editing fourteen files is the point: every
+     phone on the site derived from this field, so one change removes all of
+     them, and restoring it is one change too.
+
+     CONSEQUENCE, and it is a real one: email is now the only way to reach
+     the shop from the website. bboutiqueclee@gmail.com is client-confirmed
+     and shown, so there is still a route — but locked decision 11 said the
+     contact form must fail with "a plainly worded failure plus the phone
+     number", and that is no longer possible. The form now fails to the
+     email address instead. The decision table is updated in the same pass
+     rather than left to contradict this file. */
+  phone: "" as string,
   email: "bboutiquecleethorpes@gmail.com" as string,
   street: "18 Sea View Street",
   town: "Cleethorpes",
@@ -77,22 +95,41 @@ export const shop = {
  *  labelled with her name on her own shop's website. The client said he
  *  would send one.
  *
- *  Do NOT write `bio`. A sentence about how she buys, how long she has been
- *  trading or what she cares about is a biography of a real person, and the
- *  plausible version is the dangerous one — nothing about well-written prose
- *  signals that nobody said it. Her words or nothing. */
+ *  ── BIO: SUPPLIED BY THE CLIENT 2026-09-21 ─────────────────────────────
+ *  Three paragraphs, in her own words, pasted verbatim. This file previously
+ *  said "Do NOT write `bio` … her words or nothing", and that rule was not
+ *  broken — it was answered. Nothing here was composed, condensed or
+ *  smoothed out, because the moment prose about a real person is edited for
+ *  rhythm it stops being a quotation and starts being a claim.
+ *
+ *  Note what the copy does and does not assert, since a future edit could
+ *  quietly change it: "stylish, affordable", "new and exciting stock",
+ *  "a warm welcome and friendly service" are the shop describing itself,
+ *  which is hers to say. There is no price, no size range, no brand, no
+ *  founding year and no award in it. Do not add one.
+ *
+ *  `portrait` is STILL EMPTY and must stay that way until her photograph is
+ *  actually in the repository. Do NOT put a stock photograph in it. The card
+ *  presents whatever is in that frame as a photograph of Hayley Brown; a
+ *  stranger's face from an image CDN is not a placeholder, it is a picture of
+ *  somebody else labelled with her name on her own shop's website. */
 export const owner = {
   firstName: "Hayley",
   lastName: "Brown",
   role: "Shop Owner",
-  /** ImageSlot key or public path. EMPTY — awaiting the client's photograph. */
+  /** Public path under /img. EMPTY — awaiting the client's photograph. */
   portrait: "" as string,
-  /** EMPTY — awaiting the client's own words. Never write one. */
-  bio: "" as string,
+  /** Her own words, verbatim, one entry per paragraph. */
+  bio: [
+    "We pride ourselves on bringing our customers something a little different, with carefully selected pieces that are stylish, affordable and perfect for treating yourself or finding that special gift.",
+    "At B Boutique, we believe shopping should be personal and enjoyable. Whether you're looking for a new outfit, the perfect accessory, a unique gift or something beautiful for your home, you'll always receive a warm welcome and friendly service.",
+    "As a small local business, our customers are at the heart of everything we do. We regularly introduce new and exciting stock, so there's always something different to discover.",
+  ] as readonly string[],
 } as const;
 
-/** True while the owner card is still missing something only she can supply. */
-export const ownerPending = !owner.portrait || !owner.bio;
+/** True while the owner card is still missing something only she can supply.
+ *  The bio has landed; the photograph has not. */
+export const ownerPending = !owner.portrait || owner.bio.length === 0;
 
 export const addressLines = [shop.street, shop.town, shop.postcode];
 

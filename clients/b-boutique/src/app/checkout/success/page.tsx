@@ -6,7 +6,7 @@ import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { ClearBag } from "@/components/ClearBag";
-import { phoneDisplay, shop } from "@/lib/shop";
+import { shop } from "@/lib/shop";
 import { checkoutStatusByReference, sumupIsConfigured } from "@/lib/sumup";
 
 export const metadata: Metadata = {
@@ -109,8 +109,8 @@ export default async function CheckoutSuccessPage({
 
             <p className="page-body">
               {paid ? "Any questions, ring" : "Ring"} the shop on{" "}
-              <a href={`tel:${shop.phone}`} className="cf-fail-link">
-                {phoneDisplay}
+              <a href={`mailto:${shop.email}`} className="cf-fail-link">
+                {shop.email}
               </a>
               {ref ? <> and quote {ref}.</> : "."}
             </p>

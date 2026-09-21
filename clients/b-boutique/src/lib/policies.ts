@@ -1,4 +1,4 @@
-import { addressLines, phoneDisplay, shop } from "./shop";
+import { addressLines, shop } from "./shop";
 
 /** Delivery and returns.
  *
@@ -134,7 +134,7 @@ const delivery: Policy = {
       kind: "derived",
       body: [
         "Royal Mail.",
-        `If your order has not turned up when you expected it, ring the shop on ${phoneDisplay} and we will tell you when it went and how it was sent.`,
+        `If your order has not turned up when you expected it, email ${shop.email} and we will tell you when it went and how it was sent.`,
       ],
     },
     {
@@ -151,7 +151,7 @@ const delivery: Policy = {
       heading: "If something goes missing",
       kind: "derived",
       body: [
-        `Ring the shop on ${phoneDisplay} and quote the reference from your order confirmation. It is one room and one rail — somebody will know exactly which parcel is yours.`,
+        `Email ${shop.email} and quote the reference from your order confirmation. It is one room and one rail — somebody will know exactly which parcel is yours.`,
       ],
     },
   ],
@@ -212,7 +212,7 @@ const returns: Policy = {
       kind: "derived",
       body: [
         `${addressLines.join(", ")}.`,
-        `Ring ${phoneDisplay} before you post anything, so we know to expect it.`,
+        `Email ${shop.email} before you post anything, so we know to expect it.`,
       ],
     },
     {
@@ -256,7 +256,7 @@ const terms: Policy = {
       heading: "Who you are buying from",
       kind: "derived",
       body: [
-        `${shop.name}, ${addressLines.join(", ")}. Telephone ${phoneDisplay}.`,
+        `${shop.name}, ${addressLines.join(", ")}. Email ${shop.email}.`,
         "One shop, on one street. There is no warehouse and no second branch — the pieces on this website are the pieces on the rail.",
       ],
     },
@@ -265,7 +265,7 @@ const terms: Policy = {
       kind: "derived",
       body: [
         "B Boutique is a sole trader business trading as B Boutique Cleethorpes. There is no company number because it is not a limited company \u2014 which is entirely normal for a shop this size.",
-        `The trading address is ${addressLines.join(", ")}, and the telephone number is ${phoneDisplay}.`,
+        `The trading address is ${addressLines.join(", ")}, and the email address is ${shop.email}.`,
       ],
     },
     {
@@ -321,7 +321,7 @@ const terms: Policy = {
       heading: "If something goes wrong",
       kind: "derived",
       body: [
-        `Ring the shop on ${phoneDisplay}. A conversation settles almost everything, and it is quicker than writing.`,
+        `Email ${shop.email}, or come into the shop and ask. A conversation settles almost everything.`,
       ],
     },
   ],
@@ -423,7 +423,7 @@ const privacy: Policy = {
       kind: "derived",
       body: [
         `B Boutique Cleethorpes, a sole trader business at ${addressLines.join(", ")}, is responsible for the information on this page.`,
-        `Email ${shop.email} or ring ${phoneDisplay}. Either reaches the same person.`,
+        `Email ${shop.email}. It reaches the shop directly.`,
       ],
     },
     {
@@ -468,7 +468,16 @@ export const outstandingPolicySlots = policies.reduce(
 export const trader = {
   name: shop.name,
   address: addressLines,
-  phone: phoneDisplay,
+  /* Emptied 2026-09-21 at the client's instruction — see shop.ts. Kept as a
+     field rather than deleted so the trader record keeps its shape and the
+     number can be restored in one place.
+     NOTE FOR LAUNCH: the Consumer Contracts Regulations require a trader to
+     give a geographical address and, where available, a telephone number and
+     email. The address and the email are both published, so there is a route
+     to the trader; removing the phone is the client's commercial choice and
+     not a developer's. Worth one line of legal review with the rest of the
+     statutory text. */
+  phone: shop.phone,
   /** CONFIRMED BY THE CLIENT 2026-09-20: a sole trader, trading as
    *  "B Boutique Cleethorpes". Not a limited company, so there is no
    *  company number and no registered office to display — the trading

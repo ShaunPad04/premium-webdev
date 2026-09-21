@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import type { Product } from "@/lib/catalogue";
 import { useCart } from "@/lib/useCart";
-import { phoneDisplay, shop } from "@/lib/shop";
+import { shop } from "@/lib/shop";
 import { colourIsKnown, coloursFor, variantId } from "@/lib/variants";
 
 /* Colour, size, then add.
@@ -185,8 +185,8 @@ export function AddToBag({ product }: { product: Product }) {
           {restockable
             ? "This one can be re-ordered — call the shop on "
             : "Call the shop on "}
-          <a href={`tel:${shop.phone}`} className="atb-out-tel">
-            {phoneDisplay}
+          <a href={`mailto:${shop.email}`} className="atb-out-tel">
+            {shop.email}
           </a>
           {restockable ? "." : " to ask what else has come in."}
         </p>

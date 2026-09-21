@@ -6,7 +6,7 @@ import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { ContactForm } from "@/components/ContactForm";
 import { Visit } from "@/components/Visit";
-import { addressLines, openingPhrase, phoneDisplay, shop } from "@/lib/shop";
+import { addressLines, openingPhrase, shop } from "@/lib/shop";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -32,7 +32,6 @@ export const metadata: Metadata = {
  * No email address is printed anywhere on this page. shop.email is empty and
  * nothing may be guessed into it. */
 export default function ContactPage() {
-  const tel = shop.phone.replace(/\s+/g, "");
 
   return (
     <>
@@ -45,13 +44,17 @@ export default function ContactPage() {
           /* Deliberately does not promise where the form goes. It has no
              inbox configured yet, and a masthead claiming otherwise would be
              the exact thing the form itself is built not to do. */
-          lede="The quickest way to reach the shop is to ring it. If it is easier to write, there is a form below."
+          lede="Email the shop, or come in and ask. If it is easier to write, there is a form below."
           aside={
-            shop.phone ? (
+            /* Was the phone number until 2026-09-21, when the client asked
+               for numbers to come off the site. Email is now the only route,
+               which is why it is promoted to the masthead rather than left
+               to the form below it. */
+            shop.email ? (
               <p className="pm-phone">
-                <span className="pm-phone-label">Call the shop</span>
-                <a href={`tel:${tel}`} className="pm-phone-number">
-                  {phoneDisplay}
+                <span className="pm-phone-label">Email the shop</span>
+                <a href={`mailto:${shop.email}`} className="pm-phone-number">
+                  {shop.email}
                 </a>
               </p>
             ) : null

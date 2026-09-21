@@ -144,7 +144,15 @@ export function NewInRail() {
      changes the loop's target velocity rather than tearing the loop down and
      rebuilding it. Restarting the effect is what made the stop instant. */
   const pausedRef = useRef(false);
-  pausedRef.current = hovered;
+  /* Written in an effect rather than during render. Assigning
+     `pausedRef.current = hovered` in the component body is a ref mutation
+     during render, which React's own lint rule rejects and which is unsafe
+     under concurrent rendering: a render that gets thrown away still leaves
+     the ref changed. An effect runs after the commit, so the ref only ever
+     reflects state that was actually painted. */
+  useEffect(() => {
+    pausedRef.current = hovered;
+  }, [hovered]);
 
   useEffect(() => {
     if (reduced || tabHidden || !inView) return;

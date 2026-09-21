@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Product } from "@/lib/catalogue";
 import { SEARCH_SUGGESTIONS, searchProducts } from "@/lib/search";
-import { phoneDisplay, shop } from "@/lib/shop";
+import { shop } from "@/lib/shop";
 import { ProductGrid } from "./ProductGrid";
 
 /* The shop's search field and the grid it filters.
@@ -41,8 +41,17 @@ export function ShopSearch({ items }: { items: Product[] }) {
      these results were never in the server HTML.
      Once, on mount — after that the field is the user's, and re-applying the
      URL would fight their typing. */
+  /* The disable below is on the setState line itself, and it is argued
+     rather than waved through. The rule is right in general and wrong here:
+     `?q=` lives on `window`, which does not exist during the server render,
+     so this cannot be lazy initial state without a hydration mismatch; and
+     the alternative the rule points at — useSearchParams — needs a Suspense
+     boundary on a statically rendered route whose fallback cannot itself
+     read the params. It runs once, on mount, so there is no cascading
+     render to avoid. */
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("q");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (q) setQuery(q);
   }, []);
 
@@ -267,8 +276,8 @@ export function ShopSearch({ items }: { items: Product[] }) {
           <p className="find-empty-body">
             Stock changes weekly and one room only holds so much. Try a
             category, or ring the shop on{" "}
-            <a className="find-empty-tel" href={`tel:${shop.phone}`}>
-              {phoneDisplay}
+            <a className="find-empty-tel" href={`mailto:${shop.email}`}>
+              {shop.email}
             </a>{" "}
             and ask what is in.
           </p>

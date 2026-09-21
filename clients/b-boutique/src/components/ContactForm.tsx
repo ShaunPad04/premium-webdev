@@ -2,7 +2,7 @@
 
 import { useId, useRef, useState } from "react";
 
-import { phoneDisplay, shop } from "@/lib/shop";
+import { shop } from "@/lib/shop";
 
 /* The contact form.
  *
@@ -225,12 +225,20 @@ export function ContactForm() {
         {status.kind === "failed" ? (
           <p className="cf-fail">
             {status.message}
-            {status.showPhone && shop.phone ? (
+            {/* Locked decision 11 said this failure must carry "a plainly
+                worded failure plus the phone number". The number came off the
+                site on 2026-09-21 at the client's instruction, so the fallback
+                is the email address — which matters MORE now, not less: if
+                this form is unconfigured and the message did not send, this
+                line is the only remaining way for that customer to reach the
+                shop. The rule the decision was protecting is untouched: the
+                form still never reports success without a send. */}
+            {status.showPhone && shop.email ? (
               <>
                 {" "}
-                Please call the shop on{" "}
-                <a href={`tel:${shop.phone.replace(/\s+/g, "")}`} className="cf-fail-link">
-                  {phoneDisplay}
+                Please email the shop at{" "}
+                <a href={`mailto:${shop.email}`} className="cf-fail-link">
+                  {shop.email}
                 </a>
                 .
               </>
