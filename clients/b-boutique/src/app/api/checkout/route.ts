@@ -163,6 +163,41 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    /* ── A placeholder price must never reach a payment ──────────────────
+     *
+     * Eight of the 32 pieces still have at least one colourway the client
+     * has not priced. `demo` is true for those, and until now NOTHING on the
+     * server looked at it: this route priced the bag straight out of the
+     * catalogue and posted `amount: totalP / 100` to SumUp. The invented
+     * figure would have been charged.
+     *
+     * The product page does already refuse — it prints "Price to confirm"
+     * and renders no Add to bag button at all, which is verified. That
+     * counts for nothing here, and this codebase has already written down
+     * why, about /stock: authorisation is checked on every request and never
+     * inferred from the UI hiding a control. Two ways past the page exist
+     * without anybody being malicious — a bag saved in localStorage while
+     * the piece was still priced, and a request typed by hand.
+     *
+     * Under the Consumer Protection from Unfair Trading Regulations a
+     * displayed price is what a customer is entitled to pay, and a price
+     * nobody agreed is one the shop would have to honour or refund.
+     *
+     * The only thing standing between this and a real card today is that
+     * NEXT_PUBLIC_SITE_URL is unset, and setting that one variable is the
+     * documented step that turns the shop on. It must not be the thing
+     * holding this back. */
+    if (product.demo) {
+      return Response.json(
+        {
+          ok: false,
+          code: "price_unconfirmed",
+          error: `${product.name} does not have a confirmed price yet, so it cannot be bought online. Please remove it from your bag — the shop can take it over the counter.`,
+        },
+        { status: 409 },
+      );
+    }
+
     subtotalP += product.priceP * qty;
     priced.push({
       name: product.name,
