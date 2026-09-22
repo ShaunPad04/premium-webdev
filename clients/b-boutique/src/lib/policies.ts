@@ -374,10 +374,16 @@ const privacy: Policy = {
       kind: "technical",
       body: [
         "What you put in your bag is saved on your own device and is not sent to us. Clear your browser data and it is gone; use a different phone and it was never there.",
-        "It only leaves your device when you press Checkout, and then only as a list of pieces and sizes so the payment can be worked out.",
+        "It only leaves your device when you press Checkout, and then as the list of pieces and sizes together with the delivery details you have just typed, so the order can be priced and posted.",
+        /* The delivery details are deliberately NOT saved beside the bag —
+           see the note in Bag.tsx. A list of garments surviving on a shared
+           or family computer is one thing; somebody's home address is
+           another. Worth stating, because it is a decision rather than an
+           accident and a customer cannot see it from outside. */
+        "Those delivery details are not saved on your device. If you close the page without buying, they are gone.",
       ],
       basis:
-        "Read from src/lib/useCart.tsx — the bag is stored in the browser's localStorage under one key.",
+        "Read from src/lib/useCart.tsx and src/components/Bag.tsx — the bag is stored in the browser's localStorage under one key; the delivery details are held in the page only until it closes.",
       basisLabel: "How we know",
     },
     {
@@ -394,22 +400,42 @@ const privacy: Policy = {
     {
       heading: "If you buy something",
       kind: "technical",
+      /* REWRITTEN 2026-09-22, and the old wording is worth recording because
+         it was true when it was written and stopped being true the same day
+         the shop learned to post a parcel.
+
+         It said: "Your name, address and card details are given to SumUp on
+         their own page and never come back to us." That was accurate while
+         the bag posted nothing but slugs, sizes, colours and quantities. The
+         moment the site started asking where to send the order, it became a
+         false statement to every visitor on a page whose whole claim is that
+         it describes the code rather than promising anything.
+
+         This is exactly the expiry the `technical` kind was warned about.
+         Anybody adding a field to the checkout has to come back here. */
       body: [
-        "The pieces and sizes in your bag go to our server, which prices them and asks SumUp to set up a payment. Your name, address and card details are given to SumUp on their own page and never come back to us.",
+        "To post your order we ask for your name, email address, delivery address and postcode. They are stored on this website with your order so the shop knows what to send and where, and so there is a record of what you bought.",
+        "Your card details are different: they are typed on SumUp's own payment page and never reach this website at all.",
+        "Your email address is used to send you a confirmation of the order, and to reply if the shop needs to contact you about it. It is not added to a mailing list — there is no mailing list.",
       ],
       basis:
-        "Read from src/app/api/checkout/route.ts — the request carries slugs, sizes and quantities, and no customer detail.",
+        "Read from src/app/api/checkout/route.ts and src/lib/orders.ts — the request carries the pieces plus name, email, address and postcode, which are written to the orders table. No card detail is sent to or stored by this site.",
       basisLabel: "How we know",
     },
     {
-      heading: "The three companies involved",
+      /* Was "The three companies involved" until 2026-09-22. Neon is the
+         fourth and it is not a footnote: it is the one that actually holds
+         a customer's name and home address, because that is where an order
+         is written. A page listing every processor except the one storing
+         the personal data would be the worst version of this section. */
+      heading: "The companies involved",
       kind: "technical",
       body: [
-        "Vercel hosts the website and keeps ordinary server logs. SumUp takes the payment and holds whatever a payment needs. Resend delivers the contact form's email to the shop. Each has its own privacy notice.",
+        "Vercel hosts the website and keeps ordinary server logs. Neon stores the shop's database, which is where your order and delivery address are kept. SumUp takes the payment and holds whatever a payment needs. Resend delivers email — your order confirmation, and messages from the contact form. Each has its own privacy notice.",
         "Nobody else receives anything. Your details are not sold, shared for advertising, or passed to a mailing list — there is no mailing list.",
       ],
       basis:
-        "Read from the project's dependencies and route handlers: no other third party is contacted by this site.",
+        "Read from the project's dependencies and route handlers: Vercel, Neon (@neondatabase/serverless), SumUp and Resend. No other third party is contacted by this site.",
       basisLabel: "How we know",
     },
     {
