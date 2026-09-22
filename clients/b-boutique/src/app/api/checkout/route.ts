@@ -2,6 +2,12 @@ import type { NextRequest } from "next/server";
 
 import { deliveryFor, productBySlug } from "@/lib/catalogue";
 import { countsFor } from "@/lib/stock";
+import {
+  createPendingOrder,
+  releaseOrder,
+  toOrderLine,
+  type CustomerDetails,
+} from "@/lib/orders";
 import { coloursFor, variantId } from "@/lib/variants";
 
 /* Start a payment.
@@ -52,19 +58,30 @@ import { coloursFor, variantId } from "@/lib/variants";
  * authenticated, authoritative, and cannot be forged by a customer typing a
  * URL. See lib/sumup.ts.
  *
- * WHAT IS STILL MISSING BEFORE THIS CAN TAKE REAL MONEY, and none of it is
- * something a developer can invent:
- *   - Real prices. Everything in lib/catalogue.ts is made up.
- *   - A RESERVATION. Stock is now CHECKED here (see below) but not held: two
- *     people can pass the check a second apart and both be sent to pay for
- *     the same one-off piece. Nothing decrements on payment either — the
- *     count only moves when somebody taps it in /stock. Closing this properly
- *     means reserving the variant before the redirect and releasing it if the
- *     payment is abandoned, which needs the order record below.
- *   - An order record. Nothing is written down, so nothing can be picked,
- *     packed, refunded or audited. That needs somewhere to store it.
- *   - Delivery, returns, terms and a privacy notice — legally required for
- *     distance selling in the UK, including the 14-day cancellation right.
+ ── THE ORDER, AND THE RESERVATION ───────────────────────────────────────
+ * Both were missing until 2026-09-22 and both are here now, in lib/orders.ts.
+ *
+ * An order is written BEFORE the customer is sent to pay, as `pending`, and
+ * writing it takes the pieces off the shelf. That ordering is not arbitrary:
+ * SumUp publishes no payment webhook, so the only authoritative confirmation
+ * is the success page asking SumUp on the way back — and if the record were
+ * only written there, every customer who paid and closed the tab would be a
+ * payment with no record and nothing to pack.
+ *
+ * Holding the stock at this moment is also what closes the race that the
+ * stock check below cannot: two people a second apart could both pass the
+ * check and both be sent to pay for the same one-off piece. The reservation
+ * is a decrement through `adjust`, which is one atomic statement with a CHECK
+ * constraint, so the second one is refused by the database rather than by
+ * timing.
+ *
+ * An abandoned basket therefore holds a garment off the shelf until it is
+ * released. `stalePendingOrders` and the sweep that reads it are what put it
+ * back.
+ *
+ * WHAT IS STILL MISSING BEFORE THIS CAN TAKE REAL MONEY:
+ *   - Real prices for 13 of the 54 colourways. The guard below refuses them.
+ *   - The SumUp round trip has never been run against real keys.
  */
 
 type Line = {
@@ -73,6 +90,36 @@ type Line = {
   colour?: unknown;
   qty?: unknown;
 };
+
+/** The same four checks the bag makes, applied again where it counts.
+ *
+ *  Thin on purpose. British addresses are genuinely strange — "Flat 2, above
+ *  the bakery" is a real address — and a regex tidy enough to reject that
+ *  loses a sale to look neat. The one outcome that must not happen is a
+ *  payment taken with no way to reach the customer or post the parcel, and
+ *  these four checks are exactly that and nothing more. */
+function readCustomer(
+  raw: unknown,
+): { ok: true; value: CustomerDetails } | { ok: false; error: string } {
+  const c = (raw ?? {}) as Record<string, unknown>;
+  const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+
+  const value: CustomerDetails = {
+    name: str(c.name).slice(0, 100),
+    email: str(c.email).slice(0, 200),
+    address: str(c.address).slice(0, 500),
+    postcode: str(c.postcode).slice(0, 12),
+  };
+
+  if (value.name.length < 2) return { ok: false, error: "Please give the name the parcel goes to." };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.email))
+    return { ok: false, error: "Please give an email address we can send the confirmation to." };
+  if (value.address.length < 10)
+    return { ok: false, error: "Please give the full address, including the house number and street." };
+  if (value.postcode.length < 5) return { ok: false, error: "Please give the postcode." };
+
+  return { ok: true, value };
+}
 
 /** The piece as a customer would say it back: name, size, colour — and only
  *  the parts that exist. "One size" and a blank colour say nothing. */
@@ -99,9 +146,9 @@ const MAX_LINES = 25;
 const MAX_QTY = 6;
 
 export async function POST(request: NextRequest) {
-  let body: { lines?: unknown };
+  let body: { lines?: unknown; customer?: unknown };
   try {
-    body = (await request.json()) as { lines?: unknown };
+    body = (await request.json()) as { lines?: unknown; customer?: unknown };
   } catch {
     return Response.json(
       { ok: false, error: "Could not read that request." },
@@ -116,9 +163,19 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: false, error: "That is too many lines." }, { status: 400 });
   }
 
+  /* Checked BEFORE the bag is priced and long before anything is reserved.
+     A payment taken with no name and no address is money the shop cannot
+     turn into a parcel, and the bag's own copy of these checks is a
+     courtesy — anything a browser validates, a browser can skip. */
+  const customer = readCustomer(body.customer);
+  if (!customer.ok) {
+    return Response.json({ ok: false, error: customer.error }, { status: 400 });
+  }
+
   /* Price it here, from here. */
   let subtotalP = 0;
   const priced: {
+    slug: string;
     name: string;
     size: string;
     colour: string;
@@ -200,6 +257,7 @@ export async function POST(request: NextRequest) {
 
     subtotalP += product.priceP * qty;
     priced.push({
+      slug,
       name: product.name,
       size,
       colour,
@@ -293,6 +351,53 @@ export async function POST(request: NextRequest) {
      is no order store yet — but enough to find the payment in SumUp. */
   const reference = `BB-${Date.now().toString(36).toUpperCase()}`;
 
+  /* Write it down and hold the stock, BEFORE the customer leaves for SumUp.
+     See the note at the top: a record written on the way back is a record
+     that never exists for anybody who pays and closes the tab, and a
+     reservation taken after payment is not a reservation at all. */
+  const order = await createPendingOrder({
+    reference,
+    customer: customer.value,
+    lines: priced.map((l) =>
+      toOrderLine({
+        slug: l.slug,
+        name: l.name,
+        size: l.size,
+        colour: l.colour,
+        qty: l.qty,
+        priceP: l.priceP,
+        describe: describe(l),
+      }),
+    ),
+    subtotalP,
+    deliveryP: deliveryFor(subtotalP),
+    totalP,
+  });
+
+  if (!order.ok) {
+    if (order.code === "sold_out") {
+      /* Somebody else got there between the stock check above and this
+         moment. That window is exactly what the reservation exists to close,
+         and this is it closing. */
+      return Response.json(
+        {
+          ok: false,
+          code: "out_of_stock",
+          error: `${order.describe} has just sold. Please remove it from your bag.`,
+        },
+        { status: 409 },
+      );
+    }
+    /* No database. The stock check above already fails closed for the same
+       reason, and taking a payment we cannot write down is worse than not
+       taking it. */
+    console.error("checkout: could not write the order", order.code);
+    return Response.json(
+      { ok: false, error: "Checkout could not be started just now." },
+      { status: 503 },
+    );
+  }
+
   try {
     const res = await fetch("https://api.sumup.com/v0.1/checkouts", {
       method: "POST",
@@ -326,6 +431,10 @@ export async function POST(request: NextRequest) {
       /* Log the provider's reason for whoever runs the shop; never show it to
          the customer, and never log the key or the card. */
       console.error("checkout: SumUp rejected", res.status, await res.text());
+      /* Put the garment straight back. The sweep would get to it in half an
+         hour, but a piece held off the shelf because a payment provider said
+         no is half an hour of a one-off coat nobody can buy. */
+      await releaseOrder(reference, "failed", "payment provider refused the checkout");
       return Response.json(
         { ok: false, error: "Checkout could not be started just now." },
         { status: 502 },
@@ -340,6 +449,7 @@ export async function POST(request: NextRequest) {
     const url = checkout.hosted_checkout_url;
     if (!url) {
       console.error("checkout: SumUp returned no hosted_checkout_url", checkout.id);
+      await releaseOrder(reference, "failed", "no hosted checkout url returned");
       return Response.json(
         { ok: false, error: "Checkout could not be started just now." },
         { status: 502 },
@@ -349,6 +459,9 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: true, url, reference });
   } catch (err) {
     console.error("checkout: threw", err);
+    /* Best effort. If this release fails too the sweep still picks the order
+       up, which is why the sweep exists rather than being a nicety. */
+    await releaseOrder(reference, "failed", "checkout threw").catch(() => {});
     return Response.json(
       { ok: false, error: "Checkout could not be started just now." },
       { status: 502 },

@@ -6432,3 +6432,49 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
     animation-delay: 0s !important;
   }
 }
+
+/* ── Where the parcel goes ────────────────────────────────────────────────
+ *
+ * Reuses the contact form's field system (`.cf-field`, `.cf-label`,
+ * `.cf-input`) rather than growing a second one. Only the things that are
+ * genuinely different about a delivery address live here: the heading that
+ * separates it from the bag above it, the hints under two of the fields, and
+ * a postcode box that is not full width because a postcode is eight
+ * characters and a full-width box for eight characters invites somebody to
+ * put their whole address in it.
+ */
+.dd {
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid var(--bb-light-border);
+}
+
+.dd-heading {
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-size: clamp(19px, 2vw, 24px);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.dd-note {
+  margin-top: 6px;
+  font-size: 13px;
+  /* The same alpha as .prod-price, which axe already cleared at this size on
+     paper. Not lighter: this is the sentence that stops somebody in Dublin
+     typing an address the shop cannot post to. */
+  color: rgba(26, 20, 22, 0.72);
+}
+
+.dd .cf-field { margin-top: 18px; }
+
+.dd-hint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(26, 20, 22, 0.72);
+}
+
+/* A postcode is eight characters. A box the width of the page tells somebody
+   it wants more than that. */
+.dd-postcode { max-width: 12ch; }
+
+.dd .cf-textarea { min-height: 96px; }

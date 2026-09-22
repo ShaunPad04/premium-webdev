@@ -11,6 +11,12 @@ import {
 } from "@/lib/catalogue";
 import { FreeDelivery } from "@/components/FreeDelivery";
 import { ProductPhoto } from "@/components/ProductPhoto";
+import {
+  DeliveryDetails,
+  EMPTY_DETAILS,
+  detailsProblem,
+  type Details,
+} from "@/components/DeliveryDetails";
 import { useCart } from "@/lib/useCart";
 
 /* The bag, and the button that starts a payment.
@@ -33,6 +39,11 @@ export function Bag() {
     useCart();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /* Deliberately NOT persisted to localStorage alongside the bag. The bag is
+     a list of garments; this is somebody's name and home address, and keeping
+     it in the browser of a shared or family computer is a different kind of
+     thing entirely. It lives for one checkout and goes when the tab does. */
+  const [details, setDetails] = useState<Details>(EMPTY_DETAILS);
 
   /* Lines on their way out.
    *
@@ -76,6 +87,15 @@ export function Bag() {
 
   async function checkout() {
     if (busy) return;
+
+    /* Checked here so somebody is told before the button does anything, and
+       checked again on the server because this one can be skipped. */
+    const problem = detailsProblem(details);
+    if (problem) {
+      setError(problem);
+      return;
+    }
+
     setBusy(true);
     setError(null);
     try {
@@ -89,6 +109,12 @@ export function Bag() {
             colour: l.colour,
             qty: l.qty,
           })),
+          customer: {
+            name: details.name.trim(),
+            email: details.email.trim(),
+            address: details.address.trim(),
+            postcode: details.postcode.trim(),
+          },
         }),
       });
       const data = (await res.json().catch(() => ({}))) as {
@@ -233,6 +259,10 @@ export function Bag() {
             the first `<button` in the file. That is what it looked like:
             a progress bar wedged into the middle of a product row. */}
         <FreeDelivery subtotalP={subtotalP} />
+
+        {/* Above the button, because it has to be filled in before the button
+            means anything. */}
+        <DeliveryDetails value={details} onChange={setDetails} disabled={busy} />
 
         <button
           type="button"
