@@ -109,6 +109,9 @@ function readCustomer(
     email: str(c.email).slice(0, 200),
     address: str(c.address).slice(0, 500),
     postcode: str(c.postcode).slice(0, 12),
+    /* Optional. The same rule as DeliveryDetails' phoneProblem, restated
+       here because a browser can skip its own check. */
+    phone: str(c.phone).slice(0, 20),
   };
 
   if (value.name.length < 2) return { ok: false, error: "Please give the name the parcel goes to." };
@@ -117,6 +120,11 @@ function readCustomer(
   if (value.address.length < 10)
     return { ok: false, error: "Please give the full address, including the house number and street." };
   if (value.postcode.length < 5) return { ok: false, error: "Please give the postcode." };
+  if (value.phone) {
+    const digits = value.phone.replace(/\D/g, "").length;
+    if (!/^[0-9+()\-\s]+$/.test(value.phone) || digits < 10 || digits > 15)
+      return { ok: false, error: "That phone number does not look complete — check it, or leave it blank." };
+  }
 
   return { ok: true, value };
 }

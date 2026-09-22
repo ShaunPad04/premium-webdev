@@ -6572,6 +6572,20 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   user-select: text;
 }
 
+/* The customer's number, as a tap-to-call link. 44px tall like every other
+   control on this page: a mis-tap here rings a stranger. Underlined because
+   it is the one link on the card and must read as one without colour. */
+.ord-phone { margin: 8px 0 0; }
+.ord-phone a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 15px;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .ord-posted {
   margin-top: 12px;
   width: 100%;

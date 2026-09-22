@@ -95,6 +95,16 @@ export function OrdersPanel({ orders }: { orders: Order[] }) {
               {o.postcode}
             </address>
 
+            {/* A tel: link, because this screen is on her phone and the
+                reason the number exists is so she can ring from it. Only
+                when one was given — an empty "Phone:" row is a question she
+                would have to stop and answer. */}
+            {o.phone ? (
+              <p className="ord-phone">
+                <a href={`tel:${o.phone.replace(/[^0-9+]/g, "")}`}>{o.phone}</a>
+              </p>
+            ) : null}
+
             <button
               type="button"
               className="ord-posted"

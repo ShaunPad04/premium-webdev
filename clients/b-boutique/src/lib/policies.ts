@@ -308,16 +308,15 @@ const terms: Policy = {
       /* ANSWERED 2026-09-22: "Refund them straight away, then ring to
          apologise."
 
-         "Get in touch", not "ring", on purpose. Checkout collects a name,
-         email, address and postcode and NO phone number (DeliveryDetails),
-         so a page promising a phone call would be promising something the
-         shop has no number to make. Her intent — refund first, then a
-         personal apology — is kept whole; only the channel is left open.
-         If a phone field is ever added to checkout, this can say "ring". */
+         It said "get in touch" at first, because checkout collected no phone
+         number and a promised call would have had no number behind it. The
+         phone field was added the same day, at the client's request — but it
+         is OPTIONAL, so the page promises a call only to somebody who left a
+         number, and an email to everybody else. Her words, kept honest. */
       heading: "If a piece has already gone",
       kind: "derived",
       body: [
-        "Everything on this website is also on the rail in the shop, so very occasionally a piece sells over the counter just as it is bought online. If that happens to your order, we will refund you in full straight away, and then get in touch to apologise.",
+        "Everything on this website is also on the rail in the shop, so very occasionally a piece sells over the counter just as it is bought online. If that happens to your order, we will refund you in full straight away, and then ring you to apologise — or email you, if you did not leave a phone number.",
       ],
     },
     {
@@ -433,14 +432,20 @@ const privacy: Policy = {
          it describes the code rather than promising anything.
 
          This is exactly the expiry the `technical` kind was warned about.
-         Anybody adding a field to the checkout has to come back here. */
+         Anybody adding a field to the checkout has to come back here.
+
+         Came back here 2026-09-22 for the optional phone number. It is named
+         as optional and its one use is stated, because "we ask for your
+         phone number" with no purpose is the sentence that makes people
+         leave it blank — and the purpose is narrow and true. */
       body: [
         "To post your order we ask for your name, email address, delivery address and postcode. They are stored on this website with your order so the shop knows what to send and where, and so there is a record of what you bought.",
+        "You can also give a phone number. It is optional, stored with your order, and used only to ring you if there is a problem with it — never for marketing.",
         "Your card details are different: they are typed on SumUp's own payment page and never reach this website at all.",
         "Your email address is used to send you a confirmation of the order, and to reply if the shop needs to contact you about it. It is not added to a mailing list — there is no mailing list.",
       ],
       basis:
-        "Read from src/app/api/checkout/route.ts and src/lib/orders.ts — the request carries the pieces plus name, email, address and postcode, which are written to the orders table. No card detail is sent to or stored by this site.",
+        "Read from src/app/api/checkout/route.ts and src/lib/orders.ts — the request carries the pieces plus name, email, address, postcode and an optional phone number, which are written to the orders table. No card detail is sent to or stored by this site.",
       basisLabel: "How we know",
     },
     {

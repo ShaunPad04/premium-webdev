@@ -26,6 +26,18 @@ import { useId } from "react";
  * genuinely strange — loses a sale to be tidy. The one thing that must not
  * happen is a payment with no way to reach the customer, and that is what
  * these checks are for.
+ *
+ * ── The phone number is OPTIONAL, and why it exists at all ──────────────
+ * Added 2026-09-22. The client's answer to "what if a piece has already
+ * gone?" was "refund them straight away, then ring to apologise" — and
+ * checkout collected no number to ring. Optional rather than required
+ * because the email already guarantees a way to reach everybody; the phone
+ * is how she prefers to do it when she can. Royal Mail does not need it,
+ * and a required box costs every customer a step to serve a rare case.
+ *
+ * If one is given it must hold 10 to 15 digits, with spaces, +, brackets and
+ * dashes allowed around them. That accepts 07… and +44 7… and rejects the
+ * number with a digit missing, which is the typo that actually happens.
  */
 
 export type Details = {
@@ -33,6 +45,8 @@ export type Details = {
   email: string;
   address: string;
   postcode: string;
+  /** Optional. Empty string when not given. */
+  phone: string;
 };
 
 export const EMPTY_DETAILS: Details = {
@@ -40,6 +54,7 @@ export const EMPTY_DETAILS: Details = {
   email: "",
   address: "",
   postcode: "",
+  phone: "",
 };
 
 /** The same rules the server applies. Duplicated on purpose — the browser's
@@ -53,6 +68,18 @@ export function detailsProblem(d: Details): string | null {
   if (d.address.trim().length < 10)
     return "Please give the full address, including the house number and street.";
   if (d.postcode.trim().length < 5) return "Please give the postcode.";
+  if (phoneProblem(d.phone)) return phoneProblem(d.phone);
+  return null;
+}
+
+/** Empty is fine — the field is optional. Anything typed must look like a
+ *  phone number. Mirrored in /api/checkout's readCustomer. */
+export function phoneProblem(raw: string): string | null {
+  const v = raw.trim();
+  if (!v) return null;
+  const digits = v.replace(/\D/g, "").length;
+  if (!/^[0-9+()\-\s]+$/.test(v) || digits < 10 || digits > 15)
+    return "That phone number does not look complete — check it, or leave it blank.";
   return null;
 }
 
@@ -115,6 +142,30 @@ export function DeliveryDetails({
         />
         <p className="dd-hint" id={`${uid}-email-why`}>
           For your order confirmation. Nothing else is sent to it.
+        </p>
+      </div>
+
+      <div className="cf-field">
+        {/* "(optional)" is in the label itself, not signalled by the absence
+            of an asterisk: a screen reader announces the label, and nothing
+            else on this form marks required-ness visually either. */}
+        <label className="cf-label" htmlFor={`${uid}-phone`}>
+          Phone (optional)
+        </label>
+        <input
+          className="cf-input"
+          id={`${uid}-phone`}
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          maxLength={20}
+          value={value.phone}
+          onChange={set("phone")}
+          disabled={disabled}
+          aria-describedby={`${uid}-phone-why`}
+        />
+        <p className="dd-hint" id={`${uid}-phone-why`}>
+          Only used if there is a problem with your order.
         </p>
       </div>
 

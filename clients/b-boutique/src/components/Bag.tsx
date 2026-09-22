@@ -114,6 +114,7 @@ export function Bag() {
             email: details.email.trim(),
             address: details.address.trim(),
             postcode: details.postcode.trim(),
+            phone: details.phone.trim(),
           },
         }),
       });

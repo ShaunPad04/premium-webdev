@@ -108,6 +108,9 @@ export async function notifyShopOfOrder(order: Order): Promise<boolean> {
       ``,
       `Reference  ${order.reference}`,
       `Email      ${order.email}`,
+      /* "not given" rather than a blank line, so she can tell an optional
+         field left empty from a number that failed to come through. */
+      `Phone      ${order.phone || "not given"}`,
       ``,
       `The stock count has already come down for every line above that was`,
       `counted. Any line marked "not counted" has NOT moved, because nobody`,

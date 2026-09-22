@@ -97,6 +97,8 @@ export type Order = {
   /** The whole posting address as the customer typed it, newlines and all. */
   address: string;
   postcode: string;
+  /** Optional at checkout — empty string when the customer left it blank. */
+  phone: string;
   lines: OrderLine[];
   subtotalP: number;
   deliveryP: number;
@@ -121,6 +123,12 @@ const SCHEMA = [
      created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
      updated_at   TIMESTAMPTZ NOT NULL DEFAULT now()
    )`,
+  /* Added 2026-09-22. ALTER rather than a column in the CREATE above,
+     because the table may already exist in Neon from before the phone was
+     asked for, and CREATE TABLE IF NOT EXISTS would skip it and leave the
+     INSERT failing on a missing column. Default '' so older rows read as
+     "not given", which is what they are. */
+  `ALTER TABLE orders ADD COLUMN IF NOT EXISTS phone TEXT NOT NULL DEFAULT ''`,
   /* She reads this newest first, filtered to what still needs doing. */
   `CREATE INDEX IF NOT EXISTS orders_status_created ON orders (status, created_at DESC)`,
 ];
@@ -152,6 +160,7 @@ function rowToOrder(r: Record<string, unknown>): Order {
     email: String(r.email),
     address: String(r.address),
     postcode: String(r.postcode),
+    phone: String(r.phone ?? ""),
     lines: (r.lines ?? []) as OrderLine[],
     subtotalP: Number(r.subtotal_p),
     deliveryP: Number(r.delivery_p),
@@ -166,6 +175,7 @@ export type CustomerDetails = {
   email: string;
   address: string;
   postcode: string;
+  phone: string;
 };
 
 /** Write the order and take its pieces off the shelf, in that order.
@@ -231,10 +241,11 @@ export async function createPendingOrder(input: {
   }
 
   const rows = (await q`
-    INSERT INTO orders (reference, name, email, address, postcode,
+    INSERT INTO orders (reference, name, email, address, postcode, phone,
                         lines, subtotal_p, delivery_p, total_p)
     VALUES (${input.reference}, ${input.customer.name}, ${input.customer.email},
             ${input.customer.address}, ${input.customer.postcode},
+            ${input.customer.phone},
             ${JSON.stringify(held)}::jsonb,
             ${input.subtotalP}, ${input.deliveryP}, ${input.totalP})
     RETURNING *

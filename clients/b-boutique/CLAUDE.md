@@ -194,9 +194,10 @@ the form she filled in on her phone:
   re-open it.** It means a piece that sells over the counter after being paid
   for online is a contract she cannot perform, and the refund is the remedy.
 - **If a piece has already gone** — "Refund them straight away, then ring to
-  apologise." The page says **get in touch**, not ring: checkout collects no
-  phone number, so a promised call would be a promise with no number behind
-  it. Add a phone field to checkout and it can say ring.
+  apologise." Checkout gained an **optional** phone field the same day for
+  exactly this, so the page says she will ring — or email, if no number was
+  left. It must stay conditional while the field is optional: an
+  unconditional "we will ring you" is a promise with no number behind it.
 - **How long the shop keeps things** — enquiries six months, orders six years
   (HMRC). Nothing deletes on a timer; these are her commitments.
 
