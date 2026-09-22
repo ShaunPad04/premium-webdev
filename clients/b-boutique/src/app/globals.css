@@ -631,10 +631,11 @@ body {
 }
 
 .hero-line {
-  position: absolute;
-  left: 18px;
-  bottom: clamp(150px, 26vh, 260px);
-  z-index: 1;
+  /* In the flow of .hero-copy now; see Hero.tsx. From 768 up the margin
+     reproduces the gap the two absolute positions used to leave (26vh and
+     7vh bottoms, minus the ~106px copy block under it and the 10px flex gap), so the desktop
+     composition is unchanged: measured 63px at 1440x900 before. */
+  margin-bottom: max(14px, calc(clamp(150px, 26vh, 260px) - clamp(38px, 7vh, 72px) - 116px));
   /* 15ch let "For every woman" run right across the frame and under the
      subject's chin on the Paris hero, which is what the client saw. The line
      cannot move further left — it is already on the 18px gutter — so the fix
@@ -642,7 +643,6 @@ body {
      "every" at the widths where the collision happened, and `text-wrap:
      balance` below keeps the two lines close in length. */
   max-width: 12ch;
-  margin: 0;
   font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
   font-weight: 400;
   font-size: clamp(42px, 7vw, 104px);
@@ -687,7 +687,6 @@ body {
 }
 
 @media (min-width: 768px) {
-  .hero-line { left: var(--bb-gutter-editorial); }
   .hero-copy { left: var(--bb-gutter-editorial); right: var(--bb-gutter-editorial); }
 }
 
@@ -727,6 +726,23 @@ body {
    phone widths, so the cap only belongs there. */
 @media (max-width: 767px) {
   .hero-where { max-width: 26ch; }
+}
+
+/* The phone hero, decluttered at the client's request, 2026-09-22: "too much
+   going on at the bottom, clogged up and unorganised". It stacked six things
+   in the bottom third of a 390px frame — headline, descriptor, a three-line
+   caps address, a 01—05 counter, two arrows and the button.
+   What goes is what is SAID TWICE: the statement rail directly under the
+   hero already carries "Womenswear & homeware", the street and the opening
+   hours (lib/statements.ts), and the arrows already say there is more than
+   one picture. What stays is the headline, the one action, and the arrows
+   level with it. Desktop is untouched. */
+@media (max-width: 767px) {
+  .hero-line { margin-bottom: 8px; }
+  .hero-sub,
+  .hero-where,
+  .hero-controls .hero-counter { display: none; }   /* raised: .hero-counter's own display:flex comes later in the file */
+  .hero-cta { margin-top: 0; }
 }
 
 .hero-cta {
@@ -5840,6 +5856,16 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    result. Dark, because the header is dark and the panel is an extension of
    it rather than a card sitting on top of the page. */
 .navsearch { position: relative; }
+
+/* Below 1024 the panel cannot hang off the SEARCH word: it is right-aligned
+   to a trigger that sits mid-header, so at 390 a 358px panel started at
+   x = -110 and a third of it was off the screen (measured 2026-09-22).
+   Here the wrapper stops being the containing block, the panel anchors to
+   the header row instead, and it spans the screen between 16px gutters. */
+@media (max-width: 1023px) {
+  .navsearch { position: static; }
+  .navsearch-panel { left: 16px; right: 16px; width: auto; top: calc(100% + 6px); }
+}
 
 .navsearch-panel {
   position: absolute;

@@ -74,16 +74,6 @@ export function Hero() {
        * So the welcome is carried by the words rather than by a number.
        * "For every woman who walks in" is positioning in her own register —
        * it claims nothing a customer could arrive and find untrue. */}
-      <h1 className="hero-line">
-        For every woman
-        <br />
-        who walks <em>in</em>.
-        <span className="sr-only">
-          {" "}
-          — B Boutique, independent womenswear and homeware on
-          Sea View Street, Cleethorpes.
-        </span>
-      </h1>
 
       {/* No wrapper. HeroSlideshow renders TWO layers into this section — the
           photographs at z-index -10 (carrying `.hero-media` and its parallax)
@@ -115,6 +105,23 @@ export function Hero() {
           picture — contrast against a photograph cannot be measured as a
           token pair, so it is bought with a gradient rather than asserted. */}
       <div className="hero-copy">
+        {/* The headline is IN the copy stack, not positioned on its own.
+            Until 2026-09-22 it was absolutely placed at 26vh from the bottom
+            while the copy was placed at 7vh, so the gap between them was
+            whatever the viewport height left over — and on a 664px-tall
+            phone it went negative: "who walks in." ran through
+            "Independent womenswear and homeware." (measured -12px at
+            390x664, -27px at 375x560). In the flow, they cannot collide. */}
+        <h1 className="hero-line">
+          For every woman
+          <br />
+          who walks <em>in</em>.
+          <span className="sr-only">
+            {" "}
+            — B Boutique, independent womenswear and homeware on
+            Sea View Street, Cleethorpes.
+          </span>
+        </h1>
         <p className="hero-sub">
           Independent womenswear and homeware.
         </p>

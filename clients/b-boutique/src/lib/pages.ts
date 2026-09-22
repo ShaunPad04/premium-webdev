@@ -141,7 +141,12 @@ export function newInFor(categoryNames: readonly string[]) {
  *  a category renamed in shop.ts cannot silently drop its stock out of this
  *  page. Accessories and Homeware fall out by not being in the list. */
 export function clothingProducts() {
-  const names = CLOTHING_CATEGORY_NAMES as readonly string[];
+  /* From clothingCards, the same list the category bar counts from. It read
+     a hand-typed CLOTHING_CATEGORY_NAMES until 2026-09-22 that still named
+     "Jackets", "Coats", "Shirts", "Skirts" and "Denim" from the invented
+     catalogue — so /clothing said "28 pieces" beside a bar reading
+     "Everything 37", and every coat, jacket and co-ord was missing from it. */
+  const names = clothingCards.map((c) => c.name);
   return products.filter((p) => names.includes(p.category));
 }
 
@@ -155,14 +160,3 @@ export function clothingCounts() {
   }));
 }
 
-export const CLOTHING_CATEGORY_NAMES = [
-  "Jackets",
-  "Trousers",
-  "Dresses",
-  "Tops",
-  "Knitwear",
-  "Coats",
-  "Shirts",
-  "Skirts",
-  "Denim",
-] as const;

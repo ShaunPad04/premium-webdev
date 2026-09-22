@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
-import { formatPrice, products } from "@/lib/catalogue";
+import { formatPriceShort, products } from "@/lib/catalogue";
 import { liveSuggestions, searchProducts } from "@/lib/search";
 import { shop } from "@/lib/shop";
 import { ProductPhoto } from "./ProductPhoto";
@@ -120,7 +120,10 @@ export function NavSearch() {
            than everything beside it — the client spotted it. The 65% belongs
            to :hover, where it means "this is responding", not to the rest
            state, where it just means "this one is different". */
-        className="nav-link hidden text-[10px] font-semibold uppercase leading-none tracking-[0.14em] lg:block"
+        /* py-[17px] is hit area: 10px type is a 10px target, measured
+           at 390 where this is a thumb's job. The row is items-center, so
+           nothing visible moves. */
+        className="nav-link hidden py-[17px] text-[10px] font-semibold uppercase leading-none tracking-[0.14em] lg:block"
       >
         Search
       </button>
@@ -188,7 +191,7 @@ export function NavSearch() {
                         <span className="navsearch-hit-body">
                           <span className="navsearch-hit-name">{p.name}</span>
                           <span className="navsearch-hit-meta">
-                            {p.category} · {formatPrice(p.priceP)}
+                            {p.category} · {formatPriceShort(p.priceP)}
                           </span>
                         </span>
                       </Link>
