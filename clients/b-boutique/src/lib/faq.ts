@@ -62,20 +62,28 @@ export const faq: FaqItem[] = [
        sentence that was on this site. */
     a: sizeSummary(),
   },
+  /* The next three were demo copy until 2026-09-22, when the client answered
+     each one. Two of the three were WRONG: the demo offered an alterations
+     service she does not run, and a two-day hold with no deposit where hers
+     is four days with one. Both would have been promises made to customers
+     in her name. */
   {
     q: "Do you offer alterations?",
-    a: "Yes, for pieces bought in the shop. Hems and simple adjustments are usually turned around within the week, and we will tell you honestly if a garment is not worth altering.",
-    temporary: true,
+    /* Her words: "I do not do alterations." */
+    a: "No, we do not do alterations.",
   },
   {
     q: "Can you hold an item for me?",
-    a: "We can put something aside for a couple of days while you think about it. Ask in the shop and we will keep it behind the counter with your name on it.",
-    temporary: true,
+    /* Her words: "Items are kept for 4 days with a deposit paid." The deposit
+       amount was not given and is deliberately not stated — a number here
+       would be a price, and nobody has named one. */
+    a: "Yes. Items are kept for four days with a deposit paid.",
   },
   {
     q: "Do you sell gift cards?",
+    /* Confirmed as written — she answered "Yes, that is right" with no
+       correction. */
     a: "Yes, in any amount, and they can be used against anything in the shop. They are bought and redeemed in person.",
-    temporary: true,
   },
   {
     q: "Can I return or exchange something?",

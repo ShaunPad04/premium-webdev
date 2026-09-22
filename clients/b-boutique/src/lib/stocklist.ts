@@ -18,9 +18,15 @@
  *  ── The two provenance flags, and why they are not decoration ────────────
  *
  *  `priceConfirmed` — 53 of the 54 colourways carry a price the client has
- *  confirmed. ONE DOES NOT: the Italian Knit Ribbed Cardigan in Cream, which
- *  the dashboard marks PLACEHOLDER and which she has not yet priced. A
- *  placeholder price is not a price. It must never be displayed as one and
+ *  confirmed. ONE DOES NOT, and it is not the one it used to be:
+ *
+ *    - The Italian Knit Ribbed Cardigan in Cream was the dashboard's
+ *      PLACEHOLDER until 2026-09-22, when her form priced it at £65.
+ *    - The Striped Fuzzy Zip Up Jumper in Red was UN-confirmed the same day,
+ *      because her form (£48) disagrees with her own WhatsApp (£40). See the
+ *      note on that line.
+ *
+ *  An unconfirmed price is not a price. It must never be displayed as one and
  *  must never reach a payment — /api/checkout refuses a line whose piece is
  *  still `demo`, and the product page renders no Add to bag button at all.
  *
@@ -227,7 +233,24 @@ export const stocklist: readonly StockPiece[] = [
     supplierCode: "9263",
     colourways: [
       { sku: "BB-STRIPEZIP-TAU", supplierRef: "9263-TAU", colour: "Taupe", priceP: 4000, priceConfirmed: true, image: "bb-stripezip-tau" },
-      { sku: "BB-STRIPEZIP-RED", supplierRef: "9263-RED", colour: "Red", priceP: 4000, priceConfirmed: true, image: "bb-stripezip-red" },
+      /* UN-confirmed 2026-09-22, on purpose. Two of the client's own
+         statements disagree: her WhatsApp gave the piece one price, "Fuzzy
+         zip 40", and her filled-in form gives Taupe £40 but Red £48.
+
+         Either the Red genuinely costs more, or a 0 became an 8. Nothing
+         here can tell those apart, so neither is picked. Setting 4800 would
+         not even build — priceFor() refuses a piece whose colourways
+         disagree, because the card, product page, bag and checkout all
+         carry ONE price per piece. If £48 is right, that is per-colourway
+         pricing through the whole checkout path, a real change and not a
+         one-number edit.
+
+         Knock-on, accepted: `demo` is per product, so the Taupe shows
+         "Price to confirm" too until this is answered. It costs nothing
+         today — checkout cannot take money until NEXT_PUBLIC_SITE_URL is
+         set — and it keeps the question on the launch check, which is
+         where an open question about a price belongs. */
+      { sku: "BB-STRIPEZIP-RED", supplierRef: "9263-RED", colour: "Red", priceP: 4000, priceConfirmed: false, image: "bb-stripezip-red" },
     ],
   },
   {
@@ -621,7 +644,10 @@ export const stocklist: readonly StockPiece[] = [
     supplier: "Cherry Blue (via Leivip)",
     supplierCode: "Leivip: ribbed-high-neck-button-front-knit-cardigan",
     colourways: [
-      { sku: "BB-ITKNITRIB-CRM", supplierRef: "", colour: "Cream", priceP: 5500, priceConfirmed: false, image: "bb-itknitrib-crm" },
+      /* £65, from her filled-in form, 2026-09-22. This was the last
+         placeholder on the site — £55 was the dashboard's PLACEHOLDER figure,
+         never hers, and it was £10 under what she actually charges. */
+      { sku: "BB-ITKNITRIB-CRM", supplierRef: "", colour: "Cream", priceP: 6500, priceConfirmed: true, image: "bb-itknitrib-crm" },
     ],
   },
   {

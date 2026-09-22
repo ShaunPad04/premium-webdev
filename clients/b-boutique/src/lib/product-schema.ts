@@ -28,7 +28,8 @@ import { absolute } from "./site";
  * marking up a rating that has never been given is a manual-action risk and
  * an ASA problem, and it is a lie about a real business either way.
  *
- * `offers` AT ALL, on 13 of the 54 colourways. A placeholder price must never
+ * `offers` AT ALL, on any colourway whose piece is not on sale — 2 of the 54
+ * on 2026-09-22, both colours of one jumper. A placeholder price must never
  * reach a customer, and structured data is a customer-facing surface that
  * outlives the page — a price Google caches is one somebody can hold her to.
  * A piece whose price is unconfirmed emits a Product with a name, a picture
@@ -113,10 +114,19 @@ export function productSchema(product: Product) {
       sku: c.sku,
       color: c.colour,
       image: [imageUrl(c.image)],
-      /* Per colourway, because `priceConfirmed` is per colourway: a piece can
-         have two colours she has priced and one she has not, and only the
-         priced ones get an offer. */
-      ...(c.priceConfirmed
+      /* Per colourway, because `priceConfirmed` is per colourway — AND only
+         while the piece as a whole is on sale.
+
+         The second condition was missing until 2026-09-22, when the first
+         mixed case arrived: the Striped Fuzzy Zip Up Jumper, Taupe confirmed
+         at £40 and Red un-confirmed. `demo` is per product, so the page
+         shows "Price to confirm" for both colours and sells neither, while
+         this markup still published a £40 offer for the Taupe. Structured
+         data asserting an offer the visible page does not make is exactly
+         the drift this file exists to prevent. Measured in the rendered
+         JSON-LD before the fix: "price":"40.00". `priced` is the same
+         isBuyable() the single-colourway branch above already uses. */
+      ...(c.priceConfirmed && priced
         ? { offers: { ...offer(product), price: (c.priceP / 100).toFixed(2) } }
         : {}),
     })),

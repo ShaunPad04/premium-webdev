@@ -269,10 +269,21 @@ const terms: Policy = {
       ],
     },
     {
+      /* ANSWERED 2026-09-22, in her words: "Once the order is paid for that
+         is the contract of sale." She was offered the alternative — offer at
+         order, contract at dispatch — with the reason it protects her, and
+         said no. That is a decision, not a gap, and it is hers to make.
+
+         Worth knowing what it means, so nobody later "fixes" it: a piece
+         that sold over the counter after being paid for online is now a
+         contract she cannot perform, and the refund in "If a piece has
+         already gone" below is the remedy for that rather than a courtesy. The reservation
+         taken at checkout (lib/orders.ts) is what keeps that rare. */
       heading: "When the order becomes a contract",
-      kind: "required",
-      body: [],
-      ask: "ASKED 2026-09-20. The answer was that it will not happen, and worst case she will organise it — which is a plan for the situation, not a term for this page. It leaves the page saying nothing about when the contract forms, and the default is then that it forms when the payment goes through. That is the WORSE position for her: it means a refund on a piece that sold over the counter an hour earlier is her breaking a contract rather than declining an offer. The wording protects her and costs nothing. Worth putting to her once more, in those words: 'Your order is an offer to buy. The contract is formed when we confirm we have your piece and it is on its way — not when the payment goes through.' If she still says no, that is her decision and this block comes out — but it should be a decision, not a gap.",
+      kind: "derived",
+      body: [
+        "Once your order is paid for, that is the contract of sale between you and B Boutique.",
+      ],
     },
     {
       heading: "Prices and VAT",
@@ -294,10 +305,20 @@ const terms: Policy = {
       basisLabel: "How we know",
     },
     {
+      /* ANSWERED 2026-09-22: "Refund them straight away, then ring to
+         apologise."
+
+         "Get in touch", not "ring", on purpose. Checkout collects a name,
+         email, address and postcode and NO phone number (DeliveryDetails),
+         so a page promising a phone call would be promising something the
+         shop has no number to make. Her intent — refund first, then a
+         personal apology — is kept whole; only the channel is left open.
+         If a phone field is ever added to checkout, this can say "ring". */
       heading: "If a piece has already gone",
-      kind: "required",
-      body: [],
-      ask: "ASKED 2026-09-20. The answer was 'sorted', which is a reassurance to us rather than a sentence a customer can read. This block needs the actual words she would say to somebody whose order she cannot fill: refund straight away and ring to apologise, or ring first and offer something similar? Two sentences of hers is all it takes, and it goes on the page verbatim.",
+      kind: "derived",
+      body: [
+        "Everything on this website is also on the rail in the shop, so very occasionally a piece sells over the counter just as it is bought online. If that happens to your order, we will refund you in full straight away, and then get in touch to apologise.",
+      ],
     },
     {
       heading: "None of this affects your legal rights",
@@ -439,10 +460,20 @@ const privacy: Policy = {
       basisLabel: "How we know",
     },
     {
+      /* ANSWERED 2026-09-22: she confirmed the split — enquiries six months,
+         order records six years. The six years is HMRC's expectation for
+         business records, and the page says so, because a customer asking
+         "why do you still have my address?" deserves the reason.
+
+         Nothing in the code deletes anything on a timer. These are her
+         commitments about her own records, not a claim about automation, so
+         the page says "kept for" and stops there. */
       heading: "How long the shop keeps things",
-      kind: "required",
-      body: [],
-      ask: "PART-ANSWERED 2026-09-20: 'six months'. That works for enquiry emails and is entirely her choice. It does NOT work for order records — HMRC generally expects business records to be kept for six years, so deleting an order at six months would put her on the wrong side of that, not the right side of data protection. The two need separating before this goes live: enquiries six months, order records six years. Needs her to confirm the split rather than us assuming it, because it is a statement about what her business actually does.",
+      kind: "derived",
+      body: [
+        "Messages sent through the contact form are kept for six months.",
+        "Orders — what was bought, who by, and where it was sent — are kept for six years, because that is how long a business has to be able to show its records to HMRC.",
+      ],
     },
     {
       heading: "Who to ask, and how",

@@ -50,20 +50,23 @@ export const aboutBlocks: AboutBlock[] = [
   {
     label: "02",
     heading: "How the rails are chosen.",
-    body: [
-      "Pieces are picked one at a time rather than ordered by the pack, which is why you will rarely see the same jacket twice on the same street. If something does not hang properly on a real person it does not go on the rail.",
-      "The buy leans towards natural cloth and clothes that outlast the season they were bought in — wool, linen, cotton, silk — and towards pieces that work with what is already in your wardrobe rather than replacing it.",
-    ],
-    temporary: true,
+    /* Her words, 2026-09-22: "We try to not reorder items so that we can
+       keep stock fresh and moving." One sentence where the demo had two
+       paragraphs, and that is right: the demo claimed natural cloth — wool,
+       linen, cotton, silk — on a rail whose nine published compositions
+       are almost all viscose, polyester and polyamide — one is cotton, none
+       is linen or silk. Her line claims nothing it
+       cannot back. */
+    body: ["We try not to reorder items, so that we can keep the stock fresh and moving."],
   },
   {
     label: "03",
     heading: "What happens when you come in.",
-    body: [
-      "Nobody follows you round the shop. If you want to be left alone to look, that is the default; if you want an honest opinion on whether something suits you, ask and you will get one, including when the answer is no.",
-      "Sizes, fit and what is worth altering are all easier to settle in person than on a screen, which is most of the reason the shop works the way it does.",
-    ],
-    temporary: true,
+    /* Her words: "They are welcome to browse at their own leisure." Turned to
+       "you" because the page speaks to the reader. The demo's second
+       paragraph mentioned "what is worth altering" — she does not do
+       alterations, so it went with the rest. */
+    body: ["You are welcome to browse at your own leisure."],
   },
 ];
 

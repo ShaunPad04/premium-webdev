@@ -76,7 +76,8 @@ const catalogue = read('src/lib/catalogue.ts');
  * twice — a false alarm is how a launch gate stops being read.
  *
  * The real signal is in the stock list and it is counted, not sniffed:
- * `priceConfirmed: false` is the client's dashboard saying PLACEHOLDER. */
+ * `priceConfirmed: false` means no price the client has confirmed — a
+ * dashboard PLACEHOLDER, or two of her own figures that disagree. */
 /* Comments stripped first. This project has now had THREE false alarms from
    a content rule matching its own prose — the `plausible` one, the
    `demo: true as const` one, and the comment that produced this very
@@ -92,8 +93,8 @@ if (unconfirmed > 0) {
     /* The verb has to agree too. It read "1 colourway still carry" the first
        time the count reached one, which is the day this line finally gets
        read carefully. */
-    `${unconfirmed} colourway${unconfirmed === 1 ? ' still carries' : 's still carry'} a placeholder price`,
-    'src/lib/stocklist.ts — the dashboard marks these PLACEHOLDER. They are shown as "Price to confirm" and cannot be bought, and that is the only reason this is not already live with a made-up number on it.',
+    `${unconfirmed} colourway${unconfirmed === 1 ? ' still carries' : 's still carry'} an unconfirmed price`,
+    'src/lib/stocklist.ts — each one has a note on its line saying why. They are shown as "Price to confirm" and cannot be bought, and that is the only reason this is not already live with a made-up number on it.',
   );
 }
 if (/DELIVERY_IS_DEMO\s*=\s*true/.test(catalogue)) {
