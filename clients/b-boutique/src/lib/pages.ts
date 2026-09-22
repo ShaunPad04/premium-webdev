@@ -1,5 +1,5 @@
 import { products, productsIn } from "./catalogue";
-import { categories, featured, newIn } from "./shop";
+import { categories, newIn } from "./shop";
 
 /** What the category pages show, derived rather than re-typed.
  *
@@ -29,37 +29,81 @@ function byName(slug: string) {
   return c;
 }
 
-function fromFeatured(slug: string): CategoryCard {
+/** A category card carrying a real photograph of something actually in that
+ *  category.
+ *
+ *  ── What this replaced, and why it is an improvement rather than a swap ──
+ *  These cards used to be `featured` model shots for four categories and
+ *  generated `panel-*` artwork for the other four. The panels were a known
+ *  defect, recorded in lib/images.ts and never fixed: they were generated as
+ *  fake magazine spreads carrying GIBBERISH TYPOGRAPHY, and two of the four
+ *  have MALFORMED HANDS. They were rendering anyway, from the CDN, because
+ *  not vendoring a file does not stop a page requesting it.
+ *
+ *  There is now something better to put there: 54 photographs of the actual
+ *  stock. A card for Knitwear showing a jumper she actually has is both more
+ *  honest and a better picture than an invented magazine spread with broken
+ *  lettering on it.
+ *
+ *  The photograph is the first piece in the category, which is stable because
+ *  the stock list has a fixed order. It is decorative — the category name is
+ *  real text beside it — so it carries no alt text and makes no claim about
+ *  the individual garment. */
+function fromStock(slug: string): CategoryCard {
   const c = byName(slug);
-  const f = featured.find((x) => x.slug === slug);
-  return { slug, name: c.name, note: c.note, image: f?.image, alt: f?.alt };
-}
-
-function fromSlot(slug: string, slot: string): CategoryCard {
-  const c = byName(slug);
-  return { slug, name: c.name, note: c.note, slot };
+  const first = productsIn(c.name)[0];
+  if (!first) {
+    throw new Error(
+      `${slug}: no products in "${c.name}" — a category rail with nothing ` +
+        `behind it must not be rendered; remove it from the categories list instead`,
+    );
+  }
+  return {
+    slug,
+    name: c.name,
+    note: c.note,
+    image: `/img/product/${first.photo}-960.webp`,
+    alt: "",
+  };
 }
 
 /** The clothing categories, in the order the rails run.
- *  Accessories and Homeware are deliberately absent — each has its own place
- *  on the site, and a "clothing" page that lists candles is not a clothing
- *  page. */
+ *
+ *  Homeware is deliberately absent: a "clothing" page that lists ceramic
+ *  vases is not a clothing page. It has its own section on the home page.
+ *
+ *  Accessories used to be excluded here for the same reason and is now
+ *  absent for a different one — there are none in this drop. See the note on
+ *  `categories` in shop.ts. */
 export const clothingCards: CategoryCard[] = [
-  fromFeatured("jackets"),
-  fromFeatured("trousers"),
-  fromFeatured("dresses"),
-  fromSlot("tops", "new-cotton-tee"),
-  fromFeatured("knitwear"),
-  /* The four shot on 2026-09-06. They carry their own photograph like the
-     five above; the only difference is that these are not vendored into
-     public/img yet — see the note in lib/images.ts. */
-  fromSlot("coats", "panel-coats"),
-  fromSlot("shirts", "panel-shirts"),
-  fromSlot("skirts", "panel-skirts"),
-  fromSlot("denim", "panel-denim"),
-];
+  "knitwear",
+  "coats-jackets",
+  "trousers",
+  "tops",
+  "co-ords",
+  "dresses",
+].map(fromStock);
 
-export const accessoriesCard: CategoryCard = fromFeatured("accessories");
+/** Accessories, which are real and are not online.
+ *
+ *  Hand-built rather than derived, because "accessories" is deliberately no
+ *  longer one of the rails in shop.ts: this drop contains none, and a rail
+ *  with nothing behind it sends a customer to an empty shelf.
+ *
+ *  The PAGE stays. She sells accessories — the hero says so and the About
+ *  copy says so, and both are true of the shop on Sea View Street. Deleting
+ *  the route would break two links in the header and one in the footer to
+ *  answer a question nobody asked. What changes is that it stops pretending
+ *  to be a grid of things you can buy from it, and says where they are.
+ *
+ *  No photograph: there is no accessories photograph that is not either
+ *  generated stand-in artwork or a picture of something else. The homeware
+ *  frames are homeware. */
+export const accessoriesCard: CategoryCard = {
+  slug: "accessories",
+  name: "Accessories",
+  note: "Bags, scarves and small gold things — in the shop, on Sea View Street.",
+};
 
 /** New In, filtered to a set of categories.
  *

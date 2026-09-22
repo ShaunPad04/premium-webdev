@@ -6,9 +6,15 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { AddToBag } from "@/components/AddToBag";
-import { ImageSlot, type Tone } from "@/components/ImageSlot";
+import { ProductPhoto } from "@/components/ProductPhoto";
 import { Visit } from "@/components/Visit";
-import { formatPrice, productBySlug, products } from "@/lib/catalogue";
+import {
+  formatPriceShort,
+  isBuyable,
+  productBySlug,
+  products,
+} from "@/lib/catalogue";
+import { shop } from "@/lib/shop";
 
 /* Prerender every product. There are thirteen of them and they change when
    the code changes, so there is nothing to gain from rendering them on
@@ -50,23 +56,24 @@ export default async function ProductPage({
       <main id="main" className="flex-1">
         <section className="pdp" aria-labelledby="pdp-name">
           <div className="pdp-media">
-            <ImageSlot
-              tone={product.tone as Tone}
-              seed={17}
-              slot={product.slot}
+            <ProductPhoto
+              photo={product.photo}
+              square={product.category === "Homeware"}
               /* Names the piece and stops there. It used to say "photographed
                  in the shop", which was a claim about where the picture was
-                 taken — and the pictures are generated art direction from a
-                 CDN, not photographs of 18 Sea View Street. Alt text is heard
-                 by the people who cannot see the image and have no way to
-                 judge it, so it is the last place to assert something
-                 unverified. */
+                 taken — and these are generated images of pieces she stocks,
+                 not photographs of 18 Sea View Street. Alt text is heard by
+                 the people who cannot see the image and have no way to judge
+                 it, so it is the last place to assert something unverified.
+                 It also must not describe the garment beyond the stock list:
+                 a detail read off a generated picture is a claim about the
+                 product sourced from the picture rather than from her. */
               alt={product.name}
               /* Measured: the media column is 52% of the page above 1024 and
                  full width below it. */
               sizes="(min-width: 1024px) 52vw, 100vw"
               priority
-              className="absolute inset-0 h-full w-full"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
 
@@ -84,12 +91,20 @@ export default async function ProductPage({
                 {product.name}
               </h1>
 
-              <p className="pdp-price">{formatPrice(product.priceP)}</p>
+              {/* Same rule as the grid: a placeholder is not a price, and
+                  this is the page where somebody decides to spend money. */}
+              {isBuyable(product) ? (
+                <p className="pdp-price">{formatPriceShort(product.priceP)}</p>
+              ) : (
+                <p className="pdp-price pdp-price--pending">Price to confirm</p>
+              )}
 
+              {/* Per PIECE, not per page: this one names the piece in front
+                  of you rather than the state of the catalogue. */}
               {product.demo ? (
                 <p className="page-pending pdp-pending">
-                  [Demo price — invented for this build, not the shop&rsquo;s
-                  own]
+                  [The price for this piece is not confirmed yet, so it cannot
+                  be bought. Everything else about it is the shop&rsquo;s own.]
                 </p>
               ) : null}
 
@@ -110,7 +125,22 @@ export default async function ProductPage({
                 the rail at 18 Sea View Street.
               </p>
 
-              <AddToBag product={product} />
+              {/* No bag button for a piece whose price is a placeholder.
+                  The rest of the page — the photograph, the description, the
+                  sizes, the fabric — is hers and is shown; only the
+                  transaction is withheld, because the one number needed to
+                  make it honest is missing. */}
+              {isBuyable(product) ? (
+                <AddToBag product={product} />
+              ) : (
+                <p className="pdp-note">
+                  This one is in the shop but not yet priced online. Email{" "}
+                  <a href={`mailto:${shop.email}`} className="pdp-ask">
+                    {shop.email}
+                  </a>{" "}
+                  and ask, or come and see it on the rail.
+                </p>
+              )}
             </div>
           </div>
         </section>

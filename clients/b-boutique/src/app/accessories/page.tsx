@@ -41,8 +41,13 @@ export default function AccessoriesPage() {
 
         <section aria-labelledby="acc-lead" className="page-section">
           <div className="page-inner acc-lead">
-            <div className="acc-lead-media">
-              {accessoriesCard.image ? (
+            {/* The whole media column, not just the <img>, is conditional.
+                Rendering an empty framed box because the photograph is
+                missing is how a page starts looking broken rather than
+                edited. There is no accessories photograph that is not either
+                generated stand-in artwork or a picture of something else. */}
+            {accessoriesCard.image ? (
+              <div className="acc-lead-media">
                 <Image
                   src={accessoriesCard.image}
                   alt={accessoriesCard.alt ?? ""}
@@ -52,8 +57,8 @@ export default function AccessoriesPage() {
                   sizes="(min-width: 1024px) 47vw, 92vw"
                   className="cat-img"
                 />
-              ) : null}
-            </div>
+              </div>
+            ) : null}
             <div className="acc-lead-copy">
               <h2 id="acc-lead" className="page-h2">
                 The last ten per cent.
@@ -66,8 +71,10 @@ export default function AccessoriesPage() {
                 in person.
               </p>
               <p className="page-body">
-                Accessories turn over faster than the rails do. What is here is
-                what has landed most recently rather than a standing range.
+                Accessories turn over faster than the rails do, and none of
+                them are on the website at the moment — the pieces listed
+                online are this season&rsquo;s clothing and homeware. For what
+                is in at the minute, the shop is the answer, or email and ask.
               </p>
             </div>
           </div>

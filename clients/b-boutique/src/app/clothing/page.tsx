@@ -7,7 +7,7 @@ import { PageMasthead } from "@/components/PageMasthead";
 import { CategoryBar } from "@/components/CategoryBar";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
-import { catalogueIsDemo } from "@/lib/catalogue";
+import { pendingPriceNotice } from "@/lib/catalogue";
 import { clothingProducts } from "@/lib/pages";
 
 export const metadata: Metadata = {
@@ -70,11 +70,8 @@ export default function ClothingPage() {
                 standing range. Everything here can be bought online or seen on
                 the rail. Narrow it by category above.
               </p>
-              {catalogueIsDemo ? (
-                <p className="page-pending">
-                  [Demo prices — every price on this page is invented for this
-                  build and nothing can be charged]
-                </p>
+              {pendingPriceNotice() ? (
+                <p className="page-pending">{pendingPriceNotice()}</p>
               ) : null}
             </div>
 
@@ -82,7 +79,7 @@ export default function ClothingPage() {
                 large photographs in front of it. See CategoryBar.tsx. */}
             <CategoryBar current="all" />
 
-            <ProductGrid items={items} idPrefix="clothing" />
+            <ProductGrid items={items} />
           </div>
         </section>
 

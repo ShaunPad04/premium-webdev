@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { newIn } from "@/lib/shop";
 import { useInView } from "@/lib/useInView";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
-import { ImageSlot, type Tone } from "./ImageSlot";
+import { ProductPhoto } from "./ProductPhoto";
 
 /* New in this week — the first light section after the black chapter.
  *
@@ -384,18 +384,16 @@ export function NewInRail() {
               style={{ "--i": i } as React.CSSProperties}
             >
               <div className="newin-media">
-                <ImageSlot
-                  tone={piece.tone as Tone}
-                  seed={i + 11}
-                  uid={`newin-${copy}-${i}`}
-                  slot={`new-${piece.slug}`}
+                <ProductPhoto
+                  photo={piece.photo}
+                  square={piece.category === "Homeware"}
                   /* Empty on purpose. The category and name sit directly beneath
                      in real text, so a copy of the name here would just be
                      announced twice — and there is no per-piece description in
                      the data to say anything more useful without inventing it. */
                   alt=""
                   sizes="(min-width: 1280px) 19vw, (min-width: 768px) 31vw, 78vw"
-                  className="absolute inset-0 h-full w-full"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               </div>
               {/* One line, and it is the piece.

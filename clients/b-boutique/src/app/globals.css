@@ -3812,6 +3812,29 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   font-variant-numeric: tabular-nums;
 }
 
+/* "Price to confirm", where a price would be.
+ *
+ * Deliberately QUIET rather than loud. It is not a warning badge and must not
+ * look like a sale flash: the piece is real, it is in the shop, and the only
+ * thing missing is a number. Italic and lighter marks it as a different KIND
+ * of thing from the prices around it without shouting that something is
+ * wrong. `font-style` rather than colour alone, so it does not rely on colour
+ * to carry the distinction. */
+.prod-price--pending,
+.pdp-price--pending {
+  font-style: italic;
+  /* The SAME alpha as .prod-price beside it, not a lighter one.
+     It was 0.58 for half an hour and axe failed it at three widths: 4.2:1
+     against the paper, under the 4.5 AA asks of 13px text. Lightening text to
+     say "this is provisional" is the reflex and it is the wrong lever — it
+     makes the one price a customer most needs to read the hardest one to
+     read. The italic and the words carry the distinction, which is also what
+     the comment above already claimed and the colour was quietly
+     contradicting. */
+  color: rgba(26, 20, 22, 0.72);
+  font-variant-numeric: normal;
+}
+
 .prod-link:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; }
 
 @media (prefers-reduced-motion: reduce) {

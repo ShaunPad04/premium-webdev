@@ -1,31 +1,32 @@
-import { moreStock, newIn } from "./shop";
+import { stocklist, type StockPiece } from "./stocklist";
 
 /** The shop's catalogue.
  *
  *  ─────────────────────────────────────────────────────────────────────────
- *  ⚠ EVERY PRICE AND EVERY SIZE IN THIS FILE IS INVENTED ⚠
+ *  THE PRICES ARE HERS NOW. MOST OF THEM.
  *
- *  Nobody has supplied a price list, a size run or a stock count for B
- *  Boutique. The numbers below were written to make a working shop
- *  demonstrable, at the client's explicit request, and they are fiction.
+ *  This file used to open with a warning that every price in it was invented.
+ *  That is no longer true and the warning has gone with the fiction: the 26
+ *  demo products, their made-up prices and their made-up size runs were
+ *  deleted on 2026-09-22 and replaced by what is actually on her rail —
+ *  32 pieces and 54 colourways, read from lib/stocklist.ts, which was
+ *  transcribed from the stock dashboard she supplied.
  *
- *  This is the most dangerous file in the project, and more dangerous than
- *  the invented testimonials, because a price is not merely a false statement
- *  — under the Consumer Protection from Unfair Trading Regulations a
- *  displayed price is what the customer is entitled to pay. Published live,
- *  these would be real offers to real people at numbers nobody has agreed to.
+ *  THIRTEEN COLOURWAYS STILL HAVE A PLACEHOLDER PRICE. The dashboard says so
+ *  and stocklist.ts carries it through as `priceConfirmed: false`. Those are
+ *  the only things left standing between this shop and being able to take
+ *  money, and they are handled rather than hoped about:
  *
- *  Three things stand between them and being sold at, and none may be removed
- *  casually:
+ *    - A piece whose price is not confirmed carries `demo: true`, exactly as
+ *      all 26 used to, so `catalogueIsDemo` stays true and the shop keeps
+ *      rendering its notice.
+ *    - `isBuyable` is false for it, and the product page, the grid and the
+ *      checkout each ask rather than assume.
+ *    - NEXT_PUBLIC_SITE_URL stays unset, so /api/checkout still answers 503
+ *      and nothing can be charged at any price, confirmed or not.
  *
- *    1. `demo: true` on every product. `catalogueIsDemo` reads it and the
- *       shop renders a visible notice for as long as any remains.
- *    2. The site is noindex until ALLOW_INDEXING is set.
- *    3. Checkout has no payment provider configured, so nothing can actually
- *       be charged. See app/api/checkout.
- *
- *  Replace every price with the client's own before any of those three
- *  changes. THIS SHOP IS NOT FIT TO TAKE MONEY until they do.
+ *  Eight of the 32 pieces are affected. When her prices for those land, the
+ *  flags flip in stocklist.ts and nothing here has to change.
  *  ─────────────────────────────────────────────────────────────────────────
  *
  *  ── Why pence ────────────────────────────────────────────────────────────
@@ -33,77 +34,153 @@ import { moreStock, newIn } from "./shop";
  *  0.3 in binary floating point, and a basket that adds up to £74.99999999 is
  *  a rounding bug waiting to be charged to somebody. Money is integer
  *  arithmetic from the catalogue to the payment provider, and it is formatted
- *  for display exactly once, at the edge.
+ *  for display exactly once, at the edge. The dashboard quotes pounds, some
+ *  of them with pence (£24.50), and the conversion happens once in
+ *  stocklist.ts where it was checked to be exact.
+ *
+ *  ── The shape is deliberately unchanged ──────────────────────────────────
+ *  Nineteen files import from here. `Product` keeps every field it had —
+ *  slug, name, category, priceP, sizes, slot, tone, demo — so none of them
+ *  needed touching to get her real stock on the page. The new fields are
+ *  additions, and the consumers that want them (the product page) read them
+ *  while the ones that do not (the bag, the checkout, the search) carry on.
  */
 export type Product = {
   slug: string;
   name: string;
   category: string;
-  /** In PENCE. Integer. Never a float, never pounds. */
+  /** In PENCE. Integer. Never a float, never pounds.
+   *  The FIRST colourway's price. Every colourway of a piece is the same
+   *  price in the dashboard, and `pricesAgree` below asserts it rather than
+   *  trusting it — a piece whose colours cost different amounts would need a
+   *  price per colourway on the card and this would be quietly wrong. */
   priceP: number;
-  /** The size run offered. "One size" for pieces that have no run. */
+  /** The size run she actually buys: "S-M"/"M-L", "S"/"M"/"L"/"XL", or a
+   *  single "One size". No longer a fabricated 8-18. */
   sizes: readonly string[];
-  /** ImageSlot key — the same photograph the rest of the site uses. */
+  /** ImageSlot key. Kept for the designed fallback underneath the photograph;
+   *  see `photo` for the real one. */
   slot: string;
   tone: string;
-  /** True while the price and sizes are invented. */
-  demo: true;
+  /** True while THIS piece has any colourway whose price is a placeholder. */
+  demo: boolean;
+
+  /* ── Everything below is new, and all of it is hers ─────────────────── */
+
+  /** Basename of the primary photograph in /img/product, no extension. */
+  photo: string;
+  short: string;
+  full: string;
+  features: readonly string[];
+  /** A fibre composition ONLY when `fabricPublished`. Otherwise a description
+   *  of how the cloth looks and handles, which must never be printed under a
+   *  heading that reads as a composition label. */
+  fabric: string;
+  fabricPublished: boolean;
+  care: string;
+  /** "fits up to 14", "2 of each" — the qualifier on the run, kept separate
+   *  so it can be shown as a note rather than mistaken for a size. */
+  sizeNote: string;
+  supplier: string;
+  colourways: StockPiece["colourways"];
 };
 
-const CLOTHING_SIZES = ["8", "10", "12", "14", "16", "18"] as const;
-const ONE_SIZE = ["One size"] as const;
-
-/** Invented price and size run per piece, keyed by the slug already in
- *  shop.ts. Deliberately keyed rather than duplicated: the name, category,
- *  tone and photograph all still come from `newIn`, so the shop cannot end up
- *  describing a different piece from the one the home page rail shows. */
-const demoPricing: Record<string, { priceP: number; sizes: readonly string[] }> = {
-  "wool-trouser":      { priceP: 14500, sizes: CLOTHING_SIZES },
-  "camel-blazer":      { priceP: 24500, sizes: CLOTHING_SIZES },
-  "lambswool-crew":    { priceP: 9800,  sizes: CLOTHING_SIZES },
-  "cotton-tee":        { priceP: 4500,  sizes: CLOTHING_SIZES },
-  "slip-dress":        { priceP: 16500, sizes: CLOTHING_SIZES },
-  "boucle-overshirt":  { priceP: 18500, sizes: CLOTHING_SIZES },
-  "leather-crossbody": { priceP: 12500, sizes: ONE_SIZE },
-  "silk-scarf":        { priceP: 6500,  sizes: ONE_SIZE },
-  "gold-hoops":        { priceP: 4200,  sizes: ONE_SIZE },
-  "leather-belt":      { priceP: 5500,  sizes: ONE_SIZE },
-  "lambswool-scarf":   { priceP: 5800,  sizes: ONE_SIZE },
-  "leather-tote":      { priceP: 19500, sizes: ONE_SIZE },
-  "stoneware-carafe":  { priceP: 4800,  sizes: ONE_SIZE },
-
-  /* The rest of the rails, added 2026-09-06 so that every category has stock
-     in it rather than a name and an empty shelf. Same rule: invented. */
-  "tapered-trouser":   { priceP: 13500, sizes: CLOTHING_SIZES },
-  "charcoal-overcoat": { priceP: 32500, sizes: CLOTHING_SIZES },
-  "camel-wrap-coat":   { priceP: 28500, sizes: CLOTHING_SIZES },
-  "poplin-shirt":      { priceP: 8900,  sizes: CLOTHING_SIZES },
-  "silk-blouse":       { priceP: 13500, sizes: CLOTHING_SIZES },
-  "satin-skirt":       { priceP: 11500, sizes: CLOTHING_SIZES },
-  "pleated-skirt":     { priceP: 12500, sizes: CLOTHING_SIZES },
-  "straight-jeans":    { priceP: 9500,  sizes: CLOTHING_SIZES },
-  "wide-jeans":        { priceP: 9800,  sizes: CLOTHING_SIZES },
-  "merino-rollneck":   { priceP: 11500, sizes: CLOTHING_SIZES },
-  "burgundy-dress":    { priceP: 19500, sizes: CLOTHING_SIZES },
-  "wool-blazer":       { priceP: 22500, sizes: CLOTHING_SIZES },
-  "striped-top":       { priceP: 5500,  sizes: CLOTHING_SIZES },
+/** The designed fallback that sits under a photograph if it fails to load.
+ *  One per category rather than per piece: it is a texture, not a picture of
+ *  the garment, and pretending otherwise is how a fallback starts making
+ *  claims. */
+const TONE: Record<string, string> = {
+  Knitwear: "bone",
+  Tops: "bone",
+  Trousers: "marble",
+  "Coats & Jackets": "onyx",
+  "Co-ords": "marble",
+  Dresses: "onyx",
+  Homeware: "gold",
 };
 
-/** Everything the shop sells: the New In rail plus the rest of the rails.
- *  One list, built from the two in shop.ts, so a product cannot exist in the
- *  shop under a different name from the one the rest of the site shows. */
-export const products: Product[] = [...newIn, ...moreStock]
-  .filter((p) => demoPricing[p.slug])
-  .map((p) => ({
-    slug: p.slug,
-    name: p.name,
-    category: p.category,
-    priceP: demoPricing[p.slug].priceP,
-    sizes: demoPricing[p.slug].sizes,
-    slot: `new-${p.slug}`,
-    tone: p.tone,
-    demo: true as const,
-  }));
+/** Asserted, not assumed. If a piece ever arrives with two prices across its
+ *  colours, the card's single price would be wrong for at least one of them
+ *  and this throws at import rather than shipping the cheaper number. */
+function priceFor(piece: StockPiece): number {
+  const prices = new Set(piece.colourways.map((c) => c.priceP));
+  if (prices.size !== 1) {
+    throw new Error(
+      `${piece.slug}: colourways disagree on price (${[...prices].join(", ")}) — ` +
+        `the card and the product page both show one price per piece`,
+    );
+  }
+  return piece.colourways[0].priceP;
+}
+
+/** Everything the shop sells. Built from the stock list, so a product cannot
+ *  exist here under a different name, price or colour from the one on the
+ *  rail. */
+export const products: Product[] = stocklist.map((piece) => ({
+  slug: piece.slug,
+  name: piece.name,
+  category: piece.category,
+  priceP: priceFor(piece),
+  sizes: piece.sizes,
+  slot: `prod-${piece.slug}`,
+  tone: TONE[piece.category] ?? "bone",
+  demo: piece.colourways.some((c) => !c.priceConfirmed),
+  photo: piece.colourways[0].image,
+  short: piece.short,
+  full: piece.full,
+  features: piece.features,
+  fabric: piece.fabric,
+  fabricPublished: piece.fabricPublished,
+  care: piece.care,
+  sizeNote: piece.sizeNote,
+  supplier: piece.supplier,
+  colourways: piece.colourways,
+}));
+
+/** Whether this piece may be put in a bag and paid for.
+ *
+ *  A placeholder price is not a price. Displaying one is a statement about
+ *  what something costs, and under the Consumer Protection from Unfair
+ *  Trading Regulations a displayed price is what the customer is entitled to
+ *  pay — so a piece whose price nobody has confirmed is shown, described and
+ *  photographed, and cannot be bought, rather than hidden. Hiding it would
+ *  also be a lie: it IS in the shop. */
+export function isBuyable(p: Product): boolean {
+  return !p.demo;
+}
+
+/** The notice the shop shows while any price is still a placeholder.
+ *
+ *  ── Why the wording lives here and not on five pages ────────────────────
+ *  It used to be typed out separately on /shop, /clothing, a category page,
+ *  the product page and the bag, and all five said the same thing: "every
+ *  price on this page is invented for this build". On 2026-09-22 that became
+ *  FALSE — 41 of the 54 colourways now carry the client's own price — and
+ *  five copies is five places to miss when a sentence stops being true. A
+ *  notice that overstates the problem is not the safe direction of wrong: it
+ *  tells a customer to disbelieve prices that are correct, and it trains the
+ *  people building the site to ignore the banner.
+ *
+ *  So there is one sentence, it counts rather than asserts, and it goes away
+ *  by itself when the last placeholder is replaced. */
+export function pendingPriceNotice(): string | null {
+  const n = unconfirmedPriceCount();
+  if (n === 0) return null;
+  const pieces = products.filter((p) => p.demo).length;
+  return (
+    `[${n} of ${products.reduce((t, p) => t + p.colourways.length, 0)} colourways ` +
+    `are still waiting on a price from the shop. ${pieces === 1 ? "That piece is" : `Those ${pieces} pieces are`} ` +
+    `marked and cannot be bought. Nothing can be charged on this build.]`
+  );
+}
+
+/** How many colourways still have no confirmed price. Read by launch-check. */
+export function unconfirmedPriceCount(): number {
+  return products.reduce(
+    (n, p) => n + p.colourways.filter((c) => !c.priceConfirmed).length,
+    0,
+  );
+}
 
 export function productBySlug(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);

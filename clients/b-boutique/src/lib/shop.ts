@@ -1,3 +1,4 @@
+import { stocklist } from "./stocklist";
 /** Single source of truth for B Boutique. Everything on the site — the
  *  "open now" badge, the hours table, the schema.org markup — reads from here.
  *  Change it once, it changes everywhere. */
@@ -277,82 +278,114 @@ export function openingPhrase(): string {
    hours table kept. Reinstate them together, timezone-aware, if the badge
    ever comes back. */
 
-/** The rails. These drive the expanding panels. */
+/** The rails. These drive the expanding panels.
+ *
+ *  ── 2026-09-22: these are her categories now, not ours ───────────────────
+ *  This list used to carry eleven: five written at the start of the project
+ *  and four more added on 2026-09-06 "so that every category has stock in it
+ *  rather than a name and an empty shelf". Both sets were invented alongside
+ *  the 26 invented products that filled them.
+ *
+ *  Her real stock arrived on 2026-09-22 and does not fit that shape, which is
+ *  not a surprise — the shape was never taken from her shop. Of the eleven,
+ *  Jackets, Shirts, Skirts, Denim and Accessories have NOTHING in them, and
+ *  two things she does sell, Coats & Jackets as one rail and Co-ords, had
+ *  nowhere to go.
+ *
+ *  So the taxonomy follows the stock rather than the other way round. Seven
+ *  rails, each with pieces actually on it. A named rail with nothing behind
+ *  it is worse than no rail: it is the shop telling a customer to come and
+ *  look at an empty shelf.
+ *
+ *  ACCESSORIES IS THE ONE TO BE CAREFUL WITH. She sells them — the site says
+ *  so in the hero and the About copy, and that is true of the shop on Sea
+ *  View Street. This drop simply has none in it. The category is gone from
+ *  the online rails because nothing online is in it; the copy about the shop
+ *  is untouched because it is about the shop. /accessories says exactly that
+ *  rather than rendering an empty grid. */
 export const categories = [
-  { slug: "all",         name: "Shop All",    note: "Everything on the rails this week, in one place." },
-  { slug: "jackets",     name: "Jackets",     note: "For a street that faces the sea." },
-  { slug: "trousers",    name: "Trousers",    note: "Wide, tailored, and cut to actually fit." },
-  { slug: "dresses",     name: "Dresses",     note: "Occasion, day, and the one you keep coming back to." },
-  { slug: "tops",        name: "Tops",        note: "Silk, cotton and stripes that go with everything." },
-  { slug: "knitwear",    name: "Knitwear",    note: "Lambswool, cotton, and proper weight." },
-  /* Added 2026-09-06 at the client's request, with photography generated to
-     match the existing shoot. Four more of the sections a womenswear boutique
-     of this kind actually runs — they are ordinary shop categories rather than
-     claims about stock, and no piece, price or brand is asserted under any of
-     them. The line under each is written for the demo, in the same voice as
-     the five above. */
-  { slug: "coats",       name: "Coats",       note: "Wool, weight, and enough length to be worth it." },
-  { slug: "shirts",      name: "Shirts",      note: "Cotton poplin, silk, and the good white one." },
-  { slug: "skirts",      name: "Skirts",      note: "Midi, bias-cut, and made to move." },
-  { slug: "denim",       name: "Denim",       note: "Straight, wide, and dark enough for evening." },
-  { slug: "accessories", name: "Accessories", note: "Bags, scarves, and small gold things." },
-  { slug: "homeware",    name: "Homeware",    note: "Candles, ceramics, and things worth wrapping." },
+  { slug: "all",            name: "Shop All",         note: "Everything on the rails this week, in one place." },
+  { slug: "knitwear",       name: "Knitwear",         note: "Fair Isle, boucle, cable and rib — the bulk of this drop." },
+  { slug: "coats-jackets",  name: "Coats & Jackets",  note: "Trench, leopard, quilted check and longline." },
+  { slug: "trousers",       name: "Trousers",         note: "Barrel, wide, straight and a jean jogger." },
+  { slug: "tops",           name: "Tops",             note: "Fine knit, pinstripe and a lace ruffle." },
+  { slug: "co-ords",        name: "Co-ords",          note: "Two pieces, bought to be worn together." },
+  { slug: "dresses",        name: "Dresses",          note: "Knit, with sheer sleeves." },
+  { slug: "homeware",       name: "Homeware",         note: "Glazed ceramic, and things worth wrapping." },
 ] as const;
 
 export type Category = (typeof categories)[number];
 
 /** New in — the short list the home page rail carries.
- *  No price here on purpose: prices live in lib/catalogue.ts, with the shop,
- *  and every one of them is invented. Keeping them out of this file keeps the
- *  rail from becoming a second, quietly diverging price list. */
-export const newIn = [
-  { slug: "wool-trouser",    name: "Wide-leg wool trouser",  category: "Trousers",    tone: "bone" },
-  { slug: "camel-blazer",    name: "Tailored camel blazer",  category: "Jackets",     tone: "marble" },
-  { slug: "lambswool-crew",  name: "Ribbed lambswool crew",  category: "Knitwear",    tone: "gold" },
-  { slug: "cotton-tee",      name: "Heavyweight cotton tee", category: "Tops",        tone: "bone" },
-  { slug: "slip-dress",      name: "Bias-cut silk slip dress", category: "Dresses",   tone: "onyx" },
-  { slug: "leather-crossbody", name: "Leather crossbody",    category: "Accessories", tone: "marble" },
-  { slug: "silk-scarf",      name: "Silk twill scarf",       category: "Accessories", tone: "gold" },
-  { slug: "stoneware-carafe", name: "Stoneware carafe",      category: "Homeware",    tone: "onyx" },
-  { slug: "boucle-overshirt", name: "Boucle overshirt",      category: "Jackets",     tone: "bone" },
-  /* Four accessories added 2026-09-06, with photography generated to match the
-     still lifes above. The accessories page held two pieces, which is not a
-     range — it is what the project happened to contain. Names describe what is
-     in the photograph and nothing else: no brand, no price, no size and no
-     stock count, because none of those is known and every one is a claim. */
-  { slug: "gold-hoops",      name: "Gold hoop earrings",   category: "Accessories", tone: "gold" },
-  { slug: "leather-belt",    name: "Slim leather belt",    category: "Accessories", tone: "bone" },
-  { slug: "lambswool-scarf", name: "Lambswool scarf",      category: "Accessories", tone: "bone" },
-  { slug: "leather-tote",    name: "Structured tote",      category: "Accessories", tone: "marble" },
+ *
+ *  ── 2026-09-22: derived, not typed ───────────────────────────────────────
+ *  This was a hand-written list of nine, then thirteen, invented pieces:
+ *  "Wide-leg wool trouser", "Tailored camel blazer", "Bias-cut silk slip
+ *  dress". None of them existed. The rail on the home page — the most looked
+ *  at thing on the site after the hero — was showing a customer a shop that
+ *  was not there.
+ *
+ *  It now comes out of the stock list, so the rail can only ever carry pieces
+ *  that are really on the rail, with their real names. `moreStock`, which
+ *  held the other thirteen inventions, is deleted rather than emptied: there
+ *  is one list of stock in this project now and it is lib/stocklist.ts.
+ *
+ *  Still no price here, and that rule is unchanged and still right: prices
+ *  live in lib/catalogue.ts with the shop, thirteen colourways are still
+ *  placeholders, and a second price list on the home page is exactly how the
+ *  two quietly drift apart.
+ *
+ *  ── Which pieces, and why not simply the first nine ─────────────────────
+ *  One per category first, in the order the rails run, then the rest of
+ *  knitwear to fill out — so the rail reads as a cross-section of the shop
+ *  rather than nine jumpers, which is what the first nine of the stock list
+ *  would have given (knitwear is 13 of the 32). The order is deterministic:
+ *  no randomness, because a rail that reshuffles on every build makes visual
+ *  regression meaningless. */
+const RAIL_CATEGORY_ORDER = [
+  "Knitwear",
+  "Coats & Jackets",
+  "Trousers",
+  "Tops",
+  "Co-ords",
+  "Dresses",
+  "Homeware",
 ] as const;
 
-/** The rest of the rails.
- *
- *  `newIn` above is what the home page's New In rail carries — a short list,
- *  deliberately, because that rail renders its set twice and every item is a
- *  photograph. This is everything else the shop sells, and the two together
- *  are the catalogue.
- *
- *  Added 2026-09-06 because four clothing categories had a card, a name and
- *  nothing behind them: a boutique with an empty Coats rail. Photography was
- *  generated to match; prices and sizes live in lib/catalogue.ts and every one
- *  of them is invented. Names describe the garment in the photograph and
- *  nothing more — no brand, no fabric weight, no origin, no care. */
-export const moreStock = [
-  { slug: "tapered-trouser",   name: "Tapered tailored trouser", category: "Trousers", tone: "onyx" },
-  { slug: "charcoal-overcoat", name: "Charcoal wool overcoat",   category: "Coats",    tone: "marble" },
-  { slug: "camel-wrap-coat",   name: "Camel wrap coat",          category: "Coats",    tone: "bone" },
-  { slug: "poplin-shirt",      name: "Cotton poplin shirt",      category: "Shirts",   tone: "bone" },
-  { slug: "silk-blouse",       name: "Silk blouse",              category: "Shirts",   tone: "gold" },
-  { slug: "satin-skirt",       name: "Bias-cut satin skirt",     category: "Skirts",   tone: "onyx" },
-  { slug: "pleated-skirt",     name: "Pleated wool skirt",       category: "Skirts",   tone: "marble" },
-  { slug: "straight-jeans",    name: "Straight-leg jean",        category: "Denim",    tone: "onyx" },
-  { slug: "wide-jeans",        name: "Wide-leg ecru jean",       category: "Denim",    tone: "bone" },
-  { slug: "merino-rollneck",   name: "Merino roll-neck",         category: "Knitwear", tone: "onyx" },
-  { slug: "burgundy-dress",    name: "Pleated silk midi dress",  category: "Dresses",  tone: "red" },
-  { slug: "wool-blazer",       name: "Wool tailored blazer",     category: "Jackets",  tone: "marble" },
-  { slug: "striped-top",       name: "Striped cotton top",       category: "Tops",     tone: "bone" },
-] as const;
+export const newIn = (() => {
+  const seen = new Set<string>();
+  const out: { slug: string; name: string; category: string; tone: string; photo: string }[] = [];
+  const push = (p: (typeof stocklist)[number]) => {
+    if (seen.has(p.slug)) return;
+    seen.add(p.slug);
+    out.push({
+      slug: p.slug,
+      name: p.name,
+      category: p.category,
+      /* The designed fallback underneath the photograph, by category. It is a
+         texture rather than a picture of the garment; see lib/catalogue.ts. */
+      tone:
+        p.category === "Coats & Jackets" || p.category === "Dresses"
+          ? "onyx"
+          : p.category === "Homeware"
+            ? "gold"
+            : p.category === "Trousers" || p.category === "Co-ords"
+              ? "marble"
+              : "bone",
+      photo: p.colourways[0].image,
+    });
+  };
+  for (const cat of RAIL_CATEGORY_ORDER) {
+    const first = stocklist.find((p) => p.category === cat);
+    if (first) push(first);
+  }
+  for (const p of stocklist) {
+    if (out.length >= 10) break;
+    push(p);
+  }
+  return out;
+})();
+
 
 
 /** The five featured category panels.

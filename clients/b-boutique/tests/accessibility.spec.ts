@@ -5,12 +5,22 @@ import AxeBuilder from '@axe-core/playwright';
 const ROUTES = [
   '/',
   '/clothing',
-  '/clothing/coats',
+  /* A category page and a product page, named explicitly so the audit covers
+     the two dynamic templates. Both were changed on 2026-09-22 when the 26
+     invented products were replaced by the client's real stock: '/clothing/
+     coats' and '/shop/charcoal-overcoat' no longer exist, and the suite
+     failed on them rather than silently skipping, which is the behaviour to
+     keep. Pick any real slug if these ever change again. */
+  '/clothing/coats-jackets',
   '/accessories',
   '/about',
   '/contact',
   '/shop',
-  '/shop/charcoal-overcoat',
+  '/shop/fair-isle-jumper',
+  /* One whose price is still a placeholder: it renders a different control
+     path (no bag button, an email link instead) and that path needs auditing
+     too. */
+  '/shop/paisley-fringe-belted-cardigan-vest',
   '/bag',
   /* Dynamic, and the state reachable without SumUp keys is the honest
      "we cannot confirm this" page — which is exactly the one a client demo
@@ -58,7 +68,13 @@ for (const route of ROUTES) {
 test('/shop search: filtered results have no WCAG A/AA violations', async ({ page }) => {
   await page.goto('/shop');
   await page.locator('#shop-q').fill('coat');
-  await expect(page.locator('.prod')).toHaveCount(2);
+  /* Five, not two. The count changed on 2026-09-22 when the 26 invented
+     products were replaced by the client's real stock — and the assertion is
+     kept as an exact number rather than loosened to toBeGreaterThan(0),
+     because its job here is to prove the FILTER ACTUALLY RAN before axe
+     looks at the page. A test that accepts any count passes just as happily
+     against an unfiltered grid, which is the state it exists to rule out. */
+  await expect(page.locator('.prod')).toHaveCount(5);
 
   const { violations } = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

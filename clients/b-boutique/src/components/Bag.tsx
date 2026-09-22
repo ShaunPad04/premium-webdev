@@ -213,8 +213,8 @@ export function Bag() {
 
         {catalogueIsDemo || DELIVERY_IS_DEMO ? (
           <p className="page-pending bag-pending">
-            [Demo prices and delivery rate — invented for this build. Nothing
-            can be charged]
+            [Some prices are not confirmed yet, and nothing can be charged on
+            this build.]
           </p>
         ) : null}
 

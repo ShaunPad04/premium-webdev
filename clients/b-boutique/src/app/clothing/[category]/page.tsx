@@ -9,7 +9,7 @@ import { PageMasthead } from "@/components/PageMasthead";
 import { CategoryBar } from "@/components/CategoryBar";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
-import { catalogueIsDemo, productsIn } from "@/lib/catalogue";
+import { pendingPriceNotice, productsIn } from "@/lib/catalogue";
 import { clothingCards } from "@/lib/pages";
 
 /* /clothing/[category] — one rail.
@@ -86,11 +86,8 @@ export default async function CategoryPage({
                 everything is one of one or close to it, so what sells does not
                 come back.
               </p>
-              {catalogueIsDemo ? (
-                <p className="page-pending">
-                  [Demo prices — invented for this build, and nothing can be
-                  charged]
-                </p>
+              {pendingPriceNotice() ? (
+                <p className="page-pending">{pendingPriceNotice()}</p>
               ) : null}
             </div>
 
@@ -102,7 +99,7 @@ export default async function CategoryPage({
             <CategoryBar current={card.slug} />
 
             {items.length ? (
-              <ProductGrid items={items} idPrefix={`cat-${card.slug}`} />
+              <ProductGrid items={items} />
             ) : (
               /* An honest empty state rather than a page that looks broken.
                  It should not be reachable — every category has stock — but a

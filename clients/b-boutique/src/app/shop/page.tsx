@@ -6,7 +6,7 @@ import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { ShopSearch } from "@/components/ShopSearch";
 import { Visit } from "@/components/Visit";
-import { catalogueIsDemo, products } from "@/lib/catalogue";
+import { pendingPriceNotice, products } from "@/lib/catalogue";
 
 export const metadata: Metadata = {
   title: "Shop",
@@ -44,11 +44,8 @@ export default function ShopPage() {
                 Everything is one of one or close to it, so what sells does not
                 come back. Search the rails, or scroll them.
               </p>
-              {catalogueIsDemo ? (
-                <p className="page-pending">
-                  [Demo prices — every price and size on this page is invented
-                  for this build and nothing can be charged]
-                </p>
+              {pendingPriceNotice() ? (
+                <p className="page-pending">{pendingPriceNotice()}</p>
               ) : null}
             </div>
             <ShopSearch items={products} />

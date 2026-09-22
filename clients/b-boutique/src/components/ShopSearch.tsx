@@ -262,7 +262,7 @@ export function ShopSearch({ items }: { items: Product[] }) {
            changes, so filtered pieces arrive rather than silently swapping
            underneath the reader. Without it React reuses the cards and the
            grid appears to have always held these four. */
-        <ProductGrid key={query} items={results} idPrefix="shop" />
+        <ProductGrid key={query} items={results} />
       ) : (
         <div className="find-empty">
           <p className="find-empty-lede">
