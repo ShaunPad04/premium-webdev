@@ -17,15 +17,24 @@
  *
  *  ── The two provenance flags, and why they are not decoration ────────────
  *
- *  `priceConfirmed` — 53 of the 54 colourways carry a price the client has
- *  confirmed. ONE DOES NOT, and it is not the one it used to be:
+ *  `priceConfirmed` — ALL 54 colourways on the site carry a confirmed price
+ *  as of 2026-09-22. The last two open questions were settled that evening:
  *
- *    - The Italian Knit Ribbed Cardigan in Cream was the dashboard's
- *      PLACEHOLDER until 2026-09-22, when her form priced it at £65.
- *    - The Striped Fuzzy Zip Up Jumper in Red was UN-confirmed the same day,
- *      because her form (£48) disagrees with her own WhatsApp (£40). See the
- *      note on that line.
+ *    - Italian Knit Ribbed Cardigan, Cream: £65 (her form). The master stock
+ *      list says £45; Brad confirmed £65.
+ *    - Striped Fuzzy Zip Up Jumper, Red / Pink: £40 (the master list and
+ *      Brad). Her form had said £48.
  *
+ *  ── The master stock list, 2026-09-22 ────────────────────────────────────
+ *  Brad supplied a newer, larger list (40 pieces) and confirmed it as the
+ *  master. Applied from it: colour names (Taupe → Beige, Red → Red / Pink,
+ *  Red check → Pink / Burgundy Check, with SKUs to match and the same
+ *  photographs), two names (Balloon Sleeves Oversized Coat; Piping Detail
+ *  Denim Jacket and Trouser Set — slugs kept so links do not break), and the
+ *  REAL SIZE RUNS of the Zebra jeans (XS–XL) and the denim set (XXS, XS, M,
+ *  L), which the site had been selling as "One size". Its eight new pieces
+ *  are in `awaitingPhotos` at the foot of this file.
+
  *  An unconfirmed price is not a price. It must never be displayed as one and
  *  must never reach a payment — /api/checkout refuses a line whose piece is
  *  still `demo`, and the product page renders no Add to bag button at all.
@@ -58,7 +67,7 @@
  *  OFF and must render as description, never as a label.
  *
  *  ── What is deliberately NOT in this file ────────────────────────────────
- *  Stock counts. The dashboard carries a count for 35 colourways, but it
+ *  Stock counts. The master list carries a count for every colourway, but it
  *  counts the COLOURWAY, not the variant — "Black = 5" across a run of five
  *  sizes does not say one of each, and splitting it would be inventing the
  *  split. Counts live in the database, are entered per variant on /stock, and
@@ -177,7 +186,7 @@ export const stocklist: readonly StockPiece[] = [
     supplierCode: "",
     colourways: [
       { sku: "BB-ASYMJMP-BRN", supplierRef: "", colour: "Brown", priceP: 3800, priceConfirmed: true, image: "bb-asymjmp-brn" },
-      { sku: "BB-ASYMJMP-TAU", supplierRef: "", colour: "Taupe", priceP: 3800, priceConfirmed: true, image: "bb-asymjmp-tau" },
+      { sku: "BB-ASYMJMP-BEI", supplierRef: "", colour: "Beige", priceP: 3800, priceConfirmed: true, image: "bb-asymjmp-tau" /* "Beige" per the master list; same photograph */ },
     ],
   },
   {
@@ -209,8 +218,12 @@ export const stocklist: readonly StockPiece[] = [
     fabric: "98% Cotton, 2% Elastane",
     fabricPublished: true,
     care: "Machine wash 30°C. Wash dark colours separately. Do not tumble dry.",
-    sizes: ["One size"],
-    sizeNote: "fits up to 14",
+    /* A real size run, from the master stock list (2026-09-22): "XS (1),
+       S (3), M (3), L (2), XL (1)". It was "One size, fits up to 14" until
+       then — so a customer could not choose a size and an order would have
+       arrived with none on it. */
+    sizes: ["XS", "S", "M", "L", "XL"],
+    sizeNote: "",
     supplier: "Babez London",
     supplierCode: "Y3582",
     colourways: [
@@ -232,25 +245,16 @@ export const stocklist: readonly StockPiece[] = [
     supplier: "Babez London",
     supplierCode: "9263",
     colourways: [
-      { sku: "BB-STRIPEZIP-TAU", supplierRef: "9263-TAU", colour: "Taupe", priceP: 4000, priceConfirmed: true, image: "bb-stripezip-tau" },
-      /* UN-confirmed 2026-09-22, on purpose. Two of the client's own
-         statements disagree: her WhatsApp gave the piece one price, "Fuzzy
-         zip 40", and her filled-in form gives Taupe £40 but Red £48.
-
-         Either the Red genuinely costs more, or a 0 became an 8. Nothing
-         here can tell those apart, so neither is picked. Setting 4800 would
-         not even build — priceFor() refuses a piece whose colourways
-         disagree, because the card, product page, bag and checkout all
-         carry ONE price per piece. If £48 is right, that is per-colourway
-         pricing through the whole checkout path, a real change and not a
-         one-number edit.
-
-         Knock-on, accepted: `demo` is per product, so the Taupe shows
-         "Price to confirm" too until this is answered. It costs nothing
-         today — checkout cannot take money until NEXT_PUBLIC_SITE_URL is
-         set — and it keeps the question on the launch check, which is
-         where an open question about a price belongs. */
-      { sku: "BB-STRIPEZIP-RED", supplierRef: "9263-RED", colour: "Red", priceP: 4000, priceConfirmed: false, image: "bb-stripezip-red" },
+      /* Colour names and SKUs from the master stock list, 2026-09-22 — it
+         calls these Beige and Red / Pink (BEI, RPK), where the first
+         transcription said Taupe and Red. The photographs are the same
+         files, kept under their original names. */
+      { sku: "BB-STRIPEZIP-BEI", supplierRef: "9263-TAU", colour: "Beige", priceP: 4000, priceConfirmed: true, image: "bb-stripezip-tau" },
+      /* £40, SETTLED 2026-09-22. It was briefly un-confirmed because her
+         form said £48 and her WhatsApp £40; the master stock list says £40
+         and Brad confirmed £40. Same price as the beige, so one price per
+         piece still holds. */
+      { sku: "BB-STRIPEZIP-RPK", supplierRef: "9263-RED", colour: "Red / Pink", priceP: 4000, priceConfirmed: true, image: "bb-stripezip-red" },
     ],
   },
   {
@@ -264,7 +268,7 @@ export const stocklist: readonly StockPiece[] = [
     fabricPublished: false,
     care: "Machine wash 30°C, gentle cycle. Do not tumble dry.",
     sizes: ["One size"],
-    sizeNote: "fits up to 14",
+    sizeNote: "fits up to 16", /* 16, per the master stock list (2026-09-22); was 14 */
     supplier: "Babez London",
     supplierCode: "2866",
     colourways: [
@@ -273,7 +277,7 @@ export const stocklist: readonly StockPiece[] = [
   },
   {
     slug: "balloon-sleeve-longline-coat",
-    name: "Balloon Sleeve Longline Coat",
+    name: "Balloon Sleeves Oversized Coat", /* renamed per the master stock list, 2026-09-22; slug kept so links do not break */
     category: "Coats & Jackets",
     short: "A longline coat with full balloon sleeves.",
     full: "Falls below the knee with a funnel neck and a button-through front. The balloon sleeves gather at the cuff, which is what lifts it above an ordinary winter coat. Cut generously enough to go over a jumper.",
@@ -311,7 +315,7 @@ export const stocklist: readonly StockPiece[] = [
   },
   {
     slug: "piping-detail-denim-jacket-trouser-set",
-    name: "Piping Detail Denim Jacket & Trouser Set",
+    name: "Piping Detail Denim Jacket and Trouser Set",
     category: "Co-ords",
     short: "A two-piece denim set with contrast white piping.",
     full: "Cropped jacket with a full-length zip and matching wide-leg drawstring trousers, with white piping running down the sleeves and along the trouser sides. Wear it together as a set or split the two across the rest of your wardrobe.",
@@ -319,8 +323,11 @@ export const stocklist: readonly StockPiece[] = [
     fabric: "Cotton",
     fabricPublished: false,
     care: "Machine wash 30°C. Wash dark colours separately. Do not tumble dry.",
-    sizes: ["One size"],
-    sizeNote: "fits up to 14",
+    /* A real size run, from the master stock list (2026-09-22): "XXS (1),
+       XS (2), M (1), L (1)" — no S, which is the list's, not a slip here.
+       It was "One size, fits up to 14" until then. */
+    sizes: ["XXS", "XS", "M", "L"],
+    sizeNote: "",
     supplier: "Babez London",
     supplierCode: "K2225 / K2226",
     colourways: [
@@ -590,7 +597,7 @@ export const stocklist: readonly StockPiece[] = [
     supplier: "",
     supplierCode: "",
     colourways: [
-      { sku: "BB-BOMBER-RED", supplierRef: "", colour: "Red check", priceP: 4900, priceConfirmed: true, image: "bb-bomber-red" },
+      { sku: "BB-BOMBER-PBG", supplierRef: "", colour: "Pink / Burgundy Check", priceP: 4900, priceConfirmed: true, image: "bb-bomber-red" /* renamed per the master list; same photograph */ },
     ],
   },
   {
@@ -793,3 +800,176 @@ export function sizeSummary(): string {
     `because the fit differs more than a label suggests.`
   );
 }
+
+/** Pieces on the master stock list that are NOT on the site yet, because
+ *  there is no photograph of them.
+ *
+ *  Added 2026-09-22 from the master stock list Brad supplied (40 pieces;
+ *  the site had 32). Every field was copied from that list by script, not
+ *  retyped. Prices are all marked Confirmed there. Every fabric is a
+ *  description, "NO fibre % verified" in the list's own words, so
+ *  fabricPublished is false on all eight.
+ *
+ *  ── Why a separate list and not a `hidden` flag ──────────────────────────
+ *  Ten parts of the site read `stocklist` — pages, search, the bag, checkout,
+ *  the sitemap, /stock, structured data. A flag would have to be honoured by
+ *  every one of them, and the one that forgot would put a product with no
+ *  picture on a real shop. Kept apart, nothing CAN show them.
+ *
+ *  ── To put one live ──────────────────────────────────────────────────────
+ *  The list names each photograph (e.g. bb-barrelcord-bei) but does not carry
+ *  the images. Run them through `pnpm images` into public/img/product under
+ *  exactly those names, then MOVE the piece from this list into `stocklist`
+ *  above. `pnpm launch-check` lists whatever is still waiting. Never give one
+ *  a stand-in or generated photograph: it would be a picture of something
+ *  that is not the garment. */
+export const awaitingPhotos: readonly StockPiece[] = [
+  {
+    slug: "cord-barrel-leg-trousers",
+    name: "Cord Barrel Leg Trousers",
+    category: "Trousers",
+    short: "Soft needlecord trousers with a full barrel leg and an easy pull-on waist.",
+    full: "A relaxed barrel shape that curves out through the leg and tapers back in at the ankle, cut in a soft fine-wale cord with a slight sheen. The fully elasticated waist makes them as comfortable as joggers, but the curved seams keep them looking considered. Wear with a fitted knit or a cropped top to balance the volume.",
+    features: ["Curved barrel leg", "Fully elasticated pull-on waist", "Deep slanted side pockets", "Shaped seams through the leg", "Cropped ankle length"],
+    fabric: "Soft fine-wale needlecord with a light sheen",
+    fabricPublished: false,
+    care: "Machine wash 30°C inside out. Do not tumble dry. Cool iron on the reverse.",
+    sizes: ["One size"],
+    sizeNote: "fits up to 16",
+    supplier: "",
+    supplierCode: "",
+    colourways: [
+      { sku: "BB-BARRELCORD-BEI", supplierRef: "", colour: "Beige", priceP: 2800, priceConfirmed: true, image: "bb-barrelcord-bei" },
+      { sku: "BB-BARRELCORD-BUR", supplierRef: "", colour: "Burgundy", priceP: 2800, priceConfirmed: true, image: "bb-barrelcord-bur" },
+      { sku: "BB-BARRELCORD-BRN", supplierRef: "", colour: "Dark Brown", priceP: 2800, priceConfirmed: true, image: "bb-barrelcord-brn" },
+      { sku: "BB-BARRELCORD-KHA", supplierRef: "", colour: "Khaki", priceP: 2800, priceConfirmed: true, image: "bb-barrelcord-kha" },
+    ],
+  },
+  {
+    slug: "leopard-embroidered-velvet-bomber",
+    name: "Leopard Embroidered Velvet Bomber",
+    category: "Coats & Jackets",
+    short: "A soft velvet bomber scattered with gold leopards and finished in leopard print trim.",
+    full: "Plush velvet in a classic bomber cut, with running leopards embroidered across the front and down the sleeves in metallic gold and tan. The ribbed collar, cuffs and hem are all in leopard print, and a ring-pull zip runs up the front. Easy to throw over jeans or black trousers and make the outfit.",
+    features: ["Embroidered leopard motifs", "Leopard print hem and cuffs", "Ribbed baseball collar", "Ring-pull front zip", "Raglan sleeves"],
+    fabric: "Soft velvet with metallic embroidery and printed rib trims",
+    fabricPublished: false,
+    care: "Hand wash cold inside out. Do not tumble dry. Do not iron the embroidery.",
+    sizes: ["One size"],
+    sizeNote: "fits up to 16",
+    supplier: "",
+    supplierCode: "",
+    colourways: [
+      { sku: "BB-LEOBOMBER-BEI", supplierRef: "", colour: "Beige", priceP: 3400, priceConfirmed: true, image: "bb-leobomber-bei" },
+      { sku: "BB-LEOBOMBER-BLK", supplierRef: "", colour: "Black", priceP: 3400, priceConfirmed: true, image: "bb-leobomber-blk" },
+    ],
+  },
+  {
+    slug: "check-tweed-culotte-shorts",
+    name: "Check Tweed Culotte Shorts",
+    category: "Trousers",
+    short: "Tailored wide-leg culottes in a warm burgundy check tweed with turned-up cuffs.",
+    full: "A smart wide-leg culotte that finishes just below the knee, cut in a textured burgundy check with pressed front pleats and a deep turned-up cuff. The high waist sits neatly under a tucked-in knit. Dress them up with heels or keep them simple with boots and tights.",
+    features: ["Wide culotte leg, below-knee length", "Pressed front pleats", "Deep turned-up cuffs", "High waist with belt loops", "Textured check tweed"],
+    fabric: "Textured woven check tweed",
+    fabricPublished: false,
+    care: "Dry clean recommended. Cool iron.",
+    sizes: ["One size"],
+    sizeNote: "fits up to 16",
+    supplier: "",
+    supplierCode: "",
+    colourways: [
+      { sku: "BB-TWEEDSHORT-BUR", supplierRef: "", colour: "Burgundy", priceP: 3700, priceConfirmed: true, image: "bb-tweedshort-bur" },
+    ],
+  },
+  {
+    slug: "pinstripe-pleated-shirt",
+    name: "Pinstripe Pleated Shirt",
+    category: "Tops",
+    short: "An oversized chocolate pinstripe shirt with a deep V neck and pleated waist.",
+    full: "A relaxed shirt in rich chocolate brown with a fine pale pinstripe. The open collar drops into a deep V, and the front is gathered into soft pleats at the waist before falling loose over the hips with a curved hem. Wide dropped sleeves finish in buttoned cuffs. Looks sharp tucked in or left out.",
+    features: ["Fine pinstripe", "Open collar with deep V neck", "Pleated waist detail", "Dropped shoulders, buttoned cuffs", "Curved shirttail hem"],
+    fabric: "Smooth woven pinstripe shirting",
+    fabricPublished: false,
+    care: "Machine wash 30°C. Do not tumble dry. Warm iron.",
+    sizes: ["S/M", "M/L"],
+    sizeNote: "2 of each",
+    supplier: "",
+    supplierCode: "",
+    colourways: [
+      { sku: "BB-PINSHIRT-CHO", supplierRef: "", colour: "Chocolate", priceP: 4400, priceConfirmed: true, image: "bb-pinshirt-cho" },
+    ],
+  },
+  {
+    slug: "check-tweed-shirt",
+    name: "Check Tweed Shirt",
+    category: "Tops",
+    short: "A soft brushed check shirt in camel that works as a shirt or a light overshirt.",
+    full: "A relaxed longline shirt in a small camel, olive and brown check with a brushed, tweedy handle. Classic collar, full button front and a curved hem that sits over the hips. Wear it buttoned, or open over a plain knit as a layer.",
+    features: ["Small multi-tone check", "Brushed tweed-feel finish", "Classic collar, full button front", "Relaxed longline fit", "Curved hem"],
+    fabric: "Soft brushed woven check",
+    fabricPublished: false,
+    care: "Machine wash 30°C. Do not tumble dry. Warm iron.",
+    sizes: ["S/M", "M/L"],
+    sizeNote: "2 of each",
+    supplier: "",
+    supplierCode: "",
+    colourways: [
+      { sku: "BB-TWEEDSHIRT-CAM", supplierRef: "", colour: "Camel", priceP: 4400, priceConfirmed: true, image: "bb-tweedshirt-cam" },
+    ],
+  },
+  {
+    slug: "amour-zip-up-track-knit",
+    name: "Amour Zip Up Track Knit",
+    category: "Knitwear",
+    short: "A chunky zip-through knit with sporty stripes and an embroidered amour motif.",
+    full: "A cosy track-jacket shape in a textured chocolate knit, with cream stripes running down both sleeves and an embroidered heart and amour logo on the chest. The high ribbed funnel neck, cuffs and hem are all in cream, with matching trim on the pockets. A full two-way zip runs up the front.",
+    features: ["Embroidered amour motif", "Cream sleeve stripes", "High ribbed funnel neck", "Two-way full zip", "Rib-trimmed front pockets"],
+    fabric: "Chunky textured knit with ribbed trims",
+    fabricPublished: false,
+    care: "Hand wash cold. Do not tumble dry. Dry flat.",
+    sizes: ["One size"],
+    sizeNote: "fits up to 16",
+    supplier: "",
+    supplierCode: "",
+    colourways: [
+      { sku: "BB-AMOURTRACK-CHO", supplierRef: "", colour: "Chocolate Brown", priceP: 4500, priceConfirmed: true, image: "bb-amourtrack-cho" },
+    ],
+  },
+  {
+    slug: "striped-asymmetric-knit-top",
+    name: "Striped Asymmetric Knit Top",
+    category: "Tops",
+    short: "A fine-rib knit top with bold vertical stripes and a sloping asymmetric hem.",
+    full: "Chocolate brown with bold vertical stripes in pink and white, cut with a neat funnel neck and short cap sleeves. The hem slopes from one side to the other, so it sits shorter on one hip. A strong piece on its own with plain trousers.",
+    features: ["Bold vertical stripes", "Asymmetric sloping hem", "Funnel neck", "Cap sleeves", "Fine ribbed knit"],
+    fabric: "Fine ribbed stretch knit",
+    fabricPublished: false,
+    care: "Machine wash 30°C. Do not tumble dry. Dry flat.",
+    sizes: ["One size"],
+    sizeNote: "fits up to 16",
+    supplier: "",
+    supplierCode: "",
+    colourways: [
+      { sku: "BB-STRIPETOP-CHO", supplierRef: "", colour: "Chocolate / Pink", priceP: 3000, priceConfirmed: true, image: "bb-stripetop-cho" },
+    ],
+  },
+  {
+    slug: "cosy-hooded-boucle-coat",
+    name: "Cosy Hooded Boucle Coat",
+    category: "Coats & Jackets",
+    short: "A longline hooded coat in a soft curly boucle, cut roomy for layering.",
+    full: "A relaxed cocoon-shaped coat in a warm brown boucle with a curly, textured surface. It has a big draped hood, a yoke seam across the chest, four large buttons down the front and turned-back cuffs. Long enough to cover the hips, and roomy enough to go over a chunky knit.",
+    features: ["Curly boucle texture", "Large draped hood", "Four-button front", "Turned-back cuffs", "Side pockets, longline length"],
+    fabric: "Soft curly boucle",
+    fabricPublished: false,
+    care: "Dry clean only.",
+    sizes: ["One size"],
+    sizeNote: "fits up to 18",
+    supplier: "",
+    supplierCode: "",
+    colourways: [
+      { sku: "BB-HOODCOAT-BRN", supplierRef: "", colour: "Brown", priceP: 3800, priceConfirmed: true, image: "bb-hoodcoat-brn" },
+    ],
+  },
+];

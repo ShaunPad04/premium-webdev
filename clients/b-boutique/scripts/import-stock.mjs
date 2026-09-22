@@ -21,12 +21,12 @@
  * count at all: it would let the site confidently sell an XXL that does not
  * exist while refusing an M that does.
  *
- * Two cases, and only two, are unambiguous:
+ * Three cases are unambiguous:
  *
  *   ONE SIZE    The run is a single size, so the colourway total IS the
  *               variant count. Exact, no inference.
- *   STATED      The dashboard states the split in words. Exactly one piece
- *               does: jean-jogger, "S/M, M/L, L/XL (2 of each)".
+ *   STATED      The list states the split: jean-jogger "(2 of each)", and
+ *               an exact count per size for the zebra jeans and denim set.
  *
  * Everything else is left UNCOUNTED on purpose and has to be counted per size
  * by a person on /stock. The script prints what it skipped and why, so the
@@ -49,12 +49,23 @@ import { readFileSync } from "node:fs";
 const WRITE = process.argv.includes("--write");
 const FORCE = process.argv.includes("--force");
 
-/* The dashboard's per-colourway counts, transcribed 2026-09-22 alongside
-   lib/stocklist.ts. Kept here rather than in stocklist.ts because a COUNT is
-   not a property of the catalogue — it changes every time something sells,
-   and the catalogue is a build-time constant. This file is the opening
-   balance, not the source of truth; the database is. */
+/* Opening counts per colourway, from the MASTER stock list Brad supplied on
+   2026-09-22 (40 pieces; the 8 still awaiting photographs are not here, so
+   nothing is counted for a product the site cannot show). It replaced the
+   earlier dashboard figures, which covered 35 of 54 colourways; this covers
+   every colourway on the site. Generated from the list, not retyped. */
 const OPENING = {
+  "fair-isle-jumper": { Beige: 2, Brown: 4 },
+  "faux-feather-sleeveless-jumper": { Black: 3, Beige: 3 },
+  "paisley-fringe-belted-cardigan-vest": { Burgundy: 3, Brown: 3 },
+  "fine-knit-jumper-with-asymmetric-hem": { Brown: 3, Beige: 6 },
+  "lace-blouse-with-layered-ruffle": { Burgundy: 3, Brown: 3 },
+  "zebra-print-balloon-leg-jeans": { "Zebra Print": 10 },
+  "striped-fuzzy-zip-up-jumper": { Beige: 3, "Red / Pink": 3 },
+  "plaid-check-hooded-jacket": { Beige: 3 },
+  "balloon-sleeve-longline-coat": { Burgundy: 2, Brown: 2, Camel: 2 },
+  "amour-half-zip-wool-jumper": { Navy: 3 },
+  "piping-detail-denim-jacket-trouser-set": { "Denim Blue": 5 },
   "pleated-barrel-trouser": { Navy: 3, Beige: 3 },
   "jewelled-collar-cardigan": { Black: 2, Burgundy: 2, Cream: 1 },
   "multi-jumper": { Brown: 3, Olive: 3 },
@@ -68,17 +79,26 @@ const OPENING = {
   "paisley-oversized-knitted-jumper": { Brown: 3, Burgundy: 3 },
   "leopard-print-longline-coat": { "Leopard Print": 1 },
   "short-trench-coat": { Sand: 3 },
-  "high-neck-checked-bomber": { "Red check": 2 },
+  "high-neck-checked-bomber": { "Pink / Burgundy Check": 2 },
   "italian-knit-belted-cardigan": { Brown: 3 },
   "italian-knit-rosette-jumper": { Cream: 3 },
+  "italian-knit-ribbed-cardigan": { Cream: 3 },
   "chunky-knit-flower-cardigan": { Brown: 3 },
   "tomato-vase": { Red: 4 },
   "banana-jar": { Yellow: 3 },
   "bell-vase": { Gold: 4 },
 };
 
-/** The one piece whose per-size split the dashboard states in words. */
+
+/** Pieces whose per-size split the list STATES, so importing it is copying,
+ *  not inferring. jean-jogger: "S/M, M/L, L/XL (2 of each)". The jeans and the
+ *  denim set give an exact count per size in the master list; each split was
+ *  checked to add up to its colourway total before being written here. */
 const STATED_SPLIT = { "jean-jogger": 2 };
+const STATED_SIZES = {
+  "zebra-print-balloon-leg-jeans": {"XS": 1, "S": 3, "M": 3, "L": 2, "XL": 1},
+  "piping-detail-denim-jacket-trouser-set": {"XXS": 1, "XS": 2, "M": 1, "L": 1},
+};
 
 function variantId(slug, size, colour) {
   const part = (s) =>
@@ -119,6 +139,14 @@ async function main() {
     for (const [colour, total] of Object.entries(byColour)) {
       if (run.length === 1) {
         plan.push({ id: variantId(slug, run[0], colour), qty: total, why: "one size" });
+        continue;
+      }
+      const bySize = STATED_SIZES[slug];
+      if (bySize !== undefined) {
+        for (const size of run) {
+          if (bySize[size] === undefined) throw new Error(`${slug}: no stated count for ${size}`);
+          plan.push({ id: variantId(slug, size, colour), qty: bySize[size], why: "per-size count stated" });
+        }
         continue;
       }
       const each = STATED_SPLIT[slug];

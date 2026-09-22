@@ -216,6 +216,29 @@ if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
   );
 }
 
+/* Pieces on the master stock list that are not on the site because nobody has
+   supplied their photographs. A NOTE, not a blocker: nothing about them is
+   shown, so nothing about them is claimed. But a shop's stock missing from its
+   own website is worth seeing on every run, or it is forgotten. Also says when
+   the files have arrived, so moving a piece live is not left waiting on a
+   check nobody thought to make. */
+{
+  const waiting = (stocklist.split('export const awaitingPhotos')[1] ?? '');
+  const pieces = [...waiting.matchAll(/\n    name: "([^"]+)"[\s\S]*?colourways: \[([\s\S]*?)\n    \]/g)].map((m) => ({
+    name: m[1],
+    images: [...m[2].matchAll(/image: "([^"]+)"/g)].map((x) => x[1]),
+  }));
+  if (pieces.length) {
+    const have = new Set(existsSync('public/img/product') ? readdirSync('public/img/product') : []);
+    const ready = pieces.filter((p) => p.images.every((img) => [...have].some((f) => f.startsWith(img + '-'))));
+    notes.push(
+      `${pieces.length} piece${pieces.length === 1 ? ' is' : 's are'} on the stock list but NOT on the site, awaiting photographs: ` +
+        pieces.map((p) => p.name).join(', ') + '. See awaitingPhotos in src/lib/stocklist.ts.' +
+        (ready.length ? ` Photographs are now present for: ${ready.map((p) => p.name).join(', ')} — move ${ready.length === 1 ? 'it' : 'them'} into stocklist.` : ''),
+    );
+  }
+}
+
 /* ── 6. The privacy page's claims, which expire ─────────────────────────── */
 /* /privacy states as fact that this site has no analytics, no tracking and no
    cookies. That was true when it was written and is one npm install away from
