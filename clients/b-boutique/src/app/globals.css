@@ -4725,6 +4725,28 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
            clamp(48px, 7vw, 110px);
 }
 
+/* The breadcrumb was landing UNDERNEATH the fixed header.
+ *
+ * Measured at scroll 0: the header is 106px on desktop — 72px of navigation
+ * plus the 33px announcement strip — and `clamp(40px, 6vw, 96px)` resolves to
+ * 86px at 1440 and 96px at 1920. So "Shop / Knitwear" sat at y 86-101 and was
+ * completely invisible at 1440, and two-thirds covered at 1920.
+ *
+ * It is not permanent: the announcement strip collapses on the first scroll,
+ * the header drops to 72px and the breadcrumb appears. But scroll 0 is where
+ * every customer arriving from the grid starts, and a navigation control that
+ * only exists after you scroll past it is not a navigation control.
+ *
+ * The floor clears 72 + 33 with 19px of air. Only on desktop: below 1024 the
+ * body column sits under the photograph and starts 400px down the page.
+ *
+ * `--header-h` is NOT the number to use here and is not wrong — it is 72px,
+ * the height the header settles at once the strip has gone, which is the
+ * right offset for the sticky media column beside this one. The two want
+ * different figures because they are measured at different scroll positions. */
+@media (min-width: 1024px) {
+  .pdp-body { padding-top: max(clamp(40px, 6vw, 96px), 124px); }
+}
 .pdp-inner { width: 100%; max-width: 520px; }
 
 .pdp-cat {
