@@ -207,14 +207,20 @@ export function useCart() {
 
   return useMemo(() => {
     const count = lines.reduce((n, l) => n + l.qty, 0);
-    /* Priced from the catalogue, never from the stored line. */
+    /* Priced from the catalogue, never from the stored line — and only from
+       pieces that can actually be bought. A piece whose price was withdrawn
+       after it went in the bag (`demo`) adds nothing: its old figure is an
+       unconfirmed price, and a total is a display of it just as much as the
+       line is. The bag names such a piece and will not check out with it. */
     const subtotalP = lines.reduce((sum, l) => {
       const p = productBySlug(l.slug);
-      return p ? sum + p.priceP * l.qty : sum;
+      return p && !p.demo ? sum + p.priceP * l.qty : sum;
     }, 0);
     /* One definition of the delivery rule, shared with the checkout, so the
-       price shown in the bag and the price actually charged cannot drift. */
-    const deliveryP = count === 0 ? 0 : deliveryFor(subtotalP);
+       price shown in the bag and the price actually charged cannot drift.
+       Keyed on the subtotal rather than the count, so a bag holding only an
+       unpriced piece is not quoted £4.35 postage on nothing. */
+    const deliveryP = subtotalP === 0 ? 0 : deliveryFor(subtotalP);
     return {
       lines,
       count,

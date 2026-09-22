@@ -5,7 +5,6 @@ import Link from "next/link";
 
 import {
   DELIVERY_IS_DEMO,
-  catalogueIsDemo,
   formatPrice,
   productBySlug,
 } from "@/lib/catalogue";
@@ -74,6 +73,31 @@ export function Bag() {
     }, 220);
   }
 
+  /* The pieces in THIS bag that cannot be bought yet.
+   *
+   * The notice used to read the whole catalogue: any unpriced piece anywhere
+   * on the site put "[Some prices are not confirmed yet, and nothing can be
+   * charged on this build.]" into every customer's bag, including a bag
+   * holding only pieces with confirmed prices. It told them nothing about
+   * their own order and blamed the wrong thing — what stops a charge before
+   * launch is the unset NEXT_PUBLIC_SITE_URL, not the price of a jumper they
+   * never picked up.
+   *
+   * It can genuinely happen to a customer, which is why this is not simply
+   * deleted: a bag lives in localStorage, and a piece added while it was
+   * priced stays in the bag after its price is withdrawn. The Striped Fuzzy
+   * Zip Up Jumper was buyable until 2026-09-22. /api/checkout refuses such a
+   * line with 409 price_unconfirmed; this says so first, by name. */
+  const unpriced = [
+    ...new Set(
+      lines.map((l) => productBySlug(l.slug)).filter((p) => p?.demo).map((p) => p!.name),
+    ),
+  ];
+  const unpricedMessage =
+    unpriced.length === 0
+      ? null
+      : `${unpriced.join(" and ")} ${unpriced.length === 1 ? "does" : "do"} not have a confirmed price yet, so ${unpriced.length === 1 ? "it cannot" : "they cannot"} be bought. Remove ${unpriced.length === 1 ? "it" : "them"} to check out.`;
+
   if (count === 0) {
     return (
       <div className="bag-empty">
@@ -90,7 +114,7 @@ export function Bag() {
 
     /* Checked here so somebody is told before the button does anything, and
        checked again on the server because this one can be skipped. */
-    const problem = detailsProblem(details);
+    const problem = unpricedMessage ?? detailsProblem(details);
     if (problem) {
       setError(problem);
       return;
@@ -160,7 +184,13 @@ export function Bag() {
                     broken image exactly where somebody is deciding whether to
                     trust the shop with a card. The client spotted it. */}
                 <ProductPhoto
-                  photo={p.photo}
+                  /* The photograph of the colour in the BAG, not the piece's
+                     first colourway. `p.photo` is colourways[0], so until
+                     2026-09-22 every multi-colour piece — 18 of the 32 —
+                     showed its first colour here whatever was chosen: a Red
+                     Striped Fuzzy Zip Up Jumper sat in the bag as the Taupe
+                     one. Falls back to `p.photo` for a line with no colour. */
+                  photo={p.colourways.find((c) => c.colour === line.colour)?.image ?? p.photo}
                   square={p.category === "Homeware"}
                   alt=""
                   sizes="120px"
@@ -179,7 +209,11 @@ export function Bag() {
                       prints nothing rather than an empty separator. */}
                   {line.colour ? ` · ${line.colour}` : ""}
                 </p>
-                <p className="bag-each">{formatPrice(p.priceP)}</p>
+                {/* "Price to confirm", the same words the grid and product
+                    page use, for a piece whose price was withdrawn after it
+                    went in the bag. Showing the old figure here would be
+                    displaying an unconfirmed price — locked decision 15. */}
+                <p className="bag-each">{p.demo ? "Price to confirm" : formatPrice(p.priceP)}</p>
               </div>
 
               <div className="bag-qty">
@@ -221,7 +255,14 @@ export function Bag() {
               </div>
 
               <p className="bag-line-total">
-                {formatPrice(p.priceP * line.qty)}
+                {p.demo ? (
+                  <>
+                    <span aria-hidden="true">&mdash;</span>
+                    <span className="sr-only">No price yet</span>
+                  </>
+                ) : (
+                  formatPrice(p.priceP * line.qty)
+                )}
               </p>
             </li>
           );
@@ -244,10 +285,15 @@ export function Bag() {
           </div>
         </dl>
 
-        {catalogueIsDemo || DELIVERY_IS_DEMO ? (
+        {/* A plain sentence, not the bracketed [page-pending] style: this is
+            about the customer's own order and what to do about it, not a
+            note about the build. */}
+        {unpricedMessage ? (
+          <p className="bag-pending bag-unpriced">{unpricedMessage}</p>
+        ) : DELIVERY_IS_DEMO ? (
           <p className="page-pending bag-pending">
-            [Some prices are not confirmed yet, and nothing can be charged on
-            this build.]
+            [Delivery charges are not confirmed yet, and nothing can be charged
+            on this build.]
           </p>
         ) : null}
 

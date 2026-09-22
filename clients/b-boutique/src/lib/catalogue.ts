@@ -18,8 +18,10 @@ import { stocklist, type StockPiece } from "./stocklist";
  *  money, and they are handled rather than hoped about:
  *
  *    - A piece whose price is not confirmed carries `demo: true`, exactly as
- *      all 26 used to, so `catalogueIsDemo` stays true and the shop keeps
- *      rendering its notice.
+ *      all 26 used to. The bag names any such piece a customer is holding
+ *      and will not check out with it. (It used to show a site-wide notice
+ *      whenever ANY piece was unpriced — `catalogueIsDemo`, removed
+ *      2026-09-22 — which put a warning into bags holding nothing unpriced.)
  *    - `isBuyable` is false for it, and the product page, the grid and the
  *      checkout each ask rather than assume.
  *    - NEXT_PUBLIC_SITE_URL stays unset, so /api/checkout still answers 503
@@ -204,10 +206,6 @@ export function unconfirmedPriceCount(): number {
 export function productBySlug(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
-
-/** True while any price is invented. The shop renders one notice for as long
- *  as this is true, and it is the single thing to check before taking money. */
-export const catalogueIsDemo = products.some((p) => p.demo);
 
 /** Pence to a readable price, in one place.
  *

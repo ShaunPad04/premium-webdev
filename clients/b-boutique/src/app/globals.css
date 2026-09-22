@@ -5257,6 +5257,17 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .bag-total-row dt { color: var(--bb-black) !important; }
 
 .bag-pending { margin-top: 18px; }
+/* The customer's own problem, in a sentence they act on — so body-size type
+   rather than the 10px tracked caps of .page-pending, which is a note about
+   the build. A full rouge border rather than a side stripe: the stripe is
+   banned here, and a whole frame reads as "about this box", which it is. */
+.bag-unpriced {
+  padding: 12px 14px;
+  border: 1px solid var(--bb-rouge);
+  color: var(--bb-black);
+  font-size: 14px;
+  line-height: 1.5;
+}
 .bag-checkout { width: 100%; justify-content: center; margin-top: 22px; }
 
 .bag-legal {
