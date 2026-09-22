@@ -166,7 +166,11 @@ export default async function CheckoutSuccessPage({
             )}
 
             <p className="page-body">
-              {paid ? "Any questions, ring" : "Ring"} the shop on{" "}
+              {/* "email … at", not "ring … on". This read "ring the shop on"
+                  followed by an email address — left behind when phone
+                  numbers came off the site on 2026-09-21 and the link was
+                  swapped from tel: to mailto: without the verb. */}
+              {paid ? "Any questions, email" : "Email"} the shop at{" "}
               <a href={`mailto:${shop.email}`} className="cf-fail-link">
                 {shop.email}
               </a>

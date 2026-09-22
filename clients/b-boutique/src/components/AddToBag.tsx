@@ -191,14 +191,16 @@ export function AddToBag({ product }: { product: Product }) {
       )}
 
       {allOut ? (
-        /* The number is not typed in here. It comes from `shop.ts`, which is
-           the one place the confirmed phone number lives — a second copy is a
-           second thing to get wrong the day it changes. */
+        /* The address is not typed in here. It comes from `shop.ts`, the one
+           place the shop's contact details live — a second copy is a second
+           thing to get wrong the day it changes. "Email … at" since
+           2026-09-22: this said "call the shop on" in front of an email
+           address, left over from when phone numbers came off the site. */
         <p className="atb-out" role="status">
           Sold out{colourChoice ? ` in ${colour}` : ""}.{" "}
           {restockable
-            ? "This one can be re-ordered — call the shop on "
-            : "Call the shop on "}
+            ? "This one can be re-ordered — email the shop at "
+            : "Email the shop at "}
           <a href={`mailto:${shop.email}`} className="atb-out-tel">
             {shop.email}
           </a>

@@ -103,12 +103,16 @@ export function PolicyPage({ policy }: { policy: Policy }) {
             </div>
 
             <p className="pol-close">
-              Anything here you are not sure about, ring the shop on{" "}
+              {/* Was "ring the shop on" + an email address, then "one room
+                  and one telephone; you will speak to somebody". Both went
+                  stale when phone numbers came off the site on 2026-09-21.
+                  The reply reaches the shop itself, which is the true half
+                  of the old promise, so that half stays. */}
+              Anything here you are not sure about, email the shop at{" "}
               <a href={`mailto:${shop.email}`} className="cf-fail-link">
                 {shop.email}
               </a>
-              . It is one room and one telephone; you will speak to somebody
-              who can actually answer.
+              . It goes straight to the shop, not to a call centre.
             </p>
           </div>
         </section>
