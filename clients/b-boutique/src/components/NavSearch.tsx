@@ -6,7 +6,7 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { formatPrice, products } from "@/lib/catalogue";
 import { SEARCH_SUGGESTIONS, searchProducts } from "@/lib/search";
 import { shop } from "@/lib/shop";
-import { ImageSlot, type Tone } from "./ImageSlot";
+import { ProductPhoto } from "./ProductPhoto";
 
 /* Search, in the header, without leaving the page.
  *
@@ -183,14 +183,12 @@ export function NavSearch() {
                         className="navsearch-hit"
                       >
                         <span className="navsearch-thumb">
-                          <ImageSlot
-                            tone={p.tone as Tone}
-                            seed={7}
-                            uid={`ns-${p.slug}`}
-                            slot={p.slot}
+                          <ProductPhoto
+                            photo={p.photo}
+                            square={p.category === "Homeware"}
                             alt=""
                             sizes="64px"
-                            className="absolute inset-0 h-full w-full"
+                            className="absolute inset-0 h-full w-full object-cover"
                           />
                         </span>
                         <span className="navsearch-hit-body">

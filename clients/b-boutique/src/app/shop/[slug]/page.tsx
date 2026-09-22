@@ -108,18 +108,90 @@ export default async function ProductPage({
                 </p>
               ) : null}
 
-              {/* No invented description. The data holds a name, a category
-                  and a picture, and everything a product description usually
-                  says — fabric, origin, fit, care — is a claim about a garment
-                  nobody has confirmed. What can honestly be said is where it
-                  is and how it is sold.
+              {/* ── The description, which we HAD and were not showing ──
+                  This block used to open "No invented description. The data
+                  holds a name, a category and a picture, and everything a
+                  product description usually says — fabric, origin, fit, care
+                  — is a claim about a garment nobody has confirmed."
 
-                  This used to open "Photographed in the shop at 18 Sea View
-                  Street." That was false: lib/images.ts resolves every slot to
-                  generated art direction on a CDN, so the claim was about a
-                  photograph that was never taken. The second sentence was
-                  always true, is the half that actually sells a boutique
-                  against an online-only seller, and is all that remains. */}
+                  That was correct on 2026-09-08 and stopped being correct on
+                  2026-09-22. The client's stock dashboard supplied a line, a
+                  paragraph, a feature list, a fabric, a care instruction and a
+                  supplier for all 32 pieces. It went into lib/stocklist.ts and
+                  then nothing rendered it, so the page carried her words in
+                  the bundle and showed the customer none of them. The client
+                  asked where the descriptions were, which is a fair question.
+
+                  The old rule is not relaxed, it is satisfied: every line
+                  below is hers, and the one field that could become a false
+                  claim is gated rather than printed. */}
+              <p className="pdp-lede">{product.short}</p>
+              <p className="pdp-desc">{product.full}</p>
+
+              {product.features.length > 0 ? (
+                <ul className="pdp-feat">
+                  {product.features.map((f) => (
+                    <li key={f}>{f}</li>
+                  ))}
+                </ul>
+              ) : null}
+
+              <dl className="pdp-spec">
+                {product.fabric ? (
+                  <>
+                    {/* ── The one that needs the gate ──────────────────────
+                        `fabricPublished` is true for only 9 of the 32, and it
+                        decides the HEADING, not whether to show the text.
+
+                        A composition label is a regulated claim: under the
+                        Textile Products (Labelling and Fibre Composition)
+                        Regulations it needs fibre percentages. Nine pieces
+                        have them from the supplier and are labelled
+                        "Composition". The rest describe how the cloth looks
+                        and handles — "chunky flecked boucle knit with an
+                        eyelash finish" — and are labelled "Fabric", which
+                        promises nothing measurable.
+
+                        One is a deliberate trap and the gate catches it:
+                        "Acrylic, Polyester, Nylon, Elastane (percentages not
+                        published)" NAMES FIBRES WITH NO PERCENTAGES, which is
+                        exactly the shape of a claim that fails. It is stored
+                        with the flag off, so it prints under "Fabric". */}
+                    <dt>{product.fabricPublished ? "Composition" : "Fabric"}</dt>
+                    <dd>{product.fabric}</dd>
+                  </>
+                ) : null}
+
+                {product.care ? (
+                  <>
+                    <dt>Care</dt>
+                    <dd>{product.care}</dd>
+                  </>
+                ) : null}
+
+                {product.sizeNote ? (
+                  <>
+                    {/* "fits up to 14", "2 of each" — kept apart from the size
+                        run in the data precisely so it can be shown as the
+                        qualifier it is rather than mistaken for a size. */}
+                    <dt>Fit</dt>
+                    <dd>{product.sizeNote}</dd>
+                  </>
+                ) : null}
+
+                {product.colourways.length > 1 ? (
+                  <>
+                    <dt>Colours</dt>
+                    {/* The SUPPLIER'S own colour names, off the supplier's own
+                        reference codes. Never read off the photograph — see
+                        lib/variants.ts, which carries that rule because this
+                        project once shipped a "satin skirt" that was a matte
+                        brown pencil skirt. */}
+                    <dd>{product.colourways.map((c) => c.colour).join(" · ")}</dd>
+                  </>
+                ) : null}
+              </dl>
+
               <p className="pdp-note">
                 If you would rather see it in person before deciding, it is on
                 the rail at 18 Sea View Street.

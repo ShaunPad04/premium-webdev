@@ -4117,13 +4117,58 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   .pdp-body { flex: 1 1 48%; min-width: 0; display: flex; align-items: center; }
 }
 
+/* The product photograph, WHOLE.
+ *
+ * ── What was wrong ──────────────────────────────────────────────────────
+ * This was `aspect-ratio: auto` above 1024 with the image on `object-fit:
+ * cover`, which is right when the picture is a texture and wrong when it is
+ * the thing being sold. The column is 52% of the viewport width and stretches
+ * to `min-height: 100svh`, so at 1920x945 it is 998x945 — 1.06:1 — against a
+ * frame that is 4:5. Cover scales to fill the width, which makes the image
+ * 1238px tall inside a 945px box and throws away 293px, half of it off the
+ * top. The client's screenshot is the model's head cut off at the eyes.
+ *
+ * ── Why `contain` rather than a cleverer crop ───────────────────────────
+ * `object-position: center top` was the cheap fix and it only moves the
+ * problem to the hem. On a CLOTHING page the hem is not spare: the length of
+ * a dress is one of the two or three things a customer is actually trying to
+ * judge from the picture. A product photograph that crops either end is
+ * worse than one that does not fill the screen.
+ *
+ * So the frame is shown entire and centred, and the letterbox is paper — the
+ * same `--bone` the rest of the page sits on, and close enough to the pale
+ * pink plaster backdrop in the photographs that the edges do not read as
+ * bars. It was `--bb-black-raised`, which would have framed every garment in
+ * two hard black columns.
+ *
+ * Mobile is 4/5 rather than 3/4 for the same reason — it is the real ratio
+ * of the file, so there is nothing to letterbox at all. The three square
+ * homeware frames letterbox slightly and that is correct: a vase shot is
+ * square and squeezing it into 4:5 would crop the object. */
 .pdp-media {
   position: relative;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: var(--bb-black-raised);
+  background: var(--bone);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-@media (min-width: 1024px) { .pdp-media { aspect-ratio: auto; } }
+
+@media (min-width: 1024px) {
+  .pdp-media { aspect-ratio: auto; }
+  /* Height-led rather than width-led: the box is the full viewport height, so
+     the picture takes that height and whatever width its own ratio asks for.
+     Nothing is cropped at any viewport shape. */
+  .pdp-media picture,
+  .pdp-media img {
+    position: static;
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
+}
 
 .pdp-body {
   padding: clamp(40px, 6vw, 96px) var(--bb-gutter-editorial)
@@ -4148,6 +4193,89 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   line-height: 1.04;
   letter-spacing: -0.02em;
   text-wrap: balance;
+}
+
+/* ── The description, added 2026-09-22 ──────────────────────────────────
+   Her words, in three weights of attention: a lede that is the one line a
+   customer needs, the paragraph under it, and a feature list for the things
+   that are easier scanned than read. Measure is capped at 60ch — the column
+   is already 520px, and prose set to the full width of a 520px box on a wide
+   screen is the classic "developer laid this out" tell. */
+.pdp-lede {
+  margin-top: 22px;
+  font-size: clamp(15px, 1.25vw, 17px);
+  line-height: 1.55;
+  max-width: 46ch;
+  color: var(--bb-black);
+  text-wrap: pretty;
+}
+
+.pdp-desc {
+  margin-top: 14px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  max-width: 60ch;
+  color: rgba(26, 20, 22, 0.78);
+  text-wrap: pretty;
+}
+
+/* A real <ul>. The markers are drawn with a pseudo-element rather than
+   list-style so the rule sits on the text's own baseline, but it stays a list
+   in the accessibility tree — "list, 4 items" is the useful announcement and
+   a stack of <p> loses it. */
+.pdp-feat {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-width: 52ch;
+}
+
+.pdp-feat li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(26, 20, 22, 0.78);
+}
+
+.pdp-feat li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 7px;
+  height: 1px;
+  background: var(--bb-rouge);
+}
+
+/* Composition, care, fit, colours. A description list because that is what it
+   is — a set of term/value pairs — and a screen reader announces the pairing,
+   which a two-column div grid does not. */
+.pdp-spec {
+  margin: 26px 0 0;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 20px;
+  max-width: 54ch;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.pdp-spec dt {
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 10.5px;
+  padding-top: 2px;
+  color: rgba(26, 20, 22, 0.62);
+}
+
+.pdp-spec dd {
+  margin: 0;
+  color: rgba(26, 20, 22, 0.82);
 }
 
 .pdp-price {

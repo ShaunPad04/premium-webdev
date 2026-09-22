@@ -9,7 +9,7 @@ import {
   formatPrice,
   productBySlug,
 } from "@/lib/catalogue";
-import { ImageSlot, type Tone } from "@/components/ImageSlot";
+import { ProductPhoto } from "@/components/ProductPhoto";
 import { useCart } from "@/lib/useCart";
 
 /* The bag, and the button that starts a payment.
@@ -112,7 +112,7 @@ export function Bag() {
   return (
     <div className="bag">
       <ul className="bag-lines">
-        {lines.map((line, i) => {
+        {lines.map((line) => {
           const p = productBySlug(line.slug);
           if (!p) return null;
           return (
@@ -124,14 +124,19 @@ export function Bag() {
               className={`bag-line${leaving.includes(keyOf(line)) ? " is-leaving" : ""}`}
             >
               <Link href={`/shop/${p.slug}`} className="bag-media" aria-label={p.name}>
-                <ImageSlot
-                  tone={p.tone as Tone}
-                  seed={i + 11}
-                  uid={`bag-${i}`}
-                  slot={p.slot}
+                {/* The real photograph, like every other product surface.
+                    This one was missed when the grid, the rail and the product
+                    page were switched over on 2026-09-22, so a piece the
+                    customer had just LOOKED AT turned into a black marble
+                    rectangle the moment it went in the bag — which reads as a
+                    broken image exactly where somebody is deciding whether to
+                    trust the shop with a card. The client spotted it. */}
+                <ProductPhoto
+                  photo={p.photo}
+                  square={p.category === "Homeware"}
                   alt=""
                   sizes="120px"
-                  className="absolute inset-0 h-full w-full"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               </Link>
 
