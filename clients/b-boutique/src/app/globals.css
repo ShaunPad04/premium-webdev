@@ -3714,8 +3714,28 @@ body {
   }
 }
 
+/* 16px, the elite brief's figure for a scroll reveal. It was 14px, which was
+   not argued anywhere and is not distinguishable from this on screen; one
+   number across the site is worth more than the two.
+
+   The brief's other two figures for this — 600ms and a 60ms stagger — have
+   nowhere to land and are deliberately not written down. A scroll-driven
+   animation IGNORES animation-duration and animation-delay outright: the
+   range decides both when a reveal starts and how long it takes, which is
+   why `--bb-enter`/`--bb-settle`/`--bb-step` are viewport distances rather
+   than times. This codebase has already been caught by that once — every
+   stagger on the homepage was written in milliseconds and none of them were
+   doing anything. Putting 600ms here would be the same mistake with a
+   better source.
+
+   The specs that DO transfer are met: the stagger is capped at six places
+   (`min(var(--i, 0), 6)`), `--bb-enter: 15vh` is the same trigger point as
+   the brief's `top 85%`, the range is `entry` so it fires once and does not
+   replay, and nothing above the fold reveals — measured across six routes at
+   two widths, one animated element above the fold site-wide (the hero
+   parallax) and zero elements invisible at first paint. */
 @keyframes page-rise {
-  from { transform: translateY(14px); }
+  from { transform: translateY(16px); }
   to   { transform: translateY(0); }
 }
 
