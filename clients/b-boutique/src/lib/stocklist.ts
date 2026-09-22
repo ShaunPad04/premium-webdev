@@ -17,10 +17,29 @@
  *
  *  ── The two provenance flags, and why they are not decoration ────────────
  *
- *  `priceConfirmed` — 41 of the 54 colourways carry a price the client has
- *  confirmed. THIRTEEN DO NOT: the dashboard marks them PLACEHOLDER and they
- *  are carried here as `false`. A placeholder price is not a price. It must
- *  never be displayed as one and must never reach a payment.
+ *  `priceConfirmed` — 53 of the 54 colourways carry a price the client has
+ *  confirmed. ONE DOES NOT: the Italian Knit Ribbed Cardigan in Cream, which
+ *  the dashboard marks PLACEHOLDER and which she has not yet priced. A
+ *  placeholder price is not a price. It must never be displayed as one and
+ *  must never reach a payment — /api/checkout refuses a line whose piece is
+ *  still `demo`, and the product page renders no Add to bag button at all.
+ *
+ *  It was 41 of 54 when this file was written. Twelve were filled in on
+ *  2026-09-22 from a message the client sent naming seven pieces and their
+ *  prices; each was applied by SKU rather than by name, because the names in
+ *  that message were abbreviations.
+ *
+ *  ── One price here was WRONG, not merely unconfirmed ─────────────────────
+ *  The Balloon Sleeve Longline Coat was transcribed at £49 with
+ *  `priceConfirmed: true`, and on 2026-09-22 the client said it "is £59
+ *  always has been". So a confirmed-looking figure had been wrong since the
+ *  first transcription, on all three colourways, on a coat the site was
+ *  advertising.
+ *
+ *  Worth keeping in mind rather than treating as closed: `priceConfirmed:
+ *  true` means somebody transcribed it from her dashboard, not that she has
+ *  since read it back. The only way to be sure of the other 50 is to show
+ *  her the list.
  *
  *  `fabricPublished` — true ONLY where the supplier published a fibre
  *  composition with percentages. Everything else is a description of how the
@@ -244,9 +263,9 @@ export const stocklist: readonly StockPiece[] = [
     supplier: "Babez London",
     supplierCode: "31344",
     colourways: [
-      { sku: "BB-LONGTRENCH-BUR", supplierRef: "31344-BUR", colour: "Burgundy", priceP: 4900, priceConfirmed: true, image: "bb-longtrench-bur" },
-      { sku: "BB-LONGTRENCH-BRN", supplierRef: "31344-BRN", colour: "Brown", priceP: 4900, priceConfirmed: true, image: "bb-longtrench-brn" },
-      { sku: "BB-LONGTRENCH-CAM", supplierRef: "31344-CAM", colour: "Camel", priceP: 4900, priceConfirmed: true, image: "bb-longtrench-cam" },
+      { sku: "BB-LONGTRENCH-BUR", supplierRef: "31344-BUR", colour: "Burgundy", priceP: 5900, priceConfirmed: true, image: "bb-longtrench-bur" },
+      { sku: "BB-LONGTRENCH-BRN", supplierRef: "31344-BRN", colour: "Brown", priceP: 5900, priceConfirmed: true, image: "bb-longtrench-brn" },
+      { sku: "BB-LONGTRENCH-CAM", supplierRef: "31344-CAM", colour: "Camel", priceP: 5900, priceConfirmed: true, image: "bb-longtrench-cam" },
     ],
   },
   {
