@@ -74,8 +74,10 @@ test('/shop search: filtered results have no WCAG A/AA violations', async ({ pag
      kept as an exact number rather than loosened to toBeGreaterThan(0),
      because its job here is to prove the FILTER ACTUALLY RAN before axe
      looks at the page. A test that accepts any count passes just as happily
-     against an unfiltered grid, which is the state it exists to rule out. */
-  await expect(page.locator('.prod')).toHaveCount(5);
+     against an unfiltered grid, which is the state it exists to rule out.
+     Seven since the client's photographs arrived for the Leopard Embroidered
+     Velvet Bomber and the Cosy Hooded Boucle Coat, both Coats & Jackets. */
+  await expect(page.locator('.prod')).toHaveCount(7);
 
   const { violations } = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

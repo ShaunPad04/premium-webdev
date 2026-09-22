@@ -50,8 +50,7 @@ const WRITE = process.argv.includes("--write");
 const FORCE = process.argv.includes("--force");
 
 /* Opening counts per colourway, from the MASTER stock list Brad supplied on
-   2026-09-22 (40 pieces; the 8 still awaiting photographs are not here, so
-   nothing is counted for a product the site cannot show). It replaced the
+   2026-09-22 (40 pieces, all on the site). It replaced the
    earlier dashboard figures, which covered 35 of 54 colourways; this covers
    every colourway on the site. Generated from the list, not retyped. */
 const OPENING = {
@@ -87,6 +86,14 @@ const OPENING = {
   "tomato-vase": { Red: 4 },
   "banana-jar": { Yellow: 3 },
   "bell-vase": { Gold: 4 },
+  "cord-barrel-leg-trousers": { "Beige": 3, "Burgundy": 3, "Dark Brown": 3, "Khaki": 3 },
+  "leopard-embroidered-velvet-bomber": { "Beige": 3, "Black": 3 },
+  "check-tweed-culotte-shorts": { "Burgundy": 3 },
+  "pinstripe-pleated-shirt": { "Chocolate": 4 },
+  "check-tweed-shirt": { "Camel": 4 },
+  "amour-zip-up-track-knit": { "Chocolate Brown": 3 },
+  "striped-asymmetric-knit-top": { "Chocolate / Pink": 4 },
+  "cosy-hooded-boucle-coat": { "Brown": 3 },
 };
 
 
@@ -94,7 +101,7 @@ const OPENING = {
  *  not inferring. jean-jogger: "S/M, M/L, L/XL (2 of each)". The jeans and the
  *  denim set give an exact count per size in the master list; each split was
  *  checked to add up to its colourway total before being written here. */
-const STATED_SPLIT = { "jean-jogger": 2 };
+const STATED_SPLIT = { "jean-jogger": 2, "pinstripe-pleated-shirt": 2, "check-tweed-shirt": 2 };
 const STATED_SIZES = {
   "zebra-print-balloon-leg-jeans": {"XS": 1, "S": 3, "M": 3, "L": 2, "XL": 1},
   "piping-detail-denim-jacket-trouser-set": {"XXS": 1, "XS": 2, "M": 1, "L": 1},

@@ -110,7 +110,7 @@ costs a review cycle and risks undoing a deliberate fix.
 | 12 | **Money is integers in pence, everywhere.** | `0.1 + 0.2` is not `0.3` in binary floating point, and a basket totalling £74.99999999 is a rounding bug waiting to be charged to somebody. Prices are `priceP` integers from the catalogue to the provider; the single division is `formatPrice` for display, and one more at the very edge where SumUp's API wants a decimal. Never store, add or compare money as pounds. |
 | 13 | **The server prices the bag, never the browser.** | `/api/checkout` takes slugs, sizes and quantities and ignores anything else the client sends. A total posted from a browser is a total somebody sets to 1p. Verified: a request carrying a forged `priceP` is accepted and the field is simply not read. |
 | 14 | **The shop must never confirm an order it did not take.** | `/api/checkout` answers 503 `not_configured` until `SUMUP_API_KEY`, `SUMUP_MERCHANT_CODE` and `NEXT_PUBLIC_SITE_URL` all exist, and the bag says plainly that nothing has been charged. Landing on `/checkout/success` means a browser followed a URL, not that money moved, so **the page asks SumUp rather than reading the URL**: `GET /v0.1/checkouts?checkout_reference=…`, authenticated, server-side (`lib/sumup.ts`). PAID, FAILED/EXPIRED and "we could not find out" are three different pages, and the bag is emptied on PAID alone. **Correction, 2026-09-08:** this row previously said a webhook was the proof. SumUp publishes no payment webhook — see the SumUp section below — so the query is the mechanism, not a placeholder for one. |
-| 15 | ~~**Every price in `lib/catalogue.ts` is invented.**~~ **SUPERSEDED 2026-09-22: the catalogue is her real stock, and all 54 colourway prices are hers.** | `lib/stocklist.ts` replaced the invented catalogue on 2026-09-21 (32 pieces, 54 colourways, from her own dashboard) and `catalogue.ts` is now built from it. The rule this row protected is unchanged and still locked: **a displayed price is what a customer is entitled to pay, so an unconfirmed price is never displayed and never charged.** `priceConfirmed: false` makes the whole piece `demo` — "Price to confirm", no Add to bag, refused by `/api/checkout`, no `offers` in its JSON-LD. None is unconfirmed as of 2026-09-22; see the stocklist header. Remember that `priceConfirmed: true` means transcribed from her, not read back by her — the Balloon Sleeve Coat was "confirmed" at £49 and is £59. |
+| 15 | ~~**Every price in `lib/catalogue.ts` is invented.**~~ **SUPERSEDED 2026-09-22: the catalogue is her real stock, and all 66 colourway prices are hers.** | `lib/stocklist.ts` replaced the invented catalogue on 2026-09-21 (32 pieces, 54 colourways, from her own dashboard) and `catalogue.ts` is now built from it. The rule this row protected is unchanged and still locked: **a displayed price is what a customer is entitled to pay, so an unconfirmed price is never displayed and never charged.** `priceConfirmed: false` makes the whole piece `demo` — "Price to confirm", no Add to bag, refused by `/api/checkout`, no `offers` in its JSON-LD. None is unconfirmed as of 2026-09-22; see the stocklist header. Remember that `priceConfirmed: true` means transcribed from her, not read back by her — the Balloon Sleeve Coat was "confirmed" at £49 and is £59. |
 
 ## The Rouge re-theme — 2026-09-21
 
@@ -209,16 +209,18 @@ photograph of each, sizes, fit notes and supplier compositions where
 published. Prices came in batches — the dashboard, a WhatsApp message, her
 filled-in form — and where two disagreed nothing was picked until Brad chose:
 the Red jumper is £40 (her form said £48) and the Ribbed Cardigan £65 (the
-master list says £45). **All 54 colourways on the site are now confirmed.**
+master list says £45). **All 66 colourways on the site are now confirmed.**
 
 **The master stock list, 2026-09-22.** Brad supplied a newer list (40
 pieces) and made it the master. It fixed colour names and two product names,
 and it corrected two products the site was selling WRONGLY as "One size": the
 Zebra jeans (XS–XL) and the denim set (XXS, XS, M, L). Its **eight new pieces
-are in `awaitingPhotos`** in `lib/stocklist.ts`, deliberately outside
-`stocklist` so nothing on the site can show them. They go live when their
-photographs arrive — never with a stand-in. `pnpm launch-check` lists them
-and says when the files are present.
+are live** (40 pieces, 66 colourways), with the photographs that came in the
+same artifact, each checked by eye against its description and colour first.
+A future piece without a photograph goes in `awaitingPhotos` in
+`lib/stocklist.ts`, outside `stocklist`, so nothing can show it until its
+photograph arrives — never with a stand-in. `pnpm launch-check` lists that
+list's contents and says when the files are present.
 
 Also answered 2026-09-22: **no alterations** (the demo FAQ offered a service she
 does not run), **holds are four days with a deposit** (amount not given, so
@@ -469,10 +471,9 @@ left:
 - **Stock counts.** Checkout reserves a variant atomically (`lib/orders.ts`,
   `adjust()` against a `CHECK (qty >= 0)`), but a variant nobody has counted
   (`qty: null`) is sold unreserved, so the protection only exists once counts
-  are in. `scripts/import-stock.mjs` imports the 55 unambiguous counts from the
+  are in. `scripts/import-stock.mjs` imports the 69 unambiguous counts from the
   master list and refuses 10 with reasons; it needs `DATABASE_URL`, which lives
   in Vercel, not in a web session. The other 10 go in on `/stock`.
-- **Photographs for the 8 new pieces** in `awaitingPhotos`.
 - **A test card through SumUp**, after `NEXT_PUBLIC_SITE_URL` is set.
 - **A qualified read of the statutory text.** See Selling terms.
 - **The ICO registration number.** Applied and paying by direct debit as of

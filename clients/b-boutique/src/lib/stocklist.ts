@@ -17,8 +17,8 @@
  *
  *  ── The two provenance flags, and why they are not decoration ────────────
  *
- *  `priceConfirmed` — ALL 54 colourways on the site carry a confirmed price
- *  as of 2026-09-22. The last two open questions were settled that evening:
+ *  `priceConfirmed` — ALL 66 colourways on the site (40 pieces) carry a
+ *  confirmed price as of 2026-09-22. The last two open questions were settled that evening:
  *
  *    - Italian Knit Ribbed Cardigan, Cream: £65 (her form). The master stock
  *      list says £45; Brad confirmed £65.
@@ -33,8 +33,9 @@
  *  Denim Jacket and Trouser Set — slugs kept so links do not break), and the
  *  REAL SIZE RUNS of the Zebra jeans (XS–XL) and the denim set (XXS, XS, M,
  *  L), which the site had been selling as "One size". Its eight new pieces
- *  are in `awaitingPhotos` at the foot of this file.
-
+ *  are live, with the photographs that came in the same artifact — each was
+ *  checked by eye against its description and colour first.
+ *
  *  An unconfirmed price is not a price. It must never be displayed as one and
  *  must never reach a payment — /api/checkout refuses a line whose piece is
  *  still `demo`, and the product page renders no Add to bag button at all.
@@ -675,155 +676,12 @@ export const stocklist: readonly StockPiece[] = [
       { sku: "BB-CHUNKCARD-BRN", supplierRef: "", colour: "Brown", priceP: 4500, priceConfirmed: true, image: "bb-chunkcard-brn" },
     ],
   },
-  {
-    slug: "tomato-vase",
-    name: "Tomato Vase",
-    category: "Homeware",
-    short: "A ceramic vase covered in three-dimensional tomatoes.",
-    full: "Glossy scarlet tomatoes packed in staggered rows from base to rim, each finished with a dark green calyx. Big enough to hold a real armful of flowers, good enough to leave empty on a shelf.",
-    features: ["Hand-finished ceramic", "High-gloss glaze", "Sculpted tomatoes all over", "Approx. 20cm tall"],
-    fabric: "Glazed ceramic",
-    fabricPublished: false,
-    care: "Wipe clean with a damp cloth. Not dishwasher or microwave safe.",
-    sizes: ["One size"],
-    sizeNote: "",
-    supplier: "",
-    supplierCode: "",
-    colourways: [
-      { sku: "BB-VASE-TOMATO", supplierRef: "", colour: "Red", priceP: 6300, priceConfirmed: true, image: "bb-vase-tomato" },
-    ],
-  },
-  {
-    slug: "banana-jar",
-    name: "Banana Jar",
-    category: "Homeware",
-    short: "A lidded ceramic jar formed from a bunch of bananas.",
-    full: "The body curves out and in again in sculpted bananas, their tips meeting at the top in a scalloped rim. The lid drops inside it, with one more banana lying across the top as the handle. Bright glossy yellow throughout.",
-    features: ["Lidded storage jar", "Banana-shaped handle", "Scalloped rim", "High-gloss yellow glaze"],
-    fabric: "Glazed ceramic",
-    fabricPublished: false,
-    care: "Wipe clean with a damp cloth. Not dishwasher or microwave safe.",
-    sizes: ["One size"],
-    sizeNote: "",
-    supplier: "",
-    supplierCode: "",
-    colourways: [
-      { sku: "BB-JAR-BANANA", supplierRef: "", colour: "Yellow", priceP: 3200, priceConfirmed: true, image: "bb-jar-banana" },
-    ],
-  },
-  {
-    slug: "bell-vase",
-    name: "Bell Vase",
-    category: "Homeware",
-    short: "A vase covered in polished gold bells.",
-    full: "Dozens of small gold bells, complete with ring loops and clappers, packed in staggered rows around the whole vase. Mirror-bright metallic finish that throws warm reflections around a room.",
-    features: ["Sculpted gold bells all over", "Mirror-bright metallic finish", "Decorative vase", "Approx. 20cm tall"],
-    fabric: "Ceramic with metallic gold finish",
-    fabricPublished: false,
-    care: "Wipe clean with a dry soft cloth. Avoid water on the gold finish.",
-    sizes: ["One size"],
-    sizeNote: "",
-    supplier: "",
-    supplierCode: "",
-    colourways: [
-      { sku: "BB-VASE-BELL", supplierRef: "", colour: "Gold", priceP: 4500, priceConfirmed: true, image: "bb-vase-bell" },
-    ],
-  },
-];
-
-/** Every colourway whose price the client has not confirmed. Read by
- *  launch-check, and by the shop, which must not sell any of them. */
-export function unconfirmedPrices(): StockColourway[] {
-  return stocklist.flatMap((p) => p.colourways.filter((c) => !c.priceConfirmed));
-}
-
-export function pieceBySlug(slug: string): StockPiece | undefined {
-  return stocklist.find((p) => p.slug === slug);
-}
-
-/** What sizes this drop actually runs to, in a sentence, derived.
- *
- *  ── Why this function exists ────────────────────────────────────────────
- *  The FAQ answered "What sizes do you stock?" with "Most pieces run from a
- *  size 8 to a size 18". It was written before anybody knew what the shop
- *  held, was marked `temporary: true`, and survived onto a live site.
- *
- *  Against her real stock it is false, and not marginally: NOT ONE of the 32
- *  pieces offers a size 18, and not one uses a numeric 8-to-18 run at all.
- *  Fifteen are "one size, fits up to 14". The largest anything reaches is 16,
- *  on four pieces.
- *
- *  That is the most expensive kind of wrong on this site. A customer reads it,
- *  drives to Cleethorpes or orders online, and the garment does not go near
- *  her size — a wasted journey, a return the shop pays to handle, and under
- *  the Consumer Protection from Unfair Trading Regulations a misleading claim
- *  about the goods.
- *
- *  So the answer is COUNTED rather than written. It cannot drift from the
- *  rail, and when she buys a piece that runs to an 18 the sentence says so by
- *  itself. */
-export function sizeSummary(): string {
-  const oneSize = stocklist.filter((p) => p.sizes.length === 1 && p.sizes[0] === "One size");
-  const lettered = stocklist.filter((p) => p.sizes.length > 1);
-
-  /* "fits up to 14" / "fits up to 16" — read off the note, never guessed. */
-  const caps = [
-    ...new Set(
-      oneSize
-        .map((p) => p.sizeNote.match(/fits up to (\d+)/)?.[1])
-        .filter((x): x is string => Boolean(x)),
-    ),
-  ]
-    .map(Number)
-    .sort((a, b) => a - b);
-
-  const parts: string[] = [];
-  if (oneSize.length) {
-    parts.push(
-      caps.length
-        ? `Most of what is in at the moment is one size, cut to fit up to a ${
-            caps.length === 1
-              ? caps[0]
-              : `${caps.slice(0, -1).join(", a ")} or a ${caps[caps.length - 1]}`
-          }`
-        : "Most of what is in at the moment is one size",
-    );
-  }
-  if (lettered.length) {
-    parts.push(
-      `${oneSize.length ? "the" : "The"} trousers and a few of the knits run in small to large`,
-    );
-  }
-  return (
-    `${parts.join(", and ")}. Sizing varies from piece to piece, so every product ` +
-    `page lists its own — and if you are between sizes it is worth coming in, ` +
-    `because the fit differs more than a label suggests.`
-  );
-}
-
-/** Pieces on the master stock list that are NOT on the site yet, because
- *  there is no photograph of them.
- *
- *  Added 2026-09-22 from the master stock list Brad supplied (40 pieces;
- *  the site had 32). Every field was copied from that list by script, not
- *  retyped. Prices are all marked Confirmed there. Every fabric is a
- *  description, "NO fibre % verified" in the list's own words, so
- *  fabricPublished is false on all eight.
- *
- *  ── Why a separate list and not a `hidden` flag ──────────────────────────
- *  Ten parts of the site read `stocklist` — pages, search, the bag, checkout,
- *  the sitemap, /stock, structured data. A flag would have to be honoured by
- *  every one of them, and the one that forgot would put a product with no
- *  picture on a real shop. Kept apart, nothing CAN show them.
- *
- *  ── To put one live ──────────────────────────────────────────────────────
- *  The list names each photograph (e.g. bb-barrelcord-bei) but does not carry
- *  the images. Run them through `pnpm images` into public/img/product under
- *  exactly those names, then MOVE the piece from this list into `stocklist`
- *  above. `pnpm launch-check` lists whatever is still waiting. Never give one
- *  a stand-in or generated photograph: it would be a picture of something
- *  that is not the garment. */
-export const awaitingPhotos: readonly StockPiece[] = [
+  /* ── Added from the master stock list, 2026-09-22 ──────────────────────
+     These eight arrived in the master list with their photographs, which
+     were checked by eye against each description and colour before going
+     live. Copied from the list by script, not retyped. Every fabric is a
+     description ("NO fibre % verified" in the list), so fabricPublished is
+     false on all eight. */
   {
     slug: "cord-barrel-leg-trousers",
     name: "Cord Barrel Leg Trousers",
@@ -972,4 +830,152 @@ export const awaitingPhotos: readonly StockPiece[] = [
       { sku: "BB-HOODCOAT-BRN", supplierRef: "", colour: "Brown", priceP: 3800, priceConfirmed: true, image: "bb-hoodcoat-brn" },
     ],
   },
+  {
+    slug: "tomato-vase",
+    name: "Tomato Vase",
+    category: "Homeware",
+    short: "A ceramic vase covered in three-dimensional tomatoes.",
+    full: "Glossy scarlet tomatoes packed in staggered rows from base to rim, each finished with a dark green calyx. Big enough to hold a real armful of flowers, good enough to leave empty on a shelf.",
+    features: ["Hand-finished ceramic", "High-gloss glaze", "Sculpted tomatoes all over", "Approx. 20cm tall"],
+    fabric: "Glazed ceramic",
+    fabricPublished: false,
+    care: "Wipe clean with a damp cloth. Not dishwasher or microwave safe.",
+    sizes: ["One size"],
+    sizeNote: "",
+    supplier: "",
+    supplierCode: "",
+    colourways: [
+      { sku: "BB-VASE-TOMATO", supplierRef: "", colour: "Red", priceP: 6300, priceConfirmed: true, image: "bb-vase-tomato" },
+    ],
+  },
+  {
+    slug: "banana-jar",
+    name: "Banana Jar",
+    category: "Homeware",
+    short: "A lidded ceramic jar formed from a bunch of bananas.",
+    full: "The body curves out and in again in sculpted bananas, their tips meeting at the top in a scalloped rim. The lid drops inside it, with one more banana lying across the top as the handle. Bright glossy yellow throughout.",
+    features: ["Lidded storage jar", "Banana-shaped handle", "Scalloped rim", "High-gloss yellow glaze"],
+    fabric: "Glazed ceramic",
+    fabricPublished: false,
+    care: "Wipe clean with a damp cloth. Not dishwasher or microwave safe.",
+    sizes: ["One size"],
+    sizeNote: "",
+    supplier: "",
+    supplierCode: "",
+    colourways: [
+      { sku: "BB-JAR-BANANA", supplierRef: "", colour: "Yellow", priceP: 3200, priceConfirmed: true, image: "bb-jar-banana" },
+    ],
+  },
+  {
+    slug: "bell-vase",
+    name: "Bell Vase",
+    category: "Homeware",
+    short: "A vase covered in polished gold bells.",
+    full: "Dozens of small gold bells, complete with ring loops and clappers, packed in staggered rows around the whole vase. Mirror-bright metallic finish that throws warm reflections around a room.",
+    features: ["Sculpted gold bells all over", "Mirror-bright metallic finish", "Decorative vase", "Approx. 20cm tall"],
+    fabric: "Ceramic with metallic gold finish",
+    fabricPublished: false,
+    care: "Wipe clean with a dry soft cloth. Avoid water on the gold finish.",
+    sizes: ["One size"],
+    sizeNote: "",
+    supplier: "",
+    supplierCode: "",
+    colourways: [
+      { sku: "BB-VASE-BELL", supplierRef: "", colour: "Gold", priceP: 4500, priceConfirmed: true, image: "bb-vase-bell" },
+    ],
+  },
+];
+
+/** Every colourway whose price the client has not confirmed. Read by
+ *  launch-check, and by the shop, which must not sell any of them. */
+export function unconfirmedPrices(): StockColourway[] {
+  return stocklist.flatMap((p) => p.colourways.filter((c) => !c.priceConfirmed));
+}
+
+export function pieceBySlug(slug: string): StockPiece | undefined {
+  return stocklist.find((p) => p.slug === slug);
+}
+
+/** What sizes this drop actually runs to, in a sentence, derived.
+ *
+ *  ── Why this function exists ────────────────────────────────────────────
+ *  The FAQ answered "What sizes do you stock?" with "Most pieces run from a
+ *  size 8 to a size 18". It was written before anybody knew what the shop
+ *  held, was marked `temporary: true`, and survived onto a live site.
+ *
+ *  Against her real stock it is false, and not marginally: NOT ONE of the 32
+ *  pieces offers a size 18, and not one uses a numeric 8-to-18 run at all.
+ *  Fifteen are "one size, fits up to 14". The largest anything reaches is 16,
+ *  on four pieces.
+ *
+ *  That is the most expensive kind of wrong on this site. A customer reads it,
+ *  drives to Cleethorpes or orders online, and the garment does not go near
+ *  her size — a wasted journey, a return the shop pays to handle, and under
+ *  the Consumer Protection from Unfair Trading Regulations a misleading claim
+ *  about the goods.
+ *
+ *  So the answer is COUNTED rather than written. It cannot drift from the
+ *  rail, and when she buys a piece that runs to an 18 the sentence says so by
+ *  itself. */
+export function sizeSummary(): string {
+  const oneSize = stocklist.filter((p) => p.sizes.length === 1 && p.sizes[0] === "One size");
+  const lettered = stocklist.filter((p) => p.sizes.length > 1);
+
+  /* "fits up to 14" / "fits up to 16" — read off the note, never guessed. */
+  const caps = [
+    ...new Set(
+      oneSize
+        .map((p) => p.sizeNote.match(/fits up to (\d+)/)?.[1])
+        .filter((x): x is string => Boolean(x)),
+    ),
+  ]
+    .map(Number)
+    .sort((a, b) => a - b);
+
+  const parts: string[] = [];
+  if (oneSize.length) {
+    parts.push(
+      caps.length
+        ? `Most of what is in at the moment is one size, cut to fit up to a ${
+            caps.length === 1
+              ? caps[0]
+              : `${caps.slice(0, -1).join(", a ")} or a ${caps[caps.length - 1]}`
+          }`
+        : "Most of what is in at the moment is one size",
+    );
+  }
+  if (lettered.length) {
+    parts.push(
+      `${oneSize.length ? "the" : "The"} trousers and a few of the knits run in small to large`,
+    );
+  }
+  return (
+    `${parts.join(", and ")}. Sizing varies from piece to piece, so every product ` +
+    `page lists its own — and if you are between sizes it is worth coming in, ` +
+    `because the fit differs more than a label suggests.`
+  );
+}
+
+/** Pieces on the master stock list that are NOT on the site yet, because
+ *  there is no photograph of them.
+ *
+ *  EMPTY as of 2026-09-22. It held the master list's eight new pieces for an
+ *  hour, until their photographs were found in the same artifact; they are
+ *  in `stocklist` now. Kept, because the next new piece without a photograph
+ *  belongs here and launch-check already reports on it.
+ *
+ *  ── Why a separate list and not a `hidden` flag ──────────────────────────
+ *  Ten parts of the site read `stocklist` — pages, search, the bag, checkout,
+ *  the sitemap, /stock, structured data. A flag would have to be honoured by
+ *  every one of them, and the one that forgot would put a product with no
+ *  picture on a real shop. Kept apart, nothing CAN show them.
+ *
+ *  ── To put one live ──────────────────────────────────────────────────────
+ *  The list names each photograph (e.g. bb-barrelcord-bei) but does not carry
+ *  the images. Run them through `pnpm images` into public/img/product under
+ *  exactly those names, then MOVE the piece from this list into `stocklist`
+ *  above. `pnpm launch-check` lists whatever is still waiting. Never give one
+ *  a stand-in or generated photograph: it would be a picture of something
+ *  that is not the garment. */
+export const awaitingPhotos: readonly StockPiece[] = [
 ];
