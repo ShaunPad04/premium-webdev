@@ -176,7 +176,18 @@ export function AddToBag({ product }: { product: Product }) {
           ) : null}
         </fieldset>
       ) : (
-        <p className="atb-onesize">One size</p>
+        /* "One size" on its own answers nothing — one size to WHAT? The
+           client asked, and the qualifier was already in the data: the stock
+           dashboard gives "fits up to 14" / "fits up to 16" / "fits up to 12"
+           per piece, and lib/stocklist.ts keeps it in `sizeNote` precisely so
+           it can be shown beside the size rather than mistaken for one.
+           It was simply never rendered. */
+        <p className="atb-onesize">
+          {product.sizes[0]}
+          {product.sizeNote ? (
+            <span className="atb-onesize-note"> &mdash; {product.sizeNote}</span>
+          ) : null}
+        </p>
       )}
 
       {allOut ? (

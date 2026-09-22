@@ -8,6 +8,7 @@ import { MotionLayer } from "@/components/MotionLayer";
 import { AddToBag } from "@/components/AddToBag";
 import { ColourProvider } from "@/components/ColourChoice";
 import { ProductGallery } from "@/components/ProductGallery";
+import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
 import {
   DELIVERY_P,
@@ -16,6 +17,7 @@ import {
   isBuyable,
   productBySlug,
   products,
+  relatedTo,
 } from "@/lib/catalogue";
 import { shop } from "@/lib/shop";
 
@@ -51,6 +53,8 @@ export default async function ProductPage({
   const { slug } = await params;
   const product = productBySlug(slug);
   if (!product) notFound();
+
+  const related = relatedTo(product);
 
   return (
     <>
@@ -132,6 +136,16 @@ export default async function ProductPage({
                   and ask, or come and see it on the rail.
                 </p>
               )}
+
+              {/* The delivery threshold, where somebody is deciding. Her own
+                  confirmed terms (2026-09-20), read from lib/catalogue.ts so
+                  this cannot drift from what the bag and the checkout use. */}
+              <p className="pdp-ship">
+                Free UK delivery over {formatPriceShort(FREE_DELIVERY_OVER_P)}
+                <span aria-hidden="true"> &middot; </span>
+                {formatPriceShort(DELIVERY_P)} otherwise, Royal Mail next
+                working day
+              </p>
 
               {/* ── The detail, folded ──────────────────────────────────────
                   The client asked for this: "a nice drop down of like
@@ -254,6 +268,23 @@ export default async function ProductPage({
           </div>
         </section>
         </ColourProvider>
+
+        {related.length > 0 ? (
+          <section aria-labelledby="pdp-also" className="also">
+            <div className="also-inner">
+              <h2 id="pdp-also" className="also-h2">
+                You may also like
+              </h2>
+              {/* Nearest first — same category, then same supplier. Pieces
+                  that cannot be bought yet sort last rather than being
+                  hidden: they are real stock and somebody may well come in
+                  for one, but leading an upsell with something unbuyable is
+                  showing a customer a thing and then taking it away.
+                  See `relatedTo` in lib/catalogue.ts. */}
+              <ProductGrid items={related} />
+            </div>
+          </section>
+        ) : null}
 
         <Visit />
       </main>

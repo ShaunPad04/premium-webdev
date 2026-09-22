@@ -1567,8 +1567,10 @@ body {
    its two lines of type sit directly on the white. */
 .newin-media {
   position: relative;
-  /* 3:4, which is the source ratio exactly, so cover crops nothing. */
-  aspect-ratio: 3 / 4;
+  /* 4:5, the source ratio. The comment here used to claim 3:4 WAS the source
+     ratio and crops nothing; that was true of the generated artwork and
+     stopped being true when the real photographs landed. */
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   background: var(--bb-white);
 }
@@ -3065,6 +3067,102 @@ body {
   width: fit-content;
   transition: border-color var(--bb-dur-quick) var(--bb-ease);
 }
+/* An email address is not a phone number, and this style was written for a
+   phone number.
+   `bboutiquecleethorpes@gmail.com` is 30 characters. Set in Bodoni at the
+   26px floor of the clamp above it measures about 405px, inside a 326px
+   column at 390 — /contact was the only route on the site with a horizontal
+   scrollbar, 47px of it, and it was found by crawling rather than by looking.
+   It appeared the day the phone number came off the site (2026-09-21) and the
+   email took its place in the same slot; nothing re-measured the slot.
+
+   Inter, not Bodoni, and it wraps. A Didone at display size is for a name or
+   a number you read at a glance; an email is a string you copy. The category
+   mastheads keep the Bodoni treatment for "5 pieces", which is what it was
+   designed for and which is three characters long. */
+/* The qualifier beside "One size". Quieter than the size itself but the same
+   colour — it is the half of the sentence that actually answers the question,
+   so it must not be dimmed out of readability. */
+/* ── Free delivery progress ─────────────────────────────────────────────
+   A sentence with a bar under it, not a bar with a caption. The words carry
+   the meaning and are what a screen reader gets; the bar is a glance. */
+.fd { margin-top: 22px; }
+
+.fd-text {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(26, 20, 22, 0.78);
+}
+
+.fd-text strong { font-weight: 600; color: var(--bb-black); }
+
+.fd-track {
+  height: 2px;
+  background: rgba(26, 20, 22, 0.14);
+  overflow: hidden;
+}
+
+.fd-fill {
+  display: block;
+  height: 100%;
+  background: var(--bb-black);
+  transition: width 420ms var(--bb-ease);
+}
+
+/* The one moment the rouge earns a spot here: the threshold is met. It is a
+   state change worth marking, and it happens once. */
+.fd[data-qualified] .fd-fill { background: var(--bb-rouge); }
+
+@media (prefers-reduced-motion: reduce) {
+  .fd-fill { transition: none; }
+}
+
+/* The delivery terms on the product page, under the buy control. */
+.pdp-ship {
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(26, 20, 22, 0.66);
+}
+
+/* ── You may also like ──────────────────────────────────────────────────
+   Paper, so it separates from the product above it without another dark
+   band — the page already goes dark at the footer and a third ground in
+   between makes the page read as stripes. */
+.also {
+  background: var(--bone);
+  padding: clamp(56px, 8vw, 104px) 0 clamp(40px, 6vw, 72px);
+  border-top: 1px solid rgba(26, 20, 22, 0.1);
+}
+
+.also-inner { padding-inline: 18px; }
+@media (min-width: 768px) { .also-inner { padding-inline: var(--bb-gutter-editorial); } }
+
+.also-h2 {
+  margin: 0 0 clamp(24px, 3vw, 40px);
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  font-size: clamp(24px, 2.6vw, 38px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--bb-black);
+}
+
+.atb-onesize-note { opacity: 0.72; text-transform: none; letter-spacing: 0.02em; }
+
+.pm-phone-number--email {
+  font-family: inherit;
+  font-size: clamp(15px, 1.6vw, 19px);
+  line-height: 1.35;
+  letter-spacing: 0;
+  /* The address has no spaces, so only an explicit break rule will wrap it.
+     `anywhere` rather than `break-all` so it breaks at the @ and the dots
+     where it can, and mid-word only when it must. */
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+
 .pm-phone-number:hover,
 .pm-phone-number:focus-visible { border-bottom-color: var(--bb-white); }
 
@@ -3240,7 +3338,14 @@ body {
 
 .piece-media {
   position: relative;
-  aspect-ratio: 3 / 4;
+  /* 4:5, which is the REAL ratio of the photographs (1856x2304).
+     This was 3/4 until 2026-09-22, carried over from the generated stand-in
+     artwork that used to fill these slots. Against a 4:5 source, `cover` in a
+     3:4 box silently trims about 6% off the top and bottom of every garment —
+     which on a clothing grid is the hem and the shoulder, the two things the
+     card exists to show. The client spotted the images "randomly changing
+     size". */
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   background: var(--bb-black-raised);
 }
@@ -3939,7 +4044,14 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .prod-media {
   position: relative;
   display: block;
-  aspect-ratio: 3 / 4;
+  /* 4:5, which is the REAL ratio of the photographs (1856x2304).
+     This was 3/4 until 2026-09-22, carried over from the generated stand-in
+     artwork that used to fill these slots. Against a 4:5 source, `cover` in a
+     3:4 box silently trims about 6% off the top and bottom of every garment —
+     which on a clothing grid is the hem and the shoulder, the two things the
+     card exists to show. The client spotted the images "randomly changing
+     size". */
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   background: var(--bb-black-raised);
 }
@@ -4819,7 +4931,14 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   grid-area: media;
   position: relative;
   display: block;
-  aspect-ratio: 3 / 4;
+  /* 4:5, which is the REAL ratio of the photographs (1856x2304).
+     This was 3/4 until 2026-09-22, carried over from the generated stand-in
+     artwork that used to fill these slots. Against a 4:5 source, `cover` in a
+     3:4 box silently trims about 6% off the top and bottom of every garment —
+     which on a clothing grid is the hem and the shoulder, the two things the
+     card exists to show. The client spotted the images "randomly changing
+     size". */
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   background: var(--bb-black-raised);
 }
@@ -5509,8 +5628,8 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   position: relative;
   flex: 0 0 auto;
   width: 46px;
-  /* 3:4, the source ratio, so cover crops nothing — same as .newin-media. */
-  aspect-ratio: 3 / 4;
+  /* 4:5, the source ratio — same as .newin-media, and corrected with it. */
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   background: rgba(250, 245, 243, 0.06);
 }

@@ -248,3 +248,66 @@ export function deliveryFor(subtotalP: number): number {
 export function productsIn(category: string): Product[] {
   return products.filter((p) => p.category === category);
 }
+
+/** What to show under a product as "You may also like".
+ *
+ *  ── The rule: nearest first, and never padded with nonsense ────────────
+ *  Same category first, because on a clothing site that is what "like this"
+ *  means to a customer — somebody looking at a longline coat wants the other
+ *  coats, not a vase. Then the same supplier, which is the next most useful
+ *  neighbour: pieces bought from one wholesaler share a cut and a sizing, so
+ *  if this one fits, those probably do. Only then the rest of the shop.
+ *
+ *  ── Why buyable pieces come first ───────────────────────────────────────
+ *  Thirteen colourways still carry a placeholder price and cannot be bought.
+ *  Putting one of those at the top of an upsell is showing somebody a thing
+ *  and then telling them they cannot have it, which is worse than showing
+ *  them nothing. They are not EXCLUDED — they are real stock and a customer
+ *  may well want to come in for one — they simply sort last.
+ *
+ *  Deterministic: no randomness anywhere. A rail that reshuffles on every
+ *  build makes visual regression meaningless and makes a shop feel unstable.
+ */
+export function relatedTo(product: Product, limit = 4): Product[] {
+  /* Four tiers, and the third exists because of a real weakness found by
+     looking at the output rather than by reading the code.
+
+     Dresses contains exactly one piece. With only category and supplier to
+     go on, its "You may also like" fell straight through to catalogue order
+     and offered a jumper, a sleeveless jumper, some jeans and a coat — which
+     is not a recommendation, it is the first four rows of the table. Several
+     pieces also carry no supplier at all, so that tier is blank for them too.
+
+     Price band is the tier that fixes it: within 40% either way is a
+     reasonable proxy for "something else you might have been looking at" in a
+     shop whose range runs £24.50 to £85. It is a weak signal and it is
+     ranked as one — below category and supplier, above nothing at all. */
+  const band = (p: Product) =>
+    p.priceP >= product.priceP * 0.6 && p.priceP <= product.priceP * 1.4;
+
+  const rank = (p: Product) => {
+    if (p.category === product.category) return 0;
+    if (p.supplier && p.supplier === product.supplier) return 1;
+    if (band(p)) return 2;
+    return 3;
+  };
+  return products
+    .filter((p) => p.slug !== product.slug)
+    .map((p, i) => ({ p, i }))
+    .sort(
+      (a, b) =>
+        rank(a.p) - rank(b.p) ||
+        Number(isBuyable(b.p)) - Number(isBuyable(a.p)) ||
+        a.i - b.i,
+    )
+    .slice(0, limit)
+    .map((x) => x.p);
+}
+
+/** How much more a basket needs for free UK delivery, in pence.
+ *  0 once it qualifies. Compared against the SUBTOTAL, never the total —
+ *  see `deliveryFor` for why comparing against a total that already includes
+ *  delivery creates a loop where £115.65 qualifies and then stops. */
+export function awayFromFreeDelivery(subtotalP: number): number {
+  return Math.max(0, FREE_DELIVERY_OVER_P - subtotalP);
+}

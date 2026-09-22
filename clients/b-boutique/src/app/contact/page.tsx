@@ -53,7 +53,7 @@ export default function ContactPage() {
             shop.email ? (
               <p className="pm-phone">
                 <span className="pm-phone-label">Email the shop</span>
-                <a href={`mailto:${shop.email}`} className="pm-phone-number">
+                <a href={`mailto:${shop.email}`} className="pm-phone-number pm-phone-number--email">
                   {shop.email}
                 </a>
               </p>

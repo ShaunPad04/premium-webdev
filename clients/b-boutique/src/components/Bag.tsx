@@ -9,6 +9,7 @@ import {
   formatPrice,
   productBySlug,
 } from "@/lib/catalogue";
+import { FreeDelivery } from "@/components/FreeDelivery";
 import { ProductPhoto } from "@/components/ProductPhoto";
 import { useCart } from "@/lib/useCart";
 
@@ -222,6 +223,16 @@ export function Bag() {
             this build.]
           </p>
         ) : null}
+
+        {/* How far off free delivery. In the SUMMARY panel, above the
+            control — it is information that might change what somebody does
+            next, and under the button it would be an explanation of a
+            decision already made.
+            It was briefly inserted into the line row instead, between the
+            quantity box and REMOVE, because the patch that added it matched
+            the first `<button` in the file. That is what it looked like:
+            a progress bar wedged into the middle of a product row. */}
+        <FreeDelivery subtotalP={subtotalP} />
 
         <button
           type="button"
