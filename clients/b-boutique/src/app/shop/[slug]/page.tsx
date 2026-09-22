@@ -20,6 +20,8 @@ import {
   relatedTo,
 } from "@/lib/catalogue";
 import { shop } from "@/lib/shop";
+import { productSchema } from "@/lib/product-schema";
+import { jsonLd } from "@/lib/site";
 
 /* Prerender every product. There are thirteen of them and they change when
    the code changes, so there is nothing to gain from rendering them on
@@ -58,6 +60,12 @@ export default async function ProductPage({
 
   return (
     <>
+      {/* Serialised, never string-concatenated. See `jsonLd` — it escapes the
+          one character JSON.stringify leaves alone. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(productSchema(product)) }}
+      />
       <MotionLayer />
       <Nav />
       <main id="main" className="flex-1">

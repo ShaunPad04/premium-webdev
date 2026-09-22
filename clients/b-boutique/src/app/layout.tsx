@@ -3,6 +3,7 @@ import { Bodoni_Moda, Inter } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
+import { SITE_ORIGIN, jsonLd } from "@/lib/site";
 import "./globals.css";
 
 /* Two faces, and only two.
@@ -138,8 +139,11 @@ const robots: Metadata["robots"] = indexable
  * NEXT_PUBLIC_SITE_URL wins where it is set, so a preview deployment can
  * describe itself rather than claiming to be production. It is read at build
  * time and must be absolute, so a malformed value is caught by the build
- * rather than by a customer. */
-const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_URL || "https://bboutiqueclee.com";
+ * rather than by a customer.
+ *
+ * Moved to `lib/site.ts` on 2026-09-22 so the product structured data reads
+ * the same value. Two copies of an origin is two places for a canonical tag
+ * and a schema image URL to disagree about what this website is called. */
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
@@ -223,7 +227,7 @@ export default function RootLayout({
         <ScrollReset />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema()) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(localBusinessSchema()) }}
         />
         <a
           href="#main"
