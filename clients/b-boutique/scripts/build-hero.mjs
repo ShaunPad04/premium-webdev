@@ -54,17 +54,33 @@ const slides = ["1-paris", "2-street", "3-terrace", "4-flowers", "5-sea"];
  *
  * It shows on a high-DPR display, which is most of them. A full-bleed hero on
  * a DPR-2 laptop at 1440 CSS px wants 2880 device pixels across; 1800 is 62%
- * of that and reads soft. 2048 is 71% — still short, and it is as far as the
- * source goes. Upscaling past it would add file size and no detail, so this
- * is the ceiling until a larger original exists, and saying so is more useful
- * than quietly interpolating.
+ * of that and reads soft. 2048 was 71% — still short, and it was as far as
+ * the source went.
  *
- * The phone case is now fully covered rather than nearly: 1536 against the
- * 1170 device pixels a DPR-3 390px phone asks for. 1100 was 94% of it.
+ * ── 2026-09-22: the source is no longer the ceiling ──────────────────────
+ * The five landscape frames were upscaled to 4096x2304, so the 2880 a retina
+ * laptop asks for is now covered with headroom rather than missed by 29%.
+ * 3840 rather than the full 4096: it clears 2880 comfortably, it is still a
+ * genuine DOWNSCALE from the source so nothing is interpolated up, and the
+ * last 256px would cost bytes on every desktop load to serve a display size
+ * almost nobody has.
+ *
+ * The upscale was checked both ways before it was accepted, and it is not
+ * lossless — the report is in the commit. Short version: faces are intact and
+ * genuinely sharper, fine repeating detail is REGENERATED rather than
+ * sharpened, and on 4-flowers the bouquet is visibly a different bouquet.
+ * That is tolerable here only because these frames are campaign imagery and
+ * not a photograph of the shop, the stock or anyone real. The same tool must
+ * not be pointed at a product shot on that reasoning.
+ *
+ * The phone case is unchanged and was already covered: 1536 against the 1170
+ * device pixels a DPR-3 390px phone asks for. The portrait sources are still
+ * 1536x2752 and were NOT upscaled, because at that width there is no gap to
+ * close — the mobile files were never the complaint.
  *
  * The caps below are a ceiling, not a target. `withoutEnlargement` means a
  * source smaller than the cap is used at its own size and never stretched. */
-const DESKTOP_W = 2048;
+const DESKTOP_W = 3840;
 const MOBILE_W = 1536;
 const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
 

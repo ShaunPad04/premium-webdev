@@ -1,0 +1,21 @@
+import { chromium } from '@playwright/test';
+const OUT='/tmp/claude-0/-home-user-premium-webdev/6e7bf631-da35-5d7b-a29a-06753b987a8c/scratchpad';
+const URL='https://b-boutique.vercel.app/';
+const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium'});
+// desktop: slide 1, then advance to slide 3 to show a different caption
+const p=await b.newPage({viewport:{width:1440,height:900},deviceScaleFactor:2});
+const errs=[]; p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
+await p.goto(URL,{waitUntil:'load'}); await p.waitForTimeout(3000);
+await p.screenshot({path:`${OUT}/live-desktop.png`});
+await p.evaluate(()=>document.querySelectorAll('.hero-nav-btn')[1].click());
+await p.waitForTimeout(1800);
+await p.evaluate(()=>document.querySelectorAll('.hero-nav-btn')[1].click());
+await p.waitForTimeout(1800);
+await p.screenshot({path:`${OUT}/live-desktop-slide3.png`});
+console.log('counter:', await p.textContent('.hero-counter'), 'errors:', errs);
+await p.close();
+const m=await b.newPage({viewport:{width:390,height:844},deviceScaleFactor:2});
+await m.goto(URL,{waitUntil:'load'}); await m.waitForTimeout(3000);
+await m.screenshot({path:`${OUT}/live-mobile.png`});
+await m.close();
+await b.close();
