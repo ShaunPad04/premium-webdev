@@ -354,7 +354,17 @@ const RAIL_CATEGORY_ORDER = [
 
 export const newIn = (() => {
   const seen = new Set<string>();
-  const out: { slug: string; name: string; category: string; tone: string; photo: string }[] = [];
+  const out: {
+    slug: string; name: string; category: string; tone: string; photo: string;
+    /* In PENCE, and `priced` says whether it may be shown. The rail used to
+       carry no price at all, on the reasoning that prices lived in the
+       catalogue and a second list would drift. The data no longer drifts —
+       both come from lib/stocklist.ts — and the client is right that a
+       clothing shop's New In rail without prices is not a shop window.
+       `priced` is false while any colourway is a placeholder, and the card
+       then says so rather than printing a number nobody has agreed. */
+    priceP: number; priced: boolean;
+  }[] = [];
   const push = (p: (typeof stocklist)[number]) => {
     if (seen.has(p.slug)) return;
     seen.add(p.slug);
@@ -373,6 +383,8 @@ export const newIn = (() => {
               ? "marble"
               : "bone",
       photo: p.colourways[0].image,
+      priceP: p.colourways[0].priceP,
+      priced: p.colourways.every((c) => c.priceConfirmed),
     });
   };
   for (const cat of RAIL_CATEGORY_ORDER) {

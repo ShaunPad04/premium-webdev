@@ -170,7 +170,7 @@ export function Bag() {
                   type="number"
                   inputMode="numeric"
                   min={0}
-                  max={10}
+                  max={6}
                   value={line.qty}
                   onChange={(e) => {
                     const n = Number(e.target.value);

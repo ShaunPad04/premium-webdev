@@ -688,3 +688,63 @@ export function unconfirmedPrices(): StockColourway[] {
 export function pieceBySlug(slug: string): StockPiece | undefined {
   return stocklist.find((p) => p.slug === slug);
 }
+
+/** What sizes this drop actually runs to, in a sentence, derived.
+ *
+ *  ── Why this function exists ────────────────────────────────────────────
+ *  The FAQ answered "What sizes do you stock?" with "Most pieces run from a
+ *  size 8 to a size 18". It was written before anybody knew what the shop
+ *  held, was marked `temporary: true`, and survived onto a live site.
+ *
+ *  Against her real stock it is false, and not marginally: NOT ONE of the 32
+ *  pieces offers a size 18, and not one uses a numeric 8-to-18 run at all.
+ *  Fifteen are "one size, fits up to 14". The largest anything reaches is 16,
+ *  on four pieces.
+ *
+ *  That is the most expensive kind of wrong on this site. A customer reads it,
+ *  drives to Cleethorpes or orders online, and the garment does not go near
+ *  her size — a wasted journey, a return the shop pays to handle, and under
+ *  the Consumer Protection from Unfair Trading Regulations a misleading claim
+ *  about the goods.
+ *
+ *  So the answer is COUNTED rather than written. It cannot drift from the
+ *  rail, and when she buys a piece that runs to an 18 the sentence says so by
+ *  itself. */
+export function sizeSummary(): string {
+  const oneSize = stocklist.filter((p) => p.sizes.length === 1 && p.sizes[0] === "One size");
+  const lettered = stocklist.filter((p) => p.sizes.length > 1);
+
+  /* "fits up to 14" / "fits up to 16" — read off the note, never guessed. */
+  const caps = [
+    ...new Set(
+      oneSize
+        .map((p) => p.sizeNote.match(/fits up to (\d+)/)?.[1])
+        .filter((x): x is string => Boolean(x)),
+    ),
+  ]
+    .map(Number)
+    .sort((a, b) => a - b);
+
+  const parts: string[] = [];
+  if (oneSize.length) {
+    parts.push(
+      caps.length
+        ? `Most of what is in at the moment is one size, cut to fit up to a ${
+            caps.length === 1
+              ? caps[0]
+              : `${caps.slice(0, -1).join(", a ")} or a ${caps[caps.length - 1]}`
+          }`
+        : "Most of what is in at the moment is one size",
+    );
+  }
+  if (lettered.length) {
+    parts.push(
+      `${oneSize.length ? "the" : "The"} trousers and a few of the knits run in small to large`,
+    );
+  }
+  return (
+    `${parts.join(", and ")}. Sizing varies from piece to piece, so every product ` +
+    `page lists its own — and if you are between sizes it is worth coming in, ` +
+    `because the fit differs more than a label suggests.`
+  );
+}

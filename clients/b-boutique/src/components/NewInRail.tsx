@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { formatPriceShort } from "@/lib/catalogue";
 import { newIn } from "@/lib/shop";
 import { useInView } from "@/lib/useInView";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
@@ -432,6 +433,33 @@ export function NewInRail() {
                   three times over. They are replaced, not edited, when her
                   real list arrives. */}
               <p className="newin-name">{piece.name}</p>
+              {/* Price and a control, because this is a shop.
+                  The rail carried a name and nothing else until 2026-09-22.
+                  On a clothing site that is a lookbook, not a shop window —
+                  the client asked for "pricing and a CTA below the products,
+                  remember this is a professional ecommerce store".
+
+                  Same rule as everywhere else: a placeholder is not a price.
+                  The eight pieces still waiting on her figure say so instead
+                  of printing one. */}
+              <p className="newin-price">
+                {piece.priced ? (
+                  formatPriceShort(piece.priceP)
+                ) : (
+                  <span className="newin-price--pending">Price to confirm</span>
+                )}
+              </p>
+              {/* Not a nested <a> — the whole card is already the link, and a
+                  link inside a link is invalid and unusable with a keyboard.
+                  This is the card's own affordance, styled as a control and
+                  driven by the card's hover and focus. */}
+              <span aria-hidden="true" className="newin-cta">
+                View piece
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4"
+                    strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
               </Link>
             </li>
           )),

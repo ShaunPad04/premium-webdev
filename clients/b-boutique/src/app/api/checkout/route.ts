@@ -84,7 +84,19 @@ function describe(l: { name: string; size: string; colour: string }): string {
 }
 
 const MAX_LINES = 25;
-const MAX_QTY = 10;
+/* Six, not ten.
+   Ten was a round number picked before anybody knew what this shop holds.
+   Her opening counts run 1 to 6 per colourway across all 54 of them, so ten
+   let a customer put more of a piece in the bag than the shop has ever owned
+   — and on a rail where most lines are one or two, that is not a theoretical
+   limit, it is the ordinary case.
+
+   This is a CEILING, not the stock check. The real gate is `countsFor` in
+   /api/checkout, which refuses to sell more of a variant than the database
+   says exists and fails closed if the database errors. That gate has been
+   right since 2026-09-20 and has simply had nothing to check against, because
+   the stock table is empty. scripts/import-stock.mjs fills it. */
+const MAX_QTY = 6;
 
 export async function POST(request: NextRequest) {
   let body: { lines?: unknown };

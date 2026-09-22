@@ -1,3 +1,4 @@
+import { sizeSummary } from "./stocklist";
 import { openingSummary, shop } from "./shop";
 
 /** Questions for the homepage FAQ.
@@ -53,8 +54,13 @@ export const faq: FaqItem[] = [
   },
   {
     q: "What sizes do you stock?",
-    a: "Most pieces run from a size 8 to a size 18, though it varies by label and by cut. If you are between sizes it is worth coming in — the fit differs more between brands than the number on the label suggests.",
-    temporary: true,
+    /* DERIVED, and no longer temporary. This read "Most pieces run from a
+       size 8 to a size 18" until 2026-09-22 — written before anybody knew
+       what the shop held, and false against her real stock: not one of the 32
+       pieces offers an 18, and not one uses a numeric run at all. See
+       `sizeSummary` in lib/stocklist.ts for why that is the most expensive
+       sentence that was on this site. */
+    a: sizeSummary(),
   },
   {
     q: "Do you offer alterations?",
@@ -73,8 +79,33 @@ export const faq: FaqItem[] = [
   },
   {
     q: "Can I return or exchange something?",
-    a: "Unworn pieces can be exchanged or credited within 14 days with your receipt. Sale items and earrings are the usual exceptions.",
-    temporary: true,
+    /* ── This answer CONTRADICTED her own policy and is corrected ─────────
+       It read: "Unworn pieces can be exchanged or credited within 14 days
+       with your receipt. Sale items and earrings are the usual exceptions."
+
+       Two of those are wrong against what the client confirmed on
+       2026-09-20, and both in the direction that costs her:
+
+         "Sale items and earrings are the usual exceptions" — she confirmed
+         NO EXCLUSIONS. Publishing an exclusion the shop does not apply can
+         talk a customer out of a return she is legally entitled to make,
+         which is a consumer-rights problem and a bad look besides. It also
+         directly contradicts /returns, two clicks away on the same site.
+
+         "can be exchanged" — she confirmed NO EXCHANGES on online orders.
+         Most pieces here are one of one, so there is usually nothing to
+         exchange into; the shop refunds instead.
+
+       Written from lib/policies.ts, which holds what she actually said, so
+       the FAQ and the returns page can no longer disagree. No longer
+       `temporary`, because it is no longer invented. */
+    a:
+      "Online, send it back for a refund within 14 days — there are no " +
+      "exclusions, and the return postage is yours if you have simply " +
+      "changed your mind. We do not do exchanges on online orders, because " +
+      "most pieces are one of one and there is usually nothing to exchange " +
+      "into. In the shop we will offer an exchange or a credit note as our " +
+      "own goodwill. The returns page has it in full.",
   },
   {
     q: "Do you sell online?",

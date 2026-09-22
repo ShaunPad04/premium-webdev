@@ -1616,6 +1616,58 @@ body {
   outline-offset: 6px;
 }
 
+.newin-price {
+  margin-top: 5px;
+  font-size: 13px;
+  color: rgba(26, 20, 22, 0.72);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Same alpha as the price beside it, distinguished by italic rather than by
+   going lighter — the identical decision as `.prod-price--pending`, and for
+   the identical reason: lightening the one price a customer most needs to
+   read is the wrong lever, and 13px wants 4.5:1. */
+.newin-price--pending {
+  font-style: italic;
+  font-variant-numeric: normal;
+}
+
+/* The card's own control. Quiet at rest and only fully present on hover or
+   keyboard focus — a rail of ten cards each shouting a button is a coupon
+   site, and this one is drifting past. The underline grows rather than
+   appearing, so nothing shifts. */
+.newin-cta {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bb-black);
+  opacity: 0.55;
+  transition: opacity var(--bb-dur-quick) var(--bb-ease);
+}
+
+.newin-cta svg { transition: transform var(--bb-dur-quick) var(--bb-ease); }
+
+.newin-item:hover .newin-cta,
+.newin-item:focus-within .newin-cta { opacity: 1; }
+
+.newin-item:hover .newin-cta svg,
+.newin-item:focus-within .newin-cta svg { transform: translateX(3px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .newin-cta, .newin-cta svg { transition: none; }
+}
+
+/* A drifting rail has no hover on a phone, so the control is simply present
+   there rather than waiting for an interaction that cannot happen. */
+@media (hover: none), (pointer: coarse) {
+  .newin-cta { opacity: 1; }
+}
+
 .newin-name {
   margin-top: 17px;
   font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
@@ -2330,14 +2382,41 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(58% 42% at 50% 46%,
-      rgba(26, 20, 22, 0.78) 0%,
-      rgba(26, 20, 22, 0.62) 38%,
-      rgba(26, 20, 22, 0.24) 68%,
-      rgba(26, 20, 22, 0.08) 100%),
-    linear-gradient(to top, rgba(26, 20, 22, 0.52) 0%, rgba(26, 20, 22, 0.10) 38%, transparent 66%),
-    rgba(26, 20, 22, 0.06);
+  /* A foot gradient only. The radial plate that used to sit at 0.78 in the
+     middle of this was buying legibility for the address printed over the
+     map; the address is gone (see VisitMap) and the plate went with it, which
+     gives the client back the colour map she asked for on 2026-09-21.
+     What is left darkens the bottom 40% for the EXPAND MAP control, which is
+     white on whatever Google happens to paint there. */
+  background: linear-gradient(
+    to top,
+    rgba(26, 20, 22, 0.58) 0%,
+    rgba(26, 20, 22, 0.20) 26%,
+    transparent 44%
+  );
+}
+
+/* Shown only when the embed never loaded. Bottom-left, clear of the EXPAND
+   MAP control at bottom-right, on the same foot gradient that control uses so
+   it needs no plate of its own. */
+.vm-offline {
+  position: absolute;
+  z-index: 2;
+  left: 16px;
+  bottom: 16px;
+  right: 170px;
+  margin: 0;
+  color: var(--bb-white-pure);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-wrap: pretty;
+}
+
+@media (max-width: 520px) {
+  /* Above the button rather than beside it: at 390 there is not room for
+     both on one line and the address must not be clipped. */
+  .vm-offline { right: 16px; bottom: 70px; }
 }
 
 .vm-expand {

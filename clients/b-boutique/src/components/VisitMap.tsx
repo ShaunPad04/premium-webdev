@@ -46,6 +46,25 @@ export function VisitMap({
   title: string;
 }) {
   const [open, setOpen] = useState(false);
+  /* Did the inline map actually paint?
+     Consent tools and ad blockers stop Google Maps for a large share of UK
+     visitors, and what the page shows when a third party fails is not an edge
+     case — it is what those visitors see. Removing the address that used to
+     be printed over the map (it duplicated the column beside it, and needed a
+     heavy plate to stay legible) left a browser error tile in a grey box,
+     which is exactly the hole this component was written to avoid.
+     So the failure gets its own state. A blocker that removes the frame
+     outright never fires `load`, and after six seconds the panel says plainly
+     what it is and where the shop is. When the map does load, nothing shows
+     and the client gets the clean colour map she asked for. */
+  const [mapPainted, setMapPainted] = useState(false);
+  const [mapLate, setMapLate] = useState(false);
+
+  useEffect(() => {
+    if (mapPainted) return;
+    const t = setTimeout(() => setMapLate(true), 6000);
+    return () => clearTimeout(t);
+  }, [mapPainted]);
   const opener = useRef<HTMLButtonElement>(null);
   const dialog = useRef<HTMLDivElement>(null);
 
@@ -106,15 +125,26 @@ export function VisitMap({
   return (
     <>
       <div className="vm-panel">
-        {/* Underneath the map, not instead of it. If the embed is blocked by a
-            consent tool, an ad blocker or a dead network, this is what is left
-            in the panel — the address, still legible, rather than a grey hole. */}
-        <div className="vm-panel-inner">
-          <p className="vm-panel-street">{street}</p>
-          <p className="vm-panel-sub">
-            {town} &middot; {postcode}
-          </p>
-        </div>
+        {/* ── The address used to be printed here, over the map ───────────
+            It was the fallback for a blocked embed, which is a real case —
+            consent tools and ad blockers stop Google Maps for a large share
+            of UK visitors, and a grey hole is not an acceptable answer.
+
+            But it was ALSO printed, at the same moment, in the column
+            immediately to its left. The client saw the result: the address
+            twice on one screen, the second copy needing a heavy dark plate
+            over the map to stay legible, which dimmed the map she had just
+            asked to be put in colour.
+
+            The fallback requirement is that a visitor is never left with
+            nothing, and they are not: `Visit` sets the address in real text
+            beside this panel, always, independent of whether any third party
+            loads. That is a better fallback than this was — it does not
+            depend on the iframe failing in a particular way to be seen.
+
+            So the duplicate is gone and the plate with it. The scrim that
+            remains is a thin gradient at the foot, and it is there for the
+            EXPAND MAP button's contrast, not for type. */}
 
         {/* The map, visible in place rather than only behind a button.
             Three things make that safe:
@@ -141,8 +171,18 @@ export function VisitMap({
           className="vm-preview"
           tabIndex={-1}
           aria-hidden="true"
+          onLoad={() => setMapPainted(true)}
         />
         <span className="vm-preview-scrim" aria-hidden="true" />
+
+        {/* Only when it did not arrive. Small and factual — the address is
+            already set large in the column beside this, so this is a caption
+            explaining an absence, not a second masthead. */}
+        {mapLate && !mapPainted ? (
+          <p className="vm-offline">
+            Map unavailable &mdash; {street}, {town} {postcode}
+          </p>
+        ) : null}
 
         <button
           ref={opener}

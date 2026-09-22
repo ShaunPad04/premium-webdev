@@ -63,11 +63,34 @@ const block = (label, detail) => blockers.push({ label, detail });
    `true` alone found nothing and reported the single most dangerous file in
    the project as clean. The count comes from the price table itself. */
 const catalogue = read('src/lib/catalogue.ts');
-if (/\bdemo:\s*true\b/.test(catalogue)) {
-  const priced = (catalogue.match(/priceP:\s*\d+/g) ?? []).length;
+/* ── Prices ───────────────────────────────────────────────────────────────
+ * Rewritten 2026-09-22, because the old rule fired on a COMMENT and reported
+ * "0 products still priced with invented figures" as a blocker.
+ *
+ * It tested `/\bdemo:\s*true\b/` against the raw text of catalogue.ts. That
+ * was right while every product literally carried `demo: true`; the field is
+ * computed now (`demo: piece.colourways.some(c => !c.priceConfirmed)`) and
+ * the only remaining match was a sentence in a comment explaining the old
+ * behaviour. A gate that blocks on its own documentation, and then names a
+ * count of zero, is precisely the failure this file's own notes warn about
+ * twice — a false alarm is how a launch gate stops being read.
+ *
+ * The real signal is in the stock list and it is counted, not sniffed:
+ * `priceConfirmed: false` is the client's dashboard saying PLACEHOLDER. */
+/* Comments stripped first. This project has now had THREE false alarms from
+   a content rule matching its own prose — the `plausible` one, the
+   `demo: true as const` one, and the comment that produced this very
+   rewrite. A function for it already exists further down this file; it is a
+   `const` and would be in its temporal dead zone here, so this one call does
+   it inline rather than reordering a working file around one line. */
+const stocklist = read('src/lib/stocklist.ts')
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/^\s*\/\/.*$/gm, '');
+const unconfirmed = (stocklist.match(/priceConfirmed:\s*false/g) ?? []).length;
+if (unconfirmed > 0) {
   block(
-    `${priced} product${priced === 1 ? '' : 's'} still priced with invented figures`,
-    'src/lib/catalogue.ts — every one is a price nobody agreed to. Published, it is a price the customer is entitled to pay.',
+    `${unconfirmed} colourway${unconfirmed === 1 ? '' : 's'} still carry a placeholder price`,
+    'src/lib/stocklist.ts — the dashboard marks these PLACEHOLDER. They are shown as "Price to confirm" and cannot be bought, and that is the only reason this is not already live with a made-up number on it.',
   );
 }
 if (/DELIVERY_IS_DEMO\s*=\s*true/.test(catalogue)) {
