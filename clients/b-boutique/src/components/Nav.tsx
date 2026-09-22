@@ -100,13 +100,23 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
        * the state the header already keeps for its own background, so this
        * costs no new listener and cannot drift out of step with it.
        *
-       * Collapsed by max-height with overflow hidden, and aria-hidden with
-       * it: a screen reader should not be offered a link inside a strip the
-       * page has visibly put away. */}
+       * Collapsed by max-height with overflow hidden, and `inert` with it: a
+       * screen reader should not be offered a link inside a strip the page
+       * has visibly put away, and neither should the Tab key.
+       *
+       * It was `aria-hidden` until 2026-09-22, which does only the first of
+       * those. The link inside stayed focusable, so a keyboard user tabbing
+       * after scrolling landed on an invisible link that a screen reader
+       * would then not announce — axe's `aria-hidden-focus`, serious, on
+       * every page once scrolled past 64px. The accessibility suite audits
+       * each page at scroll 0, where the strip is open, so it never saw it;
+       * found by auditing a filled-in bag after scrolling to its form.
+       * `inert` removes the subtree from the accessibility tree AND from
+       * focus, which is the whole of what this needed. */}
       <div
         className="announce-shell"
         data-collapsed={scrolled ? "" : undefined}
-        aria-hidden={scrolled ? true : undefined}
+        inert={scrolled || undefined}
       >
         <AnnounceBar />
       </div>
