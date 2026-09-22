@@ -89,7 +89,10 @@ const stocklist = read('src/lib/stocklist.ts')
 const unconfirmed = (stocklist.match(/priceConfirmed:\s*false/g) ?? []).length;
 if (unconfirmed > 0) {
   block(
-    `${unconfirmed} colourway${unconfirmed === 1 ? '' : 's'} still carry a placeholder price`,
+    /* The verb has to agree too. It read "1 colourway still carry" the first
+       time the count reached one, which is the day this line finally gets
+       read carefully. */
+    `${unconfirmed} colourway${unconfirmed === 1 ? ' still carries' : 's still carry'} a placeholder price`,
     'src/lib/stocklist.ts — the dashboard marks these PLACEHOLDER. They are shown as "Price to confirm" and cannot be bought, and that is the only reason this is not already live with a made-up number on it.',
   );
 }

@@ -132,8 +132,8 @@ export const stocklist: readonly StockPiece[] = [
     supplier: "Babez London",
     supplierCode: "M1264",
     colourways: [
-      { sku: "BB-PAISLEYVEST-BUR", supplierRef: "M1264-BUR", colour: "Burgundy", priceP: 4500, priceConfirmed: false, image: "bb-paisleyvest-bur" },
-      { sku: "BB-PAISLEYVEST-BRN", supplierRef: "M1264-BRN", colour: "Brown", priceP: 4500, priceConfirmed: false, image: "bb-paisleyvest-brn" },
+      { sku: "BB-PAISLEYVEST-BUR", supplierRef: "M1264-BUR", colour: "Burgundy", priceP: 4900, priceConfirmed: true, image: "bb-paisleyvest-bur" },
+      { sku: "BB-PAISLEYVEST-BRN", supplierRef: "M1264-BRN", colour: "Brown", priceP: 4900, priceConfirmed: true, image: "bb-paisleyvest-brn" },
     ],
   },
   {
@@ -151,8 +151,8 @@ export const stocklist: readonly StockPiece[] = [
     supplier: "Babez London",
     supplierCode: "",
     colourways: [
-      { sku: "BB-ASYMJMP-BRN", supplierRef: "", colour: "Brown", priceP: 4000, priceConfirmed: false, image: "bb-asymjmp-brn" },
-      { sku: "BB-ASYMJMP-TAU", supplierRef: "", colour: "Taupe", priceP: 4000, priceConfirmed: false, image: "bb-asymjmp-tau" },
+      { sku: "BB-ASYMJMP-BRN", supplierRef: "", colour: "Brown", priceP: 3800, priceConfirmed: true, image: "bb-asymjmp-brn" },
+      { sku: "BB-ASYMJMP-TAU", supplierRef: "", colour: "Taupe", priceP: 3800, priceConfirmed: true, image: "bb-asymjmp-tau" },
     ],
   },
   {
@@ -170,8 +170,8 @@ export const stocklist: readonly StockPiece[] = [
     supplier: "Babez London",
     supplierCode: "MC2853",
     colourways: [
-      { sku: "BB-LACEBLOUSE-BUR", supplierRef: "MC2853-BUR", colour: "Burgundy", priceP: 3800, priceConfirmed: false, image: "bb-laceblouse-bur" },
-      { sku: "BB-LACEBLOUSE-BRN", supplierRef: "MC2853-BRN", colour: "Brown", priceP: 3800, priceConfirmed: false, image: "bb-laceblouse-brn" },
+      { sku: "BB-LACEBLOUSE-BUR", supplierRef: "MC2853-BUR", colour: "Burgundy", priceP: 4200, priceConfirmed: true, image: "bb-laceblouse-bur" },
+      { sku: "BB-LACEBLOUSE-BRN", supplierRef: "MC2853-BRN", colour: "Brown", priceP: 4200, priceConfirmed: true, image: "bb-laceblouse-brn" },
     ],
   },
   {
@@ -207,8 +207,8 @@ export const stocklist: readonly StockPiece[] = [
     supplier: "Babez London",
     supplierCode: "9263",
     colourways: [
-      { sku: "BB-STRIPEZIP-TAU", supplierRef: "9263-TAU", colour: "Taupe", priceP: 4200, priceConfirmed: false, image: "bb-stripezip-tau" },
-      { sku: "BB-STRIPEZIP-RED", supplierRef: "9263-RED", colour: "Red", priceP: 4200, priceConfirmed: false, image: "bb-stripezip-red" },
+      { sku: "BB-STRIPEZIP-TAU", supplierRef: "9263-TAU", colour: "Taupe", priceP: 4000, priceConfirmed: true, image: "bb-stripezip-tau" },
+      { sku: "BB-STRIPEZIP-RED", supplierRef: "9263-RED", colour: "Red", priceP: 4000, priceConfirmed: true, image: "bb-stripezip-red" },
     ],
   },
   {
@@ -226,7 +226,7 @@ export const stocklist: readonly StockPiece[] = [
     supplier: "Babez London",
     supplierCode: "2866",
     colourways: [
-      { sku: "BB-PLAIDJKT-BEI", supplierRef: "2866-BEI", colour: "Beige", priceP: 4900, priceConfirmed: false, image: "bb-plaidjkt-bei" },
+      { sku: "BB-PLAIDJKT-BEI", supplierRef: "2866-BEI", colour: "Beige", priceP: 4900, priceConfirmed: true, image: "bb-plaidjkt-bei" },
     ],
   },
   {
@@ -282,7 +282,7 @@ export const stocklist: readonly StockPiece[] = [
     supplier: "Babez London",
     supplierCode: "K2225 / K2226",
     colourways: [
-      { sku: "BB-DENIMSET-DEN", supplierRef: "K2225-DEN", colour: "Denim Blue", priceP: 4800, priceConfirmed: false, image: "bb-denimset-den" },
+      { sku: "BB-DENIMSET-DEN", supplierRef: "K2225-DEN", colour: "Denim Blue", priceP: 8500, priceConfirmed: true, image: "bb-denimset-den" },
     ],
   },
   {
@@ -493,8 +493,8 @@ export const stocklist: readonly StockPiece[] = [
     supplier: "Babez London",
     supplierCode: "M1238",
     colourways: [
-      { sku: "BB-PAISLEYJMP-BRN", supplierRef: "M1238-BRN", colour: "Brown", priceP: 5400, priceConfirmed: false, image: "bb-paisleyjmp-brn" },
-      { sku: "BB-PAISLEYJMP-BUR", supplierRef: "M1238-BUR", colour: "Burgundy", priceP: 5400, priceConfirmed: false, image: "bb-paisleyjmp-bur" },
+      { sku: "BB-PAISLEYJMP-BRN", supplierRef: "M1238-BRN", colour: "Brown", priceP: 4500, priceConfirmed: true, image: "bb-paisleyjmp-brn" },
+      { sku: "BB-PAISLEYJMP-BUR", supplierRef: "M1238-BUR", colour: "Burgundy", priceP: 4500, priceConfirmed: true, image: "bb-paisleyjmp-bur" },
     ],
   },
   {
