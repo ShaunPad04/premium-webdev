@@ -18,8 +18,33 @@ import { NavSearch } from "./NavSearch";
  *
  * Three parts, and the centre is a real nav landmark. Every href in PRIMARY
  * is an anchor that exists on this page; see the note in lib/nav.ts about
- * Clothing and Accessories both landing on the rails. */
-export function Nav() {
+ * Clothing and Accessories both landing on the rails.
+ *
+ * ── `solid`: for routes that open on light ────────────────────────────────
+ * Transparent-at-the-top is correct over a dark full-bleed image, and every
+ * route that is not the home page was given a PageMasthead precisely so this
+ * header has something dark to sit on — read the note at the top of that
+ * component, it says so outright.
+ *
+ * The product page is the one route that never got one. It opens straight
+ * into the split layout: photograph on the left, white on the right. The
+ * centre nav and SEARCH / BAG / MENU all sit over the white half, so at
+ * scroll 0 they rendered white-on-white and the scrim under them — tuned to
+ * keep 10px type off a bright highlight in a photograph — did almost nothing
+ * against #FAF5F3. The client spotted it on a screenshot.
+ *
+ * Fixed here rather than by adding a black band to the product page, because
+ * the garment photograph is the point of that screen and a masthead above it
+ * would push the thing being sold below the fold.
+ *
+ * Two states, deliberately separate rather than one flag:
+ *   opaque  — draws the bar. `solid` forces it on from the first paint.
+ *   scrolled — the reader has actually moved, and is the ONLY thing that may
+ *              collapse the announcement strip.
+ * Collapsing them into one would put the strip away before the product page
+ * had been scrolled at all, which is a visible regression on a route that
+ * currently shows it. */
+export function Nav({ solid = false }: { solid?: boolean } = {}) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -31,16 +56,18 @@ export function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const opaque = solid || scrolled;
+
   return (
     <header
       /* z-[60] keeps the Menu trigger above the panel it opens (z-50); the
          panel reserves top padding for exactly this. */
       className="fixed inset-x-0 top-0 z-[60] text-bb-white"
       style={{
-        background: scrolled ? "rgba(26, 20, 22, .90)" : "transparent",
-        backdropFilter: scrolled ? "blur(14px)" : "none",
-        WebkitBackdropFilter: scrolled ? "blur(14px)" : "none",
-        borderBottom: `1px solid ${scrolled ? "rgba(255,255,255,.10)" : "transparent"}`,
+        background: opaque ? "rgba(26, 20, 22, .90)" : "transparent",
+        backdropFilter: opaque ? "blur(14px)" : "none",
+        WebkitBackdropFilter: opaque ? "blur(14px)" : "none",
+        borderBottom: `1px solid ${opaque ? "rgba(255,255,255,.10)" : "transparent"}`,
         transition:
           "background 480ms var(--bb-ease), backdrop-filter 480ms var(--bb-ease), border-color 480ms var(--bb-ease)",
       }}
@@ -49,7 +76,7 @@ export function Nav() {
           top edge. The photograph is the point — a heavy overlay turns its red
           to burgundy. This exists so 10px type stays legible over a highlight,
           nothing more. */}
-      {!scrolled ? (
+      {!opaque ? (
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-0 h-[120px]"
