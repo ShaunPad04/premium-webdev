@@ -22,13 +22,20 @@ import { useState } from "react";
  */
 
 /** ───────────────────────────────────────────────────────────────────────
- *  SET THIS before sending her the link: the address her answers go to.
- *  Left empty deliberately rather than guessed. While it is empty the
- *  button copies her answers to the clipboard instead, which works but
- *  makes her paste them into an email herself — three steps on a phone
- *  instead of one.
+ *  Where her answers go: the agency, not the shop.
+ *
+ *  Worth stating because the two are easy to swap and the project has both.
+ *  This is the address that has to READ the answers and act on them, so it
+ *  is Black Line's. `CONTACT_TO` in the environment is the opposite
+ *  direction — that one is the shop's own inbox, for order notifications and
+ *  the contact form.
+ *
+ *  This ends up in the page's JavaScript, which is served publicly even
+ *  though the page is unlisted and noindex. That is fine for a business
+ *  contact address that is already published, and would not be for a
+ *  personal one.
  *  ─────────────────────────────────────────────────────────────────────── */
-const SEND_TO = "";
+const SEND_TO = "Contact@BlackLineAgency.co.uk";
 
 const PRICES: [string, string][] = [
   ["Paisley Fringe Belted Cardigan Vest", "Burgundy"],
