@@ -6478,3 +6478,107 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .dd-postcode { max-width: 12ch; }
 
 .dd .cf-textarea { min-height: 96px; }
+
+/* ── Orders to post ───────────────────────────────────────────────────────
+ *
+ * Sits above the rail on /stock, and this is the answer to "how would she
+ * know somebody bought something?". An email goes out too, but the email can
+ * bounce, go to spam, or arrive on a phone she is not holding. This is the
+ * one that cannot go missing, because it is on the page she opens anyway.
+ *
+ * Same constraints as the stock board beside it: one thumb, standing up,
+ * 44px minimum on anything tappable, and a column rather than a full-width
+ * row on a laptop. It is a staff tool, deliberately outside the storefront's
+ * design passes — no motion, nothing decorative.
+ */
+.ord {
+  max-width: 720px;
+  margin-inline: auto;
+  padding: 18px 16px 0;
+  background: var(--bb-white-pure);
+  color: var(--bb-black);
+}
+
+.ord-h {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ord-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; }
+
+.ord-card {
+  border: 1px solid var(--bb-light-border);
+  /* A left border would be the reflex and is banned outright — a coloured
+     side-stripe on a card is never the intentional choice. The rouge sits on
+     the reference instead, where it labels something. */
+  padding: 14px;
+}
+
+.ord-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.ord-ref {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--bb-rouge);
+}
+
+.ord-total { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.ord-lines { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 4px; }
+.ord-line { font-size: 14px; line-height: 1.4; }
+.ord-qty { font-variant-numeric: tabular-nums; font-weight: 600; }
+
+/* The line nobody counted. It did NOT come off the rail when the order was
+   taken, so the garment may or may not still be there — the one thing on this
+   card she must not skim past. */
+.ord-check { color: var(--bb-rouge); font-weight: 600; }
+
+/* `white-space: pre-line` so the address keeps the shape it was typed in.
+   She is copying this onto a label, and an address reflowed into one
+   paragraph is an address she has to re-punctuate by hand.
+   `font-style: normal` because <address> is italic by default in every
+   browser and an italic address is harder to read off a screen. */
+.ord-addr {
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--bone);
+  font-style: normal;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-line;
+  /* She selects it to copy it. */
+  user-select: text;
+}
+
+.ord-posted {
+  margin-top: 12px;
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  background: var(--bb-black);
+  color: var(--bb-white);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.ord-posted:disabled { opacity: 0.6; cursor: default; }
+.ord-posted:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+.ord-fail { margin-top: 8px; font-size: 13px; color: var(--red); }
+
+.ord-held {
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(26, 20, 22, 0.72);
+}

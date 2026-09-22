@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { products } from "@/lib/catalogue";
 import { readStock, stockIsConfigured } from "@/lib/stock";
 import { isSignedIn, stockAuthIsConfigured } from "@/lib/stock-auth";
+import { listOrders } from "@/lib/orders";
+import { sweepStaleOrders } from "@/lib/order-sweep";
+import { OrdersPanel } from "./OrdersPanel";
 import { StockBoard, type BoardPiece } from "./StockBoard";
 import { StockSignIn } from "./StockSignIn";
 import { StockNotReady } from "./StockNotReady";
@@ -34,7 +37,20 @@ export default async function StockPage() {
 
   if (!(await isSignedIn())) return <StockSignIn />;
 
-  const rows = await readStock();
+  /* Settle anything left hanging before reading the list, so what she sees is
+     current rather than a snapshot with half-finished baskets in it.
+
+     Running it here rather than on a schedule is deliberate: she opens this
+     page every day, it costs one query when there is nothing stale, and it
+     means the sweep cannot silently stop working without her noticing the
+     orders stop arriving. A cron would be a second mechanism to monitor. It
+     never throws into the page — a provider that is down must not stop her
+     seeing the rail. */
+  await sweepStaleOrders().catch((err) =>
+    console.error("stock: order sweep failed", err),
+  );
+
+  const [rows, orders] = await Promise.all([readStock(), listOrders()]);
   if (!rows) return <StockNotReady database={false} passphrase />;
 
   /* Grouped by piece, because that is how she thinks about the rail: find the
@@ -59,5 +75,13 @@ export default async function StockPage() {
   }
 
   const pieces = [...byPiece.values()].filter((p) => p.variants.length > 0);
-  return <StockBoard pieces={pieces} />;
+  return (
+    <>
+      {/* Above the rail, because an order has somebody's money in it and the
+          rail does not. Renders nothing at all when there is nothing to
+          post. */}
+      {orders ? <OrdersPanel orders={orders} /> : null}
+      <StockBoard pieces={pieces} />
+    </>
+  );
 }

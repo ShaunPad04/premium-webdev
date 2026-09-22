@@ -8,6 +8,8 @@ import { PageMasthead } from "@/components/PageMasthead";
 import { ClearBag } from "@/components/ClearBag";
 import { shop } from "@/lib/shop";
 import { checkoutStatusByReference, sumupIsConfigured } from "@/lib/sumup";
+import { markPaid, releaseOrder } from "@/lib/orders";
+import { confirmOrderToCustomer, notifyShopOfOrder } from "@/lib/mail";
 
 export const metadata: Metadata = {
   title: "Checkout",
@@ -43,6 +45,62 @@ export default async function CheckoutSuccessPage({
   const status = ref && configured ? await checkoutStatusByReference(ref) : null;
 
   const paid = status === "PAID";
+
+  /* ── Settling the order ────────────────────────────────────────────────
+   *
+   * This is the moment the order stops being a held basket and becomes a
+   * sale, and it is the only authoritative one available: SumUp publishes no
+   * payment webhook, so nothing tells this shop a payment succeeded except
+   * asking, which is what `checkoutStatusByReference` just did.
+   *
+   * ── Why side effects in a page render are safe HERE ────────────────────
+   * Normally they are not — a render can happen more than once, and this URL
+   * is one a customer can reload all afternoon. The guard is not a hope that
+   * it renders once; it is `markPaid`, whose UPDATE carries
+   * `WHERE status = 'pending'`. Postgres settles that atomically, so exactly
+   * one caller is ever told `changed: true`, no matter how many render at
+   * once. The emails hang off that flag rather than off the render.
+   *
+   * ── Stock is NOT touched here ──────────────────────────────────────────
+   * The pieces came off the shelf when the order was created. Payment
+   * confirms that reservation; it does not repeat it. Decrementing again
+   * here would take two garments off the rail for one sale.
+   *
+   * ── A failed email is not a failed order ───────────────────────────────
+   * `sendMail` returns false rather than throwing. A customer whose money has
+   * gone through must never see an error page because an inbox was
+   * unreachable, and the order is on her Orders screen either way — the email
+   * is the nudge, the database is the record.
+   */
+  if (ref && paid) {
+    try {
+      const settled = await markPaid(ref);
+      if (settled?.changed) {
+        const [toShop, toCustomer] = await Promise.all([
+          notifyShopOfOrder(settled.order),
+          confirmOrderToCustomer(settled.order),
+        ]);
+        if (!toShop || !toCustomer) {
+          console.error(
+            `checkout: ${ref} paid but mail failed — shop:${toShop} customer:${toCustomer}`,
+          );
+        }
+      }
+    } catch (err) {
+      /* Logged loudly and swallowed. The customer has paid; the sweep over
+         stale pending orders will find this one and settle it. */
+      console.error("checkout: could not settle paid order", ref, err);
+    }
+  }
+
+  /* A refusal we were told about releases the garment straight away rather
+     than waiting on the sweep. Idempotent, and it only touches an order that
+     is still pending. */
+  if (ref && (status === "FAILED" || status === "EXPIRED")) {
+    await releaseOrder(ref, "failed", `payment ${status}`).catch((err) =>
+      console.error("checkout: could not release refused order", ref, err),
+    );
+  }
   /* "We asked and were told it has not been paid" — a different thing from
      "we could not ask", and the customer is told which. Anything that is
      neither is the third case, handled by the else branches below. */
