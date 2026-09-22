@@ -13,6 +13,7 @@ const ROUTES = [
      keep. Pick any real slug if these ever change again. */
   '/clothing/coats-jackets',
   '/accessories',
+  '/homeware',
   '/about',
   '/contact',
   '/shop',

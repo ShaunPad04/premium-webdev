@@ -331,9 +331,9 @@ can never point at an empty shelf.
 
 ## The routes
 
-Fifteen pages as of 2026-09-22: `/`, `/shop`, `/shop/[slug]`, `/bag`,
+Sixteen pages as of 2026-09-22: `/`, `/shop`, `/shop/[slug]`, `/bag`,
 `/checkout/success`, `/clothing`, `/clothing/[category]`, `/accessories`,
-`/about`, `/contact`, `/delivery`, `/returns`, `/terms`, `/privacy`, and the
+`/homeware`, `/about`, `/contact`, `/delivery`, `/returns`, `/terms`, `/privacy`, and the
 unlisted `/stock` — plus `/api/contact`, `/api/checkout`, `/api/stock`,
 `/api/orders` and `/api/availability`. The temporary `/questions` form was
 deleted once she had answered it.
@@ -345,6 +345,14 @@ product page a masthead would push the garment below the fold; on the bag it
 spent a whole phone screen saying "Your bag." before the first item, and the
 client asked for it to go. The bag keeps one small `h1`, "Bag", for the
 document outline.
+
+**`/homeware` was built 2026-09-22.** Every Homeware link — corner menu,
+header Shop menu, footer, the Accessories page, the home section's own
+button — had pointed at `/#homeware`, a home-page section of stock shelf
+photography, and the button pointed at `/#visit`. The client clicked it
+expecting the Tomato Vase, Banana Jar and Bell Vase. It is not under
+`/clothing` on purpose. The home section's copy ("small British makers",
+candles, linen) is NOT confirmed and is flagged, not rewritten.
 
 `/clothing/[category]` is what stopped the site reading as disorganised: the
 category grid showed nine categories with nothing underneath any of them, which

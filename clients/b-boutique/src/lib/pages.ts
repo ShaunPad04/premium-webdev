@@ -115,9 +115,10 @@ export const RETIRED_CATEGORIES: Record<string, string> = {
      clothing page. That left /clothing/homeware returning a 404 for a slug
      that appears in `categories`: nothing on the site links to it, but it is
      a URL somebody can reach by editing the address bar or by following an
-     old sitemap, and the client's rule is that nothing 404s. It goes to the
-     homeware section on the home page, which is where the homeware is. */
-  homeware: "/#homeware",
+     old sitemap, and the client's rule is that nothing 404s. It went to the
+     homeware section on the home page until 2026-09-22; it goes to the
+     category's own page, /homeware, now that one exists. */
+  homeware: "/homeware",
 };
 
 /** Accessories, which are real and are not online.

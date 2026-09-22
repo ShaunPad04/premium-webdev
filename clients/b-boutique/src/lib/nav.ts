@@ -31,7 +31,7 @@ export const MENU: MenuItem[] = [
   { n: "01", label: "Shop", href: "/shop" },
   { n: "02", label: "Womenswear", href: "/clothing" },
   { n: "03", label: "Accessories", href: "/accessories" },
-  { n: "04", label: "Homeware", href: "/#homeware" },
+  { n: "04", label: "Homeware", href: "/homeware" },
   { n: "05", label: "New Arrivals", href: "/#new-in" },
   { n: "06", label: "The Boutique", href: "/about" },
   { n: "07", label: "Visit Us", href: "/#visit" },
@@ -112,7 +112,7 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
       { n: "", label: "New In", href: "/#new-in" },
       { n: "", label: "Clothing", href: "/clothing" },
       { n: "", label: "Accessories", href: "/accessories" },
-      { n: "", label: "Homeware", href: "/#homeware" },
+      { n: "", label: "Homeware", href: "/homeware" },
     ],
   },
   {

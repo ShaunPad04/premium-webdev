@@ -139,7 +139,7 @@ export default function AccessoriesPage() {
                   slot: "panel-knitwear",
                 },
                 {
-                  href: "/#homeware",
+                  href: "/homeware",
                   label: "Homeware",
                   note: categories.find((c) => c.slug === "homeware")!.note,
                   slot: "panel-homeware",

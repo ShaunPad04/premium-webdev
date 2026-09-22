@@ -42,7 +42,10 @@ export function Homeware() {
             here because someone liked it — not because a category needed
             filling.
           </p>
-          <Link href="/#visit" className="hw-cta">
+          {/* To /homeware, the category's own page. This pointed at /#visit —
+              the shop's address — so "Explore homeware" explored a map. Fixed
+              2026-09-22 when /homeware was built. */}
+          <Link href="/homeware" className="hw-cta">
             Explore homeware{" "}
             <span className="hw-cta-arrow" aria-hidden="true">
               &rarr;
