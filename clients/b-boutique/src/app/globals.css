@@ -3154,7 +3154,22 @@ body {
   color: var(--bb-black);
 }
 
-.atb-onesize-note { opacity: 0.72; text-transform: none; letter-spacing: 0.02em; }
+/* No opacity. It used to carry 0.72, which measured 3.23:1 against the
+   panel — rgb(107,95,94) blended to rgb(148,138,137) over rgb(253,250,249) —
+   and 10px at weight 600 is not large text, so the floor is 4.5. axe caught
+   it as a serious violation on all three widths. At full opacity the same
+   colour measures 5.91:1.
+
+   Nudging the alpha to 0.90 would have scraped 4.70 and kept the intended
+   quietness, and it was rejected: a 0.2 margin on a rounding boundary is not
+   a pass worth defending, and the note is already set apart from the tracked
+   caps beside it by case and letter-spacing, which costs no contrast.
+
+   It also should not be quiet. This is the fit note — "fits up to 14",
+   transcribed from the client's own stock list — and on a shop whose brief
+   is women of all different sizes it is the line a customer is looking for,
+   not small print to be got past. */
+.atb-onesize-note { text-transform: none; letter-spacing: 0.02em; }
 
 .pm-phone-number--email {
   font-family: inherit;
