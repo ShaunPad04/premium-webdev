@@ -8,6 +8,11 @@
    ============================================================ */
 
 :root {
+  /* The sticky header's own height, in one place so the product page's
+     `top` and its height calculation cannot drift apart. It is the nav bar
+     only: the announcement strip above it collapses on scroll, so it is not
+     part of what a sticky element has to clear. */
+  --header-h: 72px;
   /* ── bb primitives — the single source of truth ─────────────────────
      ROUGE. Warm, light-dominant, and built around the one red that was
      already here.
@@ -4391,11 +4396,38 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 
 @media (min-width: 1024px) {
-  .pdp { flex-direction: row; align-items: stretch; min-height: 100svh; }
-  .pdp-media { flex: 0 0 52%; }
+  /* flex-START, not stretch.
+     With `align-items: stretch` the media column matched the height of the
+     TEXT column, and the text column changes height every time an accordion
+     opens. Measured at 1920x1000 the photograph was a different size in all
+     five states — 806x1000 closed, 977x1213 with Details open, 998x1474 with
+     all three. The picture resizing as you read the specifications is the
+     kind of thing that makes a shop feel unfinished. */
+  .pdp { flex-direction: row; align-items: flex-start; min-height: 100svh; }
+
+  /* The column is sized from the VIEWPORT and the image's own ratio, never
+     from its sibling — that is what makes it constant.
+     Width is the smaller of 52% and "whatever width makes a 4:5 frame fit the
+     visible height". The second term is what stops it running off the bottom
+     of a short window; the first is what stops it eating the text column on a
+     narrow one. Either way the height comes from `aspect-ratio`, so opening
+     an accordion cannot touch it.
+     `cover` is exact here rather than a crop: the box is 1856/2304 and so is
+     the file. */
+  /* The desktop sizing and the sticky live AFTER the base `.pdp-media`
+     rule, not here. They were here first and silently lost: the base rule
+     sets `position: relative`, it appears later in this file, and at equal
+     specificity the later rule wins. The measured symptom was a media column
+     that reported `position: relative` and scrolled away instead of holding.
+     Same cascade trap as `.ft-social` losing to `.ft-link` in September. */
   /* min-width: 0 for the same reason the testimonials column needs it — a
      flex item will not shrink below its content otherwise. */
-  .pdp-body { flex: 1 1 48%; min-width: 0; display: flex; align-items: center; }
+  /* `flex: 1 1 auto` because the media column is no longer a percentage.
+     `align-items: flex-start` rather than centre: the copy used to be
+     vertically centred against a full-height media column, and now that the
+     media column is only as tall as the picture, centring would float the
+     name and price away from the top of the photograph. */
+  .pdp-body { flex: 1 1 auto; min-width: 0; display: flex; align-items: flex-start; }
 }
 
 /* The product photograph, WHOLE.
@@ -4437,19 +4469,41 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 
 @media (min-width: 1024px) {
-  .pdp-media { aspect-ratio: auto; }
-  /* Height-led rather than width-led: the box is the full viewport height, so
-     the picture takes that height and whatever width its own ratio asks for.
-     Nothing is cropped at any viewport shape. */
-  .pdp-frame picture,
-  .pdp-frame img {
-    position: static;
-    height: 100%;
-    width: auto;
-    max-width: 100%;
-    object-fit: contain;
+  /* Sized from the VIEWPORT and the file's own ratio, never from the sibling
+     text column — that is what keeps it constant while an accordion opens.
+     Width is the smaller of 52% and "whatever width makes a 4:5 frame fit the
+     visible height": the second term stops it running off a short window, the
+     first stops it eating the text column on a narrow one. Height then comes
+     from `aspect-ratio`, so nothing the text column does can reach it.
+     Measured at 1920x1000: 748x934 in all five accordion states, where it
+     used to run 806x1000 to 991x1474. */
+  .pdp-media {
+    flex: 0 0 auto;
+    width: min(52%, calc((100svh - var(--header-h)) * 0.8055));
+    aspect-ratio: 1856 / 2304;
+    height: auto;
+    position: sticky;
+    top: var(--header-h);
+    align-self: flex-start;
   }
 }
+
+/* The frame fills the box exactly, because the box is now the file's own
+   ratio. The height-led `contain` rules that used to live here were solving
+   the head-cropping caused by a box of the wrong shape; the box is the right
+   shape now, so there is nothing to letterbox. */
+.pdp-frame picture,
+.pdp-frame img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Except the three square homeware frames. A 2048-square vase inside a 4:5
+   box loses a fifth of its width to `cover`, and a vase shot is square
+   because the object is. They letterbox on paper instead — the column keeps
+   its size, so nothing about the layout changes. */
+.pdp-media[data-square] .pdp-frame img { object-fit: contain; }
 
 /* Every colourway is mounted; only one is shown. Opacity rather than display
    so the switch is compositor-only and never re-decodes the image — a

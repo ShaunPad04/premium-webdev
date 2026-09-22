@@ -50,7 +50,7 @@ export function ProductGallery({ product }: { product: Product }) {
   const square = product.category === "Homeware";
 
   return (
-    <div className="pdp-media">
+    <div className="pdp-media" data-square={square ? "" : undefined}>
       {/* All colourways stay mounted and are switched with opacity rather
           than swapped in the DOM. Remounting an <img> on every click refetches
           nothing on a warm cache but DOES re-decode, which shows as a flash of
