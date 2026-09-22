@@ -238,7 +238,12 @@ export function HeroSlideshow() {
      list purely so the timer is torn down and restarted: without it, a
      manual advance one second before a tick would be followed a second
      later by an automatic one, which reads as the control being ignored. */
-  const [nudge, setNudge] = useState(0);
+  /* The one control left on the hero, 2026-09-22. The client asked for the
+     counter and the arrows to go; they have. What cannot go is a way to STOP
+     the slides: they change on their own every six seconds, indefinitely,
+     and WCAG 2.2.2 requires a pause for anything that moves for longer than
+     five. So the arrows became this — one bare icon, no box. */
+  const [paused, setPaused] = useState(false);
 
   /* Step to the nearest slide in `dir` whose photograph has arrived. Shared
      by the timer and the arrows so there is one definition of "next", and so
@@ -257,19 +262,11 @@ export function HeroSlideshow() {
     [ready],
   );
 
-  const go = useCallback(
-    (dir: 1 | -1) => {
-      setIndex((i) => step(i, dir));
-      setNudge((n) => n + 1);
-    },
-    [step],
-  );
-
   useEffect(() => {
-    if (reduced || !mounted) return;
+    if (reduced || !mounted || paused) return;
     const t = setInterval(() => setIndex((i) => step(i, 1)), HOLD_MS);
     return () => clearInterval(t);
-  }, [reduced, mounted, step, nudge]);
+  }, [reduced, mounted, step, paused]);
 
   /* Reduced motion: the first frame, and nothing else mounted or fetched. */
   const visible = reduced || !mounted ? SLIDES.slice(0, 1) : SLIDES;
@@ -341,39 +338,24 @@ export function HeroSlideshow() {
        * silently for the second or so it takes. */}
       {reduced ? null : (
         <div className="hero-controls">
-          <p className="hero-counter" aria-hidden="true">
-            <span className="hero-counter-now">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <span className="hero-counter-rule" />
-            <span>{String(SLIDES.length).padStart(2, "0")}</span>
-          </p>
-          <div className="hero-nav">
-            <button
-              type="button"
-              onClick={() => go(-1)}
-              disabled={!mounted}
-              aria-label="Previous photograph"
-              className="hero-nav-btn"
-            >
-              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-                <path d="M9.5 3L5 7.5 9.5 12" stroke="currentColor" strokeWidth="1.3"
-                  strokeLinecap="round" strokeLinejoin="round" />
+          <button
+            type="button"
+            onClick={() => setPaused((v) => !v)}
+            disabled={!mounted}
+            aria-pressed={paused}
+            aria-label={paused ? "Play the photographs" : "Pause the photographs"}
+            className="hero-pause"
+          >
+            {paused ? (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M4 2.5v9l7.5-4.5L4 2.5Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
               </svg>
-            </button>
-            <button
-              type="button"
-              onClick={() => go(1)}
-              disabled={!mounted}
-              aria-label="Next photograph"
-              className="hero-nav-btn"
-            >
-              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-                <path d="M5.5 3L10 7.5 5.5 12" stroke="currentColor" strokeWidth="1.3"
-                  strokeLinecap="round" strokeLinejoin="round" />
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M4.5 2.5v9M9.5 2.5v9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
               </svg>
-            </button>
-          </div>
+            )}
+          </button>
         </div>
       )}
     </>

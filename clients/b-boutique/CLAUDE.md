@@ -369,6 +369,25 @@ statement rail, About); `/accessories` deleted and 307-redirected to `/shop`
 in `next.config.ts` (temporary, so the page can come back if she starts
 stocking them). Do not reintroduce the word without her confirming stock.
 
+**Later on 2026-09-22 (Brad's requests):**
+- **`/about` rebuilt** around her own shop photographs (`assets/about`,
+  `scripts/build-about.mjs`) plus two Higgsfield textures — black/gold marble
+  and cream boucle — that contain no shop, product or person, so they cannot
+  misstate the business. The shopfront frame is NOT used: its fascia says
+  "Accessories & Homeware". If Accessories comes back, so can that photo.
+- **Home hero**: one centred line and one CTA at every width; descriptor,
+  address, counter and arrows gone. A single pause button stays because the
+  slides auto-advance (WCAG 2.2.2). Do not remove it.
+- **`components/ui/pinky-news-letter.tsx`**: light shader band before Visit.
+  The supplied email field was NOT kept: it sent nowhere. A newsletter needs
+  her agreement, a destination (e.g. a Resend audience) and a /privacy line
+  first — CLIENT INPUT REQUIRED.
+- **`components/ui/text-along-path.tsx`** on /contact via `PathBand`, all
+  words derived from shop.ts, scroll-driven, aria-hidden.
+- **New In rail on touch**: free swipe (no snap) once touched; the drift is
+  torn down under a finger and resumes 2.5s after the rail is still. A
+  double-loop race that kept writing scrollLeft under a held finger is fixed.
+
 **`/homeware` was built 2026-09-22.** Every Homeware link — corner menu,
 header Shop menu, footer, the Accessories page, the home section's own
 button — had pointed at `/#homeware`, a home-page section of stock shelf

@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { StatementRail } from "@/components/StatementRail";
 import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
+import NewsLetter from "@/components/ui/pinky-news-letter";
 import { NewInRail } from "@/components/NewInRail";
 import { Homeware } from "@/components/Homeware";
 import { OwnerCard } from "@/components/OwnerCard";
@@ -54,6 +55,8 @@ export default function Home() {
         {/* 05 The practical questions, once they are interested */}
         <Faq />
         {/* 06 The ask — a postcode, not a basket */}
+        <NewsLetter />
+
         <Visit />
       </main>
       <Footer />

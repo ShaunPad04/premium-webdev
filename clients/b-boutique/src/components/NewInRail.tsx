@@ -64,6 +64,10 @@ const SPEED = 26;
  * A drag needs no allowance of its own: dragging means a pointer is on the
  * rail, and a pointer on the rail is already the hover pause. */
 const RESUME_AFTER = 700;
+/** After a finger leaves the rail. Long enough for a flick's momentum to run
+ *  out, measured from the LAST scroll the person caused, not from the lift.
+ *  See `holding` below. */
+const TOUCH_RESUME = 2500;
 /** Time constant for the glide in and out of a hover pause, in seconds.
  *  See the easing note in the drift loop. */
 const EASE_TAU = 0.2;
@@ -99,6 +103,26 @@ export function NewInRail() {
      timer effect depends on it, so touching the rail restarts the clock for
      free rather than needing a separate "stop" to remember to call. */
   const [touchedAt, setTouchedAt] = useState(0);
+  /* A finger is on the rail. ── Why touch is handled apart from hover ──
+     On a phone, pointerenter fires when the finger lands and pointerleave
+     when it lifts. So lifting a finger resumed the drift immediately, while
+     the flick's momentum was still carrying the rail — and the drift wrote
+     its own stale float position over the scroll, yanking the rail back.
+     The client: "it glitches when you try to stop it". A touch now hands the
+     rail over completely: the drift is torn down the moment a finger lands
+     (not eased — easing would still fight the thumb for 200ms), stays down
+     while the finger is on it, and only restarts once the rail has been
+     still for TOUCH_RESUME, reading its position back off the element. */
+  const [holding, setHolding] = useState(false);
+  /* Free swipe for touch, for the rest of the visit. Stopping the drift used
+     to hand scroll-snap back to the browser, and on a finger landing that
+     snapped the rail to the nearest card — measured 51px -> 0 on the touch
+     itself, the backwards jolt. The client asked to "swipe them freely", so
+     once the rail has been touched snap stays off and a flick ends where
+     the thumb sends it. Mouse and trackpad keep the snap. */
+  const [touchMode, setTouchMode] = useState(false);
+  const lastTouch = useRef(false);
+  const lastUserScroll = useRef(0);
   /* Off screen, the drift stops entirely. It used to write scrollLeft on this
      rail sixty times a second from the moment the page loaded, including the
      whole time the section was below the fold — scroll and paint work on
@@ -156,9 +180,10 @@ export function NewInRail() {
   }, [hovered]);
 
   useEffect(() => {
-    if (reduced || tabHidden || !inView) return;
+    if (reduced || tabHidden || !inView || holding) return;
+    const wait = lastTouch.current ? TOUCH_RESUME : RESUME_AFTER;
     const since = Date.now() - touchedAt;
-    const delay = since < RESUME_AFTER ? RESUME_AFTER - since : 0;
+    const delay = since < wait ? wait - since : 0;
 
     let raf = 0;
     let last = 0;
@@ -190,6 +215,15 @@ export function NewInRail() {
      * bumps `resizeTick`, which restarts this effect and re-measures. */
     let loop = 0;
     let start = 0;
+    /* Two loops could run at once, and one outlived its effect. `resume` is
+       callable during the start delay (the hover effect calls it on mount),
+       and it started a loop before `begin` started a second; `raf` held only
+       the later id, so cleanup cancelled one and the other kept writing
+       scrollLeft forever — under a finger, found 2026-09-22 by logging every
+       write while a touch was held. `alive` ends every loop this effect
+       started, and `resume` does nothing until the drift has begun. */
+    let alive = true;
+    let begun = false;
 
     const measure = () => {
       const a = firstItem.current;
@@ -212,7 +246,7 @@ export function NewInRail() {
 
     const step = (now: number) => {
       const el = rail.current;
-      if (!el) return;
+      if (!el || !alive) return;
 
       if (!last) last = now;
       const dt = Math.min((now - last) / 1000, 0.05); /* a backgrounded tab can
@@ -255,13 +289,23 @@ export function NewInRail() {
        in which case it needs waking; if it is still gliding to a halt it is
        already running and this is a no-op. */
     const resume = () => {
-      if (raf || pausedRef.current) return;
+      if (!alive || !begun || raf || pausedRef.current) return;
       last = 0;
       raf = requestAnimationFrame(step);
     };
     resumeRef.current = resume;
 
-    const begin = window.setTimeout(() => {
+    let begin = 0;
+    const start_ = () => {
+      /* Momentum still running from a flick: wait until the rail has been
+         still for the full allowance before taking it back. */
+      const quiet = Date.now() - lastUserScroll.current;
+      if (lastTouch.current && quiet < TOUCH_RESUME) {
+        begin = window.setTimeout(start_, TOUCH_RESUME - quiet);
+        return;
+      }
+      lastTouch.current = false;
+      begun = true;
       setDrifting(true);
       measure();
       /* Pick the float accumulator up from wherever the person left the rail,
@@ -272,16 +316,18 @@ export function NewInRail() {
         last = t;
         step(t);
       });
-    }, delay);
+    };
+    begin = window.setTimeout(start_, delay);
 
     return () => {
+      alive = false;
       window.clearTimeout(begin);
       cancelAnimationFrame(raf);
       resumeRef.current = null;
       setDrifting(false);
     };
     /* `hovered` is absent on purpose — see pausedRef above. */
-  }, [reduced, tabHidden, inView, touchedAt, resizeTick]);
+  }, [reduced, tabHidden, inView, touchedAt, resizeTick, holding]);
 
   /* Wake the parked loop when the pointer leaves. Hover is handled inside the
      loop rather than by restarting the effect, so this is the one thing that
@@ -365,11 +411,21 @@ export function NewInRail() {
            honest boundary for "the pointer is on the carousel".
            No onWheel: a wheel event here is almost always the page being
            scrolled past, not the rail being scrolled. See RESUME_AFTER. */
-        onPointerEnter={() => setHovered(true)}
-        onPointerLeave={() => setHovered(false)}
+        /* Mouse and pen only: a touch's enter/leave is the finger landing
+           and lifting, which is handled by the touch events below. */
+        onPointerEnter={(e) => { if (e.pointerType !== "touch") setHovered(true); }}
+        onPointerLeave={(e) => { if (e.pointerType !== "touch") setHovered(false); }}
+        /* Touch events rather than pointer events: once the browser takes
+           over a horizontal pan it sends pointercancel and no pointerup, so
+           the pointer stream says the finger is gone while it is still
+           dragging. touchend arrives when it actually lifts. */
+        onTouchStart={() => { lastTouch.current = true; setTouchMode(true); setHolding(true); }}
+        onTouchEnd={() => { setHolding(false); handled(); }}
+        onTouchCancel={() => { setHolding(false); handled(); }}
+        onScroll={() => { if (lastTouch.current) lastUserScroll.current = Date.now(); }}
         tabIndex={0}
         aria-label="New arrivals"
-        className={`newin-rail${drifting ? " is-drifting" : ""}`}
+        className={`newin-rail${drifting || touchMode ? " is-drifting" : ""}`}
       >
         {/* The set is rendered twice. The first copy is the real list; the
             second exists only so the wrap has somewhere to land, and is hidden

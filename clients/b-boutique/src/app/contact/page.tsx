@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { ContactForm } from "@/components/ContactForm";
+import { PathBand } from "@/components/PathBand";
 import { Visit } from "@/components/Visit";
 import { addressLines, openingPhrase, shop } from "@/lib/shop";
 
@@ -86,6 +87,8 @@ export default function ContactPage() {
             </div>
           </div>
         </section>
+
+        <PathBand />
 
         <Visit />
       </main>
