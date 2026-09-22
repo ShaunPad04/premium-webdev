@@ -1,5 +1,7 @@
 "use client";
 
+import { ViewTransition } from "react";
+
 import type { Product } from "@/lib/catalogue";
 import { useColour } from "./ColourChoice";
 import { ProductPhoto } from "./ProductPhoto";
@@ -50,6 +52,10 @@ export function ProductGallery({ product }: { product: Product }) {
   const square = product.category === "Homeware";
 
   return (
+    /* The incoming half of the grid → product morph. Same name as the card's
+       `.prod-media` in ProductGrid; React pairs them across the navigation.
+       See that file for why `default="none"`. */
+    <ViewTransition name={`product-${product.slug}`} share="morph" default="none">
     <div className="pdp-media" data-square={square ? "" : undefined}>
       {/* All colourways stay mounted and are switched with opacity rather
           than swapped in the DOM. Remounting an <img> on every click refetches
@@ -86,5 +92,6 @@ export function ProductGallery({ product }: { product: Product }) {
         {product.colourways[active].colour}
       </p>
     </div>
+    </ViewTransition>
   );
 }

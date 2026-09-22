@@ -289,7 +289,12 @@ export default async function ProductPage({
                   for one, but leading an upsell with something unbuyable is
                   showing a customer a thing and then taking it away.
                   See `relatedTo` in lib/catalogue.ts. */}
-              <ProductGrid items={related} />
+              {/* `morph={false}`: this grid is a destination, not an origin.
+                  With it on, any piece that also sits on the page the customer
+                  just left forms a second view-transition pair and flies
+                  across the screen alongside the one they actually clicked —
+                  measured on /shop → /shop/fair-isle-jumper. See ProductGrid. */}
+              <ProductGrid items={related} morph={false} />
             </div>
           </section>
         ) : null}

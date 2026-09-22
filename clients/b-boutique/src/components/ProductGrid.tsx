@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import Link from "next/link";
 
 import type { Product } from "@/lib/catalogue";
@@ -36,7 +37,34 @@ import { QuickAdd } from "./QuickAdd";
 /* `idPrefix` is gone. It existed only to disambiguate the SVG filter id that
    ImageSlot generates for its designed fallback, and a <picture> of a real
    photograph has no filter and no id to collide. */
-export function ProductGrid({ items }: { items: Product[] }) {
+export function ProductGrid({
+  items,
+  morph = true,
+}: {
+  items: Product[];
+  /* Whether these cards take part in the grid → product morph.
+   *
+   * ── Why this is a prop and not just always on ───────────────────────────
+   * React pairs a view transition purely by NAME, and it does not know or
+   * care which card was clicked. So any piece that appears on BOTH the page
+   * being left and the page being arrived at forms a pair and flies across
+   * the screen too.
+   *
+   * Measured, not theorised: clicking the Fair Isle Jumper on /shop produced
+   * TWO morphs — the jumper, and the Faux Feather Sleeveless Jumper, which
+   * happened to sit in the destination's "You may also like". A second
+   * garment sailing past during the navigation reads as a glitch, and it
+   * breaks the one-heroic-effect-per-screen rule in CLAUDE.md.
+   *
+   * The rule that fixes it: at most one element per page carries a name, and
+   * it is the one the navigation is actually about. The browse grids are
+   * where somebody chooses a piece, so they morph; the related grid at the
+   * bottom of a product page is a destination rather than an origin, so it
+   * does not. Clicking a related card then cross-fades instead of morphing,
+   * which is the honest cost and is far cheaper than the wrong photograph
+   * moving. */
+  morph?: boolean;
+}) {
   return (
     <ul className="prod-grid">
       {items.map((p, i) => {
@@ -45,9 +73,8 @@ export function ProductGrid({ items }: { items: Product[] }) {
         /* The next colourway along, where there is one. */
         const alt = p.colourways.length > 1 ? p.colourways[1] : null;
 
-        return (
-          <li key={p.slug} className="prod" style={{ "--i": i } as React.CSSProperties}>
-            <span className="prod-media">
+        const media = (
+          <span className="prod-media">
               <ProductPhoto
                 photo={p.photo}
                 square={square}
@@ -68,7 +95,33 @@ export function ProductGrid({ items }: { items: Product[] }) {
                 />
               ) : null}
               {canQuickAdd(p) ? <QuickAdd product={p} /> : null}
-            </span>
+          </span>
+        );
+
+        return (
+          <li key={p.slug} className="prod" style={{ "--i": i } as React.CSSProperties}>
+            {/* The other half of this pair is `.pdp-media` in ProductGallery.
+                React matches them by name across the navigation and morphs the
+                photograph from its place in the grid into its place on the
+                product page.
+
+                `default="none"` is not optional in an App Router app: every
+                link click is a React Transition, so a boundary left on "auto"
+                fires on EVERY navigation and the site ends up cross-fading
+                pieces that have nothing to do with each other. Only `share`
+                is switched on — the one case where two elements are genuinely
+                the same thing in two places. */}
+            {morph ? (
+              <ViewTransition
+                name={`product-${p.slug}`}
+                share="morph"
+                default="none"
+              >
+                {media}
+              </ViewTransition>
+            ) : (
+              media
+            )}
 
             <Link href={`/shop/${p.slug}`} className="prod-link">
               <span className="prod-body">

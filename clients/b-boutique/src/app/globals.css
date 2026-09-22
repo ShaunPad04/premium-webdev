@@ -4724,6 +4724,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   padding: clamp(40px, 6vw, 96px) var(--bb-gutter-editorial)
            clamp(48px, 7vw, 110px);
 }
+
 .pdp-inner { width: 100%; max-width: 520px; }
 
 .pdp-cat {
@@ -6338,3 +6339,54 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 /* On the ink fill the grey would drop to roughly 1.5:1, so the count borrows
    the label's own colour at a reduced alpha instead — 8.6:1 on the ink. */
 .catbar-link[aria-current="page"] .catbar-n { color: rgba(250, 245, 243, 0.82); }
+
+/* ── The grid → product morph ─────────────────────────────────────────────
+ *
+ * The photograph travels from its place in the grid into its place on the
+ * product page rather than the page cutting. It is the one heroic effect on
+ * that navigation, per CLAUDE.md, which is also why the colourway swatch on
+ * the product page was left as the plain opacity cross-fade it already was.
+ *
+ * The pairing is declared in React — `<ViewTransition name share="morph">`
+ * around `.prod-media` in ProductGrid.tsx and around `.pdp-media` in
+ * ProductGallery.tsx. This file only says how it moves.
+ *
+ * Nothing here needs a fallback branch. A browser without view transitions
+ * navigates instantly, which is what the site did before this existed.
+ */
+::view-transition-group(.morph) {
+  /* 400ms: long enough to read as one object moving, short enough that it
+     never feels like it is delaying the page. The site's own editorial band
+     is 900-1200ms and would be far too slow standing between a tap and a
+     product. */
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* A touch of blur across the handover. The two frames are the same garment at
+   different sizes, so without it the crossfade shows two slightly different
+   croppings resolving into each other — the blur covers the moment they
+   disagree. 3px, at the midpoint only. */
+::view-transition-image-pair(.morph) { animation-name: via-blur; }
+
+@keyframes via-blur {
+  30% { filter: blur(3px); }
+}
+
+/* The transition layer sits over the whole document while it runs. Without
+   this it swallows the click that lands during the animation, and the site
+   feels like it has stopped responding at the exact moment somebody is
+   deciding to buy something. */
+::view-transition { pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* `*`, not `.morph`. This has to neutralise every transition on the site,
+     including the ones React names automatically, rather than only the pair
+     that happens to be wired up today. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
