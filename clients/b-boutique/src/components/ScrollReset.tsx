@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 /* Every navigation lands where it should.
  *
@@ -65,8 +65,32 @@ import { useEffect, useRef } from "react";
  * user moves — a navigation can easily beat that. Not per-page either: the
  * client asked for this on every page of the site, and twelve copies is
  * twelve chances to miss one. */
+/* ── Our own scroll memory, per page (2026-09-22) ──────────────────────────
+ * The browser's own is switched off: GSAP ScrollTrigger sets
+ * history.scrollRestoration = "manual" when it loads. What looked like Back
+ * "keeping your place" before today was the stale-offset bug itself — Lenis
+ * dragging the page to its old number — which is also what sent a clicked
+ * product to its footer. Fixing one exposed the other, so Back gets a real
+ * mechanism: the last scroll position of every page is remembered here, and a
+ * Back/Forward puts it back. Keyed by path + query. Session-only, in memory. */
+const saved = new Map<string, number>();
+const keyNow = () => window.location.pathname + window.location.search;
+
+function jumpTo(y: number) {
+  const lenis = window.__lenis;
+  /* Both: Lenis owns the position while it runs (and must be told, or it
+     drags the page back to its own stale number), window.scrollTo is what is
+     true when it does not. */
+  if (lenis) lenis.scrollTo(y, { immediate: true, force: true });
+  window.scrollTo(0, y);
+}
+
 export function ScrollReset() {
   const pathname = usePathname();
+  /* Which page the scroll listener is recording for. Updated only when a new
+     route commits, so the leaving page's last position is never written under
+     the arriving page's key. */
+  const recording = useRef<string | null>(null);
   /* True only between a popstate and the render it causes. */
   const traversed = useRef(false);
   /* The first pathname this component sees is the page that was loaded
@@ -76,9 +100,35 @@ export function ScrollReset() {
   useEffect(() => {
     const onPop = () => {
       traversed.current = true;
+      /* Restore once the returning page has committed — whichever of this
+         handler and the route's layout effect runs first. Twice, because
+         ScrollTrigger's mount-time refresh can land in between and re-apply
+         whatever it recorded; the second pass is the one that sticks. */
+      const put = () => {
+        const y = saved.get(keyNow());
+        if (y !== undefined) jumpTo(y);
+      };
+      requestAnimationFrame(() => requestAnimationFrame(put));
+      window.setTimeout(put, 250);
     };
-    window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
+    /* CAPTURE, so this runs before Next's own popstate handler.
+       Since the reset moved into useLayoutEffect (below), the order matters:
+       Next commits the Back navigation synchronously inside its popstate
+       handler, which runs the layout effect before a bubble-phase listener
+       registered here has set the flag — so Back was treated as a forward
+       click and scrolled to the top, losing the reader's place. Measured:
+       left / at 1825, came Back to 8. At the target, capture listeners fire
+       before non-capture ones, so the flag is always set first. */
+    window.addEventListener("popstate", onPop, { capture: true });
+
+    const onScroll = () => {
+      if (recording.current) saved.set(recording.current, window.scrollY);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("popstate", onPop, { capture: true });
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   /* ── Same-page fragment links ───────────────────────────────────────────
@@ -190,19 +240,46 @@ export function ScrollReset() {
     return () => document.removeEventListener("click", onClick, true);
   }, []);
 
-  useEffect(() => {
+  /* ── Synchronous, at commit — not one frame later (2026-09-22) ──────────
+   *
+   * Reported by the client: "View piece" on the Tomato Vase in the New In rail
+   * opened /shop/tomato-vase at the opening hours and map, not the product.
+   * Reproduced on every product, not just that one — each landed ~1,830px
+   * down, the home page's offset carried across.
+   *
+   * Traced frame by frame with a stack on every scroll call. Two faults, in
+   * series:
+   *
+   *   1. This effect never scrolled. It waited one requestAnimationFrame, and
+   *      the card-to-product View Transition held that frame back; not one of
+   *      the logged scroll calls came from here.
+   *   2. GSAP ScrollTrigger then put the old offset back. The new page mounts
+   *      PremiumMotion, whose `document.fonts.ready.then(refresh)` resolves
+   *      immediately, and ScrollTrigger.refresh() RECORDS the current scroll,
+   *      jumps to 0 to measure, and RESTORES what it recorded — 1,825. Seen
+   *      in the trace as scrollTo(0,0) followed 0ms later by scrollTo(0,1825),
+   *      both from ScrollTrigger's refresh.
+   *
+   * useLayoutEffect runs as the new route commits: after its DOM exists (so a
+   * hash target can be found) and before ANY passive effect on the new page,
+   * PremiumMotion's included. By the time ScrollTrigger refreshes, the page is
+   * already at 0, so 0 is what it records and 0 is what it restores. No frame
+   * to wait for, so nothing for a transition to hold back. */
+  useLayoutEffect(() => {
+    recording.current = keyNow();
     if (first.current) {
       first.current = false;
       return;
     }
     if (traversed.current) {
+      /* Back/Forward: onPop restores this page's remembered position. */
       traversed.current = false;
+      const y = saved.get(keyNow());
+      if (y !== undefined) jumpTo(y);
       return;
     }
 
-    /* One frame, so the new route has committed and its hash target exists
-       to be measured. Scrolling before that measures the page being left. */
-    const raf = requestAnimationFrame(() => {
+    {
       const lenis = window.__lenis;
       const { hash } = window.location;
 
@@ -227,9 +304,7 @@ export function ScrollReset() {
          running, and window.scrollTo is what is true when it is not. */
       if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
       window.scrollTo(0, 0);
-    });
-
-    return () => cancelAnimationFrame(raf);
+    }
   }, [pathname]);
 
   return null;
