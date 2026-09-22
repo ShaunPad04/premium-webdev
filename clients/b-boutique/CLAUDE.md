@@ -388,6 +388,12 @@ stocking them). Do not reintroduce the word without her confirming stock.
   first — CLIENT INPUT REQUIRED.
 - **`components/ui/text-along-path.tsx`** on /contact via `PathBand`, all
   words derived from shop.ts, scroll-driven, aria-hidden.
+- **`components/ui/cinematic-product-scroll-section.tsx`** on the home page
+  after New In: the upsell. Its three pieces are DERIVED, the most expensive
+  buyable garments by priceP, never hand-picked, so it follows the stock. No
+  colour swatches, because no swatch colour is confirmed; the colour names
+  are printed instead. The demo's mock products, $ prices and invented
+  brand are gone. Uses animejs for the card drop.
 - **New In rail on touch**: free swipe (no snap) once touched; the drift is
   torn down under a finger and resumes 2.5s after the rail is still. A
   double-loop race that kept writing scrollLeft under a held finger is fixed.

@@ -4,6 +4,7 @@ import { StatementRail } from "@/components/StatementRail";
 import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import NewsLetter from "@/components/ui/pinky-news-letter";
+import CinematicProducts from "@/components/ui/cinematic-product-scroll-section";
 import { NewInRail } from "@/components/NewInRail";
 import { Homeware } from "@/components/Homeware";
 import { OwnerCard } from "@/components/OwnerCard";
@@ -38,6 +39,8 @@ export default function Home() {
         <HorizontalRails />
         {/* 03 Proof — actual stock, moving weekly */}
         <NewInRail />
+
+        <CinematicProducts />
         {/* 04 A second world — homeware */}
         <Homeware />
         {/* The person. This is the slot the six invented customer quotes
