@@ -69,7 +69,27 @@ export function PageMasthead({
           <picture>
             <source type="image/avif" srcSet={`/img/texture/${texture}.avif`} />
             <source type="image/webp" srcSet={`/img/texture/${texture}.webp`} />
-            <img src={`/img/texture/${texture}.jpg`} alt="" decoding="async" />
+            {/* `fetchpriority="high"`, and it is read out of a trace rather
+                than assumed.
+
+                Lighthouse names this element as the LCP on /shop —
+                `section.pm > div.pm-texture > picture > img` — and scored
+                `lcp-discovery-insight` 0 for exactly one reason:
+                "fetchpriority=high should be applied: false". The other two
+                boxes were already ticked; it is discoverable in the initial
+                document and it is not lazy.
+
+                This is the ONE image on these pages that deserves it. Marking
+                everything priority is how a preload queue ends up competing
+                with itself, and on the HOME page the LCP is the header
+                wordmark rather than a picture, which is why this sits on the
+                masthead component and not in ProductPhoto. */}
+            <img
+              src={`/img/texture/${texture}.jpg`}
+              alt=""
+              decoding="async"
+              fetchPriority="high"
+            />
           </picture>
         </div>
       ) : null}
