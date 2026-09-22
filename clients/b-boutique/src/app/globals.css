@@ -4044,7 +4044,21 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 @media (min-width: 640px)  { .prod-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 1024px) { .prod-grid { grid-template-columns: repeat(4, 1fr); } }
 
+/* The card is the positioning context for the stretched link, so the link can
+   cover the photograph without containing the quick-add button. */
+.prod { position: relative; }
+
 .prod-link { display: block; text-decoration: none; color: inherit; }
+
+/* The whole card is the link, without the link being an ancestor of anything.
+   A <button> inside an <a> is invalid markup and behaves like it: the press
+   bubbles and the browser navigates mid-add. */
+.prod-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
 
 .prod-media {
   position: relative;
@@ -4067,9 +4081,116 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    visitor saw the first half of a gesture nobody ever finished. The gesture
    is kept — it is the shop's own vocabulary — at a length a real hover can
    complete. */
-.prod-media > * { transition: transform 420ms var(--bb-ease); }
-.prod-link:hover .prod-media > *,
-.prod-link:focus-visible .prod-media > * { transform: scale(1.035); }
+/* `.prod-photo`, not `.prod-media > *`. The quick-add button is now a child
+   of the media too, and a button that scales with the photograph behind it
+   drifts out from under the finger that is pressing it. */
+.prod-photo { transition: transform 420ms var(--bb-ease), opacity 500ms ease; }
+.prod:hover .prod-photo,
+.prod:focus-within .prod-photo { transform: scale(1.035); }
+
+/* The same garment in its next colour, cross-faded in on hover. Only the 18
+   pieces the client stocks in more than one colour have one; the other 14
+   render no alt layer at all rather than fading to a copy of the frame
+   already on screen. */
+.prod-photo--alt { opacity: 0; }
+.prod:hover .prod-photo--alt,
+.prod:focus-within .prod-photo--alt { opacity: 1; }
+.prod:hover .prod-photo:not(.prod-photo--alt),
+.prod:focus-within .prod-photo:not(.prod-photo--alt) {
+  /* Only where there is something underneath to reveal. Fading the primary
+     out on a single-colour card would fade it to the empty frame colour. */
+  opacity: 1;
+}
+.prod:has(.prod-photo--alt):hover .prod-photo:not(.prod-photo--alt),
+.prod:has(.prod-photo--alt):focus-within .prod-photo:not(.prod-photo--alt) {
+  opacity: 0;
+}
+
+/* Add to bag, without leaving the grid.
+ *
+ * Sits above the stretched link on the z axis — that is the whole reason the
+ * link is a pseudo-element rather than a wrapper. 12px in from three edges,
+ * rising 12px into place, which is the site's own entrance distance rather
+ * than a new number. */
+.qa {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  padding: 10px 12px;
+  border: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--bb-black);
+  /* `--bb-white` is the warm paper, #FAF5F3. There is no `--paper` token —
+     it was typed here first, resolved to nothing, and the bar shipped with a
+     transparent background and its label unreadable over the photograph until
+     a screenshot caught it. Ink on paper measures 15.4:1. */
+  background: var(--bb-white);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    transform 500ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 400ms ease;
+}
+.prod:hover .qa,
+.prod:focus-within .qa { opacity: 1; transform: none; }
+.qa:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 2px; }
+.qa[disabled] { cursor: default; }
+
+/* "Sold out" replaces the button rather than disabling it: a control that
+   cannot ever succeed should not be a control. */
+.qa-msg { margin: 0; cursor: default; }
+
+/* On a touch screen there is no hover, so the control has to be permanently
+   visible or it does not exist.
+ *
+ * NOT `position: static`, which is the obvious answer and does not work here:
+ * `.prod-media` is an aspect-ratio box whose photographs are absolutely
+ * positioned, so it has no in-flow content and a static child has nothing to
+ * flow after — it lands at the top of the frame, across the model's face.
+ *
+ * So it stays absolute and becomes a flush bar along the bottom edge instead.
+ * That does cover the last of the photograph, which is why it is flush and
+ * short rather than inset: an inset pill floating over the hem reads as
+ * covering something, a bar sitting on the edge reads as part of the card. */
+@media (hover: none), (pointer: coarse) {
+  .qa {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 1;
+    transform: none;
+    transition: none;
+    /* The token, not a hand-typed rgba() of it. `rgba(250,248,245,.94)` stood
+       here and is a near-miss of #FAF5F3 — the exact drift the Rouge re-theme
+       had to hunt nine of out of the flipped sections, because a literal
+       cannot follow a token when the palette moves. */
+    background: color-mix(in srgb, var(--bb-white) 94%, transparent);
+    /* 44px, and the two constraints here genuinely collide.
+     *
+     * Measured on an iPhone 13: a card frame is about 172x215, so this bar
+     * covers 19.7% of the photograph — the hem and the shoes on a full-length
+     * shot. Tightening the padding to claw that back to 12% took the control
+     * to 39px tall, which is under the 44px minimum for something a thumb has
+     * to hit.
+     *
+     * The tap target wins. A control too small to press reliably is a defect
+     * for everybody who uses it; a fifth of the frame's bottom edge behind a
+     * near-opaque bar is a compromise on a card whose job is to get somebody
+     * to the product page, where the photograph is uncovered and four times
+     * the size. */
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
 
 .prod-body { display: block; padding-top: 14px; }
 
@@ -4121,11 +4242,20 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   font-variant-numeric: normal;
 }
 
-.prod-link:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; }
+/* The ring goes round the CARD, not round the link. The link's own box is now
+   just the two lines of body text — a focus ring drawn on it would outline the
+   name and price and leave the photograph, which is the thing being chosen,
+   outside the ring entirely. */
+.prod:has(.prod-link:focus-visible) {
+  outline: 2px solid currentColor;
+  outline-offset: 6px;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .prod-media > * { transition: none; }
-  .prod-link:hover .prod-media > * { transform: none; }
+  .prod-photo,
+  .qa { transition: none; }
+  .prod:hover .prod-photo,
+  .prod:focus-within .prod-photo { transform: none; }
 }
 
 /* ── Delivery and returns ──────────────────────────────────────────────────
@@ -5502,7 +5632,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
  * prefers-reduced-motion rather than inventing a second pattern.
  */
 @media (hover: none), (pointer: coarse) {
-  .prod-link:hover .prod-media > *,
+  .prod:hover .prod-photo,
   .cross-link:hover .cross-media > *,
   .cat-card:hover .cat-img,
   .cats-card:hover .cats-img,
@@ -5532,7 +5662,18 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
  * because scale takes the element's children with it the label goes with it.
  * 160ms, and transform only.
  */
-.prod-link,
+/* NOT `.prod`, and not `.prod-link` either.
+ *
+ * `.prod-link` no longer contains the photograph, so a press on the picture
+ * would move nothing. `.prod` looks like the answer and is a trap: it already
+ * carries the `page-rise` entrance, which animates `transform` with `both`
+ * fill — and an animation beats a transition in the cascade, so the press
+ * would have been silently swallowed on every card in the shop.
+ *
+ * So the press moves the two boxes whose transform is free. `.prod-media`
+ * only ever carries `page-fade` (opacity), and `.prod-body` carries nothing. */
+.prod-media,
+.prod-body,
 .cross-link,
 .cat-card,
 .atb-size,
@@ -5545,7 +5686,10 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   transition: transform 160ms var(--bb-ease);
 }
 
-.prod-link:active,
+/* Scoped to the LINK being pressed, so pressing Add to bag does not shrink
+   the card out from under the finger. */
+.prod:has(.prod-link:active) .prod-media,
+.prod-link:active .prod-body,
 .cross-link:active,
 .cat-card:active,
 .atb-size:active:not(:has(input:disabled)),
@@ -5567,7 +5711,8 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .prod-link:active,
+  .prod:has(.prod-link:active) .prod-media,
+  .prod-link:active .prod-body,
   .cross-link:active,
   .cat-card:active,
   .atb-size:active,

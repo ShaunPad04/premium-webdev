@@ -149,6 +149,25 @@ export function isBuyable(p: Product): boolean {
   return !p.demo;
 }
 
+/** True where a card can offer "Add to bag" without asking anything first.
+ *
+ *  ── The rule, and why it is this strict ─────────────────────────────────
+ *  One size, one colourway, and a price the client has confirmed. Nothing
+ *  else qualifies, because anything else has a real decision in it and a
+ *  quick-add would be making that decision for the customer — the same
+ *  objection that keeps AddToBag from preselecting a size.
+ *
+ *  It comes out at 12 of the 32 pieces: the one-size knitwear that she buys
+ *  in a single colour, and the three homeware objects. The other 20 keep a
+ *  card that goes to the product page, which is where a size belongs.
+ *
+ *  Lives here rather than in QuickAdd.tsx because that file is a client
+ *  component, and every export of a "use client" module is a client
+ *  reference — a server-rendered grid calling it would fail at the boundary. */
+export function canQuickAdd(p: Product): boolean {
+  return p.sizes.length === 1 && p.colourways.length === 1 && isBuyable(p);
+}
+
 /** The notice the shop shows while any price is still a placeholder.
  *
  *  ── Why the wording lives here and not on five pages ────────────────────
