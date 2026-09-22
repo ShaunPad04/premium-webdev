@@ -540,7 +540,18 @@ export default function ParallaxStripSlider({
 
       {/* Bottom bar: title left, slot right on a mouse; stacked on touch. */}
       <div className="absolute inset-x-0 bottom-0 flex items-end gap-6 px-[18px] pb-14 sm:px-10 md:px-[var(--bb-gutter-editorial)] pointer-coarse:flex-col pointer-coarse:items-start pointer-coarse:gap-6 pointer-coarse:pb-16">
+        {/* key={caption}: a NEW element per slide, and that is what stops the
+            page crashing. SplitText rewrites this element's children, and
+            revert() puts back COPIES of them, not the originals. React still
+            held the originals (the <br> and <em> in these titles), so on the
+            next slide it tried to remove nodes that were no longer in the
+            document: "removeChild: the node to be removed is not a child of
+            this node", and the whole page fell over on the second autoplay
+            transition. Keying by slide makes React replace the <p> itself,
+            which SplitText never moves, and never reach inside it. The demo
+            never showed this because its titles were plain single words. */}
         <p
+          key={caption}
           ref={titleRef}
           aria-live="off"
           className="pss-title pointer-events-none flex-1 overflow-hidden"
