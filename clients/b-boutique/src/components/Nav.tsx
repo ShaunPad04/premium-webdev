@@ -64,12 +64,16 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
          panel reserves top padding for exactly this. */
       className="fixed inset-x-0 top-0 z-[60] text-bb-white"
       style={{
-        background: opaque ? "rgba(26, 20, 22, .90)" : "transparent",
-        backdropFilter: opaque ? "blur(14px)" : "none",
-        WebkitBackdropFilter: opaque ? "blur(14px)" : "none",
+        /* SOLID ink, the same token as the announcement strip above it —
+           at the client's request, 2026-09-22. It was rgba(26,20,22,.90)
+           with a 14px blur: the right colour at 90%, so the warm pink page
+           showed through and turned the bar a muddy grey-brown sitting
+           under a strip of the true ink. Two shades of "dark" stacked on
+           top of each other read as a mistake. One colour, one band. */
+        background: opaque ? "var(--bb-black)" : "transparent",
         borderBottom: `1px solid ${opaque ? "rgba(255,255,255,.10)" : "transparent"}`,
         transition:
-          "background 480ms var(--bb-ease), backdrop-filter 480ms var(--bb-ease), border-color 480ms var(--bb-ease)",
+          "background 480ms var(--bb-ease), border-color 480ms var(--bb-ease)",
       }}
     >
       {/* A whisper of a scrim, only while transparent, and only at the very
