@@ -37,19 +37,16 @@ import { useState } from "react";
  *  ─────────────────────────────────────────────────────────────────────── */
 const SEND_TO = "Contact@BlackLineAgency.co.uk";
 
+/* Thirteen rows on 2026-09-22, one now.
+ *
+ * She answered twelve of them over WhatsApp the same afternoon — seven
+ * pieces, and separately the correction that the balloon sleeve coat is £59
+ * and always has been. Those are in the catalogue, so asking again would be
+ * asking her to do work she has already done, which is the fastest way to
+ * make somebody stop filling a form in.
+ *
+ * What is left is what is genuinely left. */
 const PRICES: [string, string][] = [
-  ["Paisley Fringe Belted Cardigan Vest", "Burgundy"],
-  ["Paisley Fringe Belted Cardigan Vest", "Brown"],
-  ["Fine Knit Jumper With Asymmetric Hem", "Brown"],
-  ["Fine Knit Jumper With Asymmetric Hem", "Taupe"],
-  ["Lace Blouse With Layered Ruffle", "Burgundy"],
-  ["Lace Blouse With Layered Ruffle", "Brown"],
-  ["Striped Fuzzy Zip Up Jumper", "Taupe"],
-  ["Striped Fuzzy Zip Up Jumper", "Red"],
-  ["Paisley Oversized Knitted Jumper", "Brown"],
-  ["Paisley Oversized Knitted Jumper", "Burgundy"],
-  ["Plaid Check Hooded Jacket", "Beige"],
-  ["Piping Detail Denim Jacket & Trouser Set", "Denim Blue"],
   ["Italian Knit Ribbed Cardigan", "Cream"],
 ];
 
@@ -195,21 +192,22 @@ export function QuestionsForm() {
         Hayley — there are a few things only you can answer, because they are about
         your shop and we must not guess at them.
       </p>
+      <p className="qf-note">
+        <strong>Thank you for the prices you sent over</strong> — they are all on the
+        website now, including the balloon sleeve coat at £59. Only one price is
+        still missing, and it is the first thing below.
+      </p>
       <p>
-        <strong>13 prices and 8 questions.</strong> Take your time. You can stop and
+        <strong>One price and 8 questions.</strong> Take your time. You can stop and
         come back, as long as you do not close this page.
       </p>
 
       {/* 1 ── PRICES */}
-      <h2 className="qf-h2">1. Prices — 13 to fill in</h2>
+      <h2 className="qf-h2">1. One price still needed</h2>
       <p>
-        Everything else in your shop already has a price. These 13 do not, so the
-        website cannot sell them yet — it shows them as &ldquo;Price to confirm&rdquo;
-        and will not let anyone buy one.
-      </p>
-      <p className="qf-note">
-        If both colours of something are the same price, just put the same number in
-        both.
+        This is the last piece in the shop without a price. Until it has one the
+        website shows it as &ldquo;Price to confirm&rdquo; and will not let anyone
+        buy it.
       </p>
 
       <ul className="qf-prices">
