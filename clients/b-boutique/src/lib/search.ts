@@ -117,7 +117,19 @@ export function searchProducts(items: readonly Product[], query: string): Produc
 export const SEARCH_SUGGESTIONS = [
   "Coats",
   "Knitwear",
+  "Trousers",
+  "Tops",
   "Dresses",
-  "Denim",
-  "Accessories",
+  "Co-ords",
+  "Homeware",
 ] as const;
+
+/* The suggestions that actually find something, run through the same search
+   a customer's own typing goes through. It used to compare each word to a
+   category name exactly, so "Coats" never matched "Coats & Jackets" and the
+   header panel offered two chips out of five — the client noticed.
+   Accessories and Denim came off the list on 2026-09-22: the shop stocks no
+   accessories, and Denim is a fabric that cuts across three categories. */
+export function liveSuggestions(items: readonly Product[]) {
+  return SEARCH_SUGGESTIONS.filter((s) => searchProducts(items, s).length > 0);
+}

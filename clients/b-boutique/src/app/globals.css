@@ -5872,6 +5872,18 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   gap: 10px;
   border-bottom: 1px solid rgba(250, 245, 243, 0.22);
   padding-bottom: 12px;
+  transition: border-color var(--bb-dur-quick) var(--bb-ease);
+}
+
+/* Focus shows on the rule under the field, the same way /shop's .find-field
+   does it. The input used to keep the browser's own ring — a rounded white
+   box drawn INSIDE a square flat panel, the one curved thing in the header —
+   and because the panel focuses the field the moment it opens, that box was
+   the first thing anyone saw. The client asked why. Focus is still visible:
+   the rule goes from 22% to full white and doubles in weight. */
+.navsearch-field:has(.navsearch-input:focus-visible) {
+  border-bottom-color: var(--bb-white);
+  box-shadow: 0 1px 0 0 var(--bb-white);
 }
 
 .navsearch-icon { flex: 0 0 auto; color: rgba(250, 245, 243, 0.55); }
@@ -5881,7 +5893,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   min-width: 0;
   background: transparent;
   border: 0;
-  outline-offset: 3px;
+  border-radius: 0;
   font-size: 15px;   /* 16px or above on iOS stops the field zooming the page;
                         15 is under it, so the input is deliberately sized up
                         on coarse pointers below. */
@@ -5889,6 +5901,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   color: var(--bb-white);
 }
 
+.navsearch-input:focus-visible { outline: none; }
 .navsearch-input::placeholder { color: rgba(250, 245, 243, 0.45); }
 /* The UA's own clear button is drawn in the platform's colours and is
    invisible on this ground. The field is cleared by deleting or by Close. */

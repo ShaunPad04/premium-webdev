@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Product } from "@/lib/catalogue";
-import { SEARCH_SUGGESTIONS, searchProducts } from "@/lib/search";
+import { liveSuggestions, searchProducts } from "@/lib/search";
 import { shop } from "@/lib/shop";
 import { ProductGrid } from "./ProductGrid";
 
@@ -66,7 +66,7 @@ export function ShopSearch({ items }: { items: Product[] }) {
      implies the shop stocks something it does not. If a category empties, its
      chip disappears on its own. */
   const suggestions = useMemo(
-    () => SEARCH_SUGGESTIONS.filter((s) => items.some((p) => p.category === s)),
+    () => liveSuggestions(items),
     [items],
   );
 

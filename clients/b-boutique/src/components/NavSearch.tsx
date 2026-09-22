@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { formatPrice, products } from "@/lib/catalogue";
-import { SEARCH_SUGGESTIONS, searchProducts } from "@/lib/search";
+import { liveSuggestions, searchProducts } from "@/lib/search";
 import { shop } from "@/lib/shop";
 import { ProductPhoto } from "./ProductPhoto";
 
@@ -69,13 +69,7 @@ export function NavSearch() {
 
   /* Checked against the catalogue at render rather than trusted from the
      constant, so a chip can never offer a category the shop has emptied. */
-  const chips = useMemo(
-    () =>
-      SEARCH_SUGGESTIONS.filter((s) =>
-        products.some((p) => p.category.toLowerCase() === s.toLowerCase()),
-      ),
-    [],
-  );
+  const chips = useMemo(() => liveSuggestions(products), []);
 
   /* Focus the field when the panel opens. After paint, so the element exists
      and the browser does not scroll the header to find it. */
