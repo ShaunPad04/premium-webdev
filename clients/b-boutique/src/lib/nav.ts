@@ -30,12 +30,11 @@ export type MenuItem = {
 export const MENU: MenuItem[] = [
   { n: "01", label: "Shop", href: "/shop" },
   { n: "02", label: "Womenswear", href: "/clothing" },
-  { n: "03", label: "Accessories", href: "/accessories" },
-  { n: "04", label: "Homeware", href: "/homeware" },
-  { n: "05", label: "New Arrivals", href: "/#new-in" },
-  { n: "06", label: "The Boutique", href: "/about" },
-  { n: "07", label: "Visit Us", href: "/#visit" },
-  { n: "08", label: "Contact", href: "/contact" },
+  { n: "03", label: "Homeware", href: "/homeware" },
+  { n: "04", label: "New Arrivals", href: "/#new-in" },
+  { n: "05", label: "The Boutique", href: "/about" },
+  { n: "06", label: "Visit Us", href: "/#visit" },
+  { n: "07", label: "Contact", href: "/contact" },
 ];
 
 /** Social accounts.
@@ -111,7 +110,6 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
       { n: "", label: "Shop all", href: "/shop" },
       { n: "", label: "New In", href: "/#new-in" },
       { n: "", label: "Clothing", href: "/clothing" },
-      { n: "", label: "Accessories", href: "/accessories" },
       { n: "", label: "Homeware", href: "/homeware" },
     ],
   },
@@ -175,7 +173,9 @@ export const PRIMARY = [
   { label: "Shop", href: "/shop" },
   { label: "New In", href: "/#new-in" },
   { label: "Clothing", href: "/clothing", menu: CLOTHING_MENU },
-  { label: "Accessories", href: "/accessories" },
+  /* Accessories came out of all three navigations on 2026-09-22 at the
+     client's instruction: the shop does not stock them. /accessories now
+     redirects to /shop (next.config.ts) so no old link lands on a 404. */
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ] as const;
@@ -189,6 +189,5 @@ export const PRIMARY = [
  *  should not mean rewriting it from memory. */
 export const HERO_CATEGORIES = [
   { label: "Womenswear", href: "#rails" },
-  { label: "Accessories", href: "#rails" },
   { label: "Homeware", href: "#homeware" },
 ] as const;

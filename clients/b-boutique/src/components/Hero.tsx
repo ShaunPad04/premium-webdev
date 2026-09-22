@@ -80,7 +80,7 @@ export function Hero() {
         who walks <em>in</em>.
         <span className="sr-only">
           {" "}
-          — B Boutique, independent womenswear, accessories and homeware on
+          — B Boutique, independent womenswear and homeware on
           Sea View Street, Cleethorpes.
         </span>
       </h1>
@@ -116,7 +116,7 @@ export function Hero() {
           token pair, so it is bought with a gradient rather than asserted. */}
       <div className="hero-copy">
         <p className="hero-sub">
-          Independent womenswear, accessories and homeware.
+          Independent womenswear and homeware.
         </p>
         <p className="hero-where">
           {shop.street}, {shop.town} · {openingSummary()}

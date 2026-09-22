@@ -83,7 +83,7 @@ const everyDay = hours.every((d) => d.hours);
    is where the LCP is measured. */
 const SLIDES: readonly Slide[] = [
   { file: "1-paris",   text: ["Something a little", "different"] },
-  { file: "2-street",  text: ["Womenswear", "and accessories"] },
+  { file: "2-street",  text: ["Independent", "womenswear"] },
   { file: "3-terrace", text: ["Homeware", "and gifts"] },
   { file: "4-flowers", text: [shop.street, shop.town] },
   { file: "5-sea",     text: everyDay ? ["Open", "every day"] : ["Come", "in"] },

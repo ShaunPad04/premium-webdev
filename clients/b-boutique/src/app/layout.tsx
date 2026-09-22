@@ -84,8 +84,8 @@ const inter = Inter({
    directly beside JSON-LD that correctly listed all seven. Every shared link
    and every search result carried the wrong one. */
 const description =
-  `An independent boutique on Sea View Street, Cleethorpes. Womenswear, ` +
-  `accessories and homeware, chosen one piece at a time. ` +
+  `An independent boutique on Sea View Street, Cleethorpes. Womenswear ` +
+  `and homeware, chosen one piece at a time. ` +
   `Open ${openingPhrase()}.`;
 
 /* Indexing is OFF until someone deliberately turns it on.

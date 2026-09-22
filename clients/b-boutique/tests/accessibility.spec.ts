@@ -12,7 +12,6 @@ const ROUTES = [
      failed on them rather than silently skipping, which is the behaviour to
      keep. Pick any real slug if these ever change again. */
   '/clothing/coats-jackets',
-  '/accessories',
   '/homeware',
   '/about',
   '/contact',

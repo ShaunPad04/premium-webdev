@@ -53,7 +53,7 @@ export function Footer() {
               metadata description already uses. Not a new manifesto. */}
           <p className="ft-statement">
             An independent boutique on {shop.street.replace(/^\d+\s/, "")},{" "}
-            {shop.town}. Womenswear, accessories and homeware, chosen one piece
+            {shop.town}. Womenswear and homeware, chosen one piece
             at a time.
           </p>
 

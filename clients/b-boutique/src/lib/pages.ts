@@ -109,7 +109,7 @@ export const RETIRED_CATEGORIES: Record<string, string> = {
   shirts: "/clothing/tops",
   skirts: "/clothing",
   denim: "/clothing/trousers",
-  accessories: "/accessories",
+  accessories: "/shop",
   /* Homeware IS a live category with three pieces in it, and it deliberately
      has no /clothing page — a clothing page that lists ceramic vases is not a
      clothing page. That left /clothing/homeware returning a 404 for a slug
@@ -119,27 +119,6 @@ export const RETIRED_CATEGORIES: Record<string, string> = {
      homeware section on the home page until 2026-09-22; it goes to the
      category's own page, /homeware, now that one exists. */
   homeware: "/homeware",
-};
-
-/** Accessories, which are real and are not online.
- *
- *  Hand-built rather than derived, because "accessories" is deliberately no
- *  longer one of the rails in shop.ts: this drop contains none, and a rail
- *  with nothing behind it sends a customer to an empty shelf.
- *
- *  The PAGE stays. She sells accessories — the hero says so and the About
- *  copy says so, and both are true of the shop on Sea View Street. Deleting
- *  the route would break two links in the header and one in the footer to
- *  answer a question nobody asked. What changes is that it stops pretending
- *  to be a grid of things you can buy from it, and says where they are.
- *
- *  No photograph: there is no accessories photograph that is not either
- *  generated stand-in artwork or a picture of something else. The homeware
- *  frames are homeware. */
-export const accessoriesCard: CategoryCard = {
-  slug: "accessories",
-  name: "Accessories",
-  note: "Bags, scarves and small gold things — in the shop, on Sea View Street.",
 };
 
 /** New In, filtered to a set of categories.

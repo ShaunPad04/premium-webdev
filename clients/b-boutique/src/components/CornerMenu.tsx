@@ -7,7 +7,6 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { MENU, directionsHref, socials } from "@/lib/nav";
 import { addressLines, openingSummary, phoneDisplay, shop } from "@/lib/shop";
 import { SocialMark } from "./SocialMark";
-import { useIsDrawer } from "@/lib/useIsDrawer";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -35,8 +34,6 @@ export function CornerMenu() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const reduced = usePrefersReducedMotion();
-  /* Geometry is CSS; this is only for the entrance. See the hook. */
-  const isDrawer = useIsDrawer();
   const panelId = useId();
   const trigger = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
@@ -78,8 +75,20 @@ export function CornerMenu() {
     document.addEventListener("keydown", onKey);
 
     // Lock the page and take the rest of it out of the a11y tree.
+    /* Locking the body removes a classic (Windows) scrollbar, and the page
+       and the fixed header both widen into the space it left: the client saw
+       MENU jump right on click. The gap is handed back as padding on the
+       body and as `--lock-gap`, which the header reads for its right edge,
+       so nothing moves. The drawer is not given it, so it sits flush on the
+       real edge of the window. Zero with overlay scrollbars. */
+    const gap = window.innerWidth - document.documentElement.clientWidth;
     const prev = document.body.style.overflow;
+    const prevPad = document.body.style.paddingRight;
     document.body.style.overflow = "hidden";
+    if (gap > 0) {
+      document.body.style.paddingRight = `${gap}px`;
+      document.documentElement.style.setProperty("--lock-gap", `${gap}px`);
+    }
     const main = document.getElementById("main");
     const footer = document.querySelector("footer");
     main?.setAttribute("inert", "");
@@ -104,6 +113,8 @@ export function CornerMenu() {
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      document.body.style.paddingRight = prevPad;
+      document.documentElement.style.removeProperty("--lock-gap");
       main?.removeAttribute("inert");
       footer?.removeAttribute("inert");
       document.body.removeAttribute("data-menu-open");
@@ -114,22 +125,13 @@ export function CornerMenu() {
   const panelMotion = reduced
     ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 },
         transition: { duration: 0.01 } }
-    : isDrawer
-      ? /* A drawer slides along the edge it is attached to. Scaling it out of
-           its top-right corner — which is what the card entrance does — makes
-           a full-height panel appear to grow out of the wall, and reads as a
-           glitch rather than as a movement. x only, no scale, no y. */
-        {
+    : /* A drawer at every width since 2026-09-22, so it slides along the
+         edge it is attached to: x only, no scale, no y. */
+      {
           initial: { opacity: 0, x: 40 },
           animate: { opacity: 1, x: 0 },
           exit: { opacity: 0, x: 28, transition: { duration: 0.26, ease: EASE } },
           transition: { duration: 0.42, ease: EASE },
-        }
-      : {
-          initial: { opacity: 0, scale: 0.92, y: -10 },
-          animate: { opacity: 1, scale: 1, y: 0 },
-          exit: { opacity: 0, scale: 0.96, y: -6, transition: { duration: 0.28, ease: EASE } },
-          transition: { duration: 0.55, ease: EASE },
         };
 
   return (
@@ -259,10 +261,14 @@ export function CornerMenu() {
                  The shadow is kept but quietened, and a hairline does the
                  work of separating the panel from the photograph, which is
                  how everything else here separates things. */
-              className="pointer-events-auto fixed inset-y-0 right-0 z-50 h-svh max-h-svh w-full origin-right overflow-hidden border-l border-bone/15 bg-panel text-bone shadow-[0_18px_60px_rgba(0,0,0,.45)] sm:inset-y-auto sm:right-6 sm:top-5 sm:h-auto sm:max-h-[calc(100svh-2.5rem)] sm:w-[24rem] sm:origin-top-right sm:border sm:border-bone/15 lg:right-8"
+              /* Tucked into the right edge at EVERY width since 2026-09-22.
+                 Above 640 it was a card floating 24-32px in from the edge
+                 and 20px down; the client asked why it was not tucked into
+                 the right. A drawer has no margins to look adrift in. */
+              className="pointer-events-auto fixed inset-y-0 right-0 z-50 h-svh max-h-svh w-full overflow-hidden border-l border-bone/15 bg-panel text-bone shadow-[0_18px_60px_rgba(0,0,0,.45)] sm:w-[24rem]"
               {...panelMotion}
             >
-              <div className="grain cm-scroll relative flex h-full max-h-svh flex-col overflow-y-auto p-6 pt-[7.75rem] sm:h-auto sm:max-h-[calc(100svh-2.5rem)] sm:pt-[5.5rem]">
+              <div className="grain cm-scroll relative flex h-full max-h-svh flex-col overflow-y-auto p-6 pt-[7.75rem] sm:px-8">
                 <p className="mb-3 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-bone/70">
                   Navigation
                 </p>

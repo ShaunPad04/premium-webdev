@@ -348,9 +348,8 @@ can never point at an empty shelf.
 
 ## The routes
 
-Sixteen pages as of 2026-09-22: `/`, `/shop`, `/shop/[slug]`, `/bag`,
-`/checkout/success`, `/clothing`, `/clothing/[category]`, `/accessories`,
-`/homeware`, `/about`, `/contact`, `/delivery`, `/returns`, `/terms`, `/privacy`, and the
+Fifteen pages as of 2026-09-22: `/`, `/shop`, `/shop/[slug]`, `/bag`,
+`/checkout/success`, `/clothing`, `/clothing/[category]`, `/homeware`, `/about`, `/contact`, `/delivery`, `/returns`, `/terms`, `/privacy`, and the
 unlisted `/stock` — plus `/api/contact`, `/api/checkout`, `/api/stock`,
 `/api/orders` and `/api/availability`. The temporary `/questions` form was
 deleted once she had answered it.
@@ -362,6 +361,13 @@ product page a masthead would push the garment below the fold; on the bag it
 spent a whole phone screen saying "Your bag." before the first item, and the
 client asked for it to go. The bag keeps one small `h1`, "Bag", for the
 document outline.
+
+**Accessories is gone, 2026-09-22, at Brad's instruction: the shop does not
+stock them.** Out of the header, corner menu and footer; out of every
+"womenswear, accessories and homeware" descriptor (hero, footer, meta,
+statement rail, About); `/accessories` deleted and 307-redirected to `/shop`
+in `next.config.ts` (temporary, so the page can come back if she starts
+stocking them). Do not reintroduce the word without her confirming stock.
 
 **`/homeware` was built 2026-09-22.** Every Homeware link — corner menu,
 header Shop menu, footer, the Accessories page, the home section's own

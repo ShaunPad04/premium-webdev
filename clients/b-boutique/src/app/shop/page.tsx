@@ -11,7 +11,7 @@ import { pendingPriceNotice, products } from "@/lib/catalogue";
 export const metadata: Metadata = {
   title: "Shop",
   description:
-    "Buy from B Boutique online, or come to 18 Sea View Street, Cleethorpes. Womenswear, accessories and homeware, chosen a piece at a time.",
+    "Buy from B Boutique online, or come to 18 Sea View Street, Cleethorpes. Womenswear and homeware, chosen a piece at a time.",
   alternates: { canonical: "/shop" },
 };
 

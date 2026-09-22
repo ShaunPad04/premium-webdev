@@ -10,7 +10,7 @@ import { aboutBlocks, aboutTemporary, philosophy } from "@/lib/about";
 export const metadata: Metadata = {
   title: "About us",
   description:
-    "B Boutique is an independent shop at 18 Sea View Street, Cleethorpes. Womenswear, accessories and homeware, chosen a piece at a time and sold in person.",
+    "B Boutique is an independent shop at 18 Sea View Street, Cleethorpes. Womenswear and homeware, chosen a piece at a time and sold in person.",
   alternates: { canonical: "/about" },
 };
 

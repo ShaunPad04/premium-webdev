@@ -64,6 +64,9 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
          panel reserves top padding for exactly this. */
       className="fixed inset-x-0 top-0 z-[60] text-bb-white"
       style={{
+        /* The scrollbar's width while the menu locks the page; see
+           CornerMenu. 0 the rest of the time. */
+        right: "var(--lock-gap, 0px)",
         /* SOLID ink, the same token as the announcement strip above it —
            at the client's request, 2026-09-22. It was rgba(26,20,22,.90)
            with a 14px blur: the right colour at 90%, so the warm pink page

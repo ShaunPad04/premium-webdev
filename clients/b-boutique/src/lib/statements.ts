@@ -44,9 +44,9 @@ export const statements: readonly string[] = [
   "Independent",
   "Not a chain",
 
-  // The three categories the site is built around — PRODUCT.md, and the
+  // The two categories the site is built around — PRODUCT.md, and the
   // catalogue's own shape.
-  "Womenswear, accessories & homeware",
+  "Womenswear & homeware",
 
   // Derived. Never typed: the street and town live in shop.ts and every
   // surface reads them, so this cannot drift from Visit, the footer, the

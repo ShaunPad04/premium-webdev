@@ -17,6 +17,13 @@ const nextConfig: NextConfig = {
        used to be declared here. */
     qualities: [75, 90],
   },
+  /* /accessories was a page until 2026-09-22, when the client confirmed the
+     shop stocks no accessories and it came out of the navigation. Temporary
+     (307), not permanent: if she starts stocking them the page comes back,
+     and a cached 308 would keep sending browsers away from it. */
+  async redirects() {
+    return [{ source: "/accessories", destination: "/shop", permanent: false }];
+  },
 };
 
 export default nextConfig;

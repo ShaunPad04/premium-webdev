@@ -43,7 +43,7 @@ export const aboutBlocks: AboutBlock[] = [
     /* Derived. Everything here is either in shop.ts or is a description of
        what this codebase actually is. Nothing is asserted about the people. */
     body: [
-      "B Boutique is an independent shop at 18 Sea View Street in Cleethorpes. Womenswear, accessories and a small amount of homeware, all of it in one room, all of it chosen a piece at a time.",
+      "B Boutique is an independent shop at 18 Sea View Street in Cleethorpes. Womenswear and a small amount of homeware, all of it in one room, all of it chosen a piece at a time.",
       "You can buy online or you can come in. Everything in the shop is a single piece rather than a size run in a warehouse, so what is listed is what is on the rail — and when it goes, it goes.",
     ],
   },
