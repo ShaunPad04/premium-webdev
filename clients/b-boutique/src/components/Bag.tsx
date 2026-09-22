@@ -334,9 +334,14 @@ export function Bag() {
             are linked from the last screen before payment, not only from the
             footer. next/link because both are internal routes. */}
         <p className="bag-legal">
-          Prices include VAT where it applies. You will be taken to our payment
-          provider to pay; your card details never reach this site. Before you
-          buy, please read our{" "}
+          {/* "Nothing is charged until…" moved here from the old masthead.
+              "Prices include VAT where it applies" was replaced: the shop is
+              not VAT registered (client-confirmed, and stated on /terms), so
+              the line implied a VAT element that is never there. */}
+          Nothing is charged until you have been through our payment
+          provider&rsquo;s page, and your card details never reach this site.
+          B Boutique is not VAT registered, so there is no VAT to add. Before
+          you buy, please read our{" "}
           <Link href="/delivery" className="bag-legal-link">
             delivery
           </Link>{" "}

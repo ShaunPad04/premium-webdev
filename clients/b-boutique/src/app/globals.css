@@ -5257,6 +5257,14 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .bag-total-row dt { color: var(--bb-black) !important; }
 
 .bag-pending { margin-top: 18px; }
+
+/* /bag without a masthead. The header is fixed and 106px tall at scroll 0
+   (72px row + the 33px announcement strip), so the section clears it with
+   room to breathe — the same floor the product page uses, for the same
+   reason. The h1 is a small tracked label: it is there for the document
+   outline, and the bag's own contents are the page's real opening. */
+.bag-page { padding-top: max(clamp(40px, 6vw, 72px), 132px); }
+.bag-h1 { margin: 0 0 20px; font-size: 11px; color: var(--bb-black); }
 /* The customer's own problem, in a sentence they act on — so body-size type
    rather than the 10px tracked caps of .page-pending, which is a note about
    the build. A full rouge border rather than a side stripe: the stripe is

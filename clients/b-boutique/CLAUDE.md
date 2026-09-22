@@ -339,9 +339,12 @@ unlisted `/stock` — plus `/api/contact`, `/api/checkout`, `/api/stock`,
 deleted once she had answered it.
 
 **The header is transparent over the home hero and solid everywhere a route
-opens on light.** Every route except the home page and `/shop/[slug]` opens on
-a dark `PageMasthead`; the product page passes `<Nav solid />` instead, because
-a masthead would push the garment below the fold.
+opens on light.** Every route except the home page, `/shop/[slug]` and `/bag`
+opens on a dark `PageMasthead`; those two pass `<Nav solid />` instead. On the
+product page a masthead would push the garment below the fold; on the bag it
+spent a whole phone screen saying "Your bag." before the first item, and the
+client asked for it to go. The bag keeps one small `h1`, "Bag", for the
+document outline.
 
 `/clothing/[category]` is what stopped the site reading as disorganised: the
 category grid showed nine categories with nothing underneath any of them, which
