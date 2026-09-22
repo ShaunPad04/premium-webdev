@@ -110,7 +110,7 @@ costs a review cycle and risks undoing a deliberate fix.
 | 12 | **Money is integers in pence, everywhere.** | `0.1 + 0.2` is not `0.3` in binary floating point, and a basket totalling £74.99999999 is a rounding bug waiting to be charged to somebody. Prices are `priceP` integers from the catalogue to the provider; the single division is `formatPrice` for display, and one more at the very edge where SumUp's API wants a decimal. Never store, add or compare money as pounds. |
 | 13 | **The server prices the bag, never the browser.** | `/api/checkout` takes slugs, sizes and quantities and ignores anything else the client sends. A total posted from a browser is a total somebody sets to 1p. Verified: a request carrying a forged `priceP` is accepted and the field is simply not read. |
 | 14 | **The shop must never confirm an order it did not take.** | `/api/checkout` answers 503 `not_configured` until `SUMUP_API_KEY`, `SUMUP_MERCHANT_CODE` and `NEXT_PUBLIC_SITE_URL` all exist, and the bag says plainly that nothing has been charged. Landing on `/checkout/success` means a browser followed a URL, not that money moved, so **the page asks SumUp rather than reading the URL**: `GET /v0.1/checkouts?checkout_reference=…`, authenticated, server-side (`lib/sumup.ts`). PAID, FAILED/EXPIRED and "we could not find out" are three different pages, and the bag is emptied on PAID alone. **Correction, 2026-09-08:** this row previously said a webhook was the proof. SumUp publishes no payment webhook — see the SumUp section below — so the query is the mechanism, not a placeholder for one. |
-| 15 | **Every price in `lib/catalogue.ts` is invented.** | Nobody has supplied a price list, a size run or a stock count. Under the Consumer Protection from Unfair Trading Regulations a displayed price is what a customer is entitled to pay, so these are more dangerous than the invented testimonials. `demo: true` on every product drives a visible notice; the site is noindex; and no payment provider is configured. **Replace every price with the client's own before any of those three change.** |
+| 15 | ~~**Every price in `lib/catalogue.ts` is invented.**~~ **SUPERSEDED 2026-09-22: the catalogue is her real stock, and 53 of 54 colourway prices are hers.** | `lib/stocklist.ts` replaced the invented catalogue on 2026-09-21 (32 pieces, 54 colourways, from her own dashboard) and `catalogue.ts` is now built from it. The rule this row protected is unchanged and still locked: **a displayed price is what a customer is entitled to pay, so an unconfirmed price is never displayed and never charged.** `priceConfirmed: false` makes the whole piece `demo` — "Price to confirm", no Add to bag, refused by `/api/checkout`, no `offers` in its JSON-LD. One colourway is unconfirmed today; see the stocklist header. Remember that `priceConfirmed: true` means transcribed from her, not read back by her — the Balloon Sleeve Coat was "confirmed" at £49 and is £59. |
 
 ## The Rouge re-theme — 2026-09-21
 
@@ -185,27 +185,36 @@ cannot drift. **The threshold is compared against the subtotal, not the
 total** — comparing against a total that includes delivery creates a loop
 where £115.65 + £4.35 qualifies for free delivery and then no longer does.
 
-**Twelve of the fifteen policy slots are filled.** Three remain, and each one
-carries what she actually said in its `ask`, so the gap is specific:
+**All fifteen policy slots are filled** — the last three on 2026-09-22, from
+the form she filled in on her phone:
 
-- **When the order becomes a contract** — she said it "won't happen, worst
-  case organise it". That is a plan for the situation, not a term. Leaving it
-  blank means the contract forms at payment, which is the WORSE position for
-  her: refunding a piece that sold over the counter becomes breaking a
-  contract rather than declining an offer. Worth one more ask.
-- **If a piece has already gone** — she said "sorted". Needs the actual
-  sentence a customer would read.
-- **How long the shop keeps things** — she said six months. Fine for enquiry
-  emails, wrong for order records: HMRC generally expects business records
-  kept six years. The two need separating, by her, not by us.
+- **When the order becomes a contract** — "Once the order is paid for that is
+  the contract of sale." She was offered offer-at-order / contract-at-dispatch
+  with the reason it protects her, and chose payment. **Her decision; do not
+  re-open it.** It means a piece that sells over the counter after being paid
+  for online is a contract she cannot perform, and the refund is the remedy.
+- **If a piece has already gone** — "Refund them straight away, then ring to
+  apologise." The page says **get in touch**, not ring: checkout collects no
+  phone number, so a promised call would be a promise with no number behind
+  it. Add a phone field to checkout and it can say ring.
+- **How long the shop keeps things** — enquiries six months, orders six years
+  (HMRC). Nothing deletes on a timer; these are her commitments.
 
-### Still missing, and it is the big one
+### Product data — arrived 2026-09-21, priced 2026-09-22
 
-**No product data at all.** The form came back with a single row reading
-`X | no colour | no price | no sizes/counts`. Every price in `catalogue.ts` is
-still invented, no colour is confirmed, and no count exists. Until that
-arrives the shop cannot take money, and 26 products plus 26 colours are two
-of the seven remaining launch blockers.
+This section used to read "No product data at all". Her stock dashboard
+arrived on 2026-09-21 and is `lib/stocklist.ts`: 32 pieces, 54 colourways, a
+photograph of each, sizes, fit notes and supplier compositions where
+published. Prices came in three batches — the dashboard, a WhatsApp message,
+and her filled-in form — and **one colourway is open because two of those
+disagree**: Striped Fuzzy Zip Up Jumper, Red, £40 in the WhatsApp and £48 on
+the form. It is un-confirmed rather than guessed. If £48 is right it needs
+per-colourway pricing, which `priceFor()` currently refuses by design.
+
+Also answered 2026-09-22: **no alterations** (the demo FAQ offered a service she
+does not run), **holds are four days with a deposit** (amount not given, so
+not stated), **gift cards confirmed as written**, and both About paragraphs
+replaced with her own one-liners.
 
 **No wholesalers named** ("no."), and on **2026-09-21** the client confirmed
 the shop does not stock big labels at all — "just affordable clothing".
@@ -291,13 +300,12 @@ Verified in the built HTML: `/shop/camel-blazer` emits
 important part. `SUMUP_API_KEY` and `SUMUP_MERCHANT_CODE` are both already
 set on Production and Preview — confirmed against the project's environment
 variables. `/api/checkout` answers 503 only because the third variable is
-missing. **Setting it turns the shop on**, and the prices it would charge are
-the invented ones in `lib/catalogue.ts`.
+missing. **Setting it turns the shop on.** As of 2026-09-22 the prices it
+would charge are hers, and the one open price cannot be bought.
 
-Locked decision 15 names three things standing between those prices and being
-charged to a real person. One of them is now one environment variable away
-from gone. The order is: her real prices first, then
-`NEXT_PUBLIC_SITE_URL`, then a test card, and `ALLOW_INDEXING` last of all.
+The order is unchanged: stock counts in, then `NEXT_PUBLIC_SITE_URL`, then a
+test card, and `ALLOW_INDEXING` last of all. Setting it is a deliberate
+decision, never a side effect of other work.
 
 ## Search
 
@@ -322,10 +330,17 @@ can never point at an empty shelf.
 
 ## The routes
 
-Fourteen routes as of 2026-09-08: `/`, `/shop`, `/shop/[slug]`, `/bag`,
+Fifteen pages as of 2026-09-22: `/`, `/shop`, `/shop/[slug]`, `/bag`,
 `/checkout/success`, `/clothing`, `/clothing/[category]`, `/accessories`,
-`/about`, `/contact`, `/delivery`, `/returns`, `/terms`, `/privacy` — plus
-`POST /api/contact` and `POST /api/checkout`.
+`/about`, `/contact`, `/delivery`, `/returns`, `/terms`, `/privacy`, and the
+unlisted `/stock` — plus `/api/contact`, `/api/checkout`, `/api/stock`,
+`/api/orders` and `/api/availability`. The temporary `/questions` form was
+deleted once she had answered it.
+
+**The header is transparent over the home hero and solid everywhere a route
+opens on light.** Every route except the home page and `/shop/[slug]` opens on
+a dark `PageMasthead`; the product page passes `<Nav solid />` instead, because
+a masthead would push the garment below the fold.
 
 `/clothing/[category]` is what stopped the site reading as disorganised: the
 category grid showed nine categories with nothing underneath any of them, which
@@ -385,10 +400,10 @@ above describes a site that is not the finished one.
 ## `pnpm launch-check`
 
 The list below, as a command. It reads the source and exits non-zero while
-anything invented, unconfirmed or self-contradicting remains — **7 blockers
-as of 2026-09-21**, which is the correct answer today. It was 10 on
-2026-09-08; delivery and returns were answered by the client on 2026-09-20,
-and the brands rail was deleted on 2026-09-21.
+anything invented, unconfirmed or self-contradicting remains — **1 blocker
+as of 2026-09-22** (the Red jumper's price), which is the correct answer today.
+It was 10 on 2026-09-08, 7 on 2026-09-21 and 4 on the morning of 2026-09-22;
+her answers that afternoon cleared the policy slots, the FAQ and About.
 
 **Deliberately NOT part of `pnpm verify`.** Verify runs several times a day and
 must stay green; a gate that fails on every run for a known, correct reason
@@ -421,19 +436,19 @@ run, because a checklist that implies it is exhaustive is worse than none.
 
 ## What is still missing before the shop can take real money
 
-Not a to-do list — every one of these is a thing a developer cannot invent:
+Rewritten 2026-09-22. Prices, the order record, reservation at checkout, all
+fifteen policy answers, her legal identity and order email are DONE. What is
+left:
 
-- **Real prices, sizes and stock counts.** See locked decision 15.
-- **Stock levels.** Nothing decrements. Two people can buy the same one-off piece.
-- **An order record.** Nothing is written down, so nothing can be picked, packed,
-  refunded or audited.
-- **Fifteen answers across the four selling-terms pages.** All four are built
-  and linked; `outstandingPolicySlots` counts the gaps. Delivery 4, Returns 4,
-  Terms 5, Privacy 2. Each renders as a visible slot and drives a page notice.
-  See the SELLING TERMS section below.
-- **The trader's legal identity.** Asked for on both `/terms` and `/privacy`,
-  and `trader.legalEntity` in `policies.ts` is empty: sole trader or limited
-  company, and the registered name, number and office if there is one.
+- **One price** — the Red Striped Fuzzy Zip Up Jumper. See above.
+- **Stock counts.** Checkout reserves a variant atomically (`lib/orders.ts`,
+  `adjust()` against a `CHECK (qty >= 0)`), but a variant nobody has counted
+  (`qty: null`) is sold unreserved, so the protection only exists once counts
+  are in. `scripts/import-stock.mjs` imports the 30 unambiguous counts from her
+  dashboard and refuses 8 with reasons; it needs `DATABASE_URL`, which lives in
+  Vercel, not in a web session. The other 8 go in on `/stock`.
+- **A test card through SumUp**, after `NEXT_PUBLIC_SITE_URL` is set.
+- **A qualified read of the statutory text.** See Selling terms.
 - **The ICO data protection fee.** Most UK businesses processing personal data
   must register with the Information Commissioner's Office and pay an annual
   fee. The privacy page names the ICO as the regulator to complain to; whether
@@ -460,9 +475,10 @@ impossible to add by accident:
 | `technical` | A statement about what this codebase actually **does**, read out of the file it names. This is what makes an honest privacy notice possible before the client has said anything: what a website collects is not her opinion, it is a fact about the code. Renders a "How we know" footnote citing the source file. | Yes — see the warning below |
 | `required` | A commercial decision only the client can make. Renders as a visible CLIENT INPUT REQUIRED slot carrying the question, never as plausible prose. | **No** |
 
-Fifteen `required` slots remain — Delivery 4, Returns 4, Terms 5, Privacy 2.
-`outstandingPolicySlots` counts them and a launch check should assert zero.
-Each page renders one notice while any of its own remain.
+**Zero `required` slots remain as of 2026-09-22.** `outstandingPolicySlots`
+counts them and `pnpm launch-check` asserts zero. Each page renders one notice
+while any of its own remain, so a new `required` block reappears on the page
+the day it is added.
 
 **The `technical` blocks expire.** `/privacy` states, as fact, that the site
 sets no cookies, runs no analytics, self-hosts its fonts so nothing is
@@ -489,11 +505,10 @@ customer *before* they are bound by the order, not discovered afterwards.
 
 `/terms` carries one block worth pointing at: **when the order becomes a
 contract.** The standard wording — the order is an offer, the contract forms
-when the shop confirms the piece is on its way — is what lets the shop
-lawfully refund somebody when a one-of-one piece sold over the counter an hour
-earlier. It is left as a `required` slot with that wording in the ask, because
-it is the client's term to adopt, but it is the single most useful sentence on
-the page for a shop with no stock system.
+at dispatch — was offered to her twice with the reason it protects her. On
+2026-09-22 she chose **payment** instead, in her own words. That is her term
+and it is settled; what keeps it safe in practice is the reservation taken at
+checkout, which is why the stock counts matter.
 
 ## Stock — the website is the source of truth, not the till
 
@@ -516,11 +531,11 @@ object from the camel coat in a 14 and from the black one in a 12.
 so a reordered catalogue cannot silently re-point a stock count at a different
 garment. The separator is `·` because hyphens already appear inside slugs.
 
-**`colours` is empty on purpose.** Not one colour in this shop is confirmed,
-which is also why `lib/search.ts` has no colour terms. Each answer from the
-client adds a line. **Never read a colour off a photograph** — the artwork is
-a generated stand-in and says nothing about the garment; this project already
-shipped a "satin skirt" that was a matte brown pencil skirt.
+**Colours are confirmed as of 2026-09-21** — every colourway in
+`lib/stocklist.ts` is named on her own dashboard. `lib/search.ts` still has no
+colour matching; its comment predates that and a colour search could now be
+honest. Not built. **Never read a colour off a photograph** — this project
+once shipped a "satin skirt" that was a matte brown pencil skirt.
 
 ### The store — `lib/stock.ts`
 
@@ -584,13 +599,19 @@ regulations as a price, and arguably worse because it pressures the purchase
 rather than describing it. `pnpm launch-check` blocks on unconfirmed colours;
 the counts themselves are a question for `/stock` and for a person.
 
-### Still to build
+### Orders — built 2026-09-21/22
 
-Checkout does not yet reserve a variant, and there is still no order record.
-The SumUp transaction poll (counter sales picked up automatically) is
-**optional and conditional** — it only works if she rings sales through by
-tapping the product in the SumUp app rather than typing an amount, and her
-page covers it either way.
+`lib/orders.ts`. `createPendingOrder` reserves each counted variant BEFORE the
+SumUp redirect; `markPaid` is idempotent (`WHERE status = 'pending'`); every
+failure path releases. `lib/order-sweep.ts` releases pendings older than 30
+minutes on `/stock` load, and "we could not find out" deliberately releases
+nothing. Paid orders email the shop and the customer and appear on `/stock`
+with a Posted button. Resend is live — a contact-form message was confirmed
+delivered in Resend's own log on 2026-09-22 — but **no order email has been
+sent end to end yet**, because checkout cannot run until
+`NEXT_PUBLIC_SITE_URL` is set. The first test card is also the first test of
+those two emails. The SumUp
+transaction poll stays dead — she types amounts at the till.
 
 ## SumUp — what the API can and cannot do
 

@@ -113,19 +113,21 @@ not because they are generic good taste.
   rather than deleted when all three became real. The rule underneath it never
   changed, and it is currently the most load-bearing sentence in this file.*
 
-  Every price in `lib/catalogue.ts` is **invented**. Under the Consumer
+  The prices are hers as of 2026-09-22 — 53 of 54 colourways, from her
+  dashboard, a WhatsApp and her own filled-in form. Under the Consumer
   Protection from Unfair Trading Regulations a displayed price is what the
-  customer is entitled to pay, so these are live offers the moment anyone can
-  reach them. Exactly three things stand in the way, and none may be removed
-  casually or as a side effect of other work:
+  customer is entitled to pay, so an unconfirmed one is never shown or
+  charged: `priceConfirmed: false` makes the piece `demo`, which reads "Price
+  to confirm", has no Add to bag, and is refused by `/api/checkout`. Two
+  further guards stand between the shop and a real card, and neither may be
+  removed casually or as a side effect of other work:
 
-  1. `demo: true` on every product, which renders a visible notice.
-  2. The site is `noindex` until `ALLOW_INDEXING` is set.
-  3. `NEXT_PUBLIC_SITE_URL` is unset, so `/api/checkout` answers 503.
+  1. The site is `noindex` until `ALLOW_INDEXING` is set.
+  2. `NEXT_PUBLIC_SITE_URL` is unset, so `/api/checkout` answers 503.
 
-  The SumUp key and merchant code are already set in Vercel. That third guard
-  is therefore one environment variable away from gone. Order of operations:
-  her real prices, then the site URL, then a test card, then indexing.
+  The SumUp key and merchant code are already set in Vercel. Order of
+  operations: stock counts in, then the site URL, then a test card, then
+  indexing.
 
   The same rule governs everything downstream. Never confirm an order the shop
   did not take: `/checkout/success` asks SumUp whether the payment happened
@@ -136,9 +138,9 @@ not because they are generic good taste.
 - **Invented local fact.** No parking claims, walking times, car park names,
   street rules, delivery terms, returns policy or stockist relationships until
   the client confirms them in their own words. Placeholder content must
-  announce itself as placeholder. Three of the fifteen selling-terms slots are
-  still open and each renders as a visible CLIENT INPUT REQUIRED block rather
-  than as plausible prose.
+  announce itself as placeholder. All fifteen selling-terms slots were
+  answered by 2026-09-22; a new unanswered one renders as a visible CLIENT
+  INPUT REQUIRED block rather than as plausible prose.
 - **Motion for its own sake.** No scroll hijacking, no animation on every
   heading, no pinning that delays the page. One heroic effect per screen.
 

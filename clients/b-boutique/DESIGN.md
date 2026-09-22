@@ -347,10 +347,10 @@ lifted, change its tone or give it space. A shadow in this system is a bug.
   Never confirm an order the shop did not take: `/checkout/success` asks SumUp
   whether the payment happened rather than trusting the URL. Never show a stock
   count nobody has counted. Never report a contact form as sent when nothing
-  was sent. Every price in `catalogue.ts` is still invented, and the three
-  guards keeping it off a real card — the `demo: true` notice, `noindex`, and
-  an unset `NEXT_PUBLIC_SITE_URL` — are not to be removed as a side effect of
-  other work. See PRODUCT.md, "Commerce the shop cannot honour".
+  was sent. The prices are hers now, and an unconfirmed one reads "Price to
+  confirm" and cannot be bought. The two guards keeping the shop off a real
+  card — `noindex` and an unset `NEXT_PUBLIC_SITE_URL` — are not to be removed
+  as a side effect of other work. See PRODUCT.md, "Commerce the shop cannot honour".
 - **Don't** assert an unverified fact about the shop: no parking claims,
   walking times, delivery terms, returns policy or stockist relationships until
   the client confirms them.
