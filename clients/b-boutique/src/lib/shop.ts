@@ -459,7 +459,7 @@ export const featured = [
     name: "Jackets",
     image: "/img/category-jackets.webp",
     alt: "Model wearing a structured black jacket",
-    href: "/clothing/jackets",
+    href: "/clothing/coats-jackets", /* was the retired /clothing/jackets, which only reached here through a redirect */
   },
   {
     slug: "trousers",

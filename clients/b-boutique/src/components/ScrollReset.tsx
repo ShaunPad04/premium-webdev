@@ -80,9 +80,58 @@ function jumpTo(y: number) {
   const lenis = window.__lenis;
   /* Both: Lenis owns the position while it runs (and must be told, or it
      drags the page back to its own stale number), window.scrollTo is what is
-     true when it does not. */
+     true when it does not.
+
+     behavior: "instant", explicitly. globals.css sets
+     `html { scroll-behavior: smooth }`, which makes a plain scrollTo(0, y) a
+     GLIDE — so until 2026-09-22 the reset itself was a slow animation that a
+     scroll already in flight could simply outlast. */
   if (lenis) lenis.scrollTo(y, { immediate: true, force: true });
-  window.scrollTo(0, y);
+  window.scrollTo({ top: y, left: 0, behavior: "instant" });
+}
+
+/* Where a hash target should sit: its top at the page top, less its own
+   scroll-margin-top, so a section lands BELOW the fixed header rather than
+   under it — which is what the CSS already asks of a native jump. */
+function yFor(el: Element) {
+  const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+  return Math.max(0, el.getBoundingClientRect().top + window.scrollY - margin);
+}
+
+/* ── Land, then hold (2026-09-22) ──────────────────────────────────────────
+ * Checking every internal link on the site — each clicked from where it sits
+ * deepest, while the page was still moving — found only 19 of 55 landing
+ * where they should: products from /shop up to 2,195px down, product to
+ * product 64px, category to category 23px. Every one was the same shape: the
+ * reset ran, and then something ELSE kept moving the page — a native smooth
+ * scroll still in flight, Lenis finishing its glide, ScrollTrigger restoring
+ * a recorded offset, a photograph above the fold loading and pushing layout.
+ *
+ * Chasing each cause separately is how this bug came back three times. So
+ * after landing, the position is HELD for 700ms: any scroll in that window
+ * that the reader did not make is put straight back. The moment the reader
+ * touches anything — wheel, touch, key, pointer — the hold ends, so it can
+ * never fight a person, only the machinery. `target` is re-read each time
+ * rather than fixed, so a hash target that moves as images load is followed. */
+function land(target: () => number | undefined) {
+  const y0 = target();
+  if (y0 === undefined) return;
+  jumpTo(y0);
+
+  const until = performance.now() + 700;
+  const inputs = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+  const stop = () => {
+    window.removeEventListener("scroll", onScroll);
+    inputs.forEach((t) => window.removeEventListener(t, stop, true));
+  };
+  function onScroll() {
+    if (performance.now() > until) return stop();
+    const y = target();
+    if (y !== undefined && Math.abs(window.scrollY - y) > 1) jumpTo(y);
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  inputs.forEach((t) => window.addEventListener(t, stop, { capture: true, passive: true }));
+  window.setTimeout(stop, 720);
 }
 
 export function ScrollReset() {
@@ -104,10 +153,7 @@ export function ScrollReset() {
          handler and the route's layout effect runs first. Twice, because
          ScrollTrigger's mount-time refresh can land in between and re-apply
          whatever it recorded; the second pass is the one that sticks. */
-      const put = () => {
-        const y = saved.get(keyNow());
-        if (y !== undefined) jumpTo(y);
-      };
+      const put = () => land(() => saved.get(keyNow()));
       requestAnimationFrame(() => requestAnimationFrame(put));
       window.setTimeout(put, 250);
     };
@@ -183,6 +229,20 @@ export function ScrollReset() {
       /* A different page is an ordinary navigation — the pathname effect
          below handles where it lands. */
       if (url.pathname !== window.location.pathname) return;
+
+      /* A link to the page you are already on, with no section named — the
+         category bar's own entry, the wordmark on the home page. The router
+         sees no change, so nothing scrolled: clicked 400px down a category,
+         you stayed 400px down it (found by the link check, 2026-09-22). It
+         now goes to the top of the page, which is what the link names. */
+      if ((!url.hash || url.hash.length < 2) && url.search === window.location.search) {
+        e.preventDefault();
+        e.stopPropagation();
+        const lenis = window.__lenis;
+        if (lenis) lenis.scrollTo(0, { force: true });
+        else window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
       if (!url.hash || url.hash.length < 2) return;
 
       let target: Element | null = null;
@@ -269,18 +329,36 @@ export function ScrollReset() {
     recording.current = keyNow();
     if (first.current) {
       first.current = false;
+      /* A page LOADED with a section in its address — a shared link to
+         bboutiqueclee.com/#new-in, a refresh, a link from an email. This used
+         to be left to the browser's own fragment jump, on the assumption that
+         it works. It does not here: ScrollTrigger sets scrollRestoration to
+         manual and Lenis writes its own position every frame, so the jump was
+         undone and the page sat at the top, 934px short of the section
+         (found by the landing test, 2026-09-22). Same landing as a click. */
+      const { hash } = window.location;
+      if (hash.length > 1) {
+        let target: Element | null = null;
+        try {
+          target = document.querySelector(hash);
+        } catch {
+          target = null;
+        }
+        if (target) {
+          const el = target;
+          land(() => yFor(el));
+        }
+      }
       return;
     }
     if (traversed.current) {
       /* Back/Forward: onPop restores this page's remembered position. */
       traversed.current = false;
-      const y = saved.get(keyNow());
-      if (y !== undefined) jumpTo(y);
+      land(() => saved.get(keyNow()));
       return;
     }
 
     {
-      const lenis = window.__lenis;
       const { hash } = window.location;
 
       if (hash.length > 1) {
@@ -294,16 +372,13 @@ export function ScrollReset() {
           target = null;
         }
         if (target) {
-          if (lenis) lenis.scrollTo(target as HTMLElement, { immediate: true, force: true });
-          else target.scrollIntoView();
+          const el = target;
+          land(() => yFor(el));
           return;
         }
       }
 
-      /* Both, deliberately: Lenis owns the visual position when it is
-         running, and window.scrollTo is what is true when it is not. */
-      if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
-      window.scrollTo(0, 0);
+      land(() => 0);
     }
   }, [pathname]);
 
