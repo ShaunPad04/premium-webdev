@@ -3753,7 +3753,10 @@ body {
   text-transform: uppercase;
   transition: background var(--bb-dur-quick) var(--bb-ease);
 }
-.pinky-cta:hover { background: var(--bb-rouge-deep); }
+/* Hover stays in the ink family — the client did not want the button
+   turning red (2026-09-22). A lift to the raised ink reads as a response
+   without changing colour. */
+.pinky-cta:hover, .pinky-cta:focus-visible { background: var(--bb-black-raised); }
 .pinky-cta svg { transition: transform var(--bb-dur-quick) var(--bb-ease); }
 .pinky-cta:hover svg, .pinky-cta:focus-visible svg { transform: translateX(3px); }
 
