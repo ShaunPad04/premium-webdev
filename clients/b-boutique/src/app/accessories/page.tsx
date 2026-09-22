@@ -9,7 +9,7 @@ import { PieceGrid } from "@/components/PieceGrid";
 import { Visit } from "@/components/Visit";
 import { ImageSlot } from "@/components/ImageSlot";
 import { accessoriesCard, newInFor } from "@/lib/pages";
-import { categories } from "@/lib/shop";
+import { categories, shop } from "@/lib/shop";
 
 export const metadata: Metadata = {
   title: "Accessories",
@@ -91,10 +91,20 @@ export default function AccessoriesPage() {
                   temporary — an unconfirmed policy stated as fact on a
                   category page is the same error, in a place nobody would
                   think to check. */}
+              {/* Email, not a phone number. The number came off the site on
+                  2026-09-21 at the client's instruction (locked decision 10)
+                  and `shop.phone` is ""; this sentence survived that sweep
+                  because it described the footer in prose rather than
+                  rendering the number, so nothing grepped it. The client
+                  caught it. Also no longer "available online" — there are no
+                  accessories online at all, which is the whole point of this
+                  page now. */}
               <p className="page-lede">
-                Available online or on the rail. The phone number is at the
-                bottom of the page if you want to ask about something before
-                you decide.
+                On the rail, in the shop. Email{" "}
+                <a href={`mailto:${shop.email}`} className="cf-fail-link">
+                  {shop.email}
+                </a>{" "}
+                if you want to ask about something before you make the trip.
               </p>
             </div>
             <PieceGrid pieces={pieces} idPrefix="accessories" />

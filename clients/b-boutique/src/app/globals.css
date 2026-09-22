@@ -1016,7 +1016,19 @@ body {
 }
 
 @media (min-width: 1024px) {
-  .svc { flex-direction: row; align-items: stretch; min-height: 650px; }
+  /* row-REVERSE, so the photograph sits on the RIGHT.
+     The product page directly above this band puts its photograph on the
+     left, and two full-bleed images stacked down the same edge reads as a
+     template repeating itself rather than as a composition. Reversing here
+     gives the pair an alternating rhythm, which is what an editorial spread
+     does and what the client asked for on 2026-09-22.
+
+     `row-reverse` rather than reordering the markup: the DOM order is
+     media-then-copy, which is the order it should be READ in and the order a
+     screen reader and a keyboard will take it. Visual order is a visual
+     decision and belongs in the stylesheet. Below 1024 the column stacks
+     media-first, unchanged. */
+  .svc { flex-direction: row-reverse; align-items: stretch; min-height: 650px; }
   .svc-media { flex: 0 0 47%; }
   /* min-width: 0 is load-bearing. A flex item defaults to min-width: auto and
      refuses to shrink below its content's minimum; the column this replaces
@@ -1587,6 +1599,23 @@ body {
    and the first line of type rather than between the two lines. Deleting the
    rule without moving the margin would have pulled the name up against the
    image by 11px on every card. */
+/* The whole card is the target, not the two-word name under it. `contents`
+   so the link introduces no box of its own and the media/name layout inside
+   `.newin-item` is untouched — this is a change of semantics, not of
+   composition. */
+.newin-link {
+  display: contents;
+  color: inherit;
+}
+
+/* The ring goes on the ITEM, because `display: contents` gives the link no
+   box to draw one on. :focus-within on the parent is the standard answer and
+   it also means a focused card is outlined as a card, which is what it is. */
+.newin-item:focus-within {
+  outline: 2px solid currentColor;
+  outline-offset: 6px;
+}
+
 .newin-name {
   margin-top: 17px;
   font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
@@ -4160,14 +4189,99 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   /* Height-led rather than width-led: the box is the full viewport height, so
      the picture takes that height and whatever width its own ratio asks for.
      Nothing is cropped at any viewport shape. */
-  .pdp-media picture,
-  .pdp-media img {
+  .pdp-frame picture,
+  .pdp-frame img {
     position: static;
     height: 100%;
     width: auto;
     max-width: 100%;
     object-fit: contain;
   }
+}
+
+/* Every colourway is mounted; only one is shown. Opacity rather than display
+   so the switch is compositor-only and never re-decodes the image — a
+   remounted <img> flashes an empty frame on a slower machine, at the one
+   moment the customer is concentrating on the picture. */
+.pdp-frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 320ms var(--bb-ease);
+}
+
+.pdp-frame[data-active] { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp-frame { transition: none; }
+}
+
+/* The swatches sit ON the photograph, bottom-left, because the alternative is
+   a row under it that pushes the price further down the page. The plate is
+   the site's warm ink at 0.42 rather than a blur: this is over a photograph
+   whose backdrop is a pale wash, and a blur there reads as a smear. */
+.pdp-swatches {
+  position: absolute;
+  left: clamp(16px, 2.4vw, 28px);
+  bottom: clamp(16px, 2.4vw, 28px);
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+}
+
+.pdp-swatch {
+  position: relative;
+  width: 56px;
+  /* 4:5, matching the frames, so a swatch is a small version of the picture
+     rather than a differently-cropped one. */
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid rgba(250, 245, 243, 0.55);
+  background: var(--bone);
+  cursor: pointer;
+  padding: 0;
+  transition: border-color var(--bb-dur-quick) var(--bb-ease),
+              transform var(--bb-dur-quick) var(--bb-ease);
+}
+
+.pdp-swatch:hover { transform: translateY(-2px); }
+
+/* The selected one is stated with a solid paper border AND an inner ring, not
+   with opacity on the others. Dimming the unselected swatches makes three
+   photographs harder to compare, which is the one job this control has. */
+.pdp-swatch[data-active] {
+  border-color: var(--bb-white-pure);
+  box-shadow: inset 0 0 0 2px var(--bb-white-pure);
+}
+
+.pdp-swatch:focus-visible {
+  outline: 2px solid var(--bb-white-pure);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp-swatch, .pdp-swatch:hover { transition: none; transform: none; }
+}
+
+/* The colour in words. Bottom-right, opposite the swatches, on the same
+   optical line. It is the only place a single-colourway piece states its
+   colour at all, which is why it renders even when there are no swatches. */
+.pdp-colour-now {
+  position: absolute;
+  right: clamp(16px, 2.4vw, 28px);
+  bottom: clamp(16px, 2.4vw, 28px);
+  z-index: 2;
+  margin: 0;
+  padding: 6px 12px;
+  background: rgba(26, 20, 22, 0.58);
+  color: var(--bb-white-pure);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .pdp-body {
@@ -4277,6 +4391,74 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin: 0;
   color: rgba(26, 20, 22, 0.82);
 }
+
+/* ── The folds: Details / Specifications / Delivery & returns ───────────
+   Native <details>. The disclosure triangle is removed and replaced by a
+   drawn plus/minus, because the UA triangle is a different shape and weight
+   in every browser and this is the only control in the column. */
+.pdp-folds {
+  margin-top: 34px;
+  border-top: 1px solid rgba(26, 20, 22, 0.14);
+}
+
+.pdp-fold { border-bottom: 1px solid rgba(26, 20, 22, 0.14); }
+
+.pdp-fold-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  /* 52px of row, so the whole line is a comfortable target rather than the
+     word alone. */
+  min-height: 52px;
+  padding: 14px 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bb-black);
+}
+
+/* Both spellings: ::-webkit-details-marker for Safari, ::marker for the rest.
+   Missing either leaves a stray triangle next to the drawn one. */
+.pdp-fold-head::-webkit-details-marker { display: none; }
+.pdp-fold-head::marker { content: ""; }
+
+.pdp-fold-head:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* A plus that becomes a minus. Two bars; the vertical one rotates away when
+   the fold opens, which is a transform and therefore compositor-only. */
+.pdp-fold-mark {
+  position: relative;
+  flex: none;
+  width: 11px;
+  height: 11px;
+}
+
+.pdp-fold-mark::before,
+.pdp-fold-mark::after {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto 0;
+  height: 1px;
+  background: currentColor;
+  transition: transform var(--bb-dur-quick) var(--bb-ease);
+}
+
+.pdp-fold-mark::after { transform: rotate(90deg); }
+.pdp-fold[open] .pdp-fold-mark::after { transform: rotate(0deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp-fold-mark::before, .pdp-fold-mark::after { transition: none; }
+}
+
+.pdp-fold-body { padding: 2px 0 22px; }
+.pdp-fold-body .pdp-desc:first-child { margin-top: 0; }
 
 .pdp-price {
   margin-top: 18px;

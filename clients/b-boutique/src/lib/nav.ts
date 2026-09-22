@@ -1,3 +1,4 @@
+import { clothingCards } from "./pages";
 import { shop } from "./shop";
 
 export type MenuItem = {
@@ -153,22 +154,22 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
  *  entry went with the logos rather than being repointed at nothing. */
 /** What hangs under a header item that has a menu.
  *
- *  Every href is a real page. These were anchors into /clothing until the
- *  shop was built, because there was no per-category route to point at; there
- *  is now, and /clothing/coats lists the coats. The ids stay on the cards so
- *  the old anchors still land somewhere sensible. */
+ *  ── DERIVED, after this list 404'd five of its own entries ──────────────
+ *  This was hand-written, and on 2026-09-22 the category taxonomy changed
+ *  with the arrival of the client's real stock. Jackets, Coats, Shirts,
+ *  Skirts and Denim stopped existing. The list did not change with them, so
+ *  the header's Clothing menu offered five links that every one returned a
+ *  404 — the single worst kind of broken, because it is in the primary
+ *  navigation of every page on the site and it looks deliberate.
+ *
+ *  It now comes out of `clothingCards`, which comes out of `categories` in
+ *  shop.ts, which is checked against the catalogue at build. A category
+ *  cannot be in this menu unless it exists AND has stock behind it, and
+ *  nobody has to remember to edit two files. */
 export const CLOTHING_MENU = [
-  { label: "Jackets", href: "/clothing/jackets" },
-  { label: "Trousers", href: "/clothing/trousers" },
-  { label: "Dresses", href: "/clothing/dresses" },
-  { label: "Tops", href: "/clothing/tops" },
-  { label: "Knitwear", href: "/clothing/knitwear" },
-  { label: "Coats", href: "/clothing/coats" },
-  { label: "Shirts", href: "/clothing/shirts" },
-  { label: "Skirts", href: "/clothing/skirts" },
-  { label: "Denim", href: "/clothing/denim" },
+  ...clothingCards.map((c) => ({ label: c.name, href: `/clothing/${c.slug}` })),
   { label: "View all clothing", href: "/clothing" },
-] as const;
+];
 
 export const PRIMARY = [
   { label: "Shop", href: "/shop" },

@@ -383,6 +383,26 @@ export function NewInRail() {
               className="newin-item"
               style={{ "--i": i } as React.CSSProperties}
             >
+              {/* ── The card is a LINK, since 2026-09-22 ───────────────────
+                  It was not, and the client found that the way a customer
+                  would: "when I click one of these... it should show the
+                  product page". Nothing happened, because the only link in
+                  this rail was "View all" at the end. A rail of photographed
+                  products on the busiest page of the shop, and not one of
+                  them could be clicked.
+
+                  ── The clone must not add tab stops ──────────────────────
+                  The set renders twice so the marquee has somewhere to wrap.
+                  The second copy is aria-hidden, which handles screen
+                  readers, and it did not matter for the keyboard before
+                  because nothing in a card was focusable. Now it is: without
+                  tabIndex={-1} a keyboard user would tab through TWENTY links
+                  to reach ten products, half of them invisible duplicates. */}
+              <Link
+                href={`/shop/${piece.slug}`}
+                tabIndex={copy === 1 ? -1 : undefined}
+                className="newin-link"
+              >
               <div className="newin-media">
                 <ProductPhoto
                   photo={piece.photo}
@@ -412,6 +432,7 @@ export function NewInRail() {
                   three times over. They are replaced, not edited, when her
                   real list arrives. */}
               <p className="newin-name">{piece.name}</p>
+              </Link>
             </li>
           )),
         )}

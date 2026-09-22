@@ -84,6 +84,34 @@ export const clothingCards: CategoryCard[] = [
   "dresses",
 ].map(fromStock);
 
+/** Category slugs this site used to have, and where they go now.
+ *
+ *  ── Why a redirect and not a 404 ────────────────────────────────────────
+ *  These nine were live URLs. They were in the header menu on every page,
+ *  they are in the sitemap of any crawl taken before 2026-09-22, and they are
+ *  in anyone's bookmarks. When the taxonomy changed to follow the client's
+ *  real stock they started returning 404, which is the worst outcome
+ *  available: a customer who saved "coats" gets a dead end instead of the
+ *  coats, which are still there under a different name.
+ *
+ *  So each one points at the nearest live category, or at /clothing when
+ *  there is no honest nearest. `coats` and `jackets` both go to the rail that
+ *  now holds both. `shirts` goes to Tops, which is where a lace blouse
+ *  actually is. `skirts`, `denim` and `accessories` have no equivalent — this
+ *  drop contains none — so they land on the full list rather than on a
+ *  category that would be a lie about what is in it.
+ *
+ *  A 308 rather than a 307: this is permanent, and it passes the ranking of
+ *  the old URL to the new one instead of asking a crawler to keep both. */
+export const RETIRED_CATEGORIES: Record<string, string> = {
+  jackets: "/clothing/coats-jackets",
+  coats: "/clothing/coats-jackets",
+  shirts: "/clothing/tops",
+  skirts: "/clothing",
+  denim: "/clothing/trousers",
+  accessories: "/accessories",
+};
+
 /** Accessories, which are real and are not online.
  *
  *  Hand-built rather than derived, because "accessories" is deliberately no

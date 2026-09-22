@@ -6,9 +6,11 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { AddToBag } from "@/components/AddToBag";
-import { ProductPhoto } from "@/components/ProductPhoto";
+import { ProductGallery } from "@/components/ProductGallery";
 import { Visit } from "@/components/Visit";
 import {
+  DELIVERY_P,
+  FREE_DELIVERY_OVER_P,
   formatPriceShort,
   isBuyable,
   productBySlug,
@@ -55,27 +57,9 @@ export default async function ProductPage({
       <Nav />
       <main id="main" className="flex-1">
         <section className="pdp" aria-labelledby="pdp-name">
-          <div className="pdp-media">
-            <ProductPhoto
-              photo={product.photo}
-              square={product.category === "Homeware"}
-              /* Names the piece and stops there. It used to say "photographed
-                 in the shop", which was a claim about where the picture was
-                 taken — and these are generated images of pieces she stocks,
-                 not photographs of 18 Sea View Street. Alt text is heard by
-                 the people who cannot see the image and have no way to judge
-                 it, so it is the last place to assert something unverified.
-                 It also must not describe the garment beyond the stock list:
-                 a detail read off a generated picture is a claim about the
-                 product sourced from the picture rather than from her. */
-              alt={product.name}
-              /* Measured: the media column is 52% of the page above 1024 and
-                 full width below it. */
-              sizes="(min-width: 1024px) 52vw, 100vw"
-              priority
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          </div>
+          {/* Every colourway, switchable. See ProductGallery — 22 of the 54
+              photographs were sitting unused because this was one <picture>. */}
+          <ProductGallery product={product} />
 
           <div className="pdp-body">
             <div className="pdp-inner">
@@ -126,76 +110,6 @@ export default async function ProductPage({
                   below is hers, and the one field that could become a false
                   claim is gated rather than printed. */}
               <p className="pdp-lede">{product.short}</p>
-              <p className="pdp-desc">{product.full}</p>
-
-              {product.features.length > 0 ? (
-                <ul className="pdp-feat">
-                  {product.features.map((f) => (
-                    <li key={f}>{f}</li>
-                  ))}
-                </ul>
-              ) : null}
-
-              <dl className="pdp-spec">
-                {product.fabric ? (
-                  <>
-                    {/* ── The one that needs the gate ──────────────────────
-                        `fabricPublished` is true for only 9 of the 32, and it
-                        decides the HEADING, not whether to show the text.
-
-                        A composition label is a regulated claim: under the
-                        Textile Products (Labelling and Fibre Composition)
-                        Regulations it needs fibre percentages. Nine pieces
-                        have them from the supplier and are labelled
-                        "Composition". The rest describe how the cloth looks
-                        and handles — "chunky flecked boucle knit with an
-                        eyelash finish" — and are labelled "Fabric", which
-                        promises nothing measurable.
-
-                        One is a deliberate trap and the gate catches it:
-                        "Acrylic, Polyester, Nylon, Elastane (percentages not
-                        published)" NAMES FIBRES WITH NO PERCENTAGES, which is
-                        exactly the shape of a claim that fails. It is stored
-                        with the flag off, so it prints under "Fabric". */}
-                    <dt>{product.fabricPublished ? "Composition" : "Fabric"}</dt>
-                    <dd>{product.fabric}</dd>
-                  </>
-                ) : null}
-
-                {product.care ? (
-                  <>
-                    <dt>Care</dt>
-                    <dd>{product.care}</dd>
-                  </>
-                ) : null}
-
-                {product.sizeNote ? (
-                  <>
-                    {/* "fits up to 14", "2 of each" — kept apart from the size
-                        run in the data precisely so it can be shown as the
-                        qualifier it is rather than mistaken for a size. */}
-                    <dt>Fit</dt>
-                    <dd>{product.sizeNote}</dd>
-                  </>
-                ) : null}
-
-                {product.colourways.length > 1 ? (
-                  <>
-                    <dt>Colours</dt>
-                    {/* The SUPPLIER'S own colour names, off the supplier's own
-                        reference codes. Never read off the photograph — see
-                        lib/variants.ts, which carries that rule because this
-                        project once shipped a "satin skirt" that was a matte
-                        brown pencil skirt. */}
-                    <dd>{product.colourways.map((c) => c.colour).join(" · ")}</dd>
-                  </>
-                ) : null}
-              </dl>
-
-              <p className="pdp-note">
-                If you would rather see it in person before deciding, it is on
-                the rail at 18 Sea View Street.
-              </p>
 
               {/* No bag button for a piece whose price is a placeholder.
                   The rest of the page — the photograph, the description, the
@@ -213,6 +127,124 @@ export default async function ProductPage({
                   and ask, or come and see it on the rail.
                 </p>
               )}
+
+              {/* ── The detail, folded ──────────────────────────────────────
+                  The client asked for this: "a nice drop down of like
+                  'specifications' 'details' etc like an ecommerce store". It
+                  is also the right call on its own merits. The flat version
+                  put a paragraph, a four-item feature list and a four-row
+                  spec table between the price and the Add to bag button, so
+                  the one control on the page that earns money was pushed a
+                  screen down on a laptop. Everything is still here and none
+                  of it is a click away from being read — it is just no longer
+                  in front of the thing the page is for.
+
+                  <details> and <summary>, not a div with an onClick. They are
+                  open/closed state that the browser already owns: keyboard
+                  operable, announced as "expanded/collapsed", findable by the
+                  browser's own Find on some engines, and correct before a
+                  single byte of JavaScript arrives. This page stays a server
+                  component.
+
+                  Details is open by default and the other two are closed. On
+                  a garment the description is what somebody actually reads;
+                  composition and postage are what they check. */}
+              <div className="pdp-folds">
+                <details className="pdp-fold" open>
+                  <summary className="pdp-fold-head">
+                    Details
+                    <span aria-hidden="true" className="pdp-fold-mark" />
+                  </summary>
+                  <div className="pdp-fold-body">
+                    <p className="pdp-desc">{product.full}</p>
+                    {product.features.length > 0 ? (
+                      <ul className="pdp-feat">
+                        {product.features.map((f) => (
+                          <li key={f}>{f}</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                </details>
+
+                <details className="pdp-fold">
+                  <summary className="pdp-fold-head">
+                    Specifications
+                    <span aria-hidden="true" className="pdp-fold-mark" />
+                  </summary>
+                  <div className="pdp-fold-body">
+                    <dl className="pdp-spec">
+                      {product.fabric ? (
+                        <>
+                          {/* The heading is the gate. `fabricPublished` is
+                              true for only 9 of 32: those carry a supplier
+                              composition WITH percentages and are labelled
+                              "Composition". The rest describe how the cloth
+                              looks and handles and are labelled "Fabric",
+                              which promises nothing measurable.
+
+                              One row is the reason this exists: "Acrylic,
+                              Polyester, Nylon, Elastane (percentages not
+                              published)" names fibres with no percentages,
+                              which is exactly the shape of a claim that fails
+                              the Textile Products (Labelling and Fibre
+                              Composition) Regulations. Flag off, prints under
+                              "Fabric". */}
+                          <dt>{product.fabricPublished ? "Composition" : "Fabric"}</dt>
+                          <dd>{product.fabric}</dd>
+                        </>
+                      ) : null}
+                      {product.care ? (
+                        <>
+                          <dt>Care</dt>
+                          <dd>{product.care}</dd>
+                        </>
+                      ) : null}
+                      <dt>Size</dt>
+                      <dd>
+                        {product.sizes.join(" · ")}
+                        {product.sizeNote ? ` — ${product.sizeNote}` : ""}
+                      </dd>
+                      <dt>Colours</dt>
+                      {/* Supplier's own colour names off supplier's own
+                          reference codes, never read off the photograph. */}
+                      <dd>{product.colourways.map((c) => c.colour).join(" · ")}</dd>
+                    </dl>
+                  </div>
+                </details>
+
+                <details className="pdp-fold">
+                  <summary className="pdp-fold-head">
+                    Delivery &amp; returns
+                    <span aria-hidden="true" className="pdp-fold-mark" />
+                  </summary>
+                  <div className="pdp-fold-body">
+                    {/* Both figures come from lib/catalogue.ts, which is where
+                        the bag and /api/checkout read them, so the price
+                        quoted on a product page cannot drift from the price
+                        charged at the till. Client-confirmed 2026-09-20. */}
+                    <p className="pdp-desc">
+                      {formatPriceShort(DELIVERY_P)} by Royal Mail, next working
+                      day. Free on orders over{" "}
+                      {formatPriceShort(FREE_DELIVERY_OVER_P)}. UK only.
+                    </p>
+                    <p className="pdp-desc">
+                      Changed your mind? Send it back or bring it into the shop
+                      within 14 days. Return postage is yours on a change of
+                      mind.{" "}
+                      <Link href="/returns" className="pdp-ask">
+                        Returns in full
+                      </Link>
+                      .
+                    </p>
+                  </div>
+                </details>
+              </div>
+
+              <p className="pdp-note">
+                If you would rather see it in person before deciding, it is on
+                the rail at 18 Sea View Street.
+              </p>
             </div>
           </div>
         </section>
