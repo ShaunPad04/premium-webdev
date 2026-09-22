@@ -100,7 +100,7 @@ export function HorizontalRails() {
                    upscaled. 30vw covers the crop across 1024-1920 (the true
                    need runs 23-31vw), and 88vw covers it on a phone, where a
                    78vw card 452 tall needs 339 of a 3:4 frame. */
-                sizes="(min-width: 1024px) 21vw, 80vw"
+                sizes={"sizes" in c ? c.sizes : "(min-width: 1024px) 21vw, 80vw"}
                 quality={90}
                 className="cats-img"
               />

@@ -485,12 +485,28 @@ export const featured = [
     alt: "Model wearing charcoal knitwear",
     href: "/clothing/knitwear",
   },
+  /* Was Accessories until 2026-09-22, at the client's request: no
+     accessories are sold online (the /accessories page says so itself), so a
+     home-page card leading there promised a rail with nothing on it. Its
+     photograph was also a generated black handbag that reads as a Hermès
+     Birkin — an implied luxury-brand stockist on a shop that has confirmed it
+     carries no big labels.
+
+     The image is HER photograph of a real piece, the Tomato Vase, not
+     generated artwork: a card for a category of three objects should show
+     one of the three. */
   {
-    slug: "accessories",
+    slug: "homeware",
     number: "05",
-    name: "Accessories",
-    image: "/img/category-accessories.webp",
-    alt: "Model carrying a structured black handbag",
-    href: "/accessories",
+    name: "Homeware",
+    image: "/img/product/bb-vase-tomato-1280.webp",
+    alt: "The Tomato Vase, a red ceramic vase covered in tomatoes, on a plaster plinth",
+    href: "/homeware",
+    /* Her photographs are SQUARE; the other cards' are 3:4. object-fit:
+       cover in a ~0.6-wide card scales a square by HEIGHT, so it needs a
+       source as wide as the card is tall. Measured with the rail's default
+       sizes: 640px delivered where a 547px-tall card at DPR 2 needs 1,094 —
+       visibly soft. 40vw covers 1024-1920, 120vw a phone. */
+    sizes: "(min-width: 1024px) 40vw, 120vw",
   },
 ] as const;
