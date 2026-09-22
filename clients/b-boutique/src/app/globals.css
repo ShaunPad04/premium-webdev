@@ -2846,6 +2846,67 @@ body {
   padding: clamp(132px, 15vh, 190px) var(--bb-gutter-editorial) clamp(56px, 8vh, 96px);
 }
 
+/* The texture band. Only on a masthead that was given one. */
+.pm { position: relative; }
+
+.pm-texture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pm-texture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Bottom-weighted: the generated frames put their lit detail low and their
+     shadow high, and the headline sits in the upper left. Cropping from the
+     bottom keeps the interesting half and gives the type the dark half. */
+  object-position: center 70%;
+}
+
+/* The scrim, and the reason the texture is allowed at all.
+   A photograph behind a headline is a contrast problem by default. This is a
+   left-weighted wash over a flat base: the base guarantees a floor for the
+   whole band, and the left ramp buys the headline and lede specifically,
+   which is where every masthead puts them. Warm ink, never neutral black —
+   a cool wash over these frames turns the wool grey. */
+.pm-texture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to right,
+      rgba(26, 20, 22, 0.95) 0%,
+      rgba(26, 20, 22, 0.90) 34%,
+      rgba(26, 20, 22, 0.78) 62%,
+      rgba(26, 20, 22, 0.72) 100%
+    );
+}
+
+/* The two small labels go brighter on a textured masthead, and only there.
+   Measured over all seven textures at 1440 and 390: grey-mid came back at
+   3.16:1 worst case against the 4.5 AA asks of 10px text. The reflex is to
+   deepen the scrim until grey passes, and that is the wrong lever — it would
+   darken the picture on every category page to save one token, and the
+   picture is the thing the client asked for. Paper on the same pixel clears
+   it with room.
+   Scoped with [data-textured] so an untextured masthead keeps the quieter
+   grey it was designed with. */
+.pm[data-textured] .pm-eyebrow,
+.pm[data-textured] .pm-phone-label {
+  color: var(--bb-white-pure);
+  /* Not opacity: that would put the contrast straight back where it was.
+     The hierarchy is carried by size, weight and tracking, which is enough
+     at 10px caps next to a 60px Bodoni. */
+}
+
+/* Everything in the band sits above the picture. */
+.pm-inner { position: relative; z-index: 1; }
+
 .pm-inner {
   display: flex;
   flex-direction: column;

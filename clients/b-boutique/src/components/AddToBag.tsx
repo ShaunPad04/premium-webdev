@@ -7,6 +7,7 @@ import type { Product } from "@/lib/catalogue";
 import { useCart } from "@/lib/useCart";
 import { shop } from "@/lib/shop";
 import { colourIsKnown, coloursFor, variantId } from "@/lib/variants";
+import { useColour } from "./ColourChoice";
 
 /* Colour, size, then add.
  *
@@ -57,9 +58,11 @@ export function AddToBag({ product }: { product: Product }) {
   const colourKnown = colourIsKnown(product.slug);
   const singleSize = product.sizes.length === 1;
 
-  const [colour, setColour] = useState<string | null>(
-    colourChoice ? null : colours[0],
-  );
+  /* Shared with the photograph, so picking a colour here swaps the picture.
+     This used to be local state and the gallery had its own; two controls for
+     one decision is how somebody ends up looking at the camel coat with the
+     burgundy one in their bag. See ColourChoice.tsx. */
+  const { colour, setColour } = useColour();
   const [size, setSize] = useState<string | null>(
     singleSize ? product.sizes[0] : null,
   );

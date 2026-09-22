@@ -38,6 +38,7 @@ export default function AboutPage() {
           eyebrow="About us"
           title="The boutique."
           lede="An independent shop on Sea View Street, Cleethorpes."
+        texture="plaster"
         />
 
         {/* The signed-off statement, set quietly. It carries the home page's

@@ -37,6 +37,7 @@ export default function AccessoriesPage() {
           eyebrow="Small things"
           title="Accessories"
           lede={accessoriesCard.note}
+        texture="plaster"
         />
 
         <section aria-labelledby="acc-lead" className="page-section">

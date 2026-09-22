@@ -46,6 +46,7 @@ export function PolicyPage({ policy }: { policy: Policy }) {
           eyebrow={policy.eyebrow}
           title={policy.title}
           lede={policy.lede}
+        texture="plaster"
         />
 
         <section className="page-section" aria-labelledby="pol-h">

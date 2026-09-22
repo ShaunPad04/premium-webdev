@@ -32,6 +32,7 @@ export default function ShopPage() {
           eyebrow="Shop"
           title="Everything in."
           lede="What is on the rails this week, and how to have it sent. Stock changes weekly, so this is what is here now rather than a standing range."
+        texture="shop"
         />
 
         <section aria-labelledby="shop-all" className="page-section">

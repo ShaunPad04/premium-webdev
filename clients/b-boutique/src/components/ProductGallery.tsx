@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
-
 import type { Product } from "@/lib/catalogue";
+import { useColour } from "./ColourChoice";
 import { ProductPhoto } from "./ProductPhoto";
 
 /* The colourway gallery.
@@ -32,14 +31,22 @@ import { ProductPhoto } from "./ProductPhoto";
  * before the customer has asked for one — and the SERVER still renders the
  * whole page around it. Nothing else on the route becomes client.
  *
- * ── Single-colourway pieces ─────────────────────────────────────────────
- * Render no swatches at all. A row of one button is a control that cannot do
- * anything, and an inert control is worse than no control: it is announced
- * to a screen reader as if it worked.
+ * ── The swatches are NOT here any more ──────────────────────────────────
+ * They were, for a few hours, laid over the photograph. That gave the page
+ * two controls for one decision — swatches that moved the picture and a
+ * Colour radio group beside the size that decided what went in the bag —
+ * which could disagree: camel on screen, burgundy in the bag.
+ *
+ * The client asked for the selector to sit "near the sizing like an ecommerce
+ * store", which is the same fix from the other side. AddToBag owns the
+ * control; this component is its output. The state is shared through
+ * ColourChoice.tsx.
  */
 export function ProductGallery({ product }: { product: Product }) {
-  const [active, setActive] = useState(0);
-  const many = product.colourways.length > 1;
+  /* Shared with the buy panel. The swatch row that used to live over this
+     photograph is gone: the Colour control beside the size is the one
+     control, and this is its output. See ColourChoice.tsx. */
+  const { index: active } = useColour();
   const square = product.category === "Homeware";
 
   return (
@@ -71,43 +78,6 @@ export function ProductGallery({ product }: { product: Product }) {
           />
         </div>
       ))}
-
-      {many ? (
-        /* A radiogroup, not a list of buttons. "Burgundy, selected, 1 of 3"
-           is what a screen reader should say here, and arrow keys should move
-           between them — which is what radio semantics give for free and what
-           a row of <button>s does not. */
-        <div
-          role="radiogroup"
-          aria-label={`Colour — ${product.name}`}
-          className="pdp-swatches"
-        >
-          {product.colourways.map((c, i) => (
-            <button
-              key={c.sku}
-              type="button"
-              role="radio"
-              aria-checked={i === active}
-              onClick={() => setActive(i)}
-              className="pdp-swatch"
-              data-active={i === active ? "" : undefined}
-            >
-              {/* The thumbnail IS the swatch. A coloured dot would mean
-                  deciding what "Zebra Print" or "Red check" looks like as a
-                  single hex value, which is a guess about a garment — and the
-                  photograph is both honest and more useful. */}
-              <ProductPhoto
-                photo={c.image}
-                square={square}
-                alt=""
-                sizes="72px"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-              <span className="sr-only">{c.colour}</span>
-            </button>
-          ))}
-        </div>
-      ) : null}
 
       {/* The colour of the frame on screen, in words, for everyone. On a
           single-colourway piece this is the only place the colour is stated

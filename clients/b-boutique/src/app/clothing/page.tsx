@@ -57,6 +57,7 @@ export default function ClothingPage() {
               </span>
             </p>
           }
+        texture="clothing"
         />
 
         <section aria-labelledby="clothing-all" className="page-section">

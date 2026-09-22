@@ -6,6 +6,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { AddToBag } from "@/components/AddToBag";
+import { ColourProvider } from "@/components/ColourChoice";
 import { ProductGallery } from "@/components/ProductGallery";
 import { Visit } from "@/components/Visit";
 import {
@@ -56,6 +57,10 @@ export default async function ProductPage({
       <MotionLayer />
       <Nav />
       <main id="main" className="flex-1">
+        {/* The provider spans BOTH columns, which is the whole reason it is
+            context rather than a prop: everything between it and its two
+            consumers stays server-rendered. */}
+        <ColourProvider colours={product.colourways.map((c) => c.colour)}>
         <section className="pdp" aria-labelledby="pdp-name">
           {/* Every colourway, switchable. See ProductGallery — 22 of the 54
               photographs were sitting unused because this was one <picture>. */}
@@ -248,6 +253,7 @@ export default async function ProductPage({
             </div>
           </div>
         </section>
+        </ColourProvider>
 
         <Visit />
       </main>

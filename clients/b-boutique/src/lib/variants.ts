@@ -1,3 +1,4 @@
+import { stocklist } from "./stocklist";
 import { products, type Product } from "./catalogue";
 
 /** The thing a customer can actually buy.
@@ -92,20 +93,36 @@ export function allVariants(): Variant[] {
   return products.flatMap(variantsFor);
 }
 
-/** Colour per slug.
+/** Colour per slug, DERIVED from the stock list.
  *
- *  ⚠ EMPTY ON PURPOSE. Not one colour in this shop has been confirmed.
+ *  ── This was an empty object for three weeks, and it cost more than it
+ *     looked like ───────────────────────────────────────────────────────
+ *  It used to read "⚠ EMPTY ON PURPOSE. Not one colour in this shop has been
+ *  confirmed", and that was correct until 2026-09-22. AddToBag has carried a
+ *  full colour-selection UI the whole time — choose a colour, choose a size,
+ *  the pair goes in the bag — and it was rendering nothing, because
+ *  `coloursFor` handed it one blank string for every piece.
  *
- *  The client is being asked for a colour for every piece, in her own words —
- *  camel, not beige, if camel is what she calls it. Each answer adds a line
- *  here. Until a piece has one, the site shows no colour for it: `pnpm
- *  launch-check` counts what is missing and blocks on it.
+ *  The visible symptom was mild: no colour control on the product page. The
+ *  INVISIBLE one was not. Every variant id resolved to `slug·size·nocolour`,
+ *  so a customer buying the longline coat bought "the coat, one size, no
+ *  colour" and the shop had no way to know whether to post the burgundy, the
+ *  brown or the camel. Stock counted the same way: three colourways
+ *  collapsing into one row.
  *
- *  Do not fill this in from the photographs. The artwork behind a product
- *  card is a generated stand-in and says nothing about the garment on the
- *  rail — that mistake has already been made once on this project, where a
- *  "satin skirt" turned out to be a matte brown pencil skirt. */
-const colours: Record<string, readonly string[]> = {};
+ *  ── Where these come from, and why it does not break the rule above ────
+ *  The rule this file has always carried is "never read a colour off a
+ *  photograph", written after a "satin skirt" on this project turned out to
+ *  be a matte brown pencil skirt. It is intact. These are not read off the
+ *  pictures: they are the SUPPLIER'S OWN COLOUR NAMES, carried on the
+ *  supplier's own reference codes — Babez London 10074-BEI is Beige, and
+ *  stocklist.ts holds both halves of that so the claim can be checked.
+ *
+ *  Derived rather than typed, so a colour cannot exist here and not in the
+ *  stock list, and the shop cannot offer one she does not have. */
+const colours: Record<string, readonly string[]> = Object.fromEntries(
+  stocklist.map((p) => [p.slug, p.colourways.map((c) => c.colour)]),
+);
 
 /** The colours a piece comes in. Empty answer means "not confirmed", which
  *  renders as nothing rather than as a guess. */

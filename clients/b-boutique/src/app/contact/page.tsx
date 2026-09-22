@@ -59,6 +59,7 @@ export default function ContactPage() {
               </p>
             ) : null
           }
+        texture="plaster"
         />
 
         <section aria-labelledby="contact-form-h" className="page-section">

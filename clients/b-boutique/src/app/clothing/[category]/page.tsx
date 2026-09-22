@@ -87,6 +87,10 @@ export default async function CategoryPage({
               </span>
             </p>
           }
+          /* One macro of cloth per rail, keyed on the slug so a category
+             without a texture simply renders the plain band. See
+             PageMasthead — material only, never a garment or a shop. */
+          texture={card.slug}
         />
 
         <section aria-labelledby="cat-items" className="page-section">

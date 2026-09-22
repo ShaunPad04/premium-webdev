@@ -110,6 +110,14 @@ export const RETIRED_CATEGORIES: Record<string, string> = {
   skirts: "/clothing",
   denim: "/clothing/trousers",
   accessories: "/accessories",
+  /* Homeware IS a live category with three pieces in it, and it deliberately
+     has no /clothing page — a clothing page that lists ceramic vases is not a
+     clothing page. That left /clothing/homeware returning a 404 for a slug
+     that appears in `categories`: nothing on the site links to it, but it is
+     a URL somebody can reach by editing the address bar or by following an
+     old sitemap, and the client's rule is that nothing 404s. It goes to the
+     homeware section on the home page, which is where the homeware is. */
+  homeware: "/#homeware",
 };
 
 /** Accessories, which are real and are not online.
