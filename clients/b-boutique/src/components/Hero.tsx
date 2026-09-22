@@ -1,6 +1,6 @@
-import { openingSummary, shop } from "@/lib/shop";
+import { shop } from "@/lib/shop";
 
-import { HeroSlideshow } from "./HeroSlideshow";
+import { HeroStrips } from "./HeroStrips";
 
 /* The campaign hero.
  *
@@ -50,93 +50,16 @@ export function Hero() {
       id="top"
       className="hero relative isolate w-full overflow-hidden bg-bb-black"
     >
-      {/* The page's only h1, and visible again since 2026-09-21.
-
-       * It was sr-only because the approved hero was the photograph and
-       * nothing else — the client took the categories and SCROLL off on
-       * 2026-09-06 and that became locked decision 5. She has now asked for
-       * a different hero, which reopens it; the decision table is updated in
-       * the same commit rather than left to contradict this file.
-       *
-       * The visible line is the statement. The continuation is sr-only so the
-       * heading still names the business, the category and the street for a
-       * screen reader and for the day indexing is switched on — a display
-       * line alone is a weak h1, and splitting it this way costs nothing.
-       *
-       * ── The copy, and the one trap in it ─────────────────────────────────
-       * She asked for the site to speak to women of ALL SIZES. The obvious
-       * move is to print a size range, and it is the wrong one: the only size
-       * statement on this site is in lib/faq.ts, it is marked
-       * `temporary: true`, and "size 8 to a size 18" is demo copy nobody has
-       * confirmed. Printing it on the hero would turn an unconfirmed number
-       * into the loudest promise on the page.
-       *
-       * So the welcome is carried by the words rather than by a number.
-       * "For every woman who walks in" is positioning in her own register —
-       * it claims nothing a customer could arrive and find untrue. */}
-
-      {/* No wrapper. HeroSlideshow renders TWO layers into this section — the
-          photographs at z-index -10 (carrying `.hero-media` and its parallax)
-          and the captions and arrows at z-index 1. A wrapper at -10 would be
-          a stacking context the controls could not climb out of, so they are
-          siblings here rather than nested. */}
-      <HeroSlideshow />
-
-      {/* The scrim. Two jobs, and it grew a second one on 2026-09-21.
-       *
-       * It has always closed the seam where the hero meets the band below.
-       * It now also BUYS THE CONTRAST for the copy, because the photograph
-       * changed from a dark red studio frame to a pale Paris street and the
-       * copy is near-white.
-       *
-       * This was measured, not assumed. With the old 22%-tall foot gradient
-       * the new picture gave, at 390px: hero-line worst 1.12:1, hero-sub
-       * 1.38:1, hero-where 1.15:1 — the headline sitting directly on the
-       * white dress, white on white. Unreadable, and a launch blocker.
-       *
-       * Moved out of an inline style and into a class so the strength can
-       * vary by breakpoint, which it has to: at 1440 the copy lands on dark
-       * road and barely needs help, while at 390 the same copy lands on the
-       * dress and needs a great deal. See `.hero-scrim` in globals.css. */}
-      <div aria-hidden="true" className="hero-scrim" />
-
-      {/* The copy sits bottom-left, where the photograph is its own colour
-          rather than a face. The scrim below is what makes it legible over a
-          picture — contrast against a photograph cannot be measured as a
-          token pair, so it is bought with a gradient rather than asserted. */}
-      <div className="hero-copy">
-        {/* The headline is IN the copy stack, not positioned on its own.
-            Until 2026-09-22 it was absolutely placed at 26vh from the bottom
-            while the copy was placed at 7vh, so the gap between them was
-            whatever the viewport height left over — and on a 664px-tall
-            phone it went negative: "who walks in." ran through
-            "Independent womenswear and homeware." (measured -12px at
-            390x664, -27px at 375x560). In the flow, they cannot collide. */}
-        <h1 className="hero-line">
-          For every woman
-          <br />
-          who walks <em>in</em>.
-          <span className="sr-only">
-            {" "}
-            — B Boutique, independent womenswear and homeware on
-            Sea View Street, Cleethorpes.
-          </span>
-        </h1>
-        <p className="hero-sub">
-          Independent womenswear and homeware.
-        </p>
-        <p className="hero-where">
-          {shop.street}, {shop.town} · {openingSummary()}
-        </p>
-        <a href="/shop" className="hero-cta">
-          <span>See what is in</span>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4"
-              strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </a>
-      </div>
-
+      {/* The slider, since 2026-09-22 at the client's request — see
+          components/ui/parallax-strip-slider.tsx for what was changed on the
+          way in. The headline is now the first slide's title; this h1 is the
+          page's one top-level heading for assistive tech and search, and
+          says the same thing in words that do not change every six seconds. */}
+      <h1 className="sr-only">
+        B Boutique — for every woman who walks in. Independent womenswear and
+        homeware on {shop.street}, {shop.town}.
+      </h1>
+      <HeroStrips />
     </section>
   );
 }

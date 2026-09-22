@@ -375,9 +375,13 @@ stocking them). Do not reintroduce the word without her confirming stock.
   and cream boucle — that contain no shop, product or person, so they cannot
   misstate the business. The shopfront frame is NOT used: its fascia says
   "Accessories & Homeware". If Accessories comes back, so can that photo.
-- **Home hero**: one centred line and one CTA at every width; descriptor,
-  address, counter and arrows gone. A single pause button stays because the
-  slides auto-advance (WCAG 2.2.2). Do not remove it.
+- **Home hero is the strip slider** (`components/ui/parallax-strip-slider.tsx`
+  via `HeroStrips.tsx`), which replaced `HeroSlideshow`. The first slide's
+  title is "For every woman who walks in."; the h1 is sr-only. Changed on the
+  way in: no Google Font (it would falsify /privacy), art-directed hero
+  sources, layout from `pointer-coarse:` CSS not JS, keyboard buttons, a
+  `paused` prop. The pause button stays because the slides auto-advance
+  (WCAG 2.2.2). Do not remove it. LCP has NOT been re-measured since.
 - **`components/ui/pinky-news-letter.tsx`**: light shader band before Visit.
   The supplied email field was NOT kept: it sent nowhere. A newsletter needs
   her agreement, a destination (e.g. a Resend audience) and a /privacy line

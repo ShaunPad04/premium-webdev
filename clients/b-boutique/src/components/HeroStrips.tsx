@@ -1,0 +1,72 @@
+"use client";
+
+import Link from "next/link";
+import { useState } from "react";
+
+import ParallaxStripSlider, { type Slide } from "@/components/ui/parallax-strip-slider";
+import { openingSummary, shop } from "@/lib/shop";
+
+/* The home hero's slides. Same five photographs as before (public/img/hero,
+ * phone and desktop crops), the same captions — every one of which is
+ * either her positioning line or derived from shop.ts — with the headline
+ * that used to sit on its own now carried by the first slide. */
+const everyDay = openingSummary().toLowerCase().startsWith("every day");
+
+const sources = (file: string) => [
+  { media: "(min-width: 1024px)", type: "image/avif", srcSet: `/img/hero/${file}-d.avif` },
+  { media: "(min-width: 1024px)", type: "image/webp", srcSet: `/img/hero/${file}-d.webp` },
+  { media: "(min-width: 1024px)", type: "image/jpeg", srcSet: `/img/hero/${file}-d.jpg` },
+  { type: "image/avif", srcSet: `/img/hero/${file}-m.avif` },
+  { type: "image/webp", srcSet: `/img/hero/${file}-m.webp` },
+];
+
+const SLIDES: Slide[] = [
+  { file: "1-paris", title: <>For every woman<br />who walks <em>in</em>.</> },
+  { file: "2-street", title: <>Independent<br /><em>womenswear</em>.</> },
+  { file: "3-terrace", title: <>Homeware<br />and <em>gifts</em>.</> },
+  { file: "4-flowers", title: <>{shop.street},<br />{shop.town}.</> },
+  { file: "5-sea", title: everyDay ? <>Open<br /><em>every</em> day.</> : <>Come<br /><em>in</em>.</> },
+].map(({ file, title }) => ({ src: `/img/hero/${file}-m.jpg`, sources: sources(file), title }));
+
+export function HeroStrips() {
+  const [paused, setPaused] = useState(false);
+
+  return (
+    <ParallaxStripSlider
+      slides={SLIDES}
+      autoplay
+      paused={paused}
+      showProgressBar
+      accentColor="#FDFAF9"
+      backgroundColor="#1A1416"
+      scrim="linear-gradient(to top, rgba(26,20,22,.78) 0%, rgba(26,20,22,.34) 42%, rgba(26,20,22,.06) 70%, rgba(26,20,22,.38) 100%)"
+    >
+      <div className="flex items-center gap-3">
+        <Link href="/shop" className="hero-cta">
+          <span>See what is in</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </Link>
+        {/* WCAG 2.2.2: the slides move on their own every six seconds. */}
+        <button
+          type="button"
+          onClick={() => setPaused((v) => !v)}
+          aria-pressed={paused}
+          aria-label={paused ? "Play the photographs" : "Pause the photographs"}
+          className="hero-pause"
+        >
+          {paused ? (
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M4 2.5v9l7.5-4.5L4 2.5Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+            </svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M4.5 2.5v9M9.5 2.5v9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+            </svg>
+          )}
+        </button>
+      </div>
+    </ParallaxStripSlider>
+  );
+}

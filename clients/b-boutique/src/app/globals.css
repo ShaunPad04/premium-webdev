@@ -943,6 +943,41 @@ body {
 
 .hero-nav { display: flex; gap: 8px; }
 
+/* ── The strip slider hero (components/ui/parallax-strip-slider.tsx) ──── */
+.pss-title {
+  margin: 0;
+  max-width: 13ch;
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-weight: 400;
+  font-size: clamp(44px, 6.6vw, 112px);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+}
+.pss-title em { font-style: italic; font-synthesis: none; }
+/* Invisible until a keyboard lands on them; then a plain labelled button in
+   the middle of the frame. A mouse or a thumb uses the click layer. */
+.pss-key {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.pss-key:focus-visible {
+  position: static;
+  width: auto;
+  height: auto;
+  clip-path: none;
+  padding: 12px 18px;
+  background: var(--bb-white-pure);
+  color: var(--bb-black);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 /* The only control left on the hero: a bare icon, a 44px target, no box. */
 .hero-pause {
   display: inline-flex;
