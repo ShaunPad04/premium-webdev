@@ -5258,6 +5258,32 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 
 .bag-pending { margin-top: 18px; }
 
+/* ── The corner menu's scroll area ──────────────────────────────────────
+   Reported 2026-09-22 from a narrow Windows browser window. Windows draws a
+   permanent 17px grey scrollbar wherever content overflows — Mac and iPhone
+   hide theirs, which is why it was never seen. The menu's content measured
+   exactly the height of a 940px window, so a few pixels less and a light
+   grey bar ran down the dark panel, in the same lane as the header's Close ✕
+   (18px from the edge).
+
+   Thin, and in the panel's own colours, so an overflow reads as part of the
+   menu rather than an OS widget. `scrollbar-width` / `scrollbar-color` are
+   the standard properties; browsers that ignore them keep their default.
+
+   Same report: below 640px the panel was 24rem wide rather than full width
+   (CornerMenu.tsx, now `w-full`), which left a strip of the page beside it
+   — 59px in the reported window, 6px on a 390px iPhone, 46px on a 430px
+   one. From 640px up it is the unchanged floating 24rem card.
+
+   And the panel's top padding on phones went 80px -> 124px. At scroll 0 the
+   fixed header is 106px (72px row + the 33px announcement strip), so 80px
+   put the "Navigation" label under the B Boutique wordmark. 124px clears
+   the full header with the same 18px the rest of the page leaves. */
+.cm-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--bone) 28%, transparent) transparent;
+}
+
 /* /bag without a masthead. The header is fixed and 106px tall at scroll 0
    (72px row + the 33px announcement strip), so the section clears it with
    room to breathe — the same floor the product page uses, for the same

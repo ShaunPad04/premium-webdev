@@ -259,10 +259,10 @@ export function CornerMenu() {
                  The shadow is kept but quietened, and a hairline does the
                  work of separating the panel from the photograph, which is
                  how everything else here separates things. */
-              className="pointer-events-auto fixed inset-y-0 right-0 z-50 h-svh max-h-svh w-[min(24rem,100vw)] origin-right overflow-hidden border-l border-bone/15 bg-panel text-bone shadow-[0_18px_60px_rgba(0,0,0,.45)] sm:inset-y-auto sm:right-6 sm:top-5 sm:h-auto sm:max-h-[calc(100svh-2.5rem)] sm:w-[24rem] sm:origin-top-right sm:border sm:border-bone/15 lg:right-8"
+              className="pointer-events-auto fixed inset-y-0 right-0 z-50 h-svh max-h-svh w-full origin-right overflow-hidden border-l border-bone/15 bg-panel text-bone shadow-[0_18px_60px_rgba(0,0,0,.45)] sm:inset-y-auto sm:right-6 sm:top-5 sm:h-auto sm:max-h-[calc(100svh-2.5rem)] sm:w-[24rem] sm:origin-top-right sm:border sm:border-bone/15 lg:right-8"
               {...panelMotion}
             >
-              <div className="grain relative flex h-full max-h-svh flex-col overflow-y-auto p-6 pt-20 sm:h-auto sm:max-h-[calc(100svh-2.5rem)] sm:pt-[5.5rem]">
+              <div className="grain cm-scroll relative flex h-full max-h-svh flex-col overflow-y-auto p-6 pt-[7.75rem] sm:h-auto sm:max-h-[calc(100svh-2.5rem)] sm:pt-[5.5rem]">
                 <p className="mb-3 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-bone/70">
                   Navigation
                 </p>
