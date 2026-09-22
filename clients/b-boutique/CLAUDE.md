@@ -244,12 +244,19 @@ permission is "already held" — held from whom, if no supplier is named? That
 contradiction needs resolving before any supplier photograph goes on the
 site.
 
-**ICO: not registered.** She confirmed this. A shop taking names, addresses
-and emails for orders is processing personal data, and most UK businesses
-doing that must register with the ICO and pay the annual fee. The privacy page
-names the ICO as the regulator to complain to. This is not a developer's
-decision and not a blocker the code can carry — it is a thing to tell her
-plainly before launch.
+**ICO: applied 2026-09-22, registration number PENDING.** She was not
+registered on 2026-09-20. On 2026-09-22 she applied for the data protection
+fee and set up the direct debit; the ICO allocated her a contact security
+number and an application number. **Neither is a registration number, and
+neither goes on the site** — the security number is a private credential for
+contacting the ICO and must not be published or committed anywhere.
+
+The registration number (`ZA`/`ZB` + six digits) arrives once the application
+is processed. When it does, add one derived line to /privacy near "Who to
+ask, and how": registered with the ICO, registration number ZA…, under the
+name exactly as the public register shows it. Publishing it is good practice,
+not a legal requirement — what the law requires is the registration and the
+annual fee, which is now in hand.
 
 **Merchant code: use `MCA7CUNT`.** Decided 2026-09-20.
 
@@ -461,11 +468,8 @@ left:
   Vercel, not in a web session. The other 8 go in on `/stock`.
 - **A test card through SumUp**, after `NEXT_PUBLIC_SITE_URL` is set.
 - **A qualified read of the statutory text.** See Selling terms.
-- **The ICO data protection fee.** Most UK businesses processing personal data
-  must register with the Information Commissioner's Office and pay an annual
-  fee. The privacy page names the ICO as the regulator to complain to; whether
-  the shop is registered is not known and is not a question a developer can
-  answer. Worth putting to the client before launch.
+- **The ICO registration number.** Applied and paying by direct debit as of
+  2026-09-22; the number itself has not arrived. See "ICO" above.
 
 ## Selling terms — `/delivery`, `/returns`, `/terms`, `/privacy`
 
