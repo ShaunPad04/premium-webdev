@@ -249,10 +249,8 @@ export async function POST(request: NextRequest) {
      * displayed price is what a customer is entitled to pay, and a price
      * nobody agreed is one the shop would have to honour or refund.
      *
-     * The only thing standing between this and a real card today is that
-     * NEXT_PUBLIC_SITE_URL is unset, and setting that one variable is the
-     * documented step that turns the shop on. It must not be the thing
-     * holding this back. */
+     * Checkout is live (NEXT_PUBLIC_SITE_URL is set), so this check is the
+     * only thing between an unconfirmed price and a real card. */
     if (product.demo) {
       return Response.json(
         {

@@ -3,32 +3,18 @@ import { stocklist, type StockPiece } from "./stocklist";
 /** The shop's catalogue.
  *
  *  ─────────────────────────────────────────────────────────────────────────
- *  THE PRICES ARE HERS NOW. MOST OF THEM.
+ *  THE PRICES ARE HERS.
  *
- *  This file used to open with a warning that every price in it was invented.
- *  That is no longer true and the warning has gone with the fiction: the 26
- *  demo products, their made-up prices and their made-up size runs were
- *  deleted on 2026-09-22 and replaced by what is actually on her rail —
- *  32 pieces and 54 colourways, read from lib/stocklist.ts, which was
- *  transcribed from the stock dashboard she supplied.
+ *  The 26 demo products and their made-up prices were deleted on 2026-09-22
+ *  and replaced by what is actually on her rail, read from lib/stocklist.ts.
+ *  Every colourway (66, across 40 pieces) has carried a confirmed price since
+ *  the evening of 2026-09-22, and checkout has been live since 2026-09-23
+ *  (NEXT_PUBLIC_SITE_URL set).
  *
- *  THIRTEEN COLOURWAYS STILL HAVE A PLACEHOLDER PRICE. The dashboard says so
- *  and stocklist.ts carries it through as `priceConfirmed: false`. Those are
- *  the only things left standing between this shop and being able to take
- *  money, and they are handled rather than hoped about:
- *
- *    - A piece whose price is not confirmed carries `demo: true`, exactly as
- *      all 26 used to. The bag names any such piece a customer is holding
- *      and will not check out with it. (It used to show a site-wide notice
- *      whenever ANY piece was unpriced — `catalogueIsDemo`, removed
- *      2026-09-22 — which put a warning into bags holding nothing unpriced.)
- *    - `isBuyable` is false for it, and the product page, the grid and the
- *      checkout each ask rather than assume.
- *    - NEXT_PUBLIC_SITE_URL stays unset, so /api/checkout still answers 503
- *      and nothing can be charged at any price, confirmed or not.
- *
- *  Eight of the 32 pieces are affected. When her prices for those land, the
- *  flags flip in stocklist.ts and nothing here has to change.
+ *  The guard stays for the next unconfirmed price, whenever one arrives: a
+ *  colourway with `priceConfirmed: false` makes its piece `demo: true`,
+ *  `isBuyable` is false, the product page shows no Add to bag, and
+ *  /api/checkout refuses the line.
  *  ─────────────────────────────────────────────────────────────────────────
  *
  *  ── Why pence ────────────────────────────────────────────────────────────
