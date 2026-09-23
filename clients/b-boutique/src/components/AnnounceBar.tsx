@@ -1,77 +1,50 @@
 import Link from "next/link";
 
-import {
-  DELIVERY_P,
-  FREE_DELIVERY_OVER_P,
-  formatPriceShort,
-} from "@/lib/catalogue";
-import { openingSummary, shop } from "@/lib/shop";
+import { FREE_DELIVERY_OVER_P, formatPriceShort } from "@/lib/catalogue";
 
 /* The announcement bar, above the header.
  *
- * The client asked for the free-delivery threshold up here, in our own words,
- * with a couple of other things suited to the shop.
+ * Rewritten 2026-09-23. The client said the old strip (9px tracked capitals
+ * on near-black) "looks cheap", and asked for three things in our own words:
+ * free UK delivery over £120, limited releases, and new clothing weekly.
+ * It is now Mulberry, the dark he chose for the site, set in the Bodoni
+ * italic the headings use, in sentence case.
  *
- * ── Every line is a confirmed fact, and derived rather than typed ──────────
- * This is the single most prominent piece of copy on the site — it is above
- * everything, on every route — so it is also the worst possible place for an
- * unverified claim. Nothing here is written as a literal:
+ * ── Every line has to be true, because this is on every route ──────────────
+ *   1. Delivery: the threshold comes from FREE_DELIVERY_OVER_P, the SAME
+ *      constant /api/checkout prices the basket with, so the bar and the
+ *      till cannot disagree. "Complimentary" is only wording; it is free.
+ *   2. "Limited pieces, rarely restocked": her own words are "We try not to
+ *      reorder items, so that we can keep the stock fresh and moving"
+ *      (lib/about.ts). That supports "rarely restocked". It does NOT support
+ *      "exclusive", "drops", a countdown or a number left, so none of those
+ *      appear.
+ *   3. "New pieces arriving regularly": her owner bio says "we regularly
+ *      introduce new stock". The client asked for WEEKLY; nobody has
+ *      confirmed a weekly delivery, so it says regularly.
+ *      CLIENT INPUT REQUIRED: if Hayley confirms new stock every week, this
+ *      line can say "New pieces every week".
  *
- *   1. The threshold and the postage both come from FREE_DELIVERY_OVER_P and
- *      DELIVERY_P, the SAME constants /api/checkout prices the basket with.
- *      A bar promising free delivery over £120 while the checkout charged at
- *      a different figure would be a term of the contract of sale that the
- *      shop then broke. It cannot drift, because there is one number.
- *   2. The hours come from `openingSummary()`, so this bar changed format
- *      with the rest of the site when the client asked for 10:00 - 16:00 and
- *      nobody had to remember it existed.
- *   3. The street and town come from `shop`.
+ * ── Layout ────────────────────────────────────────────────────────────────
+ * Desktop: all three on one line, hairline between. Phone: one at a time in
+ * the same slot, a slow CSS cross-fade (no JavaScript, no timer, nothing on
+ * the main thread). Every line stays in the DOM, so a screen reader reads
+ * all three regardless. Reduced motion: the delivery line only, still.
  *
- * `formatPriceShort` exists for line 1: "over £120" is how a shop writes it,
- * "over £120.00" is how a spreadsheet does, and the two pence that are never
- * there read as a price that might change.
- *
- * ── No JavaScript, and no rotation ────────────────────────────────────────
- * The obvious build is a rotating carousel of the three. It is not here, and
- * the reason is worth stating rather than discovering later: a rotator makes
- * this a client component, puts a timer on every route, and asks a reader to
- * wait to find out what the shop's delivery costs. Three short lines fit
- * side by side on a desktop at once.
- *
- * On a phone only the delivery line survives — it is the one that changes a
- * purchase decision, and the other two are answered in full by the Service
- * band and by Visit further down. That is the COS/Arket treatment and it
- * costs nothing to render.
- *
- * ── Not sticky ────────────────────────────────────────────────────────────
- * It sits above the fixed header and scrolls away with the page; the header
- * itself stays. An announcement that follows a reader down forty screens has
- * stopped being an announcement and become furniture, and on a phone it
- * would be permanently eating a line of a 100svh hero. */
+ * Not sticky: it scrolls away and the header stays (see Nav). The strip's
+ * height is kept at ~33px, which the header offsets elsewhere depend on. */
 export function AnnounceBar() {
   return (
     <aside aria-label="Shop announcements" className="announce">
       <ul className="announce-list">
         <li className="announce-item">
-          {/* The one line that changes a decision, so it is the one line a
-              phone keeps, and the only one that is a link — somebody reading
-              it is asking what delivery costs, and /delivery answers in
-              full. */}
           <Link href="/delivery" className="announce-link">
-            Free UK delivery on orders over{" "}
+            Complimentary UK delivery on orders over{" "}
             {formatPriceShort(FREE_DELIVERY_OVER_P)}
           </Link>
         </li>
-
-        <li className="announce-item announce-item--wide">
-          Royal Mail next working day, {formatPriceShort(DELIVERY_P)}
-        </li>
-
-        <li className="announce-item announce-item--wide">
-          {/* Trailing full stop removed — openingSummary owns its own
-              punctuation for a sentence, and this is a label. */}
-          {openingSummary().replace(/\.$/, "")} on {shop.street}
-        </li>
+        <li className="announce-item">Limited pieces, rarely restocked</li>
+        <li className="announce-item">New pieces arriving regularly</li>
       </ul>
     </aside>
   );

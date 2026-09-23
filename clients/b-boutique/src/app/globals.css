@@ -6738,73 +6738,85 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 
 .announce {
-  /* Solid, not transparent. This strip sits over the top edge of a
-     photograph; at 9px, type this small cannot be made to clear AA against
-     an arbitrary highlight with a scrim, so it gets its own ground. */
-  background: var(--bb-black);
-  border-bottom: 1px solid rgba(250, 245, 243, 0.1);
+  /* Mulberry, the site's chosen dark (2026-09-23). Solid: the strip sits over
+     the top edge of a photograph and needs its own ground. */
+  --announce-ink: rgba(250, 245, 243, 0.9);   /* 12.1:1 on #3A2036 */
+  background: #3A2036;
+  border-bottom: 1px solid rgba(250, 245, 243, 0.12);
 }
 
 .announce-list {
   list-style: none;
   margin: 0 auto;
-  padding: 9px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  flex-wrap: nowrap;
+  padding: 8px 18px;
+  display: grid;
+  justify-items: center;
 }
-
 @media (min-width: 640px) { .announce-list { padding-inline: 24px; } }
-@media (min-width: 1024px) { .announce-list { padding-inline: 32px; } }
 
 .announce-item {
-  font-size: 9px;
-  font-weight: 600;
-  line-height: 1.5;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-style: italic;
+  font-synthesis: none;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0.01em;
   text-align: center;
-  /* .82 on the warm ink measures 8.6:1 — well clear of AA, which matters
-     more here than anywhere: this is 9px type and it is the first thing on
-     every route. */
-  color: rgba(250, 245, 243, 0.82);
+  color: var(--announce-ink);
   white-space: nowrap;
 }
 
-/* The second and third lines are held back until there is room for all
-   three on one line. Wrapping a three-item bar onto two rows is what makes
-   an announcement strip look like a notice board. */
-.announce-item--wide { display: none; }
+/* Phone: the three lines share one grid cell and cross-fade, 5s each. */
+@media (max-width: 899px) {
+  /* pointer-events: none is the resting state so a line still waiting out
+     its animation-delay cannot catch a tap meant for the one showing. */
+  .announce-item { grid-area: 1 / 1; opacity: 0; pointer-events: none; animation: announce-cycle 15s infinite; }
+  .announce-item:nth-child(2) { animation-delay: 5s; }
+  .announce-item:nth-child(3) { animation-delay: 10s; }
+  .announce-item:first-child { opacity: 1; pointer-events: auto; }
+  /* The link is the one thing a keyboard can land on; while it has focus
+     the cycle holds on it, on top, so the focus ring is never on nothing. */
+  .announce-list:focus-within .announce-item { animation-play-state: paused; opacity: 0; }
+  .announce-list:focus-within .announce-item:first-child { opacity: 1; z-index: 1; }
+}
+/* pointer-events rides the cycle, so a tap only lands on the line that is
+   showing: the stacked lines would otherwise cover the delivery link. */
+@keyframes announce-cycle {
+  0%, 30% { opacity: 1; pointer-events: auto; }
+  34%, 96% { opacity: 0; pointer-events: none; }
+  100% { opacity: 1; pointer-events: auto; }
+}
+@media (max-width: 899px) and (prefers-reduced-motion: reduce) {
+  .announce-item { animation: none; visibility: hidden; }
+  .announce-item:first-child { visibility: visible; }
+}
 
 @media (min-width: 900px) {
-  .announce-item--wide { display: block; }
-
-  /* A thin rule between items rather than a bullet or a pipe: the same
-     hairline this site separates everything else with. */
-  .announce-item + .announce-item {
-    margin-left: 22px;
-    padding-left: 22px;
-    border-left: 1px solid rgba(250, 245, 243, 0.2);
+  .announce-list { display: flex; justify-content: center; align-items: center; }
+  /* A small gold diamond between lines: the rails and fittings in her shop
+     are brass, and a hairline read as a spreadsheet at this size. */
+  .announce-item + .announce-item::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    margin: 0 26px 2px;
+    transform: rotate(45deg);
+    background: #C9A96E;
+    vertical-align: middle;
   }
 }
 
-/* The one link in the bar. Underlined on hover only — a permanent underline
-   on 9px tracked caps closes the letterforms up. */
 .announce-link {
   color: inherit;
-  border-bottom: 1px solid transparent;
-  padding-bottom: 2px;
-  transition: color var(--bb-dur-quick) var(--bb-ease),
-              border-color var(--bb-dur-quick) var(--bb-ease);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color var(--bb-dur-quick) var(--bb-ease);
 }
-
 .announce-link:hover,
-.announce-link:focus-visible {
-  color: var(--bb-white);
-  border-color: rgba(250, 245, 243, 0.55);
-}
+.announce-link:focus-visible { text-decoration-color: currentColor; }
 
 /* ── Category bar ─────────────────────────────────────────────────────────
    The rail selector above the product grid on /clothing and every
