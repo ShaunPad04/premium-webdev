@@ -30,8 +30,8 @@ export default function BagPage() {
             which is where somebody hesitating reads it. */}
         <section className="page-section bag-page" aria-labelledby="bag-h1">
           <div className="page-inner">
-            <h1 id="bag-h1" className="label bag-h1">
-              Bag
+            <h1 id="bag-h1" className="bk-title">
+              Your <em>bag</em>
             </h1>
             <Bag />
           </div>

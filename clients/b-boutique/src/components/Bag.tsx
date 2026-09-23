@@ -5,7 +5,9 @@ import Link from "next/link";
 
 import {
   DELIVERY_IS_DEMO,
+  FREE_DELIVERY_OVER_P,
   formatPrice,
+  formatPriceShort,
   productBySlug,
 } from "@/lib/catalogue";
 import { FreeDelivery } from "@/components/FreeDelivery";
@@ -117,6 +119,12 @@ export function Bag() {
     const problem = unpricedMessage ?? detailsProblem(details);
     if (problem) {
       setError(problem);
+      /* A missing field is above; on a phone the message is a screen away
+         from it. Take the customer to the form rather than leave them
+         hunting. */
+      if (!unpricedMessage) {
+        document.getElementById("bk-delivery")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
       return;
     }
 
@@ -161,196 +169,206 @@ export function Bag() {
     }
   }
 
+  /* Where a swatch crops its photograph: the same rule AddToBag uses. */
+  const swatchAt = (category: string) =>
+    category === "Homeware" ? "50% 50%" : category === "Trousers" ? "44% 64%" : "44% 32%";
+
+  /* ── Layout, rebuilt 2026-09-23 ─────────────────────────────────────────
+   * The client called the old bag "extremely generic and unorganised": one
+   * long row per piece across the full width, and a narrow column on the
+   * right holding the totals, the whole delivery form and the button, so
+   * the form ran on below the fold beside empty space.
+   *
+   * Now it reads as the checkout it is. A three-step marker (Bag, Delivery,
+   * Secure payment — the last is SumUp's page, and is labelled as such).
+   * On the left, two numbered sections: the pieces, then where they are
+   * going. On the right, an order summary that stays in view on a desktop:
+   * totals, the free-delivery bar, one button, and what happens next.
+   * Nothing about how the order is priced, checked or paid has changed. */
   return (
-    <div className="bag">
-      <ul className="bag-lines">
-        {lines.map((line) => {
-          const p = productBySlug(line.slug);
-          if (!p) return null;
-          return (
-            /* Keyed by the variant, not the product: the same coat in two
-               colours is two lines and React has to be able to tell them
-               apart. */
-            <li
-              key={`${line.slug}-${line.size}-${line.colour}`}
-              className={`bag-line${leaving.includes(keyOf(line)) ? " is-leaving" : ""}`}
-            >
-              <Link href={`/shop/${p.slug}`} className="bag-media" aria-label={p.name}>
-                {/* The real photograph, like every other product surface.
-                    This one was missed when the grid, the rail and the product
-                    page were switched over on 2026-09-22, so a piece the
-                    customer had just LOOKED AT turned into a black marble
-                    rectangle the moment it went in the bag — which reads as a
-                    broken image exactly where somebody is deciding whether to
-                    trust the shop with a card. The client spotted it. */}
-                <ProductPhoto
-                  /* The photograph of the colour in the BAG, not the piece's
-                     first colourway. `p.photo` is colourways[0], so until
-                     2026-09-22 every multi-colour piece — 18 of the 32 —
-                     showed its first colour here whatever was chosen: a Red
-                     Striped Fuzzy Zip Up Jumper sat in the bag as the Taupe
-                     one. Falls back to `p.photo` for a line with no colour. */
-                  photo={p.colourways.find((c) => c.colour === line.colour)?.image ?? p.photo}
-                  square={p.category === "Homeware"}
-                  alt=""
-                  sizes="120px"
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-              </Link>
+    <div className="bk">
+      <ol className="bk-steps" aria-label="Checkout steps">
+        <li className="is-current" aria-current="step"><span>1</span>Bag</li>
+        <li><span>2</span>Delivery</li>
+        <li><span>3</span><span className="bk-hide-xs">Secure&nbsp;</span>payment</li>
+      </ol>
 
-              <div className="bag-detail">
-                <p className="bag-name">
-                  <Link href={`/shop/${p.slug}`}>{p.name}</Link>
-                </p>
-                <p className="bag-meta">
-                  {p.category}
-                  {p.sizes.length > 1 ? ` · Size ${line.size}` : ""}
-                  {/* Only when the client has confirmed one. A blank colour
-                      prints nothing rather than an empty separator. */}
-                  {line.colour ? ` · ${line.colour}` : ""}
-                </p>
-                {/* "Price to confirm", the same words the grid and product
-                    page use, for a piece whose price was withdrawn after it
-                    went in the bag. Showing the old figure here would be
-                    displaying an unconfirmed price — locked decision 15. */}
-                <p className="bag-each">{p.demo ? "Price to confirm" : formatPrice(p.priceP)}</p>
-              </div>
+      <div className="bk-grid">
+        <div className="bk-main">
+          <section className="bk-card" aria-labelledby="bk-pieces">
+            <h2 id="bk-pieces" className="bk-card-h">
+              <span className="bk-num">01</span>Your pieces
+              <span className="bk-count">
+                {count} {count === 1 ? "item" : "items"}
+              </span>
+            </h2>
+            <ul className="bk-lines">
+              {lines.map((line) => {
+                const p = productBySlug(line.slug);
+                if (!p) return null;
+                const img = p.colourways.find((c) => c.colour === line.colour)?.image ?? p.photo;
+                const label = `${p.name}${p.sizes.length > 1 ? `, size ${line.size}` : ""}${line.colour ? `, ${line.colour}` : ""}`;
+                return (
+                  /* Keyed by the variant, not the product: the same coat in
+                     two colours is two lines. */
+                  <li
+                    key={`${line.slug}-${line.size}-${line.colour}`}
+                    className={`bk-line${leaving.includes(keyOf(line)) ? " is-leaving" : ""}`}
+                  >
+                    <Link href={`/shop/${p.slug}`} className="bk-media" aria-label={p.name}>
+                      {/* The photograph of the colour in the BAG, not the
+                          piece's first colourway. */}
+                      <ProductPhoto
+                        photo={img}
+                        square={p.category === "Homeware"}
+                        alt=""
+                        sizes="120px"
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                    </Link>
 
-              <div className="bag-qty">
-                <label className="sr-only" htmlFor={`qty-${p.slug}-${line.size}-${line.colour}`}>
-                  Quantity, {p.name}
-                  {p.sizes.length > 1 ? `, size ${line.size}` : ""}
-                  {line.colour ? `, ${line.colour}` : ""}
-                </label>
-                {/* A number input rather than plus/minus buttons: it is one
-                    control instead of two, it types, and it is already
-                    labelled and announced. min={0} removes the line, which is
-                    what people expect typing 0 to do. */}
-                <input
-                  id={`qty-${p.slug}-${line.size}-${line.colour}`}
-                  className="bag-qty-input"
-                  type="number"
-                  inputMode="numeric"
-                  min={0}
-                  max={6}
-                  value={line.qty}
-                  onChange={(e) => {
-                    const n = Number(e.target.value);
-                    /* Typing 0 is the other way to remove a line, and it
-                       should leave the same way pressing Remove does. */
-                    if (n < 1) {
-                      removeLine(line);
-                      return;
-                    }
-                    setQty(line.slug, line.size, line.colour, n);
-                  }}
-                />
-                <button
-                  type="button"
-                  className="bag-remove"
-                  onClick={() => removeLine(line)}
-                >
-                  Remove
-                </button>
-              </div>
+                    <div className="bk-info">
+                      <p className="bk-cat">{p.category}</p>
+                      <p className="bk-name">
+                        <Link href={`/shop/${p.slug}`}>{p.name}</Link>
+                      </p>
+                      <p className="bk-meta">
+                        {line.colour ? (
+                          <span className="bk-chip">
+                            <span
+                              className="bk-dot"
+                              aria-hidden="true"
+                              style={{ backgroundImage: `url(/img/product/${img}-640.jpg)`, backgroundPosition: swatchAt(p.category) }}
+                            />
+                            {line.colour}
+                          </span>
+                        ) : null}
+                        {p.sizes.length > 1 ? <span className="bk-chip">Size {line.size}</span> : null}
+                      </p>
+                      {/* "Price to confirm", the same words the grid and
+                          product page use, for a piece whose price was
+                          withdrawn after it went in the bag. */}
+                      <p className="bk-each">{p.demo ? "Price to confirm" : `${formatPrice(p.priceP)} each`}</p>
+                    </div>
 
-              <p className="bag-line-total">
-                {p.demo ? (
-                  <>
-                    <span aria-hidden="true">&mdash;</span>
-                    <span className="sr-only">No price yet</span>
-                  </>
-                ) : (
-                  formatPrice(p.priceP * line.qty)
-                )}
-              </p>
-            </li>
-          );
-        })}
-      </ul>
+                    <div className="bk-controls">
+                      {/* A stepper: one tap each way, labelled with the
+                          piece, and the number announced as it changes. At 1
+                          the minus stops; Remove is the way out, so a
+                          mis-tap never empties a line. */}
+                      <div className="bk-stepper" role="group" aria-label={`Quantity, ${label}`}>
+                        <button
+                          type="button"
+                          aria-label={`One fewer, ${label}`}
+                          disabled={line.qty <= 1}
+                          onClick={() => setQty(line.slug, line.size, line.colour, line.qty - 1)}
+                        >
+                          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
+                        </button>
+                        <output aria-live="polite">{line.qty}</output>
+                        <button
+                          type="button"
+                          aria-label={`One more, ${label}`}
+                          disabled={line.qty >= 6}
+                          onClick={() => setQty(line.slug, line.size, line.colour, line.qty + 1)}
+                        >
+                          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6 2v8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
+                        </button>
+                      </div>
+                      <button type="button" className="bk-remove" onClick={() => removeLine(line)} aria-label={`Remove ${label}`}>
+                        Remove
+                      </button>
+                    </div>
 
-      <div className="bag-sum">
-        <dl className="bag-totals">
-          <div>
-            <dt>Subtotal</dt>
-            <dd>{formatPrice(subtotalP)}</dd>
-          </div>
-          <div>
-            <dt>Delivery</dt>
-            <dd>{formatPrice(deliveryP)}</dd>
-          </div>
-          <div className="bag-total-row">
-            <dt>Total</dt>
-            <dd>{formatPrice(totalP)}</dd>
-          </div>
-        </dl>
+                    <p className="bk-total">
+                      {p.demo ? (
+                        <>
+                          <span aria-hidden="true">&mdash;</span>
+                          <span className="sr-only">No price yet</span>
+                        </>
+                      ) : (
+                        formatPrice(p.priceP * line.qty)
+                      )}
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
+            <Link href="/shop" className="bk-continue">
+              <span aria-hidden="true">&larr;</span> Continue shopping
+            </Link>
+          </section>
 
-        {/* A plain sentence, not the bracketed [page-pending] style: this is
-            about the customer's own order and what to do about it, not a
-            note about the build. */}
-        {unpricedMessage ? (
-          <p className="bag-pending bag-unpriced">{unpricedMessage}</p>
-        ) : DELIVERY_IS_DEMO ? (
-          <p className="page-pending bag-pending">
-            [Delivery charges are not confirmed yet, and nothing can be charged
-            on this build.]
-          </p>
-        ) : null}
-
-        {/* How far off free delivery. In the SUMMARY panel, above the
-            control — it is information that might change what somebody does
-            next, and under the button it would be an explanation of a
-            decision already made.
-            It was briefly inserted into the line row instead, between the
-            quantity box and REMOVE, because the patch that added it matched
-            the first `<button` in the file. That is what it looked like:
-            a progress bar wedged into the middle of a product row. */}
-        <FreeDelivery subtotalP={subtotalP} />
-
-        {/* Above the button, because it has to be filled in before the button
-            means anything. */}
-        <DeliveryDetails value={details} onChange={setDetails} disabled={busy} />
-
-        <button
-          type="button"
-          className="cf-submit bag-checkout"
-          onClick={checkout}
-          disabled={busy}
-        >
-          {busy ? "Starting checkout…" : "Checkout"}
-          {busy ? null : (
-            <span className="cf-submit-arrow" aria-hidden="true">
-              &rarr;
-            </span>
-          )}
-        </button>
-
-        <div className="cf-status" role="status" aria-live="polite">
-          {error ? <p className="cf-fail">{error}</p> : null}
+          <section className="bk-card" aria-labelledby="bk-delivery">
+            <h2 id="bk-delivery" className="bk-card-h">
+              <span className="bk-num">02</span>Delivery details
+            </h2>
+            <p className="bk-lede">We post within the UK only, by Royal Mail, next working day.</p>
+            <DeliveryDetails value={details} onChange={setDetails} disabled={busy} />
+          </section>
         </div>
 
-        {/* Delivery and returns have to be available to the customer BEFORE
-            they are bound by the order, not discovered afterwards — so they
-            are linked from the last screen before payment, not only from the
-            footer. next/link because both are internal routes. */}
-        <p className="bag-legal">
-          {/* "Nothing is charged until…" moved here from the old masthead.
-              "Prices include VAT where it applies" was replaced: the shop is
-              not VAT registered (client-confirmed, and stated on /terms), so
-              the line implied a VAT element that is never there. */}
-          Nothing is charged until you have been through our payment
-          provider&rsquo;s page, and your card details never reach this site.
-          B Boutique is not VAT registered, so there is no VAT to add. Before
-          you buy, please read our{" "}
-          <Link href="/delivery" className="bag-legal-link">
-            delivery
-          </Link>{" "}
-          and{" "}
-          <Link href="/returns" className="bag-legal-link">
-            returns
-          </Link>{" "}
-          terms &mdash; including your right to change your mind within 14 days.
-        </p>
+        <aside className="bk-summary" aria-labelledby="bk-summary-h">
+          <h2 id="bk-summary-h" className="bk-summary-h">Order summary</h2>
+          <dl className="bk-totals">
+            <div>
+              <dt>Subtotal ({count} {count === 1 ? "item" : "items"})</dt>
+              <dd>{formatPrice(subtotalP)}</dd>
+            </div>
+            <div>
+              <dt>Delivery</dt>
+              <dd>{deliveryP === 0 ? "Free" : formatPrice(deliveryP)}</dd>
+            </div>
+            <div className="bk-grand">
+              <dt>Total</dt>
+              <dd>{formatPrice(totalP)}</dd>
+            </div>
+          </dl>
+
+          {unpricedMessage ? (
+            <p className="bag-pending bag-unpriced">{unpricedMessage}</p>
+          ) : DELIVERY_IS_DEMO ? (
+            <p className="page-pending bag-pending">
+              [Delivery charges are not confirmed yet, and nothing can be charged
+              on this build.]
+            </p>
+          ) : null}
+
+          {/* How far off free delivery: information that might change what
+              somebody does next, so above the button. */}
+          <FreeDelivery subtotalP={subtotalP} />
+
+          <button type="button" className="bk-pay" onClick={checkout} disabled={busy}>
+            <svg width="13" height="15" viewBox="0 0 11 13" fill="none" aria-hidden="true">
+              <rect x="0.75" y="5.75" width="9.5" height="6.5" rx="1" stroke="currentColor" strokeWidth="1.2" />
+              <path d="M2.75 5.75V3.9a2.75 2.75 0 0 1 5.5 0v1.85" stroke="currentColor" strokeWidth="1.2" />
+            </svg>
+            {busy ? "Starting secure checkout…" : "Continue to secure payment"}
+          </button>
+
+          <div className="cf-status" role="status" aria-live="polite">
+            {error ? <p className="cf-fail">{error}</p> : null}
+          </div>
+
+          {/* What happens next, stated as fact: the card is taken on SumUp's
+              hosted page (lib/sumup.ts), never on this site. */}
+          <ul className="bk-trust">
+            <li>Payment is taken on SumUp&rsquo;s secure page. Your card details never reach this site.</li>
+            <li>Royal Mail, next working day. Free over {formatPriceShort(FREE_DELIVERY_OVER_P)}.</li>
+            <li>14 days to change your mind.</li>
+          </ul>
+
+          {/* Delivery and returns are linked from the last screen before
+              payment, not discovered afterwards. */}
+          <p className="bag-legal">
+            B Boutique is not VAT registered, so there is no VAT to add. Before
+            you buy, please read our{" "}
+            <Link href="/delivery" className="bag-legal-link">delivery</Link>{" "}
+            and{" "}
+            <Link href="/returns" className="bag-legal-link">returns</Link>{" "}
+            terms.
+          </p>
+        </aside>
       </div>
     </div>
   );

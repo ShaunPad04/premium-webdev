@@ -7347,3 +7347,267 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   transition: background 260ms var(--bb-ease), color 260ms var(--bb-ease);
 }
 .nf-link:hover, .nf-link:focus-visible { background: var(--bb-black); color: var(--bb-white); }
+
+
+/* ── The bag, rebuilt 2026-09-23 (components/Bag.tsx) ─────────────────────
+   Steps, two numbered sections on the left, a summary on the right that
+   stays in view on a desktop. Square photographs and hairlines like the
+   rest of the site; pills only for controls, matching the buy buttons. */
+.bag-page .page-inner { max-width: 1240px; }
+.bk-title {
+  margin: 0;
+  font-family: var(--font-display-face), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(40px, 5vw, 68px);
+  line-height: 1;
+  letter-spacing: -0.006em;
+  color: var(--bb-black);
+}
+.bk-title em { font-style: italic; font-synthesis: none; }
+
+.bk-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  margin: 22px 0 clamp(28px, 4vw, 44px);
+  padding: 0 0 18px;
+  list-style: none;
+  border-bottom: 1px solid var(--bb-light-border);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+}
+.bk-steps li { display: inline-flex; align-items: center; gap: 10px; }
+.bk-steps span {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--bb-light-border);
+  font-size: 10px;
+  letter-spacing: 0;
+}
+.bk-steps .is-current { color: var(--bb-black); }
+.bk-steps .is-current span { background: var(--bb-black); color: var(--bb-white); box-shadow: none; }
+
+.bk-grid { display: grid; gap: clamp(28px, 3vw, 48px); align-items: start; }
+@media (min-width: 1024px) {
+  .bk-grid { grid-template-columns: minmax(0, 1fr) 380px; }
+  .bk-summary { position: sticky; top: 104px; }
+}
+.bk-main { display: grid; gap: clamp(28px, 3vw, 40px); }
+
+.bk-card { border-top: 1px solid var(--bb-black); padding-top: 22px; }
+.bk-card-h {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 0 0 8px;
+  font-family: var(--font-display-face), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(24px, 2.2vw, 30px);
+  line-height: 1.1;
+  color: var(--bb-black);
+}
+.bk-num { font-family: var(--font-inter), system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: var(--bb-rouge); }
+.bk-count { margin-left: auto; font-family: var(--font-inter), system-ui, sans-serif; font-size: 12px; letter-spacing: 0.04em; color: var(--bb-grey-dark); }
+.bk-lede { margin: 0 0 8px; font-size: 14px; color: var(--bb-grey-dark); }
+/* DeliveryDetails carries its own heading and note for use elsewhere; the
+   section heading above says both here. */
+.bk .dd-heading, .bk .dd-note { display: none; }
+
+.bk-lines { list-style: none; margin: 0; padding: 0; }
+.bk-line {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  grid-template-areas: "media info total" "media controls controls";
+  gap: 10px 20px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--bb-light-border);
+  transition: opacity 220ms var(--bb-ease), transform 220ms var(--bb-ease);
+}
+.bk-line.is-leaving { opacity: 0; transform: translateX(-12px); }
+@media (min-width: 720px) {
+  .bk-line {
+    grid-template-columns: 112px minmax(0, 1fr) auto 96px;
+    grid-template-areas: "media info controls total";
+    align-items: center;
+  }
+}
+.bk-media { grid-area: media; position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; background: var(--bb-grey-light); }
+.bk-info { grid-area: info; min-width: 0; }
+.bk-cat { margin: 0 0 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bb-grey-dark); }
+.bk-name { margin: 0; font-family: var(--font-display-face), Georgia, serif; font-size: clamp(18px, 1.5vw, 21px); line-height: 1.2; }
+.bk-name a { color: inherit; text-decoration: none; }
+@media (hover: hover) and (pointer: fine) { .bk-name a:hover { text-decoration: underline; text-underline-offset: 4px; } }
+.bk-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
+.bk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--bb-light-border);
+  font-size: 12px;
+  color: var(--bb-black);
+}
+.bk-dot { width: 14px; height: 14px; border-radius: 50%; background-size: 900%; box-shadow: 0 0 0 1px var(--bb-light-border); }
+.bk-each { margin: 8px 0 0; font-size: 13px; color: var(--bb-grey-dark); font-variant-numeric: tabular-nums; }
+
+.bk-controls { grid-area: controls; display: flex; align-items: center; gap: 16px; }
+.bk-stepper {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--bb-light-border);
+}
+.bk-stepper button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--bb-black);
+  cursor: pointer;
+  transition: background 200ms var(--bb-ease), opacity 200ms var(--bb-ease);
+}
+.bk-stepper button:disabled { opacity: 0.3; cursor: default; }
+@media (hover: hover) and (pointer: fine) { .bk-stepper button:hover:not(:disabled) { background: rgba(26, 20, 22, 0.06); } }
+.bk-stepper button:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
+.bk-stepper output { min-width: 22px; text-align: center; font-size: 14px; font-variant-numeric: tabular-nums; }
+.bk-remove {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--bb-light-border);
+  cursor: pointer;
+}
+@media (hover: hover) and (pointer: fine) { .bk-remove:hover { color: var(--bb-black); text-decoration-color: currentColor; } }
+.bk-total { grid-area: total; margin: 0; text-align: right; font-size: 15px; font-variant-numeric: tabular-nums; color: var(--bb-black); }
+.bk-continue {
+  display: inline-flex;
+  gap: 8px;
+  margin-top: 18px;
+  padding-block: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bb-black);
+}
+
+.bk-summary {
+  padding: clamp(24px, 2.4vw, 32px);
+  background: var(--bb-white-pure);
+  box-shadow: inset 0 0 0 1px var(--bb-light-border);
+}
+.bk-summary-h {
+  margin: 0 0 18px;
+  font-family: var(--font-display-face), Georgia, serif;
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--bb-black);
+}
+.bk-totals { display: grid; gap: 12px; margin: 0 0 20px; }
+.bk-totals > div { display: flex; justify-content: space-between; gap: 16px; font-size: 14px; }
+.bk-totals dt { color: var(--bb-grey-dark); }
+.bk-totals dd { margin: 0; font-variant-numeric: tabular-nums; color: var(--bb-black); }
+.bk-grand { margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--bb-light-border); }
+.bk-grand dt, .bk-grand dd { font-size: 18px; color: var(--bb-black) !important; }
+.bk-grand dd { font-family: var(--font-display-face), Georgia, serif; font-size: 24px; }
+
+.bk-pay {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 22px;
+  padding: 18px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--bb-black);
+  color: var(--bb-white);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bk-pay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.16) 50%, transparent 70%);
+  transform: translateX(-110%);
+  transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .bk-pay:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 24px -12px rgba(26, 20, 22, 0.55); }
+  .bk-pay:hover:not(:disabled)::after { transform: translateX(110%); }
+}
+.bk-pay:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
+.bk-pay:disabled { opacity: 0.6; cursor: progress; }
+
+.bk-trust { list-style: none; margin: 20px 0 0; padding: 18px 0 0; border-top: 1px solid var(--bb-light-border); display: grid; gap: 10px; }
+.bk-trust li { position: relative; padding-left: 18px; font-size: 12.5px; line-height: 1.5; color: var(--bb-grey-dark); }
+.bk-trust li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 6px; height: 6px; border-radius: 50%; background: var(--bb-rouge); }
+.bk-summary .bag-legal { margin-top: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  .bk-line, .bk-pay, .bk-pay::after { transition: none; }
+}
+
+/* The delivery form inside the bag: outlined fields on a two-column grid
+   (name/email, phone/postcode, then the address full width), instead of a
+   single tall column of underlines beside an empty half-page. */
+.bk .dd { display: grid; gap: 18px 20px; margin-top: 18px; }
+@media (min-width: 720px) {
+  .bk .dd { grid-template-columns: 1fr 1fr; }
+  .bk .dd > .cf-field:nth-of-type(4) { grid-column: 1 / -1; order: 5; }
+  .bk .dd > .dd-postcode { order: 4; }
+}
+.bk .dd .cf-field { margin: 0; }
+.bk .dd .cf-label { display: block; margin-bottom: 8px; }
+.bk .dd .cf-input {
+  padding: 13px 16px;
+  border: 1px solid var(--bb-light-border);
+  border-radius: 12px;
+  background: var(--bb-white-pure);
+  transition: border-color var(--bb-dur-quick) var(--bb-ease), box-shadow var(--bb-dur-quick) var(--bb-ease);
+}
+.bk .dd .cf-input:hover { border-color: rgba(26, 20, 22, 0.34); }
+.bk .dd .cf-input:focus { outline: none; border-color: var(--bb-black); box-shadow: 0 0 0 1px var(--bb-black); }
+.bk .dd textarea.cf-input { min-height: 96px; resize: vertical; }
+.bk .dd > .dd-postcode { max-width: none; }
+.bk .dd .dd-hint { margin-top: 6px; }
+
+.bk .bk-name a, .bk .bk-name a:visited { text-decoration: none; }
+#bk-delivery { scroll-margin-top: 110px; }
+@media (max-width: 719px) {
+  .bk-steps { gap: 8px 14px; letter-spacing: 0.08em; font-size: 10px; }
+  .bk-steps li { gap: 7px; }
+  .bk-pay { letter-spacing: 0.12em; padding-inline: 16px; white-space: nowrap; }
+}
+/* The step marker's third label shortens to "Payment" on the narrowest
+   phones so the three steps stay on one line. The number circle rule above
+   targets .bk-steps span, so the label span opts out of it. */
+.bk-steps .bk-hide-xs { display: inline; width: auto; height: auto; box-shadow: none; border-radius: 0; font-size: inherit; letter-spacing: inherit; }
+@media (max-width: 379px) { .bk-steps .bk-hide-xs { display: none; } }
