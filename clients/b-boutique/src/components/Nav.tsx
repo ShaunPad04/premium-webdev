@@ -33,7 +33,7 @@ import { NavSearch } from "./NavSearch";
  * centre nav and SEARCH / BAG / MENU all sit over the white half, so at
  * scroll 0 they rendered white-on-white and the scrim under them — tuned to
  * keep 10px type off a bright highlight in a photograph — did almost nothing
- * against #FAF5F3. The client spotted it on a screenshot.
+ * against #FFFFFF. The client spotted it on a screenshot.
  *
  * Fixed here rather than by adding a black band to the product page, because
  * the garment photograph is the point of that screen and a masthead above it
@@ -74,7 +74,7 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
            CornerMenu. 0 the rest of the time. */
         right: "var(--lock-gap, 0px)",
         /* SOLID ink, the same token as the announcement strip above it —
-           at the client's request, 2026-09-22. It was rgba(26,20,22,.90)
+           at the client's request, 2026-09-22. It was rgba(14, 11, 12,.90)
            with a 14px blur: the right colour at 90%, so the warm pink page
            showed through and turned the bar a muddy grey-brown sitting
            under a strip of the true ink. Two shades of "dark" stacked on
@@ -105,7 +105,7 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
                top-right corner, not a full-height band: the band ended in a
                hard line across the photograph at the box's 150px edge. */
             background:
-              "linear-gradient(to bottom, rgba(26, 20, 22, .74) 0%, rgba(26, 20, 22, .6) 45%, rgba(26, 20, 22, .22) 78%, transparent 100%), radial-gradient(ellipse 40% 100% at 100% 0%, rgba(26, 20, 22, .4) 0%, rgba(26, 20, 22, .3) 45%, transparent 100%)",
+              "linear-gradient(to bottom, rgba(14, 11, 12, .74) 0%, rgba(14, 11, 12, .6) 45%, rgba(14, 11, 12, .22) 78%, transparent 100%), radial-gradient(ellipse 40% 100% at 100% 0%, rgba(14, 11, 12, .4) 0%, rgba(14, 11, 12, .3) 45%, transparent 100%)",
           }}
         />
       ) : null}

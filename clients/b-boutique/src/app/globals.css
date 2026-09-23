@@ -8,6 +8,19 @@
    ============================================================ */
 
 :root {
+  /* ── B Boutique palette, 2026-09-23 (white leads, black is the text, red
+     is rare). Every older name below resolves to one of these. ── */
+  --bg:           #FFFFFF;
+  --bg-soft:      #F7F7F5;
+  --ink:          #0E0B0C;
+  --ink-muted:    #555555;   /* 7.46:1 on --bg */
+  --line:         #0E0B0C1F;
+  --inverse-bg:   #0E0B0C;
+  --inverse-ink:  #FFFFFF;
+  --accent:       #C8102E;   /* 5.9:1 on --bg: CTAs, tags, active states only */
+  --accent-hover: #9E0C24;
+  --accent-tint:  #F6D3D9;
+
   /* The sticky header's own height, in one place so the product page's
      `top` and its height calculation cannot drift apart. It is the nav bar
      only: the announcement strip above it collapses on scroll, so it is not
@@ -51,24 +64,23 @@
 
   /* Warm near-black. True black against a warm paper reads as a hole
      punched in the page rather than as ink on it. */
-  --bb-black:        #1A1416;   /* ink again (2026-09-23 late): body text and dark grounds black; red is --bb-red, for headings */
-  --bb-red:          #6E0A10;
-  --bb-black-soft:   #241C1F;
-  --bb-black-raised: #2E2429;
+  --bb-black:        var(--ink);
+  --bb-black-soft:   #1A1718;
+  --bb-black-raised: #252223;
 
   /* Warm white that leans PINK, not yellow. The difference is the whole
-     brief: measured, #FAF5F3 is R250 G245 B243 — a red-to-blue spread of 7
+     brief: measured, #FFFFFF is R250 G245 B243 — a red-to-blue spread of 7
      with a green-to-blue gap of only 2. Cream has a large green-to-blue gap,
      which is what makes it read yellow, bridal and banned. */
-  --bb-white:        #FAF8F4;   /* off-white (2026-09-23 late: "whiter rather than cream") */
+  --bb-white:        var(--bg);
   --bb-white-pure:   #FFFFFF;
 
-  --bb-grey-light:   #E4DFD8;
-  --bb-grey-mid:     #A89F9B;   /* dark grounds only */
-  --bb-grey-dark:    #5F5654;
+  --bb-grey-light:   #E6E6E3;
+  --bb-grey-mid:     #9C9C9C;   /* dark grounds only: 6.9:1 on --ink */
+  --bb-grey-dark:    var(--ink-muted);
 
   --bb-dark-border:  rgba(255, 255, 255, 0.14);
-  --bb-light-border: rgba(26, 20, 22, 0.14);
+  --bb-light-border: var(--line);
 
   /* Measured in a live render, not assumed, and each value is recorded
      against the ground it is safe on — the rule this project already had,
@@ -95,17 +107,17 @@
      goes rose because a red lightened enough to clear a dark ground always
      does. That is the same one-colour-one-ground discipline as the greys,
      and the reason there are two of these rather than one. */
-  --red:             #8A070B;
+  --red:             var(--accent);
   --bb-rouge:        var(--red);
-  --bb-rouge-deep:   #6E0509;   /* hover, on light: 11.69:1 on paper */
-  --bb-rouge-lift:   #E57A8A;   /* the dark-ground twin, on black */
+  --bb-rouge-deep:   var(--accent-hover);
+  --bb-rouge-lift:   var(--accent-tint);   /* on dark grounds only */
 
   /* ── legacy semantic names, re-pointed ───────────────────────────
      Twenty components already reference these. Re-pointing them here turned
      the whole site cool in one edit once; it turns it warm in one edit now.
      That is the entire reason this indirection exists. New work should use
      the bb-* names. */
-  --onyx:       var(--bb-black);
+  --onyx:       var(--ink);
   --onyx-lift:  var(--bb-black-raised);
   --onyx-veil:  var(--bb-grey-dark);   /* muted text on light: 5.76:1 */
 
@@ -122,14 +134,14 @@
      only because components still call them. Both resolve to maximum
      contrast against the ground they were chosen for. Delete on sight, and
      never re-point either at an actual gold. */
-  --gold:       var(--bb-black);   /* was #8A6A2C — on light grounds */
-  --gold-lift:  var(--bb-white);   /* was #D4B06A — on dark grounds  */
+  --gold:       var(--ink);
+  --gold-lift:  var(--inverse-ink);
 
   --ink-deep:   var(--bb-black-soft);
-  --panel:      var(--bb-black);
+  --panel:      var(--inverse-bg);
   --panel-lift: var(--bb-black-raised);
 
-  --line: var(--bb-light-border);
+
 
   /* ── motion — one language across the whole site ──────────────────────
      A single easing, and three durations that name intent rather than a
@@ -200,14 +212,6 @@
   --color-bb-grey-mid: var(--bb-grey-mid);
   --color-bb-grey-dark: var(--bb-grey-dark);
 
-  /* The display face is Playfair Display 400 since 2026-09-23. Bodoni Moda
-     until that morning, then Gloock (Brad's pick, then "too thick and
-     bold"). It is the wordmark and the editorial voice; everything else is
-     Inter. Display tracking was tuned for Bodoni's narrow letters (-0.02 to
-     -0.045em); the wider faces set tight already, so every display rule
-     keeps 30% of its old negative tracking. The three legacy
-     aliases resolve to it too, so every existing font-sans / font-grotesk /
-     font-mono className keeps working while the callers are migrated. */
   --font-display: var(--font-display-face);
   --font-sans: var(--font-inter);
   --font-grotesk: var(--font-inter);
@@ -543,16 +547,16 @@ body {
   background:
     linear-gradient(
       to top,
-      rgba(26, 20, 22, 0.92) 0%,
-      rgba(26, 20, 22, 0.82) 22%,
-      rgba(26, 20, 22, 0.52) 40%,
-      rgba(26, 20, 22, 0.16) 56%,
+      rgba(14, 11, 12, 0.92) 0%,
+      rgba(14, 11, 12, 0.82) 22%,
+      rgba(14, 11, 12, 0.52) 40%,
+      rgba(14, 11, 12, 0.16) 56%,
       transparent 78%
     ),
     linear-gradient(
       to right,
-      rgba(26, 20, 22, 0.62) 0%,
-      rgba(26, 20, 22, 0.24) 40%,
+      rgba(14, 11, 12, 0.62) 0%,
+      rgba(14, 11, 12, 0.24) 40%,
       transparent 70%
     );
 }
@@ -581,22 +585,22 @@ body {
     background:
       radial-gradient(
         62% 34% at 50% 70%,
-        rgba(26, 20, 22, 0.52) 0%,
-        rgba(26, 20, 22, 0.3) 46%,
+        rgba(14, 11, 12, 0.52) 0%,
+        rgba(14, 11, 12, 0.3) 46%,
         transparent 100%
       ),
       linear-gradient(
         to top,
-        rgba(26, 20, 22, 0.86) 0%,
-        rgba(26, 20, 22, 0.66) 22%,
-        rgba(26, 20, 22, 0.4) 40%,
-        rgba(26, 20, 22, 0.14) 58%,
+        rgba(14, 11, 12, 0.86) 0%,
+        rgba(14, 11, 12, 0.66) 22%,
+        rgba(14, 11, 12, 0.4) 40%,
+        rgba(14, 11, 12, 0.14) 58%,
         transparent 78%
       ),
       linear-gradient(
         to right,
-        rgba(26, 20, 22, 0.6) 0%,
-        rgba(26, 20, 22, 0.26) 40%,
+        rgba(14, 11, 12, 0.6) 0%,
+        rgba(14, 11, 12, 0.26) 40%,
         transparent 68%
       );
   }
@@ -607,17 +611,17 @@ body {
     background:
       radial-gradient(
         72% 46% at 26% 62%,
-        rgba(26, 20, 22, 0.78) 0%,
-        rgba(26, 20, 22, 0.56) 40%,
-        rgba(26, 20, 22, 0.24) 70%,
+        rgba(14, 11, 12, 0.78) 0%,
+        rgba(14, 11, 12, 0.56) 40%,
+        rgba(14, 11, 12, 0.24) 70%,
         transparent 100%
       ),
       linear-gradient(
         to top,
-        rgba(26, 20, 22, 0.8) 0%,
-        rgba(26, 20, 22, 0.56) 20%,
-        rgba(26, 20, 22, 0.32) 36%,
-        rgba(26, 20, 22, 0.1) 54%,
+        rgba(14, 11, 12, 0.8) 0%,
+        rgba(14, 11, 12, 0.56) 20%,
+        rgba(14, 11, 12, 0.32) 36%,
+        rgba(14, 11, 12, 0.1) 54%,
         transparent 72%
       ),
       /* Reaches to 82%, not 62%. At 1440 the headline is 104px Bodoni and its
@@ -627,9 +631,9 @@ body {
          frame — her face and the red door — stays untouched either way. */
       linear-gradient(
         to right,
-        rgba(26, 20, 22, 0.62) 0%,
-        rgba(26, 20, 22, 0.38) 34%,
-        rgba(26, 20, 22, 0.16) 56%,
+        rgba(14, 11, 12, 0.62) 0%,
+        rgba(14, 11, 12, 0.38) 34%,
+        rgba(14, 11, 12, 0.16) 56%,
         transparent 82%
       );
   }
@@ -784,7 +788,7 @@ body {
    "the red already sampled from her own hero photograph" — a fact about her
    shop rather than a decision made in a browser. That photograph is GONE: the
    hero became the five-slide Paris slideshow the same week, and there is no
-   red anywhere in any of the five frames. So a saturated #8A070B fill was
+   red anywhere in any of the five frames. So a saturated #C8102E fill was
    arriving on a desaturated warm-grey photograph with nothing in the picture
    to answer it, which is exactly how a considered accent turns into a generic
    Buy Now button.
@@ -863,10 +867,10 @@ body {
      with room; the numbers are in the commit. */
   background: radial-gradient(
     124% 112% at 100% 0%,
-    rgba(26, 20, 22, 0.88) 0%,
-    rgba(26, 20, 22, 0.7) 30%,
-    rgba(26, 20, 22, 0.4) 54%,
-    rgba(26, 20, 22, 0.14) 72%,
+    rgba(14, 11, 12, 0.88) 0%,
+    rgba(14, 11, 12, 0.7) 30%,
+    rgba(14, 11, 12, 0.4) 54%,
+    rgba(14, 11, 12, 0.14) 72%,
     transparent 86%
   );
 }
@@ -1020,7 +1024,7 @@ body {
   height: 44px;
   color: var(--bb-white-pure);
   border: 1px solid rgba(250, 248, 246, 0.42);
-  background: rgba(26, 20, 22, 0.34);
+  background: rgba(14, 11, 12, 0.34);
   transition: background var(--bb-dur-quick) var(--bb-ease),
               color var(--bb-dur-quick) var(--bb-ease),
               border-color var(--bb-dur-quick) var(--bb-ease);
@@ -1043,7 +1047,7 @@ body {
 
 @media (hover: none), (pointer: coarse) {
   .hero-nav-btn:hover:not(:disabled) {
-    background: rgba(26, 20, 22, 0.34);
+    background: rgba(14, 11, 12, 0.34);
     border-color: rgba(250, 248, 246, 0.42);
     color: var(--bb-white-pure);
   }
@@ -1538,7 +1542,7 @@ body {
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: rgba(26, 20, 22, 0.72);
+  color: rgba(14, 11, 12, 0.72);
   margin-bottom: 22px;
 }
 
@@ -1566,7 +1570,7 @@ body {
   margin-top: 34px;
   min-height: 44px;
   padding: 0 22px;
-  border: 1px solid rgba(26, 20, 22, 0.42);
+  border: 1px solid rgba(14, 11, 12, 0.42);
   border-radius: 0;
   font-size: 10px;
   font-weight: 600;
@@ -1601,7 +1605,7 @@ body {
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.17em;
-  color: rgba(26, 20, 22, 0.72);
+  color: rgba(14, 11, 12, 0.72);
   margin-bottom: 16px;
 }
 
@@ -1617,13 +1621,13 @@ body {
   font-size: 12px;
 }
 .visit-hours-row:last-child { border-bottom: 1px solid var(--bb-light-border); }
-.visit-hours-row dt { color: rgba(26, 20, 22, 0.72); }   /* 6.89:1 on --bb-black */
+.visit-hours-row dt { color: rgba(14, 11, 12, 0.72); }   /* 6.89:1 on --bb-black */
 .visit-hours-row dd { color: var(--bb-black); font-variant-numeric: tabular-nums; }
 /* .50, not .40. Measured on --bb-black: white/.40 composites to rgb(105,105,105)
    and lands at 3.71:1, under the 4.5:1 AA floor this 12px cell needs — the one
    value in the section that was never checked. .50 is 5.30:1 and still reads
    quieter than the days beside it, which is all the .40 was for. */
-.visit-hours-row dd.is-closed { color: rgba(26, 20, 22, 0.65); }
+.visit-hours-row dd.is-closed { color: rgba(14, 11, 12, 0.65); }
 
 /* ── The map panel ── */
 .vm-panel {
@@ -1687,7 +1691,7 @@ body {
   max-width: 55%;
   font-size: 11px;
   letter-spacing: 0.04em;
-  color: rgba(253, 250, 249, 0.85);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* The collapsed map.
@@ -1758,8 +1762,8 @@ body {
      its foot (2026-09-23). */
   background: linear-gradient(
     to top,
-    rgba(26, 20, 22, 0.86) 0%,
-    rgba(26, 20, 22, 0.45) 34%,
+    rgba(14, 11, 12, 0.86) 0%,
+    rgba(14, 11, 12, 0.45) 34%,
     transparent 64%
   );
 }
@@ -2333,10 +2337,10 @@ body {
   background:
     linear-gradient(
       to right,
-      rgba(26, 20, 22, 0.95) 0%,
-      rgba(26, 20, 22, 0.90) 34%,
-      rgba(26, 20, 22, 0.78) 62%,
-      rgba(26, 20, 22, 0.72) 100%
+      rgba(14, 11, 12, 0.95) 0%,
+      rgba(14, 11, 12, 0.90) 34%,
+      rgba(14, 11, 12, 0.78) 62%,
+      rgba(14, 11, 12, 0.72) 100%
     );
 }
 
@@ -2464,14 +2468,14 @@ body {
   margin: 0 0 8px;
   font-size: 13px;
   line-height: 1.45;
-  color: rgba(26, 20, 22, 0.78);
+  color: rgba(14, 11, 12, 0.78);
 }
 
 .fd-text strong { font-weight: 600; color: var(--bb-black); }
 
 .fd-track {
   height: 2px;
-  background: rgba(26, 20, 22, 0.14);
+  background: rgba(14, 11, 12, 0.14);
   overflow: hidden;
 }
 
@@ -2495,7 +2499,7 @@ body {
   margin-top: 16px;
   font-size: 12px;
   line-height: 1.5;
-  color: rgba(26, 20, 22, 0.66);
+  color: rgba(14, 11, 12, 0.66);
 }
 
 /* ── You may also like ──────────────────────────────────────────────────
@@ -2505,7 +2509,7 @@ body {
 .also {
   background: var(--bone);
   padding: clamp(56px, 8vw, 104px) 0 clamp(40px, 6vw, 72px);
-  border-top: 1px solid rgba(26, 20, 22, 0.1);
+  border-top: 1px solid rgba(14, 11, 12, 0.1);
 }
 
 .also-inner { padding-inline: 18px; }
@@ -2522,7 +2526,7 @@ body {
 }
 
 /* No opacity. It used to carry 0.72, which measured 3.23:1 against the
-   panel — rgb(107,95,94) blended to rgb(148,138,137) over rgb(253,250,249) —
+   panel — rgb(107,95,94) blended to rgb(148,138,137) over rgb(255,255,255) —
    and 10px at weight 600 is not large text, so the floor is 4.5. axe caught
    it as a serious violation on all three widths. At full opacity the same
    colour measures 5.91:1.
@@ -2590,7 +2594,7 @@ body {
   font-size: clamp(14px, 1.05vw, 16px);
   line-height: 1.65;
   /* 6.42:1 on bone — quieter than body copy without dropping under AA. */
-  color: rgba(26, 20, 22, 0.65);
+  color: rgba(14, 11, 12, 0.65);
   text-wrap: pretty;
 }
 
@@ -2598,7 +2602,7 @@ body {
   max-width: 62ch;
   font-size: clamp(15px, 1.1vw, 17px);
   line-height: 1.68;
-  color: rgba(26, 20, 22, 0.82);
+  color: rgba(14, 11, 12, 0.82);
   text-wrap: pretty;
 }
 .page-body + .page-body { margin-top: 18px; }
@@ -2611,7 +2615,7 @@ body {
   margin-top: 22px;
   font-size: 13px;
   line-height: 1.6;
-  color: rgba(26, 20, 22, 0.65);
+  color: rgba(14, 11, 12, 0.65);
 }
 
 /* Same marker convention as the FAQ and the testimonials: impossible to read
@@ -2709,7 +2713,7 @@ body {
   margin-top: 7px;
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(26, 20, 22, 0.65);
+  color: rgba(14, 11, 12, 0.65);
   max-width: 34ch;
 }
 
@@ -2811,7 +2815,7 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(to top, rgba(26, 20, 22, 0.88) 0%, rgba(26, 20, 22, 0.46) 38%, rgba(26, 20, 22, 0.12) 64%, rgba(26, 20, 22, 0.42) 100%);
+    linear-gradient(to top, rgba(14, 11, 12, 0.88) 0%, rgba(14, 11, 12, 0.46) 38%, rgba(14, 11, 12, 0.12) 64%, rgba(14, 11, 12, 0.42) 100%);
 }
 .ab-hero-copy {
   width: 100%;
@@ -3212,7 +3216,7 @@ body {
   isolation: isolate;
   overflow: hidden;
   color: var(--bb-black);
-  background: linear-gradient(135deg, #FAF5F3 0%, #F1E9E2 40%, #E6D9CC 70%, #F6F0EA 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #F7F7F5 40%, #EDEDEA 70%, #F7F7F5 100%);
   padding: clamp(96px, 16vh, 180px) 18px;
   text-align: center;
 }
@@ -3307,7 +3311,7 @@ body {
   transition: border-color var(--bb-dur-quick) var(--bb-ease);
 }
 .cf-input::placeholder { color: var(--bb-grey-dark); }
-.cf-input:hover { border-bottom-color: rgba(26, 20, 22, 0.34); }
+.cf-input:hover { border-bottom-color: rgba(14, 11, 12, 0.34); }
 .cf-input:focus-visible {
   outline: none;
   border-bottom-color: var(--bb-black);
@@ -3410,7 +3414,7 @@ body {
   background: var(--bb-white-pure);
   border: 1px solid var(--bb-light-border);
   border-radius: 28px;
-  box-shadow: 0 30px 70px -40px rgba(26, 20, 22, 0.28);
+  box-shadow: 0 30px 70px -40px rgba(14, 11, 12, 0.28);
 }
 @media (min-width: 960px) { .ccard { grid-template-columns: 0.9fr 1.1fr; } }
 .ccard-info {
@@ -3491,7 +3495,7 @@ body {
 /* The whole tile is the tap target, not just the line of text (which is
    22px tall on a phone). */
 .ccard-tile-value::after { content: ""; position: absolute; inset: 0; border-radius: 16px; }
-.ccard-tile:has(.ccard-tile-value:hover) { border-color: rgba(26, 20, 22, 0.34); }
+.ccard-tile:has(.ccard-tile-value:hover) { border-color: rgba(14, 11, 12, 0.34); }
 .ccard-tile-value:focus-visible { outline: none; }
 .ccard-tile:has(.ccard-tile-value:focus-visible) { outline: 2px solid var(--bb-black); outline-offset: 2px; }
 @media (max-width: 399px) {
@@ -3548,11 +3552,11 @@ body {
   background: var(--bb-white-pure);
   transition: border-color 200ms var(--bb-ease), box-shadow 200ms var(--bb-ease), background 200ms var(--bb-ease);
 }
-.cx-box:hover { border-color: rgba(26, 20, 22, 0.34); }
+.cx-box:hover { border-color: rgba(14, 11, 12, 0.34); }
 .cx-box:focus-within {
   border-color: var(--bb-black);
   background: var(--bb-white-pure);
-  box-shadow: 0 0 0 3px rgba(26, 20, 22, 0.08);
+  box-shadow: 0 0 0 3px rgba(14, 11, 12, 0.08);
 }
 .cx-box:has([aria-invalid="true"]) { border-color: var(--red); }
 .cx-input {
@@ -3672,7 +3676,7 @@ body {
   line-height: 1.6;
 }
 .cx-ok { background: var(--bb-white); color: var(--bb-black); border: 1px solid var(--bb-light-border); }
-.cx-fail { background: rgba(138, 7, 11, 0.06); color: var(--red); border: 1px solid rgba(138, 7, 11, 0.3); }
+.cx-fail { background: rgba(200, 16, 46, 0.06); color: var(--red); border: 1px solid rgba(200, 16, 46, 0.3); }
 .cx-fail-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 
 /* ── Visit's phone line ────────────────────────────────────────────────── */
@@ -3692,7 +3696,7 @@ body {
   line-height: 1;
   color: var(--bb-black);
   text-decoration: none;
-  border-bottom: 1px solid rgba(26, 20, 22, 0.30);
+  border-bottom: 1px solid rgba(14, 11, 12, 0.30);
   padding-bottom: 5px;
   width: fit-content;
   transition: border-color var(--bb-dur-quick) var(--bb-ease);
@@ -3841,7 +3845,7 @@ body {
   margin-top: 7px;
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(26, 20, 22, 0.65);
+  color: rgba(14, 11, 12, 0.65);
   max-width: 40ch;
 }
 
@@ -3948,7 +3952,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .nav-menu {
   min-width: 210px;
   padding: 14px 0;
-  background: rgba(26, 20, 22, 0.94);
+  background: rgba(14, 11, 12, 0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   /* Square and hairline, like everything else. The header is the one place on
@@ -4183,7 +4187,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   text-transform: uppercase;
   text-align: center;
   color: var(--bb-black);
-  /* `--bb-white` is the warm paper, #FAF5F3. There is no `--paper` token —
+  /* `--bb-white` is the warm paper, #FFFFFF. There is no `--paper` token —
      it was typed here first, resolved to nothing, and the bar shipped with a
      transparent background and its label unreadable over the photograph until
      a screenshot caught it. Ink on paper measures 15.4:1. */
@@ -4225,7 +4229,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
     transform: none;
     transition: none;
     /* The token, not a hand-typed rgba() of it. `rgba(250,248,245,.94)` stood
-       here and is a near-miss of #FAF5F3 — the exact drift the Rouge re-theme
+       here and is a near-miss of #FFFFFF — the exact drift the Rouge re-theme
        had to hunt nine of out of the flipped sections, because a literal
        cannot follow a token when the palette moves. */
     background: color-mix(in srgb, var(--bb-white) 94%, transparent);
@@ -4272,7 +4276,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   display: block;
   margin-top: 4px;
   font-size: 13px;
-  color: rgba(26, 20, 22, 0.72);
+  color: rgba(14, 11, 12, 0.72);
   font-variant-numeric: tabular-nums;
 }
 
@@ -4295,7 +4299,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
      read. The italic and the words carry the distinction, which is also what
      the comment above already claimed and the colour was quietly
      contradicting. */
-  color: rgba(26, 20, 22, 0.72);
+  color: rgba(14, 11, 12, 0.72);
   font-variant-numeric: normal;
 }
 
@@ -4341,7 +4345,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin-top: 14px;
   font-size: clamp(15px, 1.3vw, 16.5px);
   line-height: 1.68;
-  color: rgba(26, 20, 22, 0.78);
+  color: rgba(14, 11, 12, 0.78);
 }
 
 /* The legal basis. Small, but not hidden — a customer should be able to read
@@ -4385,7 +4389,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin-top: 9px;
   font-size: 14.5px;
   line-height: 1.6;
-  color: rgba(26, 20, 22, 0.78);
+  color: rgba(14, 11, 12, 0.78);
 }
 
 .pol-close {
@@ -4395,7 +4399,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   max-width: 68ch;
   font-size: 15px;
   line-height: 1.65;
-  color: rgba(26, 20, 22, 0.78);
+  color: rgba(14, 11, 12, 0.78);
 }
 
 /* ── Shop search ───────────────────────────────────────────────────────────
@@ -4430,7 +4434,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   border-bottom: 1px solid var(--bb-light-border);
   transition: border-color var(--bb-dur-quick) var(--bb-ease);
 }
-.find-field:hover { border-bottom-color: rgba(26, 20, 22, 0.34); }
+.find-field:hover { border-bottom-color: rgba(14, 11, 12, 0.34); }
 /* The rule under the whole field responds to the input inside it, rather than
    the input growing a second border of its own inside the first. */
 .find-field:has(.find-input:focus-visible) {
@@ -4521,7 +4525,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin-top: 14px;
   font-size: 15px;
   line-height: 1.6;
-  color: rgba(26, 20, 22, 0.72);
+  color: rgba(14, 11, 12, 0.72);
 }
 .find-empty-tel {
   color: var(--bb-black);
@@ -4562,7 +4566,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .find-empty-alt {
   margin-top: 20px;
   font-size: 13px;
-  color: rgba(26, 20, 22, 0.72);
+  color: rgba(14, 11, 12, 0.72);
 }
 .find-empty-alt a {
   color: var(--bb-black);
@@ -4738,7 +4742,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
      rather than a differently-cropped one. */
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  border: 1px solid rgba(250, 245, 243, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.55);
   background: var(--bone);
   cursor: pointer;
   padding: 0;
@@ -4775,7 +4779,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   z-index: 2;
   margin: 0;
   padding: 6px 12px;
-  background: rgba(26, 20, 22, 0.58);
+  background: rgba(14, 11, 12, 0.58);
   color: var(--bb-white-pure);
   font-size: 10.5px;
   font-weight: 600;
@@ -4851,7 +4855,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   font-size: 14.5px;
   line-height: 1.65;
   max-width: 60ch;
-  color: rgba(26, 20, 22, 0.78);
+  color: rgba(14, 11, 12, 0.78);
   text-wrap: pretty;
 }
 
@@ -4874,7 +4878,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   padding-left: 18px;
   font-size: 13.5px;
   line-height: 1.5;
-  color: rgba(26, 20, 22, 0.78);
+  color: rgba(14, 11, 12, 0.78);
 }
 
 .pdp-feat li::before {
@@ -4906,12 +4910,12 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   text-transform: uppercase;
   font-size: 10.5px;
   padding-top: 2px;
-  color: rgba(26, 20, 22, 0.62);
+  color: rgba(14, 11, 12, 0.62);
 }
 
 .pdp-spec dd {
   margin: 0;
-  color: rgba(26, 20, 22, 0.82);
+  color: rgba(14, 11, 12, 0.82);
 }
 
 /* ── The folds: Details / Specifications / Delivery & returns ───────────
@@ -4920,10 +4924,10 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    in every browser and this is the only control in the column. */
 .pdp-folds {
   margin-top: 34px;
-  border-top: 1px solid rgba(26, 20, 22, 0.14);
+  border-top: 1px solid rgba(14, 11, 12, 0.14);
 }
 
-.pdp-fold { border-bottom: 1px solid rgba(26, 20, 22, 0.14); }
+.pdp-fold { border-bottom: 1px solid rgba(14, 11, 12, 0.14); }
 
 .pdp-fold-head {
   display: flex;
@@ -4996,7 +5000,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   max-width: 46ch;
   font-size: 14px;
   line-height: 1.68;
-  color: rgba(26, 20, 22, 0.72);
+  color: rgba(14, 11, 12, 0.72);
 }
 
 /* ── Size and add ─────────────────────────────────────────────────────── */
@@ -5034,7 +5038,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin: 0;
   cursor: pointer;
 }
-.atb-size:hover { border-color: rgba(26, 20, 22, 0.4); }
+.atb-size:hover { border-color: rgba(14, 11, 12, 0.4); }
 .atb-size.is-on { background: var(--bb-black); border-color: var(--bb-black); color: var(--bb-white); }
 /* The ring goes on the label, because the input it belongs to is invisible. */
 .atb-size:has(input:focus-visible) { outline: 2px solid currentColor; outline-offset: 2px; }
@@ -5096,7 +5100,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin: 0 0 8px;
   padding: 16px 18px;
   border: 1px solid var(--bb-light-border);
-  background: rgba(26, 20, 22, 0.03);
+  background: rgba(14, 11, 12, 0.03);
   font-size: 13.5px;
   line-height: 1.6;
 }
@@ -5157,11 +5161,11 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 @media (hover: hover) and (pointer: fine) {
   .atb-add:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 24px -12px rgba(26, 20, 22, 0.55);
+    box-shadow: 0 10px 24px -12px rgba(14, 11, 12, 0.55);
   }
   .atb-buy:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: inset 0 0 0 1px var(--bb-black), 0 10px 24px -12px rgba(26, 20, 22, 0.55);
+    box-shadow: inset 0 0 0 1px var(--bb-black), 0 10px 24px -12px rgba(14, 11, 12, 0.55);
   }
   .atb-add:hover:not(:disabled) { background: var(--bb-black); color: var(--bb-white); }
   .atb-add:hover:not(:disabled)::after { transform: translateX(110%); }
@@ -5355,7 +5359,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   text-transform: uppercase;
   color: var(--bb-grey-dark);
 }
-.bag-each { margin-top: 6px; font-size: 13px; color: rgba(26, 20, 22, 0.68); font-variant-numeric: tabular-nums; }
+.bag-each { margin-top: 6px; font-size: 13px; color: rgba(14, 11, 12, 0.68); font-variant-numeric: tabular-nums; }
 
 .bag-qty-input {
   width: 62px;
@@ -5391,7 +5395,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 
 .bag-totals { display: flex; flex-direction: column; gap: 10px; }
 .bag-totals > div { display: flex; justify-content: space-between; gap: 20px; font-size: 14px; }
-.bag-totals dt { color: rgba(26, 20, 22, 0.68); }
+.bag-totals dt { color: rgba(14, 11, 12, 0.68); }
 .bag-totals dd { font-variant-numeric: tabular-nums; }
 
 .bag-total-row {
@@ -5454,7 +5458,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin-top: 18px;
   font-size: 12px;
   line-height: 1.55;
-  color: rgba(26, 20, 22, 0.62);
+  color: rgba(14, 11, 12, 0.62);
 }
 /* Underlined, not colour-only: the surrounding line is already grey and a
    link distinguished by hue alone fails for anyone who cannot see the
@@ -5792,9 +5796,9 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   color: var(--bb-black);
   overscroll-behavior: contain;
 }
-.st-sheet::backdrop { background: rgba(26, 20, 22, 0.45); }
+.st-sheet::backdrop { background: rgba(14, 11, 12, 0.45); }
 @media (min-width: 768px) {
-  .st-sheet { margin-left: auto; width: 520px; box-shadow: -20px 0 60px rgba(26, 20, 22, 0.18); }
+  .st-sheet { margin-left: auto; width: 520px; box-shadow: -20px 0 60px rgba(14, 11, 12, 0.18); }
 }
 @media (prefers-reduced-motion: no-preference) {
   .st-sheet[open] { animation: st-in 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -6189,7 +6193,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   z-index: 60;
   width: min(30rem, calc(100vw - 32px));
   background: var(--bb-black);
-  border: 1px solid rgba(250, 245, 243, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   /* The one shadow on this site that is doing structural work: the panel
      floats over a photograph and needs an edge the photograph cannot eat. */
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
@@ -6211,7 +6215,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid rgba(250, 245, 243, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
   padding-bottom: 12px;
   transition: border-color var(--bb-dur-quick) var(--bb-ease);
 }
@@ -6227,7 +6231,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   box-shadow: 0 1px 0 0 var(--bb-white);
 }
 
-.navsearch-icon { flex: 0 0 auto; color: rgba(250, 245, 243, 0.72); }
+.navsearch-icon { flex: 0 0 auto; color: rgba(255, 255, 255, 0.72); }
 
 .navsearch-input {
   flex: 1 1 auto;
@@ -6243,7 +6247,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 
 .navsearch-input:focus-visible { outline: none; }
-.navsearch-input::placeholder { color: rgba(250, 245, 243, 0.72); }
+.navsearch-input::placeholder { color: rgba(255, 255, 255, 0.72); }
 /* The UA's own clear button is drawn in the platform's colours and is
    invisible on this ground. The field is cleared by deleting or by Close. */
 .navsearch-input::-webkit-search-cancel-button { display: none; }
@@ -6258,7 +6262,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   text-transform: uppercase;
   /* .72 on the warm ink measures 7.1:1 — this is a real control and is held
      above AA rather than dimmed for looks. */
-  color: rgba(250, 245, 243, 0.72);
+  color: rgba(255, 255, 255, 0.72);
   padding: 8px 2px;   /* a 10px glyph in a 26px target */
   transition: color var(--bb-dur-quick) var(--bb-ease);
 }
@@ -6277,7 +6281,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 
 .navsearch-hit:hover, .navsearch-hit:focus-visible {
-  background: rgba(250, 245, 243, 0.07);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .navsearch-thumb {
@@ -6287,7 +6291,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   /* 4:5, the source ratio — same as .newin-media, and corrected with it. */
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: rgba(250, 245, 243, 0.06);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .navsearch-hit-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
@@ -6302,7 +6306,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   font-size: 10px;
   letter-spacing: 0.06em;
   /* .68 measures 6.4:1 on the ink. */
-  color: rgba(250, 245, 243, 0.72);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .navsearch-all {
@@ -6313,7 +6317,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--bb-white);
-  border-bottom: 1px solid rgba(250, 245, 243, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   padding-bottom: 3px;
   transition: border-color var(--bb-dur-quick) var(--bb-ease);
 }
@@ -6335,12 +6339,12 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin: 6px 0 0;
   font-size: 12px;
   line-height: 1.5;
-  color: rgba(250, 245, 243, 0.72);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .navsearch-tel {
   color: var(--bb-white);
-  border-bottom: 1px solid rgba(250, 245, 243, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .navsearch-chips {
@@ -6359,15 +6363,15 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(250, 245, 243, 0.82);
-  border: 1px solid rgba(250, 245, 243, 0.22);
+  color: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   padding: 8px 11px;
   transition: border-color var(--bb-dur-quick) var(--bb-ease),
               color var(--bb-dur-quick) var(--bb-ease);
 }
 
 .navsearch-chip:hover, .navsearch-chip:focus-visible {
-  border-color: rgba(250, 245, 243, 0.72);
+  border-color: rgba(255, 255, 255, 0.72);
   color: var(--bb-white);
 }
 
@@ -6402,7 +6406,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   letter-spacing: 0.3em;   /* the snippet's 0.3em tracking, kept — it is the
                               one piece of its type styling that is right for
                               a Didone sitting under it */
-  color: rgba(26, 20, 22, 0.75);   /* 7.75:1 on paper */
+  color: rgba(14, 11, 12, 0.75);   /* 7.75:1 on paper */
 }
 
 /* Stacked on a phone, overlapped from 768 up.
@@ -6454,7 +6458,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
     repeating-linear-gradient(
       -45deg,
       transparent 0 11px,
-      rgba(26, 20, 22, 0.035) 11px 22px
+      rgba(14, 11, 12, 0.035) 11px 22px
     );
 }
 
@@ -6671,9 +6675,9 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   /* The site's own ink. It was Mulberry for an afternoon (2026-09-23); the
      client did not like the purple. Solid: the strip sits over the top edge
      of a photograph and needs its own ground. */
-  --announce-ink: rgba(250, 245, 243, 0.9);   /* 13.7:1 on the ink */
+  --announce-ink: rgba(255, 255, 255, 0.9);   /* 13.7:1 on the ink */
   background: var(--bb-black);
-  border-bottom: 1px solid rgba(250, 245, 243, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .announce-list {
@@ -6821,7 +6825,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 
 /* On the ink fill the grey would drop to roughly 1.5:1, so the count borrows
    the label's own colour at a reduced alpha instead — 8.6:1 on the ink. */
-.catbar-link[aria-current="page"] .catbar-n { color: rgba(250, 245, 243, 0.82); }
+.catbar-link[aria-current="page"] .catbar-n { color: rgba(255, 255, 255, 0.82); }
 
 /* Phone: one swipeable row that bleeds to the screen edge, with a fade on
    the right saying there is more. CatbarScroll brings the current pill in. */
@@ -6920,7 +6924,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   /* The same alpha as .prod-price, which axe already cleared at this size on
      paper. Not lighter: this is the sentence that stops somebody in Dublin
      typing an address the shop cannot post to. */
-  color: rgba(26, 20, 22, 0.72);
+  color: rgba(14, 11, 12, 0.72);
 }
 
 .dd .cf-field { margin-top: 18px; }
@@ -6928,7 +6932,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .dd-hint {
   margin-top: 6px;
   font-size: 12px;
-  color: rgba(26, 20, 22, 0.72);
+  color: rgba(14, 11, 12, 0.72);
 }
 
 /* A postcode is eight characters. A box the width of the page tells somebody
@@ -7050,7 +7054,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin-top: 14px;
   font-size: 13px;
   line-height: 1.5;
-  color: rgba(26, 20, 22, 0.72);
+  color: rgba(14, 11, 12, 0.72);
 }
 
 /* ── 404 (app/not-found.tsx) ───────────────────────────────────────────── */
@@ -7203,7 +7207,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   transition: background 200ms var(--bb-ease), opacity 200ms var(--bb-ease);
 }
 .bk-stepper button:disabled { opacity: 0.3; cursor: default; }
-@media (hover: hover) and (pointer: fine) { .bk-stepper button:hover:not(:disabled) { background: rgba(26, 20, 22, 0.06); } }
+@media (hover: hover) and (pointer: fine) { .bk-stepper button:hover:not(:disabled) { background: rgba(14, 11, 12, 0.06); } }
 .bk-stepper button:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
 .bk-stepper output { min-width: 22px; text-align: center; font-size: 14px; font-variant-numeric: tabular-nums; }
 .bk-remove {
@@ -7287,7 +7291,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 @media (hover: hover) and (pointer: fine) {
-  .bk-pay:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 24px -12px rgba(26, 20, 22, 0.55); }
+  .bk-pay:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 24px -12px rgba(14, 11, 12, 0.55); }
   .bk-pay:hover:not(:disabled)::after { transform: translateX(110%); }
 }
 .bk-pay:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
@@ -7318,7 +7322,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   background: var(--bb-white-pure);
   transition: border-color var(--bb-dur-quick) var(--bb-ease), box-shadow var(--bb-dur-quick) var(--bb-ease);
 }
-.bk .dd .cf-input:hover { border-color: rgba(26, 20, 22, 0.34); }
+.bk .dd .cf-input:hover { border-color: rgba(14, 11, 12, 0.34); }
 .bk .dd .cf-input:focus { outline: none; border-color: var(--bb-black); box-shadow: 0 0 0 1px var(--bb-black); }
 .bk .dd .cf-input::placeholder { color: var(--bb-grey-dark); opacity: 0.75; }
 .bk .dd .dd-hint { margin-top: 6px; }
@@ -7366,7 +7370,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .cf-ambient { position: absolute; inset: 0; z-index: -1; opacity: 0.22; }
 .cf-ambient picture { display: block; width: 100%; height: 100%; }
 .cf-ambient-img { width: 100%; height: 100%; object-fit: cover; filter: blur(48px) saturate(1.1); transform: scale(1.2); }
-.cf::after { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse at center, rgba(250, 245, 243, 0.2) 0%, var(--bb-white) 78%); }
+.cf::after { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, var(--bb-white) 78%); }
 .cf-head { text-align: center; padding-inline: 18px; margin-bottom: clamp(28px, 4vh, 44px); }
 .cf-eyebrow { margin: 0 0 12px; font-size: 10px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--bb-rouge); }
 .cf-h2 { margin: 0; font-family: var(--font-display-face), Georgia, serif; font-weight: 400; font-size: clamp(40px, 5.4vw, 76px); line-height: 1; }
@@ -7398,10 +7402,10 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   aspect-ratio: 4 / 5;
   overflow: hidden;
   background: var(--bb-grey-light);
-  box-shadow: 0 18px 40px -22px rgba(26, 20, 22, 0.45);
+  box-shadow: 0 18px 40px -22px rgba(14, 11, 12, 0.45);
   transition: box-shadow 800ms ease;
 }
-.cf-card.is-centre .cf-photo { box-shadow: 0 30px 60px -28px rgba(26, 20, 22, 0.6); }
+.cf-card.is-centre .cf-photo { box-shadow: 0 30px 60px -28px rgba(14, 11, 12, 0.6); }
 .cf-body {
   display: flex;
   flex-direction: column;
@@ -7444,8 +7448,8 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   margin: 16px 0 0;
   padding: 14px 16px;
   border-radius: 14px;
-  background: rgba(138, 7, 11, 0.05);
-  border: 1px solid rgba(138, 7, 11, 0.22);
+  background: rgba(200, 16, 46, 0.05);
+  border: 1px solid rgba(200, 16, 46, 0.22);
   color: var(--red);
   font-size: 14px;
   line-height: 1.5;
@@ -7517,7 +7521,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .visit-cta:focus-visible { background: transparent; color: var(--bb-white); border-color: var(--bb-black); }
 .hero-cta:is(:hover, :focus-visible)::before,
 .visit-cta:is(:hover, :focus-visible)::before { transform: scaleX(1); transform-origin: left center; }
-.visit-cta { border-color: rgba(26, 20, 22, 0.42); }
+.visit-cta { border-color: rgba(14, 11, 12, 0.42); }
 
 .pinky-cta::after,
 .btn-solid::after {
@@ -7581,8 +7585,8 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   .pm[data-textured] { min-height: min(72vh, 680px); display: flex; flex-direction: column; justify-content: flex-end; }
   .pm-texture::after {
     background:
-      linear-gradient(to right, rgba(26, 20, 22, 0.92) 0%, rgba(26, 20, 22, 0.78) 30%, rgba(26, 20, 22, 0.32) 60%, rgba(26, 20, 22, 0.1) 100%),
-      linear-gradient(to top, rgba(26, 20, 22, 0.8) 0%, rgba(26, 20, 22, 0.45) 26%, rgba(26, 20, 22, 0) 58%);
+      linear-gradient(to right, rgba(14, 11, 12, 0.92) 0%, rgba(14, 11, 12, 0.78) 30%, rgba(14, 11, 12, 0.32) 60%, rgba(14, 11, 12, 0.1) 100%),
+      linear-gradient(to top, rgba(14, 11, 12, 0.8) 0%, rgba(14, 11, 12, 0.45) 26%, rgba(14, 11, 12, 0) 58%);
   }
   .pm-texture img { object-position: right 55%; }
 }
@@ -7592,14 +7596,14 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 @media (min-width: 900px) and (max-width: 1279px) {
   .pm-texture::after {
     background:
-      linear-gradient(to right, rgba(26, 20, 22, 0.94) 0%, rgba(26, 20, 22, 0.88) 42%, rgba(26, 20, 22, 0.42) 72%, rgba(26, 20, 22, 0.14) 100%),
-      linear-gradient(to top, rgba(26, 20, 22, 0.8) 0%, rgba(26, 20, 22, 0.45) 26%, rgba(26, 20, 22, 0) 58%);
+      linear-gradient(to right, rgba(14, 11, 12, 0.94) 0%, rgba(14, 11, 12, 0.88) 42%, rgba(14, 11, 12, 0.42) 72%, rgba(14, 11, 12, 0.14) 100%),
+      linear-gradient(to top, rgba(14, 11, 12, 0.8) 0%, rgba(14, 11, 12, 0.45) 26%, rgba(14, 11, 12, 0) 58%);
   }
 }
 @media (max-width: 899px) {
   .pm-texture img { object-position: 50% 50%; }
   .pm-texture::after {
-    background: linear-gradient(to top, rgba(26, 20, 22, 0.94) 0%, rgba(26, 20, 22, 0.82) 55%, rgba(26, 20, 22, 0.6) 100%);
+    background: linear-gradient(to top, rgba(14, 11, 12, 0.94) 0%, rgba(14, 11, 12, 0.82) 55%, rgba(14, 11, 12, 0.6) 100%);
   }
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -7755,7 +7759,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .cps-card { border: 0; }
 .cps-card-media { aspect-ratio: 4 / 5; border-radius: 4px; transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 700ms cubic-bezier(0.22, 1, 0.36, 1); }
 @media (hover: hover) and (pointer: fine) {
-  .cps-card:hover .cps-card-media { transform: translateY(-6px); box-shadow: 0 26px 50px -30px rgba(26, 20, 22, 0.45); }
+  .cps-card:hover .cps-card-media { transform: translateY(-6px); box-shadow: 0 26px 50px -30px rgba(14, 11, 12, 0.45); }
 }
 .cps-card-body {
   display: grid;
@@ -7817,11 +7821,11 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(26, 20, 22, 0.96) 0%, rgba(26, 20, 22, 0.9) 55%, rgba(26, 20, 22, 0.5) 82%, rgba(26, 20, 22, 0.25) 100%);
+  background: linear-gradient(to top, rgba(14, 11, 12, 0.96) 0%, rgba(14, 11, 12, 0.9) 55%, rgba(14, 11, 12, 0.5) 82%, rgba(14, 11, 12, 0.25) 100%);
 }
 @media (min-width: 900px) {
   .hwb-media::after {
-    background: linear-gradient(to right, rgba(26, 20, 22, 0.9) 0%, rgba(26, 20, 22, 0.72) 32%, rgba(26, 20, 22, 0.2) 60%, rgba(26, 20, 22, 0) 100%);
+    background: linear-gradient(to right, rgba(14, 11, 12, 0.9) 0%, rgba(14, 11, 12, 0.72) 32%, rgba(14, 11, 12, 0.2) 60%, rgba(14, 11, 12, 0) 100%);
   }
 }
 .hwb-copy { max-width: 520px; }
@@ -8110,15 +8114,15 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 72% 78% at 0% 72%, rgba(26, 20, 22, 0.56) 0%, rgba(26, 20, 22, 0.36) 50%, transparent 100%),
+    radial-gradient(ellipse 72% 78% at 0% 72%, rgba(14, 11, 12, 0.56) 0%, rgba(14, 11, 12, 0.36) 50%, transparent 100%),
     linear-gradient(
       to top,
-      rgba(26, 20, 22, 0.86) 0%,
-      rgba(26, 20, 22, 0.68) 24%,
-      rgba(26, 20, 22, 0.44) 44%,
-      rgba(26, 20, 22, 0.16) 62%,
-      rgba(26, 20, 22, 0.04) 76%,
-      rgba(26, 20, 22, 0.44) 100%
+      rgba(14, 11, 12, 0.86) 0%,
+      rgba(14, 11, 12, 0.68) 24%,
+      rgba(14, 11, 12, 0.44) 44%,
+      rgba(14, 11, 12, 0.16) 62%,
+      rgba(14, 11, 12, 0.04) 76%,
+      rgba(14, 11, 12, 0.44) 100%
     );
 }
 
@@ -8211,7 +8215,7 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   display: block;
   height: 1px;
   overflow: hidden;
-  background: rgba(253, 250, 249, 0.3);
+  background: rgba(255, 255, 255, 0.3);
 }
 .lm-fill {
   position: absolute;
@@ -8281,8 +8285,8 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 }
 .lm--centre .lm-scrim {
   background:
-    radial-gradient(ellipse 70% 52% at 50% 50%, rgba(26, 20, 22, 0.58) 0%, rgba(26, 20, 22, 0.4) 45%, rgba(26, 20, 22, 0.12) 80%, transparent 100%),
-    linear-gradient(to top, rgba(26, 20, 22, 0.7) 0%, rgba(26, 20, 22, 0.2) 18%, transparent 34%, transparent 76%, rgba(26, 20, 22, 0.44) 100%);
+    radial-gradient(ellipse 70% 52% at 50% 50%, rgba(14, 11, 12, 0.58) 0%, rgba(14, 11, 12, 0.4) 45%, rgba(14, 11, 12, 0.12) 80%, transparent 100%),
+    linear-gradient(to top, rgba(14, 11, 12, 0.7) 0%, rgba(14, 11, 12, 0.2) 18%, transparent 34%, transparent 76%, rgba(14, 11, 12, 0.44) 100%);
 }
 /* No list: the logo and one button. The timer is invisible but must stay
    rendered (display:none would stop its animation, and the autoplay). */
@@ -8308,11 +8312,11 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 639px) {
   .lm--centre .lm-scrim {
     background:
-      radial-gradient(ellipse 120% 34% at 50% 50%, rgba(26, 20, 22, 0.62) 0%, rgba(26, 20, 22, 0.42) 50%, rgba(26, 20, 22, 0.1) 85%, transparent 100%),
-      linear-gradient(to top, rgba(26, 20, 22, 0.5) 0%, transparent 22%, transparent 78%, rgba(26, 20, 22, 0.44) 100%);
+      radial-gradient(ellipse 120% 34% at 50% 50%, rgba(14, 11, 12, 0.62) 0%, rgba(14, 11, 12, 0.42) 50%, rgba(14, 11, 12, 0.1) 85%, transparent 100%),
+      linear-gradient(to top, rgba(14, 11, 12, 0.5) 0%, transparent 22%, transparent 78%, rgba(14, 11, 12, 0.44) 100%);
   }
 }
-.lm--centre .lm-title { text-shadow: 0 2px 36px rgba(26, 20, 22, 0.35); }
+.lm--centre .lm-title { text-shadow: 0 2px 36px rgba(14, 11, 12, 0.35); }
 
 /* Statement pieces on a SHORT screen (2026-09-23, Brad: "it overlaps").
    The stage is pinned at 100vh - 72px and clips; with the full buy block
@@ -8346,7 +8350,7 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   line-height: 0.88;
   letter-spacing: -0.005em;
   text-transform: uppercase;
-  text-shadow: 0 2px 30px rgba(26, 20, 22, 0.28);
+  text-shadow: 0 2px 30px rgba(14, 11, 12, 0.28);
 }
 .lm--centre .lm-title em { font-style: normal; }
 /* The horses sit at the middle of the frame: the name goes just below
@@ -8354,9 +8358,9 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
    and the middle wash comes off so the red stays vivid. */
 .lm--centre .lm-content { justify-content: flex-start; padding-top: calc(55svh + 28px); }
 .lm--centre .lm-scrim,
-.lm--centre .lm-scrim { background: linear-gradient(to top, rgba(26, 20, 22, 0.55) 0%, transparent 30%, transparent 80%, rgba(26, 20, 22, 0.44) 100%); }
+.lm--centre .lm-scrim { background: linear-gradient(to top, rgba(14, 11, 12, 0.55) 0%, transparent 30%, transparent 80%, rgba(14, 11, 12, 0.44) 100%); }
 @media (max-width: 639px) {
-  .lm--centre .lm-scrim { background: linear-gradient(to top, rgba(26, 20, 22, 0.55) 0%, transparent 30%, transparent 80%, rgba(26, 20, 22, 0.44) 100%); }
+  .lm--centre .lm-scrim { background: linear-gradient(to top, rgba(14, 11, 12, 0.55) 0%, transparent 30%, transparent 80%, rgba(14, 11, 12, 0.44) 100%); }
 }
 
 /* The header wordmark stands down over the home hero (Nav: data-hidden). */
@@ -8384,11 +8388,11 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   font-size: 24px;
   font-weight: 400;
   letter-spacing: 0;
-  color: #FDFAF3;
+  color: #FFFFFF;
 }
 @media (min-width: 640px) { .arr-rail .stmt-text { font-size: 30px; } }
 .arr-rail .stmt-item { gap: clamp(20px, 2.4vw, 34px); padding-inline-end: clamp(20px, 2.4vw, 34px); }
-.arr-dot { display: block; width: 8px; height: 8px; border-radius: 50%; background: #E0201A; flex: none; }
+.arr-dot { display: block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
 .arr-rail .stmt-track { animation-duration: 30s; }
 
 /* Taller strip (2026-09-23, Brad: "shouldn't be that thin"). */
@@ -8423,20 +8427,20 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
    photographs directly under it lose the red ground too, so the band does
    not change colour halfway down. */
 .pov {
-  --bb-black: #FAF8F4;
+  --bb-black: #FFFFFF;
   /* Type black, not red (Brad, 2026-09-23); the eyebrow stays red. */
-  --bb-white: #1A1416;
-  --bb-white-pure: #1A1416;
+  --bb-white: #0E0B0C;
+  --bb-white-pure: #0E0B0C;
   --bb-rouge-lift: var(--bb-rouge);
-  --bb-grey-mid: #6B5048;
-  --bb-grey-light: #6B5048;
-  --bb-dark-border: rgba(110, 10, 16, 0.2);
+  --bb-grey-mid: #555555;
+  --bb-grey-light: #555555;
+  --bb-dark-border: rgba(14, 11, 12, 0.2);
 }
-.cats { background: #FAF8F4; }
+.cats { background: #FFFFFF; }
 /* Hard-coded white in the philosophy note, which the token swap cannot
    reach: red on the ivory instead. */
-.pov .pov-note-text { color: #1A1416; }
-.pov .pov-rule { background: rgba(26, 20, 22, 0.3); }
+.pov .pov-note-text { color: #0E0B0C; }
+.pov .pov-rule { background: rgba(14, 11, 12, 0.3); }
 
 /* ══ Header, flip, page transition (2026-09-23, Brad) ═══════════════════ */
 
@@ -8524,14 +8528,10 @@ html[data-nav] #main { animation: page-in 900ms cubic-bezier(0.22, 1, 0.36, 1) b
 }
 
 
-/* ══ Late 2026-09-23 (Brad): black type, red headings, white header ══════
-   --bb-black is ink again, so body copy, the footer and the dark bands are
-   black. Headings take the red: inside a heading --bb-black is re-pointed
-   at --bb-red, so whatever rule gives a heading "var(--bb-black)" now gives
-   it red, and a heading with no colour of its own gets red too. Headings on
-   dark grounds set light colours of their own and are unaffected. */
-:is(h1, h2, h3) { --bb-black: var(--bb-red); }
-:where(h1, h2, h3) { color: var(--bb-black); }
+/* ══ Late 2026-09-23: header type pure white. (Headings were red here for
+   an hour; since the white/black/red palette they are black like the text,
+   and red is kept for CTAs, tags and active states.) */
+
 
 /* Header type pure white, not the off-white paper. */
 header.fixed { color: #FFFFFF; }
@@ -8576,3 +8576,4 @@ header.fixed { color: #FFFFFF; }
 .nav-menu-item:last-child { border-top-color: rgba(255, 255, 255, 0.12); }
 .nav-menu-item:last-child .nav-menu-link { color: #FFFFFF; }
 .nav-menu-item:last-child .nav-menu-link::after { content: " \2192" / ""; }
+
