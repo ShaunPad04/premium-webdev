@@ -8867,3 +8867,58 @@ h3.cps-name, .cps-name {
    their tracking instead. */
 :is(.btn-solid, .cx-send, .cf-submit, .bk-pay, .atb-add, .atb-buy, .hero-cta, .visit-cta) .roll { white-space: nowrap; }
 .bk-pay { letter-spacing: 0.06em; padding-inline: 18px; }
+
+/* ══ Softer type (late 2026-09-23, Brad: "a little less manly ... it's a
+   women's boutique") ════════════════════════════════════════════════════
+   --font-display is Bodoni Moda now. Headings keep the case they are
+   written in (sentence case reads softer than shouted caps) with a real
+   italic for <em> accents; the wordmarks, hero name and marquee stay in
+   wide-spaced capitals, the Vogue masthead register. Nav, the strip and
+   small labels move to DM Sans, fine and spaced. */
+:is(h1, h2, .display):not(.sr-only) {
+  font-family: var(--font-display), Didot, "Bodoni 72", Georgia, serif;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: -0.005em;
+  line-height: 1.05;
+}
+:is(h1, h2, .display) :is(em, i) { font-style: italic; }
+h2.ft-group { font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.navbar .nav-link, .navbar .nb-word, .nav-menu-link, .announce-item {
+  font-family: var(--font-body), Arial, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.navbar .nav-link, .navbar .nb-word { font-size: 12.5px; }
+.nav-menu-link { font-size: 13px; }
+.announce-item { font-size: 12px; }
+.navbar-mark, .fw-mark {
+  font-family: var(--font-display), Didot, Georgia, serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.navbar-mark { font-size: 24px; }
+@media (min-width: 1024px) { .navbar-mark { font-size: 27px; } }
+.lm--centre .lm-title {
+  font-family: var(--font-display), Didot, Georgia, serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: clamp(52px, 11vw, 190px);
+  line-height: 0.95;
+}
+.arr-rail .stmt-text {
+  font-family: var(--font-display), Didot, Georgia, serif;
+  font-style: italic;
+  font-size: 24px;
+  letter-spacing: 0.04em;
+}
+@media (min-width: 640px) { .arr-rail .stmt-text { font-size: 28px; } }
+/* Small labels on the black bands are white, never the pink tint. */
+:root { --bb-rouge-lift: #FFFFFF; }
+/* Footer statement and brand name in the display serif, like every other
+   heading (they are <p>s, so the heading rule does not reach them). */
+.ft-cta-h, .ft-name { font-family: var(--font-display), Didot, Georgia, serif; font-weight: 400; letter-spacing: -0.005em; }
+.ft-cta-h em { font-style: italic; }

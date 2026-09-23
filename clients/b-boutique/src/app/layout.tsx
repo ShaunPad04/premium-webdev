@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { MagneticButtons } from "@/components/MagneticButtons";
 import { NavMotion } from "@/components/NavMotion";
-import { Anton, DM_Sans } from "next/font/google";
+import { Bodoni_Moda, DM_Sans } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
@@ -26,15 +26,16 @@ import "./globals.css";
  * on every boutique site. That still holds, and this is not it: the display
  * face is Bodoni, which is a far sharper, higher-contrast letter than
  * Playfair. Inter is doing the quiet half of the job, not the loud one. */
-/* One pair everywhere (2026-09-23, Brad): Anton for headings, nav,
- * wordmarks and marquees; DM Sans 400/500/600 for everything else. Both
+/* One pair everywhere. Display: Bodoni Moda, the fashion-magazine Didone,
+ * since late 2026-09-23 (Brad: Anton read "manly" for a women's boutique;
+ * keep it professional and boutique-like). Body: DM Sans 400/500/600. Both
  * self-hosted by next/font at build time, so the page requests nothing from
- * Google on load (/privacy says so). Playfair Display and Inter are gone;
- * every older font variable in globals.css resolves to one of these two. */
-const display = Anton({
+ * Google on load (/privacy says so). */
+const display = Bodoni_Moda({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: "400",
+  weight: ["400", "500"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
