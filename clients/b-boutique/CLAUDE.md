@@ -855,3 +855,11 @@ The ink stays #1A1416. Do not reintroduce purple/plum grounds.
 - Add to bag / Buy now are pills in theme colours (ink with a sheen; Buy now
   -> ink outline filling with ink). Gold was dropped: the theme has none. The
   statement pieces on the home page carry the same AddToBag block.
+
+## PREVIEW BRANCH `preview/red-ivory` — 2026-09-23 (not live)
+
+Brad asked to see red and ivory cream. Token swap only: `--bb-black` ->
+deep red #6E0A10 (text, buttons, bands), paper -> ivory #F8F2E7, greys
+warmed, `--bb-rouge-lift` -> #F2B8BF (#DE6376 was ~2.5:1 on the red).
+Reopens the ink rule AND the old "no cream" rule; merges only if Brad
+approves. Sister preview: `preview/oxblood-rose`.
