@@ -9341,3 +9341,11 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
 @media (max-width: 1023px) {
   .navsearch-panel:has(.navsearch-chips--rest) { display: none; }
 }
+
+/* 2026-09-23, Brad: no ring round the search glass at any width, no resting
+   chips on desktop either, and the ribbon without its red edge. */
+.sdock-trigger { border-color: transparent; }
+.sdock-trigger:hover { border-color: transparent; background: rgba(255, 255, 255, 0.08); }
+.navsearch-panel:has(.navsearch-chips--rest) { display: none; }
+.pathband-svg .tp-ribbon-edge { stroke: var(--inverse-bg); }
+@media (min-width: 1024px) and (max-width: 1279px) { .sdock-form { width: 240px; } }
