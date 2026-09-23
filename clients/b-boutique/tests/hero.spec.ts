@@ -15,11 +15,13 @@ test('stepping through every slide does not crash the page', async ({ page }) =>
   page.on('pageerror', (e) => errors.push(String(e)));
   await page.goto('/', { waitUntil: 'networkidle' });
 
+  /* The Lumina list since 2026-09-23: the slide list along the foot is the
+     control. Each change runs the 1.7s glass transition, so wait past it. */
   const titles: string[] = [];
   for (let i = 0; i < 6; i++) {
-    await page.mouse.click(1100, 400); // right half = next
-    await page.waitForTimeout(1500);
-    titles.push((await page.locator('.pss-title').textContent()) ?? '');
+    await page.locator('.lm-item').nth((i + 1) % 5).click();
+    await page.waitForTimeout(2200);
+    titles.push((await page.locator('.lm-title .sr-only').textContent()) ?? '');
   }
 
   expect(errors, errors.join('\n')).toEqual([]);

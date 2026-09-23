@@ -51,9 +51,10 @@ export function Hero() {
       id="top"
       className="hero relative isolate w-full overflow-hidden bg-bb-black"
     >
-      {/* The slider, since 2026-09-22 at the client's request — see
-          components/ui/parallax-strip-slider.tsx for what was changed on the
-          way in. The headline is now the first slide's title; this h1 is the
+      {/* The Lumina list, since 2026-09-23 at Brad's request (it replaced
+          the 2026-09-22 strip slider) — see components/ui/
+          lumina-interactive-list.tsx for what was changed on the way in.
+          The headline is the first slide's title; this h1 is the
           page's one top-level heading for assistive tech and search, and
           says the same thing in words that do not change every six seconds. */}
       <h1 className="sr-only">

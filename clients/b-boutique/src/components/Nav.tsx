@@ -95,9 +95,11 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
                edge of each photograph readable without veiling the frame. */
             /* The second layer is for the right-hand controls, which sit
                over the lit side of the masthead photographs on a wide
-               screen (4.2:1 without it at 1280-1920). */
+               screen (4.2:1 without it at 1280-1920). An ellipse from the
+               top-right corner, not a full-height band: the band ended in a
+               hard line across the photograph at the box's 150px edge. */
             background:
-              "linear-gradient(to bottom, rgba(26, 20, 22, .74) 0%, rgba(26, 20, 22, .6) 45%, rgba(26, 20, 22, .22) 78%, transparent 100%), linear-gradient(to left, rgba(26, 20, 22, .38) 0%, transparent 30%)",
+              "linear-gradient(to bottom, rgba(26, 20, 22, .74) 0%, rgba(26, 20, 22, .6) 45%, rgba(26, 20, 22, .22) 78%, transparent 100%), radial-gradient(ellipse 40% 100% at 100% 0%, rgba(26, 20, 22, .4) 0%, rgba(26, 20, 22, .3) 45%, transparent 100%)",
           }}
         />
       ) : null}

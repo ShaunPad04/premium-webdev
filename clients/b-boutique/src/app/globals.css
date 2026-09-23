@@ -8089,3 +8089,204 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   .navbar-menu { order: 5; }
   .navbar-links { margin-left: -2px; }
 }
+
+/* ── The Lumina hero (components/ui/lumina-interactive-list.tsx) ────────
+   2026-09-23. Photographs full-bleed; a count, the title, one line and the
+   button at the foot on the left; the slide list across the bottom with a
+   progress line on the one playing. The first photograph and title are
+   plain HTML, so nothing here may hide them before the page has painted:
+   the letter rise only runs once a slide has CHANGED ([data-anim]). */
+.lm {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  padding: 0 18px 12px;
+  background: var(--bb-black);
+  color: var(--bb-white-pure);
+  touch-action: pan-y;
+}
+@media (min-width: 640px) { .lm { padding-inline: 40px; padding-bottom: 20px; } }
+@media (min-width: 768px) { .lm { padding-inline: var(--bb-gutter-editorial); } }
+
+.lm-stage { position: absolute; inset: 0; z-index: -2; }
+.lm-pic {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 900ms var(--bb-ease);
+}
+.lm-pic[data-on] { opacity: 1; }
+.lm-pic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* While the glass is drawing it covers the photographs; the swap under it
+   must be instant or the old frame fades through the new one on hand-back. */
+.lm[data-gl] .lm-pic { transition: none; }
+.lm-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+.lm-canvas[data-on] { opacity: 1; }
+
+/* Deep at the foot for the type and the list, a pool behind the text block
+   on the left, a lift at the top for the header, and clear through the
+   middle and the right so the photograph is still the picture. Tuned by
+   MEASUREMENT (text hidden, brightest pixel under each glyph box, all five
+   photographs, 390-1920): the first, foot-only wash left the title at
+   1.8:1 over the white shirt on a desktop. */
+.lm-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 72% 78% at 0% 72%, rgba(26, 20, 22, 0.56) 0%, rgba(26, 20, 22, 0.36) 50%, transparent 100%),
+    linear-gradient(
+      to top,
+      rgba(26, 20, 22, 0.86) 0%,
+      rgba(26, 20, 22, 0.68) 24%,
+      rgba(26, 20, 22, 0.44) 44%,
+      rgba(26, 20, 22, 0.16) 62%,
+      rgba(26, 20, 22, 0.04) 76%,
+      rgba(26, 20, 22, 0.44) 100%
+    );
+}
+
+.lm-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-bottom: clamp(26px, 5.5svh, 64px);
+}
+.lm-count {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 clamp(14px, 2.4svh, 26px);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+}
+.lm-count-rule { display: block; width: 28px; height: 1px; background: currentColor; opacity: 0.6; }
+.lm-count-total { opacity: 0.78; }
+
+.lm-title {
+  margin: 0;
+  font-family: var(--font-display-face), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(44px, 6.6vw, 112px);
+  line-height: 0.98;
+  letter-spacing: -0.009em;
+}
+.lm-title em { font-style: italic; font-synthesis: none; }
+.lm-line { display: block; }
+.lm-word { display: inline-block; white-space: nowrap; }
+.lm-ch { display: inline-block; }
+.lm-title[data-anim] .lm-ch {
+  animation: lm-rise 1000ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i) * 24ms);
+}
+@keyframes lm-rise {
+  from { opacity: 0; transform: translateY(0.42em) rotate(4deg); }
+  to { opacity: 1; transform: none; }
+}
+
+.lm-desc {
+  max-width: 40ch;
+  margin: clamp(14px, 2.2svh, 22px) 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  opacity: 0.92;
+}
+@media (min-width: 1024px) { .lm-desc { font-size: 16px; } }
+.lm-desc[data-anim] { animation: lm-fade 900ms var(--bb-ease) 320ms both; }
+@keyframes lm-fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 0.92; transform: none; }
+}
+
+.lm-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: clamp(20px, 3.4svh, 34px);
+}
+.lm-actions .hero-cta { margin-top: 0; }
+
+/* The list along the foot. Real buttons: each is a 44px target. */
+.lm-nav ol {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(10px, 2vw, 28px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lm-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 14px 0 10px;
+  color: inherit;
+  text-align: left;
+  opacity: 0.8;
+  transition: opacity var(--bb-dur-quick) var(--bb-ease);
+}
+.lm-item:hover, .lm-item:focus-visible, .lm-item[aria-current] { opacity: 1; }
+.lm-track {
+  position: relative;
+  display: block;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(253, 250, 249, 0.3);
+}
+.lm-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--bb-white-pure);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.lm-fill[data-run] { animation-name: lm-fill; animation-timing-function: linear; animation-fill-mode: forwards; }
+/* Nothing is timing it (reduced motion): the current line is simply full. */
+.lm-item[aria-current] .lm-fill:not([data-run]) { transform: none; }
+@keyframes lm-fill { to { transform: scaleX(1); } }
+.lm-label {
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Five labels do not fit a phone's width. The lines stay as 44px targets
+   (the count above the title says which is playing); the names go. */
+@media (max-width: 639px) {
+  .lm-label { display: none; }
+  .lm-item { justify-content: center; padding: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lm-pic, .lm-item { transition: none; }
+  .lm-title[data-anim] .lm-ch, .lm-desc[data-anim] { animation: none; }
+}

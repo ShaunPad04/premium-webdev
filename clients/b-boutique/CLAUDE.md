@@ -396,8 +396,18 @@ stocking them). Do not reintroduce the word without her confirming stock.
   from the front of the store"). It is her real fascia. Never edit it out,
   retouch it, or crop the About frame so it falls off the right edge
   (checked 2026-09-23: fully visible at 390, 768 and 1440).
-- **Home hero is the strip slider** (`components/ui/parallax-strip-slider.tsx`
-  via `HeroStrips.tsx`), which replaced `HeroSlideshow`. The first slide's
+- **Home hero is the Lumina list since 2026-09-23** (Brad's 21st.dev pick,
+  `components/ui/lumina-interactive-list.tsx` via `HeroStrips.tsx`). Its CDN
+  GSAP + three.js are gone: the glass transition is one shader on bare
+  WebGL, created after load+idle, drawing only during a change. First
+  photo and title are server HTML. Slide list = real buttons; keyboard focus
+  holds autoplay, a mouse click does not. Reduced motion: no autoplay, no
+  WebGL. The wash was MEASURED over all five photos, 390-1920: title >=3.6,
+  small text >=5.5, header >=4.8. Lighthouse mobile vs 96cf4a1, n=5
+  interleaved: score 79/79, LCP 5.56/5.41s, within noise. `gsap` removed.
+  The history below describes the strip slider it replaced.
+- **Home hero WAS the strip slider** (`components/ui/parallax-strip-slider.tsx`,
+  deleted 2026-09-23), which replaced `HeroSlideshow`. The first slide's
   title is "For every woman who walks in."; the h1 is sr-only. Changed on the
   way in: no Google Font (it would falsify /privacy), art-directed hero
   sources, layout from `pointer-coarse:` CSS not JS, keyboard buttons, a
