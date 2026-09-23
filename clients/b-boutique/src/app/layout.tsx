@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { NavMotion } from "@/components/NavMotion";
-import { Anton, Inter, Playfair_Display } from "next/font/google";
+import { Anton, DM_Sans } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
@@ -25,36 +25,22 @@ import "./globals.css";
  * on every boutique site. That still holds, and this is not it: the display
  * face is Bodoni, which is a far sharper, higher-contrast letter than
  * Playfair. Inter is doing the quiet half of the job, not the loud one. */
-/* Display face: Playfair Display, regular weight, since 2026-09-23.
- * Bodoni Moda until that morning; then Gloock, which Brad picked from a sheet
- * of free lookalikes for Olivera (a paid face) and then found "too thick and
- * bold" — it ships one heavy weight. Playfair at 400 keeps Olivera's high
- * contrast with a far lighter stroke, and it has a REAL italic, so the <em>
- * accents are drawn rather than slanted.
- *
- * Self-hosted by next/font at build time: the page still requests nothing
- * from Google on load (/privacy says so). */
-const display = Playfair_Display({
-  variable: "--font-display-face",
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  display: "swap",
-});
-
-/* The hero name in a condensed heavy grotesque, after Brad's
-   "Madrid" reference. Madrid is a commercial face; Anton is the closest
-   open one, self-hosted by next/font like the others. */
-const hero = Anton({
-  variable: "--font-hero",
+/* One pair everywhere (2026-09-23, Brad): Anton for headings, nav,
+ * wordmarks and marquees; DM Sans 400/500/600 for everything else. Both
+ * self-hosted by next/font at build time, so the page requests nothing from
+ * Google on load (/privacy says so). Playfair Display and Inter are gone;
+ * every older font variable in globals.css resolves to one of these two. */
+const display = Anton({
+  variable: "--font-display",
   subsets: ["latin"],
   weight: "400",
   display: "swap",
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const body = DM_Sans({
+  variable: "--font-body",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -200,7 +186,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-GB"
-      className={`${display.variable} ${inter.variable} ${hero.variable} h-full antialiased`}
+      className={`${display.variable} ${body.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bone text-onyx">
         {/* Every forward navigation lands at the top of the new page; back
