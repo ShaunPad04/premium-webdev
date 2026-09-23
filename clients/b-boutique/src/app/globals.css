@@ -1554,305 +1554,6 @@ body {
   .hw-b, .hw-c { aspect-ratio: 1 / 1; width: 100%; margin: 0; }
 }
 
-/* ── New in this week ─────────────────────────────────────────────────────
-   The first light section after the black chapter. A crisp boundary, no
-   divider, no rounded corner, no floating panel — black stops and cool white
-   begins. */
-.newin {
-  background: var(--bb-white);
-  color: var(--bb-black-soft);
-  padding-block: 84px 96px;
-  scroll-margin-top: 96px;
-}
-
-.newin-head,
-.newin-foot {
-  padding-inline: 18px;
-}
-
-.newin-rail { padding-inline: 18px; }
-
-@media (min-width: 768px) {
-  .newin-head,
-  .newin-foot,
-  .newin-rail { padding-inline: var(--bb-gutter-editorial); }
-}
-
-.newin-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 44px;
-}
-
-.newin-eyebrow {
-  font-size: 9px;
-  font-weight: 600;
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--bb-black-soft);
-  margin-bottom: 18px;
-}
-
-.newin-h2 {
-  font-family: var(--font-display-face), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(46px, 4vw, 62px);
-  line-height: 0.98;
-  letter-spacing: -0.007em;
-  color: var(--bb-black-soft);
-}
-
-/* A bare arrow with a 44px target around it. The visible mark stays small —
-   the hit area does the accessibility work, not a drawn button. */
-.newin-controls { display: none; gap: 4px; flex: 0 0 auto; }
-@media (min-width: 768px) { .newin-controls { display: flex; } }
-
-.newin-arrow {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  font-size: 15px;
-  line-height: 1;
-  color: var(--bb-black-soft);
-  background: none;
-  border: 0;
-  transition: opacity var(--bb-dur-quick) var(--bb-ease);
-}
-.newin-arrow:hover:not(:disabled) { opacity: 0.55; }
-.newin-arrow:disabled { opacity: 0.22; cursor: default; }
-
-.newin-rail {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scroll-snap-type: x mandatory;
-  scroll-padding-left: 18px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  list-style: none;
-}
-.newin-rail::-webkit-scrollbar { display: none; }
-
-/* While the rail is drifting under its own power, snap and smooth both have to
-   be off. A mandatory snap fights a scrollLeft written every frame — the
-   browser keeps trying to settle on a card while the script keeps moving it,
-   and the result is a visible stutter rather than a glide. `scroll-behavior`
-   goes with it because the arrows' smooth scroll and a per-frame write are two
-   animations arguing over the same value. Both come back the instant a person
-   touches the rail, so a flick still lands a card flush against the gutter. */
-.newin-rail.is-drifting {
-  scroll-snap-type: none;
-  scroll-behavior: auto;
-}
-@media (min-width: 768px) { .newin-rail { scroll-padding-left: var(--bb-gutter-editorial); } }
-
-/* 1.28 pieces on a phone, 3 on a tablet, 5 across a wide desktop — the widths
-   are derived from the gap so the last card lands flush rather than being
-   nudged by a hard-coded rem. */
-.newin-item { flex: 0 0 78vw; scroll-snap-align: start; }
-@media (min-width: 768px)  { .newin-item { flex: 0 0 calc((100% - 32px) / 3); } }
-@media (min-width: 1280px) { .newin-item { flex: 0 0 calc((100% - 64px) / 5); } }
-
-/* No card. No radius, no shadow, no surface, no border — the photograph and
-   its two lines of type sit directly on the white. */
-.newin-media {
-  position: relative;
-  /* 4:5, the source ratio. The comment here used to claim 3:4 WAS the source
-     ratio and crops nothing; that was true of the generated artwork and
-     stopped being true when the real photographs landed. */
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  background: var(--bb-white);
-}
-
-/* Scoped to this section's photographs only — Homeware is a separate
-   decision and must not inherit this.
-   The files are warm on purpose: brass, marble, a bone floor, warm window
-   light. This does not try to erase that, it calms it just enough to sit in a
-   cool room, and there is still real colour in it. Nothing is baked into a
-   source file. */
-.newin-media img {
-  filter: grayscale(25%) saturate(0.82) brightness(0.98) contrast(1.02);
-  transform: scale(1);
-  transition:
-    filter 620ms var(--bb-ease),
-    transform 700ms var(--bb-ease);
-}
-
-.newin-item:hover .newin-media img,
-.newin-item:focus-within .newin-media img {
-  filter: grayscale(0%) saturate(1) brightness(1) contrast(1);
-  transform: scale(1.018);
-}
-
-/* `.newin-cat` — the uppercase category eyebrow — was removed on 2026-09-21 at
-   the client's instruction: the card names the piece, not its department.
-   Its 17px top margin moves here, because that gap was between the photograph
-   and the first line of type rather than between the two lines. Deleting the
-   rule without moving the margin would have pulled the name up against the
-   image by 11px on every card. */
-/* The whole card is the target, not the two-word name under it. `contents`
-   so the link introduces no box of its own and the media/name layout inside
-   `.newin-item` is untouched — this is a change of semantics, not of
-   composition. */
-.newin-link {
-  display: contents;
-  color: inherit;
-}
-
-/* The ring goes on the ITEM, because `display: contents` gives the link no
-   box to draw one on. :focus-within on the parent is the standard answer and
-   it also means a focused card is outlined as a card, which is what it is. */
-.newin-item:focus-within {
-  outline: 2px solid currentColor;
-  outline-offset: 6px;
-}
-
-.newin-price {
-  margin-top: 5px;
-  font-size: 13px;
-  color: rgba(26, 20, 22, 0.72);
-  font-variant-numeric: tabular-nums;
-}
-
-/* Same alpha as the price beside it, distinguished by italic rather than by
-   going lighter — the identical decision as `.prod-price--pending`, and for
-   the identical reason: lightening the one price a customer most needs to
-   read is the wrong lever, and 13px wants 4.5:1. */
-.newin-price--pending {
-  font-style: italic;
-  font-variant-numeric: normal;
-}
-
-/* The card's own control. Quiet at rest and only fully present on hover or
-   keyboard focus — a rail of ten cards each shouting a button is a coupon
-   site, and this one is drifting past. The underline grows rather than
-   appearing, so nothing shifts. */
-.newin-cta {
-  margin-top: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--bb-black);
-  opacity: 0.55;
-  transition: opacity var(--bb-dur-quick) var(--bb-ease);
-}
-
-.newin-cta svg { transition: transform var(--bb-dur-quick) var(--bb-ease); }
-
-.newin-item:hover .newin-cta,
-.newin-item:focus-within .newin-cta { opacity: 1; }
-
-.newin-item:hover .newin-cta svg,
-.newin-item:focus-within .newin-cta svg { transform: translateX(3px); }
-
-@media (prefers-reduced-motion: reduce) {
-  .newin-cta, .newin-cta svg { transition: none; }
-}
-
-/* A drifting rail has no hover on a phone, so the control is simply present
-   there rather than waiting for an interaction that cannot happen. */
-@media (hover: none), (pointer: coarse) {
-  .newin-cta { opacity: 1; }
-}
-
-.newin-name {
-  margin-top: 17px;
-  font-family: var(--font-display-face), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(16px, 1.2vw, 19px);
-  line-height: 1.15;
-  letter-spacing: normal;
-  color: var(--bb-black-soft);
-}
-
-.newin-foot {
-  margin-top: 40px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--bb-grey-dark);
-}
-
-.newin-viewall {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--bb-black-soft);
-  text-decoration: underline;
-  text-underline-offset: 5px;
-  text-decoration-thickness: 1px;
-  white-space: nowrap;
-  /* Hit area only. This anchor is display:inline, and vertical padding on a
-     non-replaced inline box grows the hit-tested padding box without entering
-     the line-box calculation — so the target goes 12px -> 44px and not one
-     painted pixel moves. No compensation needed, and none of the underline,
-     tracking or baseline is touched. */
-  padding-block: 16px;
-}
-.newin-viewall-arrow {
-  display: inline-block;
-  transition: transform 450ms var(--bb-ease);
-}
-.newin-viewall:hover .newin-viewall-arrow,
-.newin-viewall:focus-visible .newin-viewall-arrow { transform: translateX(4px); }
-
-/* Entrance. The header rises as the white section arrives, then the pieces
-   follow. Transform and opacity only — the layout never moves, so nothing
-   here can contribute to CLS. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .newin-title {
-      animation: newin-rise 800ms var(--bb-ease) both;
-      animation-timeline: view();
-      animation-range: entry var(--bb-enter) entry var(--bb-settle);
-    }
-
-    /* The rail names its own timeline, and the pieces inside it use that
-       rather than view().
-
-       They have to. view() resolves against the nearest ancestor SCROLL
-       CONTAINER, and the rail is one — overflow-x: auto for the snap
-       scrolling, which computes overflow-y to auto as well. So every piece
-       was measuring itself against a box that never scrolls vertically, and
-       its progress sat frozen: 0.947 at desktop, 1 on a phone, unchanged from
-       the top of the document to the bottom. This entrance had never once
-       run. Same failure the Homeware parallax had, same fix — name the
-       timeline on the element whose own scrollport is the document.
-
-       One shared subject for all nine is correct here rather than a
-       compromise: they share a top edge, so the cascade is the range offset
-       below, not their position. */
-    .newin-rail {
-      view-timeline-name: --newin-rail;
-      view-timeline-axis: block;
-    }
-    /* The pieces are a horizontal row: they share a top edge, so unlike every
-       stacked group on this page they get no cascade from the layout and the
-       stagger has to be written. As a scroll offset, not a delay.
-
-       Capped at four places. The rail holds nine and shows about four; without
-       the cap the ninth would start half a screen after the first, and it is
-       off to the right where nobody is watching it arrive. */
-    .newin-item {
-      animation: newin-item 760ms var(--bb-ease) both;
-      animation-timeline: --newin-rail;
-      animation-range:
-        entry calc(var(--bb-enter)  + min(var(--i, 0), 4) * 0.7 * var(--bb-step))
-        entry calc(var(--bb-settle) + min(var(--i, 0), 4) * 0.7 * var(--bb-step));
-    }
-  }
-}
-
 @keyframes newin-rise { from { opacity: 0; transform: translateY(52px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes newin-item { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -7677,4 +7378,122 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   .visit-map { order: 4; margin-top: 24px; }
   .visit-cta { order: 5; align-self: flex-start; margin-top: 16px; }
   .visit-phone { order: 6; }
+}
+
+/* ── New arrivals: 3D coverflow (components/ui/3-d-coverflow-carousel.tsx) ─ */
+.cf {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(72px, 10vh, 120px) 0 clamp(56px, 8vh, 96px);
+  background: var(--bb-white);
+  color: var(--bb-black);
+  --cw: clamp(220px, 62vw, 330px);
+}
+.cf-ambient { position: absolute; inset: 0; z-index: -1; opacity: 0.22; }
+.cf-ambient picture { display: block; width: 100%; height: 100%; }
+.cf-ambient-img { width: 100%; height: 100%; object-fit: cover; filter: blur(48px) saturate(1.1); transform: scale(1.2); }
+.cf::after { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse at center, rgba(250, 245, 243, 0.2) 0%, var(--bb-white) 78%); }
+.cf-head { text-align: center; padding-inline: 18px; margin-bottom: clamp(28px, 4vh, 44px); }
+.cf-eyebrow { margin: 0 0 12px; font-size: 10px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--bb-rouge); }
+.cf-h2 { margin: 0; font-family: var(--font-display-face), Georgia, serif; font-weight: 400; font-size: clamp(40px, 5.4vw, 76px); line-height: 1; }
+.cf-h2 em { font-style: italic; font-synthesis: none; }
+
+.cf-stage {
+  position: relative;
+  height: calc(var(--cw) * 1.25 + 150px);
+  display: flex;
+  justify-content: center;
+  perspective: 1400px;
+}
+.cf-card {
+  position: absolute;
+  top: 0;
+  width: var(--cw);
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+  transform-origin: center center;
+  transition: transform 800ms cubic-bezier(0.25, 1, 0.5, 1), opacity 800ms cubic-bezier(0.25, 1, 0.5, 1), filter 800ms ease;
+  cursor: pointer;
+}
+.cf-card.is-centre { cursor: pointer; }
+.cf-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--bb-grey-light);
+  box-shadow: 0 18px 40px -22px rgba(26, 20, 22, 0.45);
+  transition: box-shadow 800ms ease;
+}
+.cf-card.is-centre .cf-photo { box-shadow: 0 30px 60px -28px rgba(26, 20, 22, 0.6); }
+.cf-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 18px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+.cf-card.is-centre .cf-body { opacity: 1; transform: none; }
+.cf-cat { font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bb-grey-dark); }
+.cf-name { font-family: var(--font-display-face), Georgia, serif; font-size: clamp(19px, 1.7vw, 23px); line-height: 1.2; }
+.cf-price { font-size: 14px; font-variant-numeric: tabular-nums; }
+.cf-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid currentColor;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.cf-cta svg { transition: transform 300ms var(--bb-ease); }
+@media (hover: hover) and (pointer: fine) { .cf-card.is-centre:hover .cf-cta svg { transform: translateX(4px); } }
+.cf-card:focus-visible { outline: none; }
+.cf-card:focus-visible .cf-photo { outline: 2px solid var(--bb-black); outline-offset: 4px; }
+
+.cf-controls { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 8px; }
+.cf-btn {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--bb-light-border);
+  border-radius: 50%;
+  background: var(--bb-white-pure);
+  color: var(--bb-black);
+  cursor: pointer;
+  transition: background 240ms var(--bb-ease), color 240ms var(--bb-ease), border-color 240ms var(--bb-ease);
+}
+@media (hover: hover) and (pointer: fine) { .cf-btn:hover { background: var(--bb-black); border-color: var(--bb-black); color: var(--bb-white); } }
+.cf-btn:focus-visible, .cf-pause:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
+.cf-count { margin: 0; min-width: 74px; text-align: center; font-size: 12px; letter-spacing: 0.12em; color: var(--bb-grey-dark); font-variant-numeric: tabular-nums; }
+.cf-count > span:first-child { color: var(--bb-black); }
+.cf-pause {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-grey-dark);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.cf-foot { margin: 28px auto 0; padding-inline: 18px; max-width: 60ch; text-align: center; font-size: 13px; color: var(--bb-grey-dark); }
+.cf-all { color: var(--bb-black); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  .cf-card, .cf-body, .cf-photo { transition: none; }
 }

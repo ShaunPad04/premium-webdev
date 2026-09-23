@@ -6,7 +6,7 @@ import { HorizontalRails } from "@/components/HorizontalRails";
 import NewsLetter from "@/components/ui/pinky-news-letter";
 import CinematicProducts from "@/components/ui/cinematic-product-scroll-section";
 import { SafeBoundary } from "@/components/SafeBoundary";
-import { NewInRail } from "@/components/NewInRail";
+import { CoverFlowCarousel } from "@/components/ui/3-d-coverflow-carousel";
 import { Homeware } from "@/components/Homeware";
 import { OwnerCard } from "@/components/OwnerCard";
 import { Service } from "@/components/Service";
@@ -39,7 +39,7 @@ export default function Home() {
         {/* 02 The rails — the heroic interaction */}
         <HorizontalRails />
         {/* 03 Proof — actual stock, moving weekly */}
-        <NewInRail />
+        <CoverFlowCarousel />
 
         <SafeBoundary name="statement pieces" fallback={null}>
           <CinematicProducts />

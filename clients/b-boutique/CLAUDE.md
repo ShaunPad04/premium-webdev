@@ -418,9 +418,12 @@ stocking them). Do not reintroduce the word without her confirming stock.
   Since 2026-09-23 it carries the full AddToBag block, whose colour swatches
   are crops of her own product photos (no guessed colour values). The demo's mock products, $ prices and invented
   brand are gone. Uses animejs for the card drop.
-- **New In rail on touch**: free swipe (no snap) once touched; the drift is
-  torn down under a finger and resumes 2.5s after the rail is still. A
-  double-loop race that kept writing scrollLeft under a held finger is fixed.
+- **New In is a 3D coverflow since 2026-09-23** (`components/ui/
+  3-d-coverflow-carousel.tsx`, Brad's pick; `NewInRail` deleted). Real
+  `newIn` pieces, 4:5 cards sized from the viewport, arrows scoped to the
+  carousel's focus, auto-advance with a real Pause button (never under
+  reduced motion). Every card is a real link; a pointer click on a SIDE card
+  turns the carousel instead of navigating.
 
 **`/homeware` was built 2026-09-22.** Every Homeware link — corner menu,
 header Shop menu, footer, the Accessories page, the home section's own
