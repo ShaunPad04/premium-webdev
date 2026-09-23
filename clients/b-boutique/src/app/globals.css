@@ -8337,3 +8337,23 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   .cps-desc { display: none; }
   .cps-features li { padding: 6px 0; }
 }
+
+/* PREVIEW preview/madrid-hero: the name in Anton caps, MADRID-style. */
+.lm--centre .lm-title {
+  font-family: var(--font-hero), "Arial Narrow", sans-serif;
+  font-size: clamp(76px, 17vw, 260px);
+  line-height: 0.88;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 30px rgba(26, 20, 22, 0.28);
+}
+.lm--centre .lm-title em { font-style: normal; }
+/* The horses sit at the middle of the frame: the name goes just below
+   them (as in the reference, where they brush the top of the letters),
+   and the middle wash comes off so the red stays vivid. */
+.lm--centre .lm-content { justify-content: flex-start; padding-top: calc(55svh + 28px); }
+.lm--centre .lm-scrim,
+.lm--centre .lm-scrim { background: linear-gradient(to top, rgba(26, 20, 22, 0.55) 0%, transparent 30%, transparent 80%, rgba(26, 20, 22, 0.44) 100%); }
+@media (max-width: 639px) {
+  .lm--centre .lm-scrim { background: linear-gradient(to top, rgba(26, 20, 22, 0.55) 0%, transparent 30%, transparent 80%, rgba(26, 20, 22, 0.44) 100%); }
+}

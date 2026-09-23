@@ -872,3 +872,14 @@ The ink stays #1A1416. Do not reintroduce purple/plum grounds.
 - Add to bag / Buy now are pills in theme colours (ink with a sheen; Buy now
   -> ink outline filling with ink). Gold was dropped: the theme has none. The
   statement pieces on the home page carry the same AddToBag block.
+
+## PREVIEW BRANCH `preview/madrid-hero` — 2026-09-23 (not live)
+
+Brad's "MADRID" reference: one aerial Higgsfield frame (a white and a black
+horse in a red field; campaign imagery, no shop, stock or person) and the
+name in condensed heavy caps. "Madrid" is a commercial face we have no
+licence for; **Anton** (open, self-hosted by next/font, no third-party
+request, verified) stands in. The name sits just below the horses; the
+middle wash is off so the red stays vivid. One slide: no autoplay, no
+pause needed. Desktop hero image is 408 KB AVIF (dense texture), heavier
+than the blur frames; measure LCP before this goes live.

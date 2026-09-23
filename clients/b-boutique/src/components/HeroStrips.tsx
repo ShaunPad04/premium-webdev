@@ -21,10 +21,10 @@ const sources = (file: string) => [
    list along the foot names the frames by mood, which asserts nothing
    about the business. */
 const SLIDES: LuminaSlide[] = [
-  { file: "blur-1", label: "In motion" },
-  { file: "blur-2", label: "Golden hour" },
-  { file: "blur-3", label: "Soft knit" },
-  { file: "blur-5", label: "Out and about" },
+  /* PREVIEW (Brad's MADRID reference): one aerial frame, two horses in a
+     red field (Higgsfield; campaign imagery, no shop, stock or person). One
+     slide, so nothing auto-advances and no pause control is needed. */
+  { file: "horses", label: "B Boutique" },
 ].map(({ file, ...s }) => ({ ...s, title: "B Boutique", src: `/img/hero/${file}-m.jpg`, sources: sources(file) }));
 
 function Cta() {
