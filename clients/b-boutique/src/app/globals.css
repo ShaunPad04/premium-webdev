@@ -3781,16 +3781,28 @@ body {
 .cps-scene { position: relative; }
 @media (min-width: 768px) { .cps-scene { height: 220vh; } }
 .cps-stage { position: relative; overflow: hidden; }
-@media (min-width: 768px) { .cps-stage { position: sticky; top: 0; height: 100vh; } }
+/* Below the fixed header, not under it: at top: 0 the header covered the
+   top 72px of the photograph, which is where the model's head is. */
+@media (min-width: 768px) { .cps-stage { position: sticky; top: 72px; height: calc(100vh - 72px); } }
 .cps-grid { display: grid; }
 @media (min-width: 768px) {
   .cps-grid { grid-template-columns: 1fr 1fr; height: 100%; }
   .cps-grid.is-reversed .cps-media { order: 2; }
 }
 .cps-media { padding: 12px 18px; }
-@media (min-width: 768px) { .cps-media { padding: 0; } }
+/* The whole photograph, always. The frame keeps the photographs' own 4:5
+   and is sized by the HEIGHT available, so the model's head and the hem of
+   the garment are both in view at any window shape. It used to fill half
+   the width at full height, which on a normal laptop is a landscape box —
+   and a portrait photograph covering a landscape box loses its top and
+   bottom. The client: "it cuts her head off". */
+@media (min-width: 768px) {
+  .cps-media { display: flex; align-items: center; justify-content: center; padding: 28px 24px; min-height: 0; }
+}
 .cps-frame { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--bb-grey-light); }
-@media (min-width: 768px) { .cps-frame { aspect-ratio: auto; height: 100%; } }
+@media (min-width: 768px) {
+  .cps-frame { height: 100%; width: auto; max-width: 100%; }
+}
 .cps-grey, .cps-mask { position: absolute; inset: 0; }
 .cps-grey { filter: grayscale(1) brightness(1.06); }
 .cps-mask { will-change: clip-path; }
