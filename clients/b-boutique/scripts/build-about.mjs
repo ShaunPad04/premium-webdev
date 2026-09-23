@@ -12,11 +12,14 @@
  *   frame is deliberately NOT used: its fascia reads "Accessories &
  *   Homeware", and Accessories came off the site on 2026-09-22.
  *
- *   TEXTURE — two abstract macros generated with Higgsfield on 2026-09-22 at
- *   the client's request (black marble with gold veining, cream boucle).
- *   Neither contains a shop, a product or a person, so neither can say
- *   anything untrue about the business. They echo the real shop's walls and
- *   its knitwear rail; they never stand in for either.
+ *   TEXTURE — generated with Higgsfield at the client's request: a cream
+ *   boucle macro (2026-09-22) and the hero, a vintage brass rail with four
+ *   garments against dark marble (2026-09-23; the client: "it doesn't need
+ *   to be an interior of her shop"). Neither shows her shop, a product she
+ *   sells or a person, so neither can say anything untrue about the
+ *   business, and both carry alt="" on the page. (A black
+ *   and gold marble texture was also made; its section was removed on
+ *   2026-09-23 at the client's request, and the texture with it.)
  *
  * Encoding is deterministic, so re-running changes no existing file. */
 import { mkdir } from "node:fs/promises";
@@ -29,19 +32,22 @@ const OUT = "public/img/about";
 /* crop: [left, top, width, height] in source pixels, or null for the whole
    frame. widths: the encoded sizes, capped at what the crop can supply. */
 const JOBS = [
-  { src: "04-rails.jpg", out: "rails", crop: null, widths: [1280, 1920, 2560] },
+  /* The About hero since 2026-09-23: a generated vintage still life (see
+     TEXTURE above). 04-rails, the hero before it, stays in assets/ unbuilt. */
+  { src: "texture-vintage-rail.jpg", out: "vintage", crop: null, widths: [1280, 1920, 2560] },
   { src: "02-walkin.jpg", out: "walkin", crop: [1700, 0, 1728, 2160], widths: [640, 960, 1280] },
   { src: "05-fitting.jpg", out: "fitting", crop: [540, 0, 1728, 2160], widths: [640, 960, 1280] },
   { src: "06-mustard.jpg", out: "mustard", crop: [460, 0, 3226, 2150], widths: [960, 1440, 1920] },
   { src: "07-window.jpg", out: "window", crop: [300, 0, 2160, 2160], widths: [640, 960, 1280] },
   { src: "03-homeware.jpg", out: "homeware", crop: [1000, 260, 1536, 1024], widths: [640, 960, 1280] },
-  { src: "texture-marble.png", out: "marble", crop: null, widths: [1024] },
   { src: "texture-boucle.png", out: "boucle", crop: null, widths: [640, 960, 1280] },
 ];
 
 await mkdir(OUT, { recursive: true });
 
-for (const job of JOBS) {
+/* `node scripts/build-about.mjs vintage` rebuilds just the named outputs. */
+const only = process.argv.slice(2);
+for (const job of JOBS.filter((j) => only.length === 0 || only.includes(j.out))) {
   const input = sharp(path.join(SRC, job.src));
   const meta = await input.metadata();
   const base = job.crop

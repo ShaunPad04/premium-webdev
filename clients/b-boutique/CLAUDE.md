@@ -371,9 +371,15 @@ stocking them). Do not reintroduce the word without her confirming stock.
 
 **Later on 2026-09-22 (Brad's requests):**
 - **`/about` rebuilt** around her own shop photographs (`assets/about`,
-  `scripts/build-about.mjs`) plus two Higgsfield textures — black/gold marble
-  and cream boucle — that contain no shop, product or person, so they cannot
-  misstate the business. The shopfront frame is NOT used: its fascia says
+  `scripts/build-about.mjs`) plus one Higgsfield texture (cream boucle) that
+  contains no shop, product or person, so it cannot misstate the business.
+  The marble statement band under the hero was removed on 2026-09-23 at
+  Brad's request ("terrible"); do not bring it back.
+- **/about hero is a generated vintage still life** (2026-09-23): a brass
+  rail with four garments against dark marble (`assets/about/
+  texture-vintage-rail.jpg`, Higgsfield + 2k upscale). Brad: "it doesn't need
+  to be an interior of her shop". It shows no shop, no stocked product and no
+  person, and carries alt="" so it is never presented as her room. The shopfront frame is NOT used: its fascia says
   "Accessories & Homeware". If Accessories comes back, so can that photo.
 - **Home hero is the strip slider** (`components/ui/parallax-strip-slider.tsx`
   via `HeroStrips.tsx`), which replaced `HeroSlideshow`. The first slide's

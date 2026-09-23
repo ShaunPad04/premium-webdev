@@ -4,7 +4,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { Visit } from "@/components/Visit";
-import { philosophy, principles, shopPhotos, type ShopPhoto } from "@/lib/about";
+import { principles, shopPhotos, type ShopPhoto } from "@/lib/about";
 import { owner, shop } from "@/lib/shop";
 
 export const metadata: Metadata = {
@@ -23,20 +23,25 @@ export const metadata: Metadata = {
  *
  * It is now an editorial story told mostly in HER photographs:
  *
- *   1. The rails, full-bleed, with the title set over them.
- *   2. The statement, on black and gold marble — the one AI image in the
- *      page's upper half, an abstract texture that echoes her real walls.
- *   3. Hayley, in her own words (owner.bio — the same copy the home page's
+ *   1. A vintage still life, full-bleed, with the title set over it. (Her
+ *      rails photo until 2026-09-23, replaced at the client's request with
+ *      a generated image; her real photographs carry the rest of the page.)
+ *   2. Hayley, in her own words (owner.bio — the same copy the home page's
  *      owner card reads).
- *   4. Inside the shop: five of her photographs, captioned with what is in
+ *   3. Inside the shop: five of her photographs, captioned with what is in
  *      the frame and nothing else.
- *   5. Three principles, beside a boucle macro (the second AI texture).
- *   6. Visit, unchanged.
+ *   4. Three principles, beside a boucle macro (the second AI texture).
+ *   5. Visit, unchanged.
  *
- * The rule for the two generated images is recorded in
- * scripts/build-about.mjs: neither shows a shop, a product or a person, so
- * neither can say anything untrue about the business. Both carry alt="":
- * they are decoration, and describing them would announce a picture that
+ * The marble statement band that sat between 1 and 2 was taken off on
+ * 2026-09-23 at the client's request ("the second image section is
+ * terrible"). The statement itself still lives on the home page
+ * (PointOfView reads the same `philosophy` copy).
+ *
+ * The rule for the generated image is recorded in
+ * scripts/build-about.mjs: it shows no shop, product or person, so it
+ * cannot say anything untrue about the business. It carries alt="":
+ * it is decoration, and describing them would announce a picture that
  * tells a screen-reader user nothing about B Boutique. */
 
 function Pic({
@@ -72,12 +77,15 @@ function Pic({
   );
 }
 
-const rails: ShopPhoto = {
-  name: "rails",
+/* A generated vintage still life, not her shop (see scripts/build-about.mjs).
+   Decorative, so alt="": describing it would present an invented rail as
+   something a customer could find at 18 Sea View Street. */
+const vintage: ShopPhoto = {
+  name: "vintage",
   widths: [1280, 1920, 2560],
-  w: 3840,
+  w: 3856,
   h: 2160,
-  alt: "Inside B Boutique: gold rails of clothing along a black and gold marble wall, with round mirrors and fitting rooms at the back.",
+  alt: "",
   caption: "",
 };
 
@@ -89,9 +97,9 @@ export default function AboutPage() {
       <MotionLayer />
       <Nav />
       <main id="main" className="flex-1">
-        {/* 1 ── The rails, and the title over them. */}
+        {/* 1 ── The vintage rail, and the title over it. */}
         <section aria-labelledby="ab-title" className="ab-hero">
-          <Pic photo={rails} sizes="100vw" className="ab-hero-img" priority />
+          <Pic photo={vintage} sizes="100vw" className="ab-hero-img" priority />
           <div className="ab-hero-scrim" aria-hidden="true" />
           <div className="ab-hero-copy">
             <p className="label ab-eyebrow">About us</p>
@@ -104,26 +112,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* 2 ── The statement, on marble. */}
-        <section aria-labelledby="ab-statement" className="ab-marble">
-          <picture>
-            <source type="image/avif" srcSet="/img/about/marble-1024.avif" />
-            <source type="image/webp" srcSet="/img/about/marble-1024.webp" />
-            <img src="/img/about/marble-1024.jpg" alt="" className="ab-marble-img" loading="lazy" decoding="async" width={1024} height={688} />
-          </picture>
-          <div className="ab-marble-inner">
-            <h2 id="ab-statement" className="ab-statement">
-              {philosophy.statement}
-            </h2>
-            <p className="ab-lines">
-              {philosophy.lines.map((line) => (
-                <span key={line}>{line}</span>
-              ))}
-            </p>
-          </div>
-        </section>
-
-        {/* 3 ── Hayley, in her own words. */}
+        {/* 2 ── Hayley, in her own words. */}
         <section aria-labelledby="ab-owner" className="ab-owner">
           <div className="ab-owner-inner">
             <div className="ab-owner-portrait">
@@ -153,7 +142,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* 4 ── Inside the shop. */}
+        {/* 3 ── Inside the shop. */}
         <section aria-labelledby="ab-inside" className="ab-inside">
           <div className="ab-inside-head">
             <p className="label ab-kicker">Inside</p>
@@ -185,7 +174,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* 5 ── Three principles, beside the boucle. */}
+        {/* 4 ── Three principles, beside the boucle. */}
         <section aria-labelledby="ab-way" className="ab-way">
           <div className="ab-way-media" aria-hidden="true">
             <picture>
