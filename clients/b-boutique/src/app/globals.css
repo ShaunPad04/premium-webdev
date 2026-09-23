@@ -8611,3 +8611,100 @@ body { font-size: 1rem; line-height: 1.6; }
 /* Footer column labels are h2s for the outline, but they are labels:
    small Anton caps, not the H2 display size. */
 h2.ft-group { font-size: 15px; letter-spacing: 0.06em; line-height: 1.2; }
+
+/* ══ Buttons: one system (white-red-black theme, 2026-09-23) ════════════
+   PRIMARY   black pill, white DM Sans 600 caps; on hover a short silver
+             sheen crosses it (white-to-silver, not gold, <=600ms).
+   SECONDARY white pill, 1px black border; on hover it inverts to black.
+   RED       the single main commerce action: Add to bag, and Pay in the bag.
+   HERO      white pill that turns silver chrome on hover (the metallic CTA).
+   Same radius (pill), height (48px min), type and focus ring everywhere.
+   Only transform/opacity animate; reduced motion drops the sheen. */
+:is(.btn-solid, .cx-send, .cf-submit, .bk-pay, .atb-add, .atb-buy, .hero-cta, .visit-cta) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding-inline: 28px;
+  border-radius: 999px;
+  font-family: var(--font-body), Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+/* PRIMARY */
+:is(.btn-solid, .cx-send, .cf-submit:not(.atb-add):not(.atb-buy)) {
+  background: var(--ink);
+  color: var(--inverse-ink);
+  border: 1px solid var(--ink);
+}
+/* RED (main action) */
+:is(.atb-add, .bk-pay) {
+  background: var(--accent);
+  color: #FFFFFF;
+  border: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  :is(.btn-solid, .cx-send, .cf-submit:not(.atb-add):not(.atb-buy)):hover:not(:disabled) { background: var(--ink); color: var(--inverse-ink); }
+  :is(.atb-add, .bk-pay):hover:not(:disabled) { background: var(--accent-hover); color: #FFFFFF; }
+}
+/* The silver sheen, shared by primary and red. */
+:is(.btn-solid, .cx-send, .cf-submit, .atb-add, .bk-pay)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 32%, rgba(232, 232, 232, 0.28) 44%, rgba(255, 255, 255, 0.55) 50%, rgba(189, 189, 189, 0.28) 56%, transparent 68%);
+  transform: translateX(-110%);
+  transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+:is(.btn-solid, .cx-send, .cf-submit, .atb-add, .bk-pay):is(:hover, :focus-visible):not(:disabled)::after { transform: translateX(110%); }
+/* SECONDARY */
+:is(.atb-buy, .visit-cta) {
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  box-shadow: none;
+}
+:is(.atb-buy, .visit-cta)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+:is(.atb-buy, .visit-cta):is(:hover, :focus-visible):not(:disabled) { background: var(--bg); color: var(--inverse-ink); border-color: var(--ink); }
+:is(.atb-buy, .visit-cta):is(:hover, :focus-visible):not(:disabled)::before { transform: scaleX(1); }
+/* On a black band the secondary flips: outline in white, fills white. */
+.ft :is(.visit-cta) { background: transparent; color: var(--inverse-ink); border-color: rgba(255, 255, 255, 0.6); }
+.ft :is(.visit-cta)::before { background: var(--inverse-ink); }
+.ft :is(.visit-cta):is(:hover, :focus-visible) { background: transparent; color: var(--ink); border-color: var(--inverse-ink); }
+/* HERO: white pill, silver chrome on hover, black type. */
+.hero-cta { background: #FFFFFF; color: var(--ink); border: 0; }
+.hero-cta::before {
+  background:
+    linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.95) 48%, transparent 64%) -120% 0 / 220% 100% no-repeat,
+    linear-gradient(180deg, #F2F2F2 0%, #E8E8E8 30%, #FFFFFF 50%, #CFCFCF 72%, #BDBDBD 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+}
+.hero-cta:is(:hover, :focus-visible) { background: #FFFFFF; color: var(--ink); }
+/* Focus: 2px black ring on light, white on the black bands. */
+:is(.btn-solid, .cx-send, .cf-submit, .bk-pay, .atb-add, .atb-buy, .hero-cta, .visit-cta):focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+:is(.ft, .lm, .hwb) :is(.hero-cta, .visit-cta):focus-visible { outline-color: #FFFFFF; }
+@media (prefers-reduced-motion: reduce) {
+  :is(.btn-solid, .cx-send, .cf-submit, .atb-add, .bk-pay)::after { display: none; }
+  :is(.atb-buy, .visit-cta)::before { transition: none; }
+}
+/* Magnetic hover (MagneticButtons.tsx): a few px toward the pointer, via the
+   separate `translate` property so it composes with press/scale transforms. */
+[data-magnetic] { translate: var(--mx, 0) var(--my, 0); transition-property: translate, transform, box-shadow; }

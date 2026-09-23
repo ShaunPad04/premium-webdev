@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MagneticButtons } from "@/components/MagneticButtons";
 import { NavMotion } from "@/components/NavMotion";
 import { Anton, DM_Sans } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
@@ -220,6 +221,7 @@ export default function RootLayout({
             directly and there is nothing to thread through the tree. See the
             note at the top of lib/useCart. */}
         <NavMotion />
+        <MagneticButtons />
         {children}
       </body>
     </html>
