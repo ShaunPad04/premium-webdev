@@ -15,21 +15,28 @@
  *   - a run whose per-size split the list states.
  * Everything else stays uncounted and is counted by a person on /stock.
  *
- * Applying it never overwrites: only variants with NO count yet are set, so
- * pressing the button after sales have been recorded changes nothing that
- * a person has already counted. */
+ * Applied automatically (lib/stock.ts, once per server instance) since
+ * 2026-09-23: nobody has to press anything. It never overwrites: a variant
+ * is only written if it has no row at all, so a count a person has made, or
+ * a sale already recorded, is never touched.
+ *
+ * The colourways it cannot split are returned too, so /stock can show the
+ * list's own total beside the sizes that still need counting. */
 import data from "@/data/opening-stock.json";
 import { products } from "@/lib/catalogue";
 import { variantId } from "@/lib/variants";
 
 export type OpeningCount = { id: string; qty: number };
 
-export function openingPlan(): { plan: OpeningCount[]; skipped: string[] } {
+export type Unsplit = { slug: string; colour: string; total: number; sizes: number };
+
+export function openingPlan(): { plan: OpeningCount[]; skipped: string[]; unsplit: Unsplit[] } {
   const opening = data.opening as Record<string, Record<string, number>>;
   const split = data.statedSplit as Record<string, number>;
   const bySize = data.statedSizes as Record<string, Record<string, number>>;
   const plan: OpeningCount[] = [];
   const skipped: string[] = [];
+  const unsplit: Unsplit[] = [];
 
   for (const [slug, byColour] of Object.entries(opening)) {
     const product = products.find((p) => p.slug === slug);
@@ -51,8 +58,9 @@ export function openingPlan(): { plan: OpeningCount[]; skipped: string[] } {
         for (const size of run) plan.push({ id: variantId(slug, size, colour), qty: split[slug] });
       } else {
         skipped.push(`${slug} / ${colour}: ${total} across ${run.length} sizes`);
+        unsplit.push({ slug, colour, total, sizes: run.length });
       }
     }
   }
-  return { plan, skipped };
+  return { plan, skipped, unsplit };
 }

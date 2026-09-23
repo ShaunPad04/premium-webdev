@@ -40,6 +40,8 @@ export type BoardPiece = {
   /** Product photo basename (public/img/product/<name>-640.jpg). */
   photo: string;
   colourPhotos: Record<string, string>;
+  /** The master list's colour total, where it does not split by size. */
+  listTotals: Record<string, string>;
   variants: BoardVariant[];
 };
 
@@ -61,7 +63,6 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
   const [category, setCategory] = useState<string>("");
   const [open, setOpen] = useState<string | null>(null);
   const [editing, setEditing] = useState<{ id: string; value: string } | null>(null);
-  const [importing, setImporting] = useState(false);
 
   const sheet = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLElement | null>(null);
@@ -168,33 +169,6 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
     if (await send(id, "counted", { qty: n })) setEditing(null);
   }
 
-  /* Loads the opening counts from the master list (lib/opening-stock.ts)
-     into every line that has never been counted. Never overwrites a count,
-     so it is safe to press again; the page reloads to show the result. */
-  async function importOpening() {
-    if (!window.confirm("Load the opening counts from the master stock list? Only lines that have never been counted are filled in.")) return;
-    setImporting(true);
-    setProblem("");
-    try {
-      const res = await fetch("/api/stock", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "import-opening" }),
-      });
-      const data = (await res.json()) as { ok: boolean; set?: number; code?: string };
-      if (data.ok) {
-        window.alert(`${data.set ?? 0} lines counted from the master list. The rest need counting by size on this page.`);
-        window.location.reload();
-        return;
-      }
-      setProblem(data.code === "not_signed_in" ? "Signed out. Reload the page and put the passcode in again." : "The opening counts did not load. Nothing was changed.");
-    } catch {
-      setProblem("No connection. Nothing was saved — try again in a moment.");
-    } finally {
-      setImporting(false);
-    }
-  }
-
   const problemBar = problem ? (
     <p className="st-problem" role="alert">
       {problem}
@@ -253,16 +227,13 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
       {problem && !piece ? problemBar : null}
 
       {uncountedLines > 0 ? (
-        <section className="st-todo" aria-label="Opening counts">
-          <p>
-            <b>{uncountedLines} {uncountedLines === 1 ? "size has" : "sizes have"} no count yet.</b>{" "}
-            They do not show on the website until they have one. Load the
-            opening counts once, then count anything left by hand.
-          </p>
-          <button type="button" className="st-import" onClick={importOpening} disabled={importing}>
-            {importing ? "Loading opening counts…" : "Load opening counts from the master list"}
-          </button>
-        </section>
+        <p className="st-todo">
+          <b>{uncountedLines} {uncountedLines === 1 ? "size needs" : "sizes need"} counting.</b>{" "}
+          The master list gives these as one total for the colour, not per
+          size, so they cannot be filled in for you. Until they are counted
+          the website still sells them, but cannot stop it selling more than
+          you have. Tap <b>Needs counting</b> to see them.
+        </p>
       ) : null}
 
       <nav className="st-filters" aria-label="Show">
@@ -367,16 +338,21 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
               <section key={g.colour || "none"} className="st-colour-group" aria-label={g.colour || "Colour not set"}>
                 <div className="st-colour-head">
                   <img src={img(g.photo)} alt="" loading="lazy" width={44} height={55} />
-                  {g.colour ? (
-                    <span className="st-colour">{g.colour}</span>
-                  ) : (
-                    /* Not a placeholder to fill in later: it is the honest
-                       state until the shop says what colour the piece is,
-                       and it is visible so it gets chased. */
-                    <span className="st-nocolour" title="Nobody has confirmed what colour this piece is">
-                      Colour not set
-                    </span>
-                  )}
+                  <span className="st-colour-text">
+                    {g.colour ? (
+                      <span className="st-colour">{g.colour}</span>
+                    ) : (
+                      /* Not a placeholder to fill in later: it is the honest
+                         state until the shop says what colour the piece is,
+                         and it is visible so it gets chased. */
+                      <span className="st-nocolour" title="Nobody has confirmed what colour this piece is">
+                        Colour not set
+                      </span>
+                    )}
+                    {piece.listTotals[g.colour] ? (
+                      <span className="st-listtotal">{piece.listTotals[g.colour]}</span>
+                    ) : null}
+                  </span>
                 </div>
 
                 <ul className="st-lines">

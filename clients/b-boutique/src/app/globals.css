@@ -5860,27 +5860,8 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   line-height: 1.5;
   color: var(--bb-grey-dark);
 }
-.st-todo p { margin: 0; }
 .st-todo b { color: var(--bb-black); font-weight: 600; }
-.st-import {
-  display: block;
-  width: 100%;
-  min-height: 48px;
-  margin-top: 12px;
-  border: 1px solid var(--bb-black);
-  border-radius: 999px;
-  background: var(--bb-black);
-  color: var(--bb-white);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.st-import:disabled { opacity: 0.6; cursor: progress; }
-@media (min-width: 768px) {
-  .st-todo { margin: 20px 24px 0; display: flex; align-items: center; gap: 24px; }
-  .st-import { width: auto; flex: none; margin-top: 0; padding: 0 22px; }
-}
+@media (min-width: 768px) { .st-todo { margin: 20px 24px 0; } }
 
 /* Filters: what she asks of the rail, then where on it. Both rows scroll
    sideways on a phone rather than wrapping into a wall of buttons. */
@@ -6043,6 +6024,8 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 
 .st-colour-group { padding: 18px 16px 0; }
 .st-colour-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.st-colour-text { display: grid; gap: 2px; justify-items: start; }
+.st-listtotal { font-size: 13px; color: var(--bb-grey-dark); }
 .st-colour-head img { width: 44px; height: 55px; object-fit: cover; object-position: 50% 20%; background: var(--bb-grey-light); }
 .st-colour { font-size: 15px; font-weight: 600; }
 .st-nocolour {

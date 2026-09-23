@@ -149,8 +149,9 @@ const MAX_LINES = 25;
    This is a CEILING, not the stock check. The real gate is `countsFor` in
    /api/checkout, which refuses to sell more of a variant than the database
    says exists and fails closed if the database errors. That gate has been
-   right since 2026-09-20 and has simply had nothing to check against, because
-   the stock table is empty. scripts/import-stock.mjs fills it. */
+   right since 2026-09-20. The opening counts fill the table themselves
+   (seedOpening in lib/stock.ts); anything they cannot split is counted on
+   /stock. */
 const MAX_QTY = 6;
 
 export async function POST(request: NextRequest) {

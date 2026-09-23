@@ -1,6 +1,7 @@
 import "server-only";
 import { neon } from "@neondatabase/serverless";
 import { allVariants, variantId, type Variant } from "./variants";
+import { openingPlan } from "./opening-stock";
 
 /** What is actually in the shop.
  *
@@ -126,6 +127,7 @@ export async function ensureSchema(): Promise<boolean> {
 
   schemaReady = (async () => {
     for (const statement of SCHEMA) await q.query(statement);
+    await seedOpening(q);
     return true;
   })().catch((err) => {
     schemaReady = null;
@@ -133,6 +135,38 @@ export async function ensureSchema(): Promise<boolean> {
   });
 
   return schemaReady;
+}
+
+/* The opening counts from the master list (lib/opening-stock.ts), written
+ * the first time an instance touches the database, so nobody has to press a
+ * button for them. One statement, and it only ever INSERTS: a variant that
+ * already has a row (counted by hand, or a sale recorded) is left exactly
+ * as it is, and two instances starting at once cannot both write a line.
+ * Only the rows it actually wrote get a log entry, in the same statement.
+ * After the first run it writes nothing. */
+async function seedOpening(q: NonNullable<ReturnType<typeof sql>>) {
+  const byId = new Map(allVariants().map((v) => [v.id, v]));
+  const plan = openingPlan().plan.filter((p) => byId.has(p.id));
+  if (plan.length === 0) return;
+  const col = <T,>(f: (p: (typeof plan)[number]) => T) => plan.map(f);
+  await q.query(
+    `WITH written AS (
+       INSERT INTO stock (id, slug, size, colour, qty)
+       SELECT * FROM unnest($1::text[], $2::text[], $3::text[], $4::text[], $5::int[])
+       ON CONFLICT (id) DO NOTHING
+       RETURNING id, qty
+     )
+     INSERT INTO stock_log (variant_id, delta, qty_after, reason, note)
+     SELECT id, qty, qty, 'counted', 'opening count, master stock list 2026-09-22'
+     FROM written`,
+    [
+      col((p) => p.id),
+      col((p) => byId.get(p.id)!.slug),
+      col((p) => byId.get(p.id)!.size),
+      col((p) => byId.get(p.id)!.colour),
+      col((p) => p.qty),
+    ],
+  );
 }
 
 /** Every variant the catalogue implies, given a row if it has one.

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { products } from "@/lib/catalogue";
+import { openingPlan } from "@/lib/opening-stock";
 import { readStock, stockIsConfigured } from "@/lib/stock";
 import { isSignedIn, stockAuthIsConfigured } from "@/lib/stock-auth";
 import { listOrders } from "@/lib/orders";
@@ -55,6 +56,16 @@ export default async function StockPage() {
 
   /* Grouped by piece, because that is how she thinks about the rail: find the
      coat, then the size. A flat list of 121 variants is a list nobody scans. */
+  /* Where the master list gives a colour's total but not its sizes, that
+     total is shown beside the sizes, so counting them is a check rather
+     than a search. */
+  const listTotals = new Map<string, Record<string, string>>();
+  for (const u of openingPlan().unsplit) {
+    const t = listTotals.get(u.slug) ?? {};
+    t[u.colour] = `Master list: ${u.total} across these ${u.sizes} sizes`;
+    listTotals.set(u.slug, t);
+  }
+
   const byPiece = new Map<string, BoardPiece>();
   for (const product of products) {
     byPiece.set(product.slug, {
@@ -65,6 +76,7 @@ export default async function StockPage() {
       /* Each colourway's own photograph, so every line shows the actual
          garment (2026-09-23: easier to find the piece that sold). */
       colourPhotos: Object.fromEntries(product.colourways.map((c) => [c.colour, c.image])),
+      listTotals: listTotals.get(product.slug) ?? {},
       variants: [],
     });
   }

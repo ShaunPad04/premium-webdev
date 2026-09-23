@@ -536,10 +536,14 @@ left:
   `adjust()` against a `CHECK (qty >= 0)`), but a variant nobody has counted
   (`qty: null`) is sold unreserved, so the protection only exists once counts
   are in. The 69 unambiguous counts from the master list
-  (`src/data/opening-stock.json`) load from `/stock` → "Load opening counts
-  from the master list" (2026-09-23; DATABASE_URL is a sensitive Vercel
-  secret and cannot be read into a session). It fills only never-counted
-  lines. The other 10 go in on `/stock` by size.
+  (`src/data/opening-stock.json`) write themselves: `seedOpening()` in
+  `lib/stock.ts` runs once per server instance, INSERT-only with
+  `ON CONFLICT DO NOTHING`, so it never touches a line that has a count or a
+  recorded sale (2026-09-23; replaced the "Load opening counts" button,
+  because DATABASE_URL is a sensitive Vercel secret and cannot be read into
+  a session). The other 32 lines (10 colourways the list totals across
+  sizes) are CLIENT INPUT: counted on `/stock`, where the list's colour
+  total is shown beside them. Never split those totals by guesswork.
 - **A test card through SumUp**, after `NEXT_PUBLIC_SITE_URL` is set.
 - **A qualified read of the statutory text.** See Selling terms.
 - **The ICO registration number.** Applied and paying by direct debit as of
