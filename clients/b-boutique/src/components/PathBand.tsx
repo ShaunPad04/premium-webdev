@@ -22,23 +22,25 @@ import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
  * aria-hidden: the same facts are in the Visit section directly below, as
  * real text. A screen reader would otherwise hear the address twice, once
  * as a run-on of bullets. */
-export function PathBand() {
+export function PathBand({ words }: { words?: string[] } = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = usePrefersReducedMotion();
-  const line = [
+  /* `words` lets a page choose its own phrases (the home page, 2026-09-23);
+     the default is /contact's line. Every phrase must stay derived from
+     shop.ts or from the shop's own words, never invented. */
+  const line = (words ?? [
     shop.street,
     shop.town,
     openingSummary().replace(/\.$/, ""),
     "Womenswear & homeware",
     "Come and say hello",
-  ].join("  ·  ");
+  ]).join("  ·  ");
   const text = `${line}  ·  ${line}  ·  `;
 
   return (
     <div ref={ref} className="pathband" aria-hidden="true">
       <AnimatedPathText
         path="M-40 150 C 220 30, 480 230, 760 110 S 1180 40, 1480 140"
-        pathId="pathband-curve"
         viewBox="0 0 1440 220"
         preserveAspectRatio="xMidYMid slice"
         svgClassName="pathband-svg"

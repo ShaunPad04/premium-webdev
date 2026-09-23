@@ -39,6 +39,8 @@ import { formatPriceShort, isBuyable, products, type Product } from "@/lib/catal
 import { ProductPhoto } from "@/components/ProductPhoto";
 import { AddToBag } from "@/components/AddToBag";
 import { ColourProvider } from "@/components/ColourChoice";
+import { PathBand } from "@/components/PathBand";
+import { shop } from "@/lib/shop";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 /* The most expensive garments that can actually be bought. Homeware is left
@@ -247,6 +249,11 @@ export function Component() {
       {PIECES.map((p, i) => (
         <ProductHero key={p.slug} product={p} reversed={i % 2 === 1} reduced={reduced} />
       ))}
+
+      {/* The scroll-driven line from /contact, between the last piece and
+          the strip (2026-09-23, client). Words from shop.ts and the shop's
+          own lines. */}
+      <PathBand words={["Treat yourself", "One shop, one street", `${shop.street}, ${shop.town}`, "Womenswear & homeware", "Every piece chosen by hand"]} />
 
       <div ref={stripRef} className="cps-strip">
         <div className="cps-strip-head">
