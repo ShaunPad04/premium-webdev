@@ -8,6 +8,7 @@ import { PRIMARY } from "@/lib/nav";
 import { AnnounceBar } from "./AnnounceBar";
 import { BagLink } from "./BagLink";
 import { CornerMenu } from "./CornerMenu";
+import { FlipText } from "./FlipText";
 import { NavSearch } from "./NavSearch";
 
 /* The campaign header.
@@ -78,7 +79,7 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
            showed through and turned the bar a muddy grey-brown sitting
            under a strip of the true ink. Two shades of "dark" stacked on
            top of each other read as a mistake. One colour, one band. */
-        background: opaque ? "var(--bb-black)" : "transparent",
+        background: opaque ? "#0E0B0C" : "transparent",
         borderBottom: `1px solid ${opaque ? "rgba(255,255,255,.10)" : "transparent"}`,
         transition:
           "background 480ms var(--bb-ease), border-color 480ms var(--bb-ease)",
@@ -206,9 +207,9 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
                 <li key={item.label} className="nav-item">
                   <a
                     href={item.href}
-                    className="nav-link nav-link--bar text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
+                    className="nav-link nav-link--bar flip-host text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
                   >
-                    {item.label}
+                    <FlipText>{item.label}</FlipText>
                   </a>
                 </li>
               ),
@@ -292,9 +293,9 @@ function NavMenuItem({
       <a
         ref={trigger}
         href={item.href}
-        className="nav-link nav-link--bar nav-link--caret text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
+        className="nav-link nav-link--bar nav-link--caret flip-host text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
       >
-        {item.label}
+        <FlipText>{item.label}</FlipText>
         {/* Says "there is a list here". Turns over when the list opens. */}
         <svg className="nav-caret" width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true">
           <path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />

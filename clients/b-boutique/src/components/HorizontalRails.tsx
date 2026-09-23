@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 import { featured } from "@/lib/shop";
+import { FlipText } from "./FlipText";
 
 /* The featured category rail.
  *
@@ -87,7 +88,7 @@ export function HorizontalRails() {
       <ul ref={rail} className="cats-rail">
         {featured.map((c) => (
           <li key={c.slug} className="cats-card" data-card>
-            <a href={c.href} className="cats-link">
+            <a href={c.href} className="cats-link flip-host">
               <Image
                 src={c.image}
                 alt={c.alt}
@@ -107,7 +108,7 @@ export function HorizontalRails() {
               <span aria-hidden="true" className="cats-scrim" />
               <span className="cats-meta">
                 <span className="cats-number">{c.number}</span>
-                <span className="cats-name">{c.name}</span>
+                <span className="cats-name"><FlipText>{c.name}</FlipText></span>
                 <span className="cats-explore">
                   Explore <span className="cats-arrow" aria-hidden="true">&rarr;</span>
                 </span>

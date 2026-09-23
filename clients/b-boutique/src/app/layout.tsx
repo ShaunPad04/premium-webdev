@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NavMotion } from "@/components/NavMotion";
 import { Anton, Inter, Playfair_Display } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
@@ -232,6 +233,7 @@ export default function RootLayout({
             useSyncExternalStore, so every component that needs it subscribes
             directly and there is nothing to thread through the tree. See the
             note at the top of lib/useCart. */}
+        <NavMotion />
         {children}
       </body>
     </html>

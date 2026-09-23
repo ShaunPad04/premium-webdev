@@ -8423,8 +8423,9 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
    not change colour halfway down. */
 .pov {
   --bb-black: #F8F2E7;
-  --bb-white: #6E0A10;
-  --bb-white-pure: #6E0A10;
+  /* Type black, not red (Brad, 2026-09-23); the eyebrow stays red. */
+  --bb-white: #1A1416;
+  --bb-white-pure: #1A1416;
   --bb-rouge-lift: var(--bb-rouge);
   --bb-grey-mid: #6B5048;
   --bb-grey-light: #6B5048;
@@ -8433,5 +8434,90 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .cats { background: #F8F2E7; }
 /* Hard-coded white in the philosophy note, which the token swap cannot
    reach: red on the ivory instead. */
-.pov .pov-note-text { color: #6E0A10; }
-.pov .pov-rule { background: rgba(110, 10, 16, 0.35); }
+.pov .pov-note-text { color: #1A1416; }
+.pov .pov-rule { background: rgba(26, 20, 22, 0.3); }
+
+/* ══ Header, flip, page transition (2026-09-23, Brad) ═══════════════════ */
+
+/* The header in the new theme: the solid bar is black (#0E0B0C, the same
+   black as the announcement strip above it), and its type is the hero's
+   Anton caps, replacing the 10px Inter labels and the Playfair wordmark.
+   Unlayered, so it outranks the Tailwind size/tracking utilities on the
+   links. */
+.navbar .nav-link,
+.navbar .nb-word {
+  font-family: var(--font-hero), "Arial Narrow", sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.navbar-mark {
+  font-family: var(--font-hero), "Arial Narrow", sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+@media (min-width: 1024px) { .navbar-mark { font-size: 30px; } }
+
+/* The flip (FlipText). A thin cube one line high: the word on its front,
+   a copy on its lower face; hovering the host turns the cube up. */
+.flip { display: inline-block; perspective: 600px; line-height: 1; vertical-align: baseline; }
+.flip-cube {
+  position: relative;
+  display: inline-block;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50% -0.5em;
+  transition: transform 620ms cubic-bezier(0.65, 0, 0.2, 1);
+}
+.flip-front, .flip-back { display: block; backface-visibility: hidden; line-height: 1; }
+.flip-back {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 0;
+  transform: translateY(100%) rotateX(-90deg);
+}
+.flip-host:is(:hover, :focus-visible) .flip-cube,
+.flip:hover .flip-cube { transform: rotateX(90deg); }
+@media (prefers-reduced-motion: reduce) {
+  .flip-cube { transition: none; }
+  .flip-host:is(:hover, :focus-visible) .flip-cube, .flip:hover .flip-cube { transform: none; }
+}
+
+/* Page transition (NavMotion sets <html data-nav> on the first internal
+   click, so the first load never plays it). The new page fades in while a
+   soft edge sweeps across it from the left. `backwards` only: once it has
+   played nothing stays applied, so no clip lingers on #main. */
+html[data-nav] #main { animation: page-in 900ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+@keyframes page-in {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  35% { opacity: 1; }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-nav] #main { animation: none; }
+}
+
+/* The same fade-and-sweep for full page loads between the site's own pages
+   (the header links are plain <a>s). Cross-document View Transitions: the
+   browser holds the old page, then reveals the new one. Chrome/Edge 126+
+   and Safari 18.2+; elsewhere the page simply loads as before. A visitor
+   arriving from outside the site gets no transition at all. */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: vt-out 320ms ease both; }
+::view-transition-new(root) { animation: vt-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in {
+  from { opacity: 0; clip-path: inset(0 100% 0 0); }
+  35% { opacity: 1; }
+  to { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}

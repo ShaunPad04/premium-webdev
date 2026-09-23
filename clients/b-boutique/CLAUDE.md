@@ -922,3 +922,14 @@ LCP 5.94 vs 5.94s, 1247 vs 1244 KB. Also: announcement strip solid black,
 white Anton caps, taller; Shop all fills black on hover; the philosophy
 section is ivory with red type (a token swap inside .pov) and the category
 photos below sit on ivory too.
+
+**Header, flip, page transitions (2026-09-23, Brad, after the Arike Framer
+site; the site itself could not be opened from any environment here, so the
+motion is built from his description).** The solid header is black
+(#0E0B0C, same as the announcement strip) with Anton caps for links and
+wordmark. `FlipText` flips a word on a 3D cube on hover of its `.flip-host`
+(header links, home category names), CSS only, copy aria-hidden. Page
+changes fade and sweep in from the left: cross-document View Transitions for
+the plain-<a> header links, plus `NavMotion` + `html[data-nav] #main` for
+client-side ones. A first page load never animates. The philosophy type is
+black (#1A1416) on ivory; its eyebrow stays red.
