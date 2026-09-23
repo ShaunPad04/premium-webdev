@@ -855,3 +855,13 @@ The ink stays #1A1416. Do not reintroduce purple/plum grounds.
 - Add to bag / Buy now are pills in theme colours (ink with a sheen; Buy now
   -> ink outline filling with ink). Gold was dropped: the theme has none. The
   statement pieces on the home page carry the same AddToBag block.
+
+## PREVIEW BRANCH `preview/oxblood-rose` — 2026-09-23 (not live)
+
+Brad asked to try THE LOFT's colours and chose the rose-paper version.
+Token swap only, in `globals.css`: `--bb-black` #1A1416 -> oxblood #4A0E14
+(text, buttons and dark bands), `--bb-white` -> #F6ECE9 (the photos' plaster
+#DCBDBF, lightened), greys tinted to match, `--bb-rouge-lift` -> #E57A8A
+(#DE6376 was ~4.5:1 on oxblood). Photo scrims stay ink. This REOPENS the
+"ink stays #1A1416" rule, so it only merges into `client/b-boutique` if
+Brad approves it after seeing the preview.

@@ -51,23 +51,23 @@
 
   /* Warm near-black. True black against a warm paper reads as a hole
      punched in the page rather than as ink on it. */
-  --bb-black:        #1A1416;
-  --bb-black-soft:   #241C1F;
-  --bb-black-raised: #2E2429;
+  --bb-black:        #4A0E14;   /* PREVIEW oxblood (was ink #1A1416) */
+  --bb-black-soft:   #561820;
+  --bb-black-raised: #63222B;
 
   /* Warm white that leans PINK, not yellow. The difference is the whole
      brief: measured, #FAF5F3 is R250 G245 B243 — a red-to-blue spread of 7
      with a green-to-blue gap of only 2. Cream has a large green-to-blue gap,
      which is what makes it read yellow, bridal and banned. */
-  --bb-white:        #FAF5F3;
-  --bb-white-pure:   #FDFAF9;
+  --bb-white:        #F6ECE9;   /* PREVIEW rose paper, from the photos' plaster #DCBDBF */
+  --bb-white-pure:   #FCF7F5;
 
-  --bb-grey-light:   #DCD4D2;
+  --bb-grey-light:   #E3D0CC;
   --bb-grey-mid:     #9A8F8D;
-  --bb-grey-dark:    #6B5F5E;
+  --bb-grey-dark:    #6E4A4C;
 
   --bb-dark-border:  rgba(255, 255, 255, 0.14);
-  --bb-light-border: rgba(26, 20, 22, 0.14);
+  --bb-light-border: rgba(74, 14, 20, 0.16);
 
   /* Measured in a live render, not assumed, and each value is recorded
      against the ground it is safe on — the rule this project already had,
@@ -97,7 +97,7 @@
   --red:             #8A070B;
   --bb-rouge:        var(--red);
   --bb-rouge-deep:   #6E0509;   /* hover, on light: 11.69:1 on paper */
-  --bb-rouge-lift:   #DE6376;   /* the dark-ground twin: 5.32:1 on ink */
+  --bb-rouge-lift:   #E57A8A;   /* PREVIEW: #DE6376 is ~4.5:1 on oxblood, too close */    /* the dark-ground twin: 5.32:1 on ink */
 
   /* ── legacy semantic names, re-pointed ───────────────────────────
      Twenty components already reference these. Re-pointing them here turned

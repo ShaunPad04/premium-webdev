@@ -32,7 +32,7 @@ import { RevealText } from "@/components/RevealText";
    website theme". These are the page's own paper warmed toward the brass of
    the buy buttons, so the band reads as texture rather than a colour block.
    Ink type on the darkest (#E6D9CC) measures above 13:1. */
-const COLOURS = ["#FAF5F3", "#F1E9E2", "#E6D9CC", "#F6F0EA"];
+const COLOURS = ["#F6ECE9", "#F1E9E2", "#E6D9CC", "#F6F0EA"];
 
 export default function NewsLetter() {
   const ref = useRef<HTMLElement>(null);
