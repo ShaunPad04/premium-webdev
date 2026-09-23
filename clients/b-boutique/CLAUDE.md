@@ -561,8 +561,8 @@ the day it is added.
 
 **The `technical` blocks expire.** `/privacy` states, as fact, that the site
 sets no cookies, runs no analytics, self-hosts its fonts so nothing is
-requested from Google on page load, loads the Google map only on a deliberate
-click, keeps the bag in `localStorage`, and uses the visitor's IP for nothing
+requested from Google on page load, loads the Google map lazily as the Visit section nears the screen
+(a click until 2026-09-23, when Brad asked for the map to show), keeps the bag in `localStorage`, and uses the visitor's IP for nothing
 but a ten-minute in-memory rate limit that is never written down or emailed.
 Every one of those was verified against the source on 2026-09-08 and every one
 stops being true the moment somebody adds a script. **Re-run the checks before

@@ -152,24 +152,22 @@ export function VisitMap({
                                 dialog. Both attributes are needed together:
                                 aria-hidden on a focusable element is itself a
                                 violation. */}
-        <picture>
-          <source type="image/avif" srcSet="/img/about/window-960.avif 960w, /img/about/window-1440.avif 1440w, /img/about/window-1920.avif 1920w" sizes="(min-width: 1024px) 50vw, 92vw" />
-          <source type="image/webp" srcSet="/img/about/window-960.webp 960w, /img/about/window-1440.webp 1440w, /img/about/window-1920.webp 1920w" sizes="(min-width: 1024px) 50vw, 92vw" />
-          <img
-            src="/img/about/window-960.jpg"
-            alt=""
-            className="vm-still"
-            loading="lazy"
-            decoding="async"
-            width={3240}
-            height={2160}
-          />
-        </picture>
+        {/* The map itself, as the client asked (2026-09-23: "just keep the
+            Map"). Lazy, so it loads only as the Visit section comes near,
+            and inert (pointer-events none, out of the tab order): "View map"
+            opens the interactive one. /privacy says exactly this. Her
+            address is always set in real text beside this panel, so a
+            visitor whose blocker stops Google still has it. */}
+        <iframe
+          title={`Map showing ${street}, ${town}`}
+          src={embedSrc}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          className="vm-preview"
+          tabIndex={-1}
+          aria-hidden="true"
+        />
         <span className="vm-preview-scrim" aria-hidden="true" />
-        {/* A caption, not the address: the address is set large in the
-            column beside this, and the client has already said no to
-            seeing it twice on one screen. */}
-        <p className="vm-still-note">The map opens from Google when you ask for it.</p>
 
         <button
           ref={opener}

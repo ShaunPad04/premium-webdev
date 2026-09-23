@@ -382,11 +382,11 @@ const privacy: Policy = {
       heading: "The map, and the one thing that does load from elsewhere",
       kind: "technical",
       body: [
-        "The map of the shop is Google's, and Google does set its own cookies. So it does not load until you ask for it — the page shows the address and a button, and nothing reaches Google unless you press it.",
+        "The map of the shop is Google's, and Google may set its own cookies. It loads only when you scroll to the part of a page that shows where the shop is; nothing reaches Google on any page before that. The shop's address is always written out beside it, so you do not need the map to find us.",
         "Everything else on the page works whether you open the map or not.",
       ],
       basis:
-        "Read from src/components/VisitMap.tsx — the Google embed is mounted only on a deliberate click.",
+        "Read from src/components/VisitMap.tsx — the Google embed uses loading=\"lazy\", so the browser fetches it only as the Visit section nears the screen (changed 2026-09-23; it previously loaded only on a click).",
       basisLabel: "How we know",
     },
     {
