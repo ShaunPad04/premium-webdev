@@ -70,7 +70,11 @@ export const socials: Social[] = [
   },
   {
     name: "Facebook",
-    href: "https://www.facebook.com/p/B-Boutique-Cleethorpes-Hayley-Brown-100091972337800/?locale=en_GB",
+    /* profile.php?id= rather than the /p/<name>-<id>/ link as copied
+       (2026-09-23): on phones the /p/ form bounced from the Facebook app
+       straight back to the site. Same page, same numeric ID, the format
+       the app and mobile web both resolve. */
+    href: "https://www.facebook.com/profile.php?id=100091972337800",
   },
 ];
 
