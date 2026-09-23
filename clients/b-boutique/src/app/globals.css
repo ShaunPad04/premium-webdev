@@ -1089,224 +1089,6 @@ body {
 
    Where scroll-driven animations are unsupported, nothing runs and the
    approved static hero is what shows — which is the correct fallback. */
-/* ── Service — come in, or have it sent ───────────────────────────────────
-   Replaced the review rail on 2026-09-21. The client has three reviews, not
-   the six the page was showing, and all six were invented; see Service.tsx
-   for the full reasoning. The COMPOSITION is deliberately unchanged — split,
-   photograph left, editorial right, no container and no card — because the
-   page's rhythm was built around a full-bleed split in this position and
-   swapping it for a narrower band would have moved everything under it.
-
-   The classes were renamed tm-* to svc-* rather than left alone. A block
-   called `tm-card-quote` holding a delivery price is the exact drift this
-   project keeps being caught by. */
-.svc {
-  background: var(--bb-white);
-  color: var(--bb-black);
-  display: flex;
-  flex-direction: column;
-  /* clip rather than hidden: hidden would make this a scroll container,
-     which changes how anything inside it can be scrolled into view. */
-  overflow-x: clip;
-}
-
-@media (min-width: 1024px) {
-  /* row-REVERSE, so the photograph sits on the RIGHT.
-     The product page directly above this band puts its photograph on the
-     left, and two full-bleed images stacked down the same edge reads as a
-     template repeating itself rather than as a composition. Reversing here
-     gives the pair an alternating rhythm, which is what an editorial spread
-     does and what the client asked for on 2026-09-22.
-
-     `row-reverse` rather than reordering the markup: the DOM order is
-     media-then-copy, which is the order it should be READ in and the order a
-     screen reader and a keyboard will take it. Visual order is a visual
-     decision and belongs in the stylesheet. Below 1024 the column stacks
-     media-first, unchanged. */
-  .svc { flex-direction: row-reverse; align-items: stretch; min-height: 650px; }
-  .svc-media { flex: 0 0 47%; }
-  /* min-width: 0 is load-bearing. A flex item defaults to min-width: auto and
-     refuses to shrink below its content's minimum; the column this replaces
-     grew the page a horizontal scrollbar without it. */
-  .svc-body { flex: 1 1 53%; min-width: 0; display: flex; align-items: center; }
-}
-
-.svc-media { position: relative; overflow: hidden; aspect-ratio: 4 / 3; }
-@media (min-width: 1024px) { .svc-media { aspect-ratio: auto; } }
-@media (max-width: 1023px) { .svc-media { aspect-ratio: 3 / 2; } }
-
-/* Crossfade with a breath of scale. The panel never slides across — that
-   reads as a slideshow; this reads as one composition changing its mind. */
-.svc-shot {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transform: scale(1.022);
-  transition: opacity 760ms var(--bb-ease), transform 760ms var(--bb-ease);
-}
-.svc-shot.is-active { opacity: 1; transform: scale(1); }
-
-.svc-shot img {
-  /* Light touch: this photography is already black marble and brass. Enough
-     to sink it behind the type without recolouring the room. */
-  filter: grayscale(22%) brightness(0.86) contrast(1.02);
-}
-
-.svc-body { padding: clamp(40px, 6vw, 90px) 18px clamp(42px, 5vw, 80px); }
-@media (min-width: 768px) { .svc-body { padding-inline: clamp(40px, 6vw, 90px); } }
-
-.svc-inner { width: 100%; max-width: 640px; }
-
-.svc-eyebrow {
-  font-size: 9px;
-  font-weight: 600;
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  /* Ink alpha, not white: this section is light. Measured .75 -> 7.75:1 on
-     paper. */
-  color: rgba(26, 20, 22, 0.75);
-  margin-bottom: 20px;
-}
-
-/* The section's one editorial moment, and the only Bodoni in it. The list
-   below is utility and is set in Inter — one face per role. */
-.svc-h2 {
-  font-family: var(--font-display-face), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(30px, 3.6vw, 46px);
-  line-height: 1.06;
-  letter-spacing: -0.007em;
-  color: var(--bb-black);
-  margin: 0 0 clamp(32px, 3.4vw, 46px);
-  max-width: 14ch;
-  text-wrap: balance;
-}
-.svc-h2 em { font-style: italic; }
-
-/* No bullets, no numbers from the browser — the index is rendered as type so
-   it can be tracked and sized like every other piece of micro-copy here. */
-.svc-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid var(--bb-light-border);
-}
-
-/* A hairline between rows, which is how everything else on this page
-   separates things. No box, no fill, no radius: the rule IS the component. */
-.svc-row {
-  display: grid;
-  grid-template-columns: 2.6rem 1fr;
-  gap: 0 14px;
-  padding: clamp(20px, 2.2vw, 28px) 0;
-  border-bottom: 1px solid var(--bb-light-border);
-}
-
-@media (min-width: 768px) {
-  .svc-row { grid-template-columns: 3.2rem 1fr; gap: 0 20px; }
-}
-
-.svc-num {
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 1.7;
-  letter-spacing: 0.16em;
-  /* grey-dark, not grey-mid: grey-mid measures 2.95:1 on paper, a straight
-     fail. This is decorative but it is still readable type. */
-  color: var(--bb-grey-dark);
-  padding-top: 3px;
-}
-
-.svc-row-body { min-width: 0; }
-
-.svc-row-title {
-  margin: 0 0 6px;
-  font-size: clamp(15px, 1.15vw, 17px);
-  font-weight: 600;
-  letter-spacing: -0.005em;
-  color: var(--bb-black);
-}
-
-.svc-row-text {
-  margin: 0;
-  font-size: clamp(14px, 1.05vw, 15px);
-  line-height: 1.5;
-  color: var(--bb-black);
-  text-wrap: pretty;
-}
-
-/* The second line of each row is the qualifier — the free-delivery threshold,
-   who pays return postage. Quieter than the claim above it, never quieter
-   than AA: grey-dark measures 7.04:1 on paper. */
-.svc-row-meta {
-  margin: 3px 0 0;
-  font-size: clamp(13px, 1vw, 14px);
-  line-height: 1.5;
-  color: var(--bb-grey-dark);
-  text-wrap: pretty;
-}
-
-/* The same gesture the Visit CTA uses: the glyph moves on hover, the target
-   does not, and nothing dims to say it is live. */
-.svc-row-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  min-height: 24px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--bb-black);
-  border-bottom: 1px solid var(--bb-light-border);
-  padding-bottom: 3px;
-  transition: border-color 260ms var(--bb-ease);
-}
-
-.svc-row-link:hover { border-color: var(--bb-black); }
-
-.svc-row-arrow {
-  display: inline-block;
-  transition: transform 300ms var(--bb-ease);
-}
-
-.svc-row-link:hover .svc-row-arrow { transform: translateX(4px); }
-
-@media (prefers-reduced-motion: reduce) {
-  .svc-row-arrow { transition: none; }
-}
-
-/* Entrance, once. The crossfade above is separate and unaffected. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .svc-media {
-      animation: svc-fade 800ms var(--bb-ease) both;
-      animation-timeline: view();
-      animation-range: entry var(--bb-enter) entry var(--bb-settle);
-    }
-    /* The copy follows the photograph by one place, and moves as one block.
-       Separately staggering the eyebrow, the heading and three rows would
-       turn a delivery price into a title sequence. */
-    .svc-inner {
-      animation: svc-in 800ms var(--bb-ease) both;
-      animation-timeline: view();
-      animation-range:
-        entry calc(var(--bb-enter) + var(--bb-step))
-        entry calc(var(--bb-settle) + var(--bb-step));
-    }
-  }
-}
-
-@keyframes svc-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes svc-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-@media (prefers-reduced-motion: reduce) {
-  .svc-shot { transition: none; }
-}
-
-
 @keyframes newin-rise { from { opacity: 0; transform: translateY(52px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes newin-item { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -7807,7 +7589,6 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    so no layout moves. */
 .cps-view > span,
 .cps-strip-link > span,
-.svc-row-link,
 .cf-cta {
   text-decoration: none;
   border-bottom-color: transparent;
@@ -7815,7 +7596,6 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 .cps-view > span { padding-bottom: 3px; }
 .cps-view { text-decoration: none; }
-.svc-row-link { min-height: 44px; margin-top: 2px; }
 @keyframes u-draw {
   0% { background-size: 100% 1px; background-position-x: right; }
   45% { background-size: 0 1px; background-position-x: right; }
@@ -7825,7 +7605,6 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .cps-view:hover > span,
   .cps-strip-link:hover > span,
-  .svc-row-link:hover,
   .cf-card.is-centre:hover .cf-cta { animation: u-draw 700ms cubic-bezier(0.65, 0, 0.35, 1); }
 }
 
@@ -7896,7 +7675,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .rt.is-armed.is-in .rt-word { transform: none; }
 
 /* Editorial photographs settle from a slight enlargement as they scroll in,
-   inside the frames whose own entrances (svc, hw, owner, cats) are already
+   inside the frames whose own entrances (owner, cats) are already
    defined above, driven by the browser's view timeline (no JavaScript).
    `scale`, not `transform`, so it composes with the hover zooms these
    images already have. Browsers
@@ -7904,7 +7683,6 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    photograph as it is. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .svc-media img,
     .owner-portrait img,
     .cats-img,
     .prod-media img {
@@ -8213,3 +7991,49 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
     }
   }
 }
+
+/* ══ Service strip (2026-09-23) ═════════════════════════════════════════
+   Replaced the split section with a photograph. One quiet row of three:
+   icon, one line, the way to the full page. Hairlines above and below,
+   dividers between on a wide screen, stacked rows on a phone. */
+.svs {
+  background: var(--bb-white);
+  border-block: 1px solid var(--bb-light-border);
+  padding-inline: 18px;
+}
+@media (min-width: 768px) { .svs { padding-inline: var(--bb-gutter-editorial); } }
+.svs-list { list-style: none; margin: 0 auto; padding: 0; display: grid; max-width: 1320px; }
+@media (min-width: 900px) { .svs-list { grid-template-columns: repeat(3, 1fr); } }
+.svs-list li + li { border-top: 1px solid var(--bb-light-border); }
+@media (min-width: 900px) { .svs-list li + li { border-top: 0; border-left: 1px solid var(--bb-light-border); } }
+.svs-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 4px;
+  color: var(--bb-black);
+  text-decoration: none;
+}
+@media (min-width: 900px) { .svs-item { padding: 30px clamp(18px, 2.4vw, 36px); } }
+.svs-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--bb-light-border);
+  border-radius: 999px;
+  color: var(--bb-black);
+  transition: background 300ms var(--bb-ease), color 300ms var(--bb-ease), border-color 300ms var(--bb-ease);
+}
+.svs-text { display: grid; gap: 3px; min-width: 0; }
+.svs-title { font-family: var(--font-display-face), Georgia, serif; font-size: 19px; line-height: 1.2; }
+.svs-line { font-size: 13px; line-height: 1.5; color: var(--bb-grey-dark); }
+.svs-arrow { font-size: 16px; color: var(--bb-grey-dark); transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), color 300ms var(--bb-ease); }
+@media (hover: hover) and (pointer: fine) {
+  .svs-item:hover .svs-icon { background: var(--bb-black); color: var(--bb-white); border-color: var(--bb-black); }
+  .svs-item:hover .svs-arrow { transform: translateX(4px); color: var(--bb-black); }
+}
+.svs-item:active .svs-icon { background: var(--bb-black); color: var(--bb-white); border-color: var(--bb-black); }
+.svs-item:focus-visible { outline: 2px solid var(--bb-black); outline-offset: -2px; }
+@media (prefers-reduced-motion: reduce) { .svs-icon, .svs-arrow { transition: none; } }
