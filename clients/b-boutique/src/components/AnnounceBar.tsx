@@ -7,7 +7,7 @@ import { FREE_DELIVERY_OVER_P, formatPriceShort } from "@/lib/catalogue";
  * Rewritten 2026-09-23. The client said the old strip (9px tracked capitals
  * on near-black) "looks cheap", and asked for three things in our own words:
  * free UK delivery over £120, limited releases, and new clothing weekly.
- * It is now set in the Bodoni italic the headings use, in sentence case, on
+ * It is now set in the display face's italic (Gloock since 2026-09-23), in sentence case, on
  * the site's ink. (Briefly Mulberry; the client rejected the purple.)
  *
  * ── Every line has to be true, because this is on every route ──────────────

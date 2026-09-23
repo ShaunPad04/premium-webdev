@@ -265,7 +265,7 @@ const FaqItem = React.forwardRef<
         >
           <span
             className={cn(
-              "font-display text-[clamp(19px,1.9vw,26px)] font-normal leading-[1.18] tracking-[-0.018em] transition-colors duration-200",
+              "font-display text-[clamp(19px,1.9vw,26px)] font-normal leading-[1.18] tracking-[-0.005em] transition-colors duration-200",
               "underline-offset-[10px] decoration-2 group-has-[:focus-visible]:underline",
               isOpen ? "text-bb-black" : "text-bb-black-soft",
             )}

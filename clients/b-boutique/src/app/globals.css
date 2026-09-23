@@ -199,11 +199,14 @@
   --color-bb-grey-mid: var(--bb-grey-mid);
   --color-bb-grey-dark: var(--bb-grey-dark);
 
-  /* Bodoni Moda stays — it is the approved wordmark face and the whole
-     editorial voice. Everything else in the UI is Inter. The three legacy
+  /* The display face is Gloock since 2026-09-23 (it replaced Bodoni Moda;
+     Brad's pick). It is the wordmark and the editorial voice; everything
+     else is Inter. Display tracking was tuned for Bodoni's narrow letters
+     (-0.02 to -0.045em); Gloock is wider and already sets tight, so every
+     display rule keeps 30% of its old negative tracking. The three legacy
      aliases resolve to it too, so every existing font-sans / font-grotesk /
      font-mono className keeps working while the callers are migrated. */
-  --font-display: var(--font-bodoni);
+  --font-display: var(--font-gloock);
   --font-sans: var(--font-inter);
   --font-grotesk: var(--font-inter);
   --font-mono: var(--font-inter);
@@ -229,10 +232,10 @@ body {
  * base layer they are defaults again, and utilities win as intended. */
 @layer base {
   .display {
-    font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+    font-family: var(--font-gloock), Georgia, serif;
     font-optical-sizing: auto;
     font-weight: 400;          /* never a faked bold Bodoni */
-    letter-spacing: -0.025em;
+    letter-spacing: -0.007em;
     line-height: 1.02;         /* the loose end of the .92-1.02 band */
     text-wrap: balance;
   }
@@ -643,11 +646,11 @@ body {
      "every" at the widths where the collision happened, and `text-wrap:
      balance` below keeps the two lines close in length. */
   max-width: 12ch;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(42px, 7vw, 104px);
   line-height: 0.94;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.009em;
   color: var(--bb-white-pure);
   text-wrap: balance;
 }
@@ -659,7 +662,7 @@ body {
    layout.tsx — 25 KB on the critical path for one word is not a trade. */
 .hero-line em {
   font-style: italic;
-  font-synthesis: none;   /* never a slanted roman standing in for the real italic */
+  font-synthesis: style;   /* Gloock has no italic; the slanted roman IS the approved italic */
 }
 
 /* `width: fit-content` is load-bearing, not tidiness.
@@ -882,11 +885,11 @@ body {
      wrapping mechanism: 11ch was tried and broke "Something a little" across
      two lines of its own, making three lines out of two. */
   max-width: min(42vw, 460px);
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(26px, 2.4vw, 44px);
   line-height: 1.02;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.006em;
   color: var(--bb-white-pure);
   opacity: 0;
   /* Half the photograph's 1400ms. The picture is the slow thing; the type
@@ -959,13 +962,13 @@ body {
      nothing else moves. */
   padding-bottom: 0.22em;
   margin-bottom: -0.22em;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(44px, 6.6vw, 112px);
   line-height: 0.96;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.009em;
 }
-.pss-title em { font-style: italic; font-synthesis: none; }
+.pss-title em { font-style: italic; font-synthesis: style; }
 /* Invisible until a keyboard lands on them; then a plain labelled button in
    the middle of the frame. A mouse or a thumb uses the click layer. */
 .pss-key {
@@ -1168,11 +1171,11 @@ body {
 /* The section's one editorial moment, and the only Bodoni in it. The list
    below is utility and is set in Inter — one face per role. */
 .svc-h2 {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(30px, 3.6vw, 46px);
   line-height: 1.06;
-  letter-spacing: -0.022em;
+  letter-spacing: -0.007em;
   color: var(--bb-black);
   margin: 0 0 clamp(32px, 3.4vw, 46px);
   max-width: 14ch;
@@ -1385,11 +1388,11 @@ body {
 }
 
 .hw-h2 {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(44px, 4vw, 60px);
   line-height: 0.97;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.007em;
   max-width: 450px;
   color: var(--bb-black-soft);
 }
@@ -1593,11 +1596,11 @@ body {
 }
 
 .newin-h2 {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(46px, 4vw, 62px);
   line-height: 0.98;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.007em;
   color: var(--bb-black-soft);
 }
 
@@ -1763,11 +1766,11 @@ body {
 
 .newin-name {
   margin-top: 17px;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(16px, 1.2vw, 19px);
   line-height: 1.15;
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
   color: var(--bb-black-soft);
 }
 
@@ -1982,11 +1985,11 @@ body {
 .cats-name {
   display: block;
   margin-top: 10px;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(23px, 1.9vw, 31px);
   line-height: 1;
-  letter-spacing: -0.015em;
+  letter-spacing: normal;
   text-transform: uppercase;
   color: var(--bb-white);
 }
@@ -2090,11 +2093,11 @@ body {
 }
 
 .pov-statement {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(48px, 4.8vw, 76px);
   line-height: 0.93;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.009em;
   text-transform: uppercase;
   text-wrap: initial;   /* balance fights the line splitter for control */
   max-width: 780px;
@@ -2290,11 +2293,11 @@ body {
 .visit-address {
   display: flex;
   flex-direction: column;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(38px, 4vw, 58px);
   line-height: 0.98;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.007em;
   color: var(--bb-black);
 }
 @media (min-width: 640px) { .visit-address { font-size: clamp(42px, 4vw, 58px); } }
@@ -2402,11 +2405,11 @@ body {
 }
 
 .vm-panel-street {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(24px, 2.4vw, 34px);
   line-height: 1.05;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.006em;
   color: var(--bb-white);
 }
 .vm-panel-sub {
@@ -2671,11 +2674,11 @@ body {
 }
 
 .faq-h2 {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(42px, 4.5vw, 66px);
   line-height: 0.96;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.007em;
   max-width: 430px;
   color: var(--bb-black-soft);
   /* This heading sets its own Bodoni rather than borrowing `.display`, and so
@@ -2716,11 +2719,11 @@ body {
    utility for. */
 
 .faq-contact-title {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(21px, 1.7vw, 28px);
   line-height: 1.15;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.006em;
   color: var(--bb-black-soft);
 }
 
@@ -2776,11 +2779,11 @@ body {
 }
 
 .ft-name {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: 27px;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.006em;
   color: var(--bb-white);
 }
 
@@ -2884,7 +2887,7 @@ body {
 .fw-mask { overflow: hidden; line-height: 0; }
 
 .fw-mark {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   /* The prompt's clamp(82px, 27vw, 128px) is the ceiling here, not the value.
      On its own it resolves to 105.3px at 390, and "B Boutique" in Bodoni Moda
@@ -2898,7 +2901,7 @@ body {
      tracking ever changes. */
   font-size: min(clamp(82px, 27vw, 128px), calc((100vw - 36px) / 4.635));
   line-height: 0.8;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.013em;
   color: var(--bb-white);
   white-space: nowrap;
   /* Optical: the Bodoni "B" carries a left side bearing that reads as an
@@ -3106,11 +3109,11 @@ body {
 }
 
 .pm-h1 {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(44px, 8vw, 104px);
   line-height: 0.98;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.006em;
   color: var(--bb-white);
   margin: 0;
   text-wrap: balance;
@@ -3144,10 +3147,10 @@ body {
 }
 
 .pm-phone-number {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-size: clamp(26px, 3.2vw, 38px);
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
   color: var(--bb-white);
   text-decoration: none;
   /* A phone number is the one link on the site people will actually want to
@@ -3232,11 +3235,11 @@ body {
 
 .also-h2 {
   margin: 0 0 clamp(24px, 3vw, 40px);
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(24px, 2.6vw, 38px);
   line-height: 1.08;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.006em;
   color: var(--bb-black);
 }
 
@@ -3296,11 +3299,11 @@ body {
 .page-head { max-width: 62ch; margin-bottom: clamp(36px, 5vh, 62px); }
 
 .page-h2 {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(28px, 4vw, 52px);
   line-height: 1.04;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.006em;
   margin: 0;
   text-wrap: balance;
 }
@@ -3418,7 +3421,7 @@ body {
 }
 
 .cat-name {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(19px, 1.7vw, 24px);
   line-height: 1.2;
@@ -3467,7 +3470,7 @@ body {
 
 .piece-name {
   margin-top: 5px;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-size: clamp(15px, 1.3vw, 18px);
   line-height: 1.3;
 }
@@ -3543,13 +3546,13 @@ body {
 .ab-eyebrow { margin: 0 0 18px; color: var(--bb-grey-light); }
 .ab-title {
   margin: 0;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(56px, 11vw, 176px);
   line-height: 0.9;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.011em;
 }
-.ab-title em, .ab-owner-name em { font-style: italic; font-synthesis: none; }
+.ab-title em, .ab-owner-name em { font-style: italic; font-synthesis: style; }
 .ab-hero-where {
   margin: 22px 0 0;
   font-size: 11px;
@@ -3575,11 +3578,11 @@ body {
 .ab-kicker { margin: 0 0 16px; color: var(--bb-grey-dark); }
 .ab-owner-name {
   margin: 0;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(44px, 6vw, 96px);
   line-height: 0.95;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.009em;
 }
 .ab-quote {
   position: relative;
@@ -3594,7 +3597,7 @@ body {
   display: block;
   height: 0.5em;
   margin-bottom: 8px;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-size: 88px;
   line-height: 1;
   color: var(--bb-rouge);
@@ -3616,11 +3619,11 @@ body {
 .ab-inside-head { max-width: 1280px; margin: 0 auto clamp(40px, 6vh, 72px); }
 .ab-h2 {
   margin: 0;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(40px, 5.2vw, 84px);
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.009em;
 }
 .ab-gallery { display: grid; gap: 40px 0; max-width: 1280px; margin: 0 auto; }
 .ab-fig { margin: 0; }
@@ -3685,11 +3688,11 @@ body {
 }
 .ab-principle-t {
   margin: 0;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(28px, 3vw, 46px);
   line-height: 1.05;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.006em;
 }
 .ab-principle-b {
   margin: 8px 0 0;
@@ -3714,14 +3717,14 @@ body {
 .cps-eyebrow { margin: 0; color: var(--bb-rouge); }
 .cps-h {
   margin: 0;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(44px, 7vw, 120px);
   line-height: 0.95;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.011em;
   text-wrap: balance;
 }
-.cps-h em, .cps-name em { font-style: italic; font-synthesis: none; }
+.cps-h em, .cps-name em { font-style: italic; font-synthesis: style; }
 .cps-lede { margin: 0; max-width: 34rem; font-size: 16px; line-height: 1.7; color: var(--bb-grey-dark); }
 
 .cps-scene { position: relative; }
@@ -3766,11 +3769,11 @@ body {
 .cps-cat { margin: 0 0 12px; color: var(--bb-grey-dark); }
 .cps-name {
   margin: 0;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(30px, 3.4vw, 54px);
   line-height: 1.02;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.007em;
 }
 .cps-price { margin: 14px 0 0; font-size: 18px; font-weight: 500; letter-spacing: 0.02em; }
 .cps-desc {
@@ -3871,14 +3874,14 @@ body {
 .pinky-eyebrow { margin: 0; color: var(--bb-rouge); }
 .pinky-h {
   margin: 0;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(40px, 6vw, 88px);
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.009em;
   text-wrap: balance;
 }
-.pinky-h em { font-style: italic; font-synthesis: none; }
+.pinky-h em { font-style: italic; font-synthesis: style; }
 .pinky-body { margin: 0; max-width: 34rem; font-size: 16px; line-height: 1.7; color: var(--bb-black); }
 .pinky-cta {
   display: inline-flex;
@@ -4075,7 +4078,7 @@ body {
 }
 
 .visit-phone-link {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-size: clamp(21px, 2.2vw, 28px);
   line-height: 1;
   color: var(--bb-black);
@@ -4212,7 +4215,7 @@ body {
   display: flex;
   align-items: baseline;
   gap: 12px;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-size: clamp(21px, 2.1vw, 28px);
   line-height: 1.15;
 }
@@ -4651,7 +4654,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .prod-name {
   display: block;
   margin-top: 5px;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-size: clamp(15px, 1.3vw, 18px);
   line-height: 1.3;
 }
@@ -4718,10 +4721,10 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .pol-block { scroll-margin-top: 108px; }
 
 .pol-h {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-size: clamp(20px, 2.3vw, 27px);
   line-height: 1.22;
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
   text-wrap: balance;
 }
 
@@ -4898,7 +4901,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 
 .find-empty-lede {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-size: clamp(20px, 2.2vw, 28px);
   line-height: 1.25;
   color: var(--bb-black);
@@ -5205,11 +5208,11 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 
 .pdp-name {
   margin-top: 20px;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(30px, 4vw, 52px);
   line-height: 1.04;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.006em;
   text-wrap: balance;
 }
 
@@ -5604,7 +5607,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 
 .bag-name {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-size: clamp(16px, 1.4vw, 19px);
   line-height: 1.25;
 }
@@ -5772,7 +5775,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   border-top: 1px solid var(--bb-light-border);
   color: inherit;
   text-decoration: none;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-size: clamp(18px, 1.9vw, 24px);
   transition: transform 420ms var(--bb-ease);
 }
@@ -6580,11 +6583,11 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    the supplied card was reaching for with a hairline grotesk. */
 .owner-name {
   margin: 0;
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-weight: 400;
   font-size: clamp(44px, 7vw, 92px);
   line-height: 1.02;
-  letter-spacing: -0.028em;
+  letter-spacing: -0.008em;
   color: var(--bb-black);
 }
 
@@ -6756,9 +6759,9 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 @media (min-width: 640px) { .announce-list { padding-inline: 24px; } }
 
 .announce-item {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-style: italic;
-  font-synthesis: none;
+  font-synthesis: style;
   font-size: 13px;
   line-height: 16px;
   letter-spacing: 0.01em;
@@ -6956,7 +6959,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 
 .dd-heading {
-  font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
+  font-family: var(--font-gloock), Georgia, serif;
   font-size: clamp(19px, 2vw, 24px);
   font-weight: 400;
   line-height: 1.2;

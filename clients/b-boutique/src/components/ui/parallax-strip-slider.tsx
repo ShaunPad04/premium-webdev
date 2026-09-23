@@ -516,8 +516,9 @@ export default function ParallaxStripSlider({
         ) : null}
       </div>
 
-      {/* Bottom bar: title left, slot right on a mouse; stacked on touch. */}
-      <div className="absolute inset-x-0 bottom-0 flex items-end gap-6 px-[18px] pb-14 sm:px-10 md:px-[var(--bb-gutter-editorial)] pointer-coarse:flex-col pointer-coarse:items-start pointer-coarse:gap-6 pointer-coarse:pb-16">
+      {/* Bottom bar: title left, slot right on a mouse; stacked on touch and
+          below 640px (a narrow window with a mouse squeezed the title). */}
+      <div className="absolute inset-x-0 bottom-0 flex items-end gap-6 px-[18px] pb-14 sm:px-10 md:px-[var(--bb-gutter-editorial)] pointer-coarse:flex-col pointer-coarse:items-start pointer-coarse:gap-6 pointer-coarse:pb-16 max-sm:flex-col max-sm:items-start">
         {/* key={caption}: a new element per slide, so a title never inherits
             the previous one's transform mid-animation. */}
         <p

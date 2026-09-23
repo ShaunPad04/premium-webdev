@@ -150,7 +150,7 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
           aria-label="B Boutique, home"
           /* py-3 for the same reason as the MENU button: a 20px-tall link in
              a 72px items-center row becomes a 44px target and nothing moves. */
-          className="display shrink-0 py-3 text-[20px] leading-none tracking-[-0.02em] lg:text-[21px]"
+          className="display shrink-0 py-3 text-[20px] leading-none tracking-[-0.005em] lg:text-[21px]"
         >
           B Boutique
         </Link>

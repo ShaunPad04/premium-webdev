@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Inter } from "next/font/google";
+import { Gloock, Inter } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
@@ -24,52 +24,20 @@ import "./globals.css";
  * on every boutique site. That still holds, and this is not it: the display
  * face is Bodoni, which is a far sharper, higher-contrast letter than
  * Playfair. Inter is doing the quiet half of the job, not the loud one. */
-const bodoni = Bodoni_Moda({
-  variable: "--font-bodoni",
+/* Display face: Gloock, since 2026-09-23 (Brad picked it from a sheet of
+ * free lookalikes for Olivera, a paid face). Replaced Bodoni Moda.
+ *
+ * Gloock ships ONE style, upright 400. There is no italic file, so the
+ * italic accents on the site (the <em> in headings) are the browser's
+ * slanted roman, which is exactly what Brad approved on the sample sheet.
+ * font-synthesis is allowed for `style` on those rules in globals.css.
+ *
+ * Self-hosted by next/font at build time, so the page still requests
+ * nothing from Google on load (/privacy says so). */
+const display = Gloock({
+  variable: "--font-gloock",
   subsets: ["latin"],
-  /* ITALIC IS BACK, 2026-09-21, and this is the day the old comment named.
-     It read: "The italic axis was requested and preloaded — 25 KB on the
-     critical path, competing with the hero image for a throttled connection
-     — and nothing on the site uses it: every italic face reported
-     `unloaded` and a sweep of the rendered page found zero elements
-     computing font-style: italic. Add it back the day something is set in
-     italic."
-
-     That day is now. The client asked for the site to read as a womenswear
-     boutique rather than a gallery, and a Bodoni italic is the single
-     strongest feminine typographic move available on a face that is already
-     approved — it keeps her 2026-09-01 sign-off intact instead of spending a
-     review cycle on a new typeface.
-
-     The 25 KB is a known cost rather than a guess, because the earlier
-     measurement is what recorded it. It is spent deliberately and it is
-     spent SPARINGLY: the hero statement and pull quotes. Never body copy,
-     never a whole heading. If a sweep ever again finds zero elements
-     computing font-style: italic, take it back out. */
-  style: ["normal", "italic"],
-
-  /* `preload: false` was tried here and rejected on measurement, and the case
-   * against it got stronger on 2026-09-05.
-   *
-   * The reasoning was sound on paper at the time: the LCP element was then the
-   * hero philosophy line, which is Inter, and Bodoni's latin subset is 25.8 KB
-   * of competing high-priority bytes on the same throttled connection. Taking
-   * it off the preload should hand that bandwidth to Inter and the hero
-   * photograph.
-   *
-   * That premise is now gone. The hero philosophy line was removed at the
-   * client's request, and LCP moved to the header wordmark — read from the
-   * trace, `header.fixed > div.relative > a.display`, which is Bodoni. The
-   * font this preload fetches is now the font the largest paint waits on, so
-   * dropping it would delay LCP directly rather than merely risk a flash.
-   *
-   * Five Lighthouse runs each way, same build, same quiet machine:
-   * preloaded  median 88 (87-92), unpreloaded median 89 (87-90). The spread
-   * swallows the difference — there is no gain here, only a different set of
-   * dice. And it is not free: Bodoni sets the wordmark in the header, which
-   * is above the fold, so dropping the preload puts a fallback-serif flash on
-   * the brand mark on every cold load. Paying for that with nothing is a bad
-   * trade twice over. Do not re-run this one. */
+  weight: "400",
   display: "swap",
 });
 
@@ -215,7 +183,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-GB"
-      className={`${bodoni.variable} ${inter.variable} h-full antialiased`}
+      className={`${display.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bone text-onyx">
         {/* Every forward navigation lands at the top of the new page; back

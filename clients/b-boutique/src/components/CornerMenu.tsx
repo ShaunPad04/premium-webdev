@@ -331,7 +331,7 @@ export function CornerMenu() {
                             Tailwind's font-semibold beats the base-layer
                             .display rule, which is exactly why CLAUDE.md
                             insists .display stays in @layer base. */}
-                        <span className="display text-[1.75rem] font-semibold leading-[1.04] tracking-[-0.025em] sm:text-[2rem]">
+                        <span className="display text-[1.75rem] font-normal leading-[1.04] tracking-[-0.008em] sm:text-[2rem]">
                           {item.label}
                         </span>
                         <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"
