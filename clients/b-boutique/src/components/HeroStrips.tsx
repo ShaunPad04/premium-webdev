@@ -70,3 +70,30 @@ export function HeroStrips() {
     </ParallaxStripSlider>
   );
 }
+
+/* What the hero shows if the slider ever fails: the first photograph, the
+   headline and the button, with nothing moving. See SafeBoundary. */
+export function HeroStill() {
+  const first = SLIDES[0];
+  return (
+    <div className="relative h-full w-full overflow-hidden bg-bb-black">
+      <picture>
+        {first.sources?.map((s) => (
+          <source key={`${s.media ?? ""}${s.type}`} media={s.media} type={s.type} srcSet={s.srcSet} />
+        ))}
+        <img src={first.src} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      </picture>
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{ background: "linear-gradient(to top, rgba(26,20,22,.78) 0%, rgba(26,20,22,.3) 45%, rgba(26,20,22,.38) 100%)" }}
+      />
+      <div className="absolute inset-x-0 bottom-0 flex items-end gap-6 px-[18px] pb-14 sm:px-10 md:px-[var(--bb-gutter-editorial)] pointer-coarse:flex-col pointer-coarse:items-start">
+        <p className="pss-title flex-1" style={{ color: "#FDFAF9" }}>{first.title}</p>
+        <Link href="/shop" className="hero-cta">
+          <span>See what is in</span>
+        </Link>
+      </div>
+    </div>
+  );
+}

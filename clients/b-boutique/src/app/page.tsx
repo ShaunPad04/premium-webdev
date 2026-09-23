@@ -5,6 +5,7 @@ import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import NewsLetter from "@/components/ui/pinky-news-letter";
 import CinematicProducts from "@/components/ui/cinematic-product-scroll-section";
+import { SafeBoundary } from "@/components/SafeBoundary";
 import { NewInRail } from "@/components/NewInRail";
 import { Homeware } from "@/components/Homeware";
 import { OwnerCard } from "@/components/OwnerCard";
@@ -40,7 +41,9 @@ export default function Home() {
         {/* 03 Proof — actual stock, moving weekly */}
         <NewInRail />
 
-        <CinematicProducts />
+        <SafeBoundary name="statement pieces" fallback={null}>
+          <CinematicProducts />
+        </SafeBoundary>
         {/* 04 A second world — homeware */}
         <Homeware />
         {/* The person. This is the slot the six invented customer quotes
@@ -58,7 +61,9 @@ export default function Home() {
         {/* 05 The practical questions, once they are interested */}
         <Faq />
         {/* 06 The ask — a postcode, not a basket */}
-        <NewsLetter />
+        <SafeBoundary name="new on the rails" fallback={null}>
+          <NewsLetter />
+        </SafeBoundary>
 
         <Visit />
       </main>

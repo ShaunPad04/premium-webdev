@@ -382,6 +382,12 @@ stocking them). Do not reintroduce the word without her confirming stock.
   sources, layout from `pointer-coarse:` CSS not JS, keyboard buttons, a
   `paused` prop. The pause button stays because the slides auto-advance
   (WCAG 2.2.2). Do not remove it. LCP has NOT been re-measured since.
+  **No SplitText, ever, on anything React renders.** It rewrites the DOM, and
+  it crashed the live home page twice ("This page couldn't load") before it
+  was removed; the titles now rise as one piece on a transform. The hero, the
+  statement pieces and the pink band sit inside `SafeBoundary`, so a failure
+  in any of them swaps in a still version instead of taking the page down.
+  Verified by forcing a crash: the page stayed up.
 - **`components/ui/pinky-news-letter.tsx`**: light shader band before Visit.
   The supplied email field was NOT kept: it sent nowhere. A newsletter needs
   her agreement, a destination (e.g. a Resend audience) and a /privacy line

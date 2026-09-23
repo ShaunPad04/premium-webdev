@@ -946,7 +946,19 @@ body {
 /* ── The strip slider hero (components/ui/parallax-strip-slider.tsx) ──── */
 .pss-title {
   margin: 0;
-  max-width: 13ch;
+  /* 18ch, not 13: at 13 "18 Sea View Street," broke onto a third line of
+     its own, which is half of what the client saw as the title glitching.
+     Every title's line breaks are written into the slide as <br>s; this
+     only has to be wide enough never to add another. On a phone the column
+     is narrower than 18ch anyway and wraps as it must. */
+  max-width: 18ch;
+  /* The title is its own mask (overflow: hidden, for the rise-in), and at a
+     0.96 line-height the mask's box ends above the descenders — the tail of
+     every y and p on the last line was cut off. The padding makes room for
+     them inside the mask; the negative margin gives the space back so
+     nothing else moves. */
+  padding-bottom: 0.22em;
+  margin-bottom: -0.22em;
   font-family: var(--font-bodoni), "Libre Bodoni", "Bodoni 72", Didot, serif;
   font-weight: 400;
   font-size: clamp(44px, 6.6vw, 112px);

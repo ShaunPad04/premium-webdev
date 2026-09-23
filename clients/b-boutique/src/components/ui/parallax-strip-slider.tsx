@@ -41,7 +41,6 @@ import {
   useState,
 } from "react";
 import gsap from "gsap";
-import { SplitText } from "gsap/SplitText";
 
 /* Inline stand-in for @gsap/react's useGSAP. Mirrors its default
    `revertOnUpdate: false`: one gsap.context lives for the component's
@@ -81,19 +80,13 @@ function useGSAP(
   }, deps);
 }
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(SplitText);
-}
-
 const STRIP_COUNT = 10;
 const REVEAL_DURATION = 0.5;
 const STRIP_STAGGER = 0.04;
 const ZOOM_DURATION = 0.9;
 const ZOOM_FROM = 1.2;
 const AUTOPLAY_INTERVAL = 6000;
-const TITLE_CHAR_DURATION = 0.6;
-const TITLE_CHAR_STAGGER = 0.03;
-const TITLE_CHAR_Y_PERCENT = 100;
+const TITLE_DURATION = 0.8;
 const PROGRESS_DURATION = 0.9;
 
 export type SlideSource = { media?: string; type: string; srcSet: string };
@@ -182,12 +175,12 @@ export default function ParallaxStripSlider({
   const captionRef = useRef<HTMLDivElement>(null);
   const chapterRef = useRef<HTMLSpanElement>(null);
   const titleRef = useRef<HTMLParagraphElement>(null);
+  const titleInnerRef = useRef<HTMLSpanElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const stripsRef = useRef<HTMLDivElement[]>([]);
   const zoomRef = useRef<HTMLDivElement[]>([]);
   const isAnimating = useRef(false);
   const isFirstCaption = useRef(true);
-  const splitRef = useRef<SplitText | null>(null);
 
   const cursorRef = useRef<HTMLDivElement>(null);
   const line1Ref = useRef<HTMLSpanElement>(null);
@@ -302,11 +295,6 @@ export default function ParallaxStripSlider({
     }
   );
 
-  useLayoutEffect(() => {
-    splitRef.current?.revert();
-    splitRef.current = null;
-  }, [caption]);
-
   // Incoming caption reveal.
   useGSAP(
     () => {
@@ -323,43 +311,33 @@ export default function ParallaxStripSlider({
         return;
       }
 
-      /* Lines masked as well as chars: the hero titles run to two lines, and
-         a char rising from below its own line would cross the line under
-         it on the way up. The mask gives each line its own clip. */
-      const split = new SplitText(titleRef.current, { type: "lines,chars", mask: "lines" });
-      splitRef.current = split;
-
-      const tl = gsap.timeline({
-        onComplete: () => {
-          split.revert();
-          if (splitRef.current === split) splitRef.current = null;
-        },
-      });
-
-      tl.from(
-        split.chars,
-        {
-          yPercent: TITLE_CHAR_Y_PERCENT,
-          duration: TITLE_CHAR_DURATION,
-          ease: "power2.out",
-          stagger: TITLE_CHAR_STAGGER,
-        },
-        0
-      );
+      /* The whole title rises out of its own mask as one piece.
+         ── Why not the letter-by-letter SplitText reveal it came with ──
+         SplitText works by REWRITING the title's HTML: it wraps every
+         letter in a new element, then puts copies back afterwards. React
+         owns that HTML. Twice on 2026-09-22 the live page crashed to "This
+         page couldn't load" because React went to update nodes SplitText
+         had swapped out, and between the rewrite and the revert the lines
+         re-wrapped, which is the glitch the client photographed. Keying the
+         element fixed the first crash but not the class of bug. Nothing
+         here touches the DOM React renders now: the inner span is moved by
+         a transform and nothing else, so there is nothing left to disagree
+         about. */
+      const tl = gsap.timeline();
+      if (titleInnerRef.current) {
+        tl.fromTo(
+          titleInnerRef.current,
+          { yPercent: 105 },
+          { yPercent: 0, duration: TITLE_DURATION, ease: "power3.out" },
+          0
+        );
+      }
 
       if (chapterRef.current) {
         tl.fromTo(chapterRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0);
       }
     },
     { dependencies: [caption], scope: rootRef }
-  );
-
-  useGSAP(
-    () => () => {
-      splitRef.current?.revert();
-      splitRef.current = null;
-    },
-    { scope: rootRef }
   );
 
   // Circular cursor: smooth follow + arrow that flips with the pointer side.
@@ -540,16 +518,8 @@ export default function ParallaxStripSlider({
 
       {/* Bottom bar: title left, slot right on a mouse; stacked on touch. */}
       <div className="absolute inset-x-0 bottom-0 flex items-end gap-6 px-[18px] pb-14 sm:px-10 md:px-[var(--bb-gutter-editorial)] pointer-coarse:flex-col pointer-coarse:items-start pointer-coarse:gap-6 pointer-coarse:pb-16">
-        {/* key={caption}: a NEW element per slide, and that is what stops the
-            page crashing. SplitText rewrites this element's children, and
-            revert() puts back COPIES of them, not the originals. React still
-            held the originals (the <br> and <em> in these titles), so on the
-            next slide it tried to remove nodes that were no longer in the
-            document: "removeChild: the node to be removed is not a child of
-            this node", and the whole page fell over on the second autoplay
-            transition. Keying by slide makes React replace the <p> itself,
-            which SplitText never moves, and never reach inside it. The demo
-            never showed this because its titles were plain single words. */}
+        {/* key={caption}: a new element per slide, so a title never inherits
+            the previous one's transform mid-animation. */}
         <p
           key={caption}
           ref={titleRef}
@@ -557,7 +527,9 @@ export default function ParallaxStripSlider({
           className="pss-title pointer-events-none flex-1 overflow-hidden"
           style={{ color: accentColor }}
         >
-          {activeSlide.title}
+          <span ref={titleInnerRef} className="block">
+            {activeSlide.title}
+          </span>
         </p>
         {children ? <div className="relative z-30 shrink-0">{children}</div> : null}
       </div>

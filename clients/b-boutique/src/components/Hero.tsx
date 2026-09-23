@@ -1,6 +1,7 @@
 import { shop } from "@/lib/shop";
 
-import { HeroStrips } from "./HeroStrips";
+import { HeroStill, HeroStrips } from "./HeroStrips";
+import { SafeBoundary } from "./SafeBoundary";
 
 /* The campaign hero.
  *
@@ -59,7 +60,9 @@ export function Hero() {
         B Boutique — for every woman who walks in. Independent womenswear and
         homeware on {shop.street}, {shop.town}.
       </h1>
-      <HeroStrips />
+      <SafeBoundary name="hero" fallback={<HeroStill />}>
+        <HeroStrips />
+      </SafeBoundary>
     </section>
   );
 }
