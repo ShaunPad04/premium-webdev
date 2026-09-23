@@ -396,6 +396,22 @@ stocking them). Do not reintroduce the word without her confirming stock.
   from the front of the store"). It is her real fascia. Never edit it out,
   retouch it, or crop the About frame so it falls off the right edge
   (checked 2026-09-23: fully visible at 390, 768 and 1440).
+- **Hero wordmark REOPENED by Brad, 2026-09-23 (late).** He asked for
+  "B Boutique" in the middle of the hero over blurred editorial frames,
+  after a reference he supplied. That supersedes "do not reintroduce a giant
+  wordmark to the hero" in the Typography section. The footer sign-off stays.
+  Frames: `assets/hero/blur-1..5` (+ `-portrait`), Higgsfield Soul 2 with
+  intentional-camera-movement prompts; blur-4 landscape is a round-1 frame
+  with a horizontal box blur added locally (every blurred dress came back
+  rotated). All five trimmed 4% per side: the model paints film borders,
+  one with printed edge numbers. Campaign imagery: no shop, stock or real
+  person, no text. Sources are 2048 wide (not upscaled); the blur carries it.
+  Layout: `LuminaInteractiveList layout="centre" list={false}`: the name
+  and one "Shop all" button, nothing else (Brad). The pause icon stays, in
+  the corner, because the frames still change by themselves (WCAG 2.2.2).
+  Centre wash MEASURED (text hidden, brightest pixel under the name, all
+  five frames): >=3.8:1 at 390 and 1440. Lighthouse mobile vs c13cc22,
+  n=3 interleaved: LCP 5.35/5.34s (noise), weight 1978 -> 1632 KB.
 - **Home hero is the Lumina list since 2026-09-23** (Brad's 21st.dev pick,
   `components/ui/lumina-interactive-list.tsx` via `HeroStrips.tsx`). Its CDN
   GSAP + three.js are gone: the glass transition is one shader on bare
