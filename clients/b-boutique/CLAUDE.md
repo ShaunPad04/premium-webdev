@@ -434,8 +434,10 @@ stocking them). Do not reintroduce the word without her confirming stock.
 - **New In is a 3D coverflow since 2026-09-23** (`components/ui/
   3-d-coverflow-carousel.tsx`, Brad's pick; `NewInRail` deleted). Real
   `newIn` pieces, 4:5 cards sized from the viewport, arrows scoped to the
-  carousel's focus, auto-advance with a real Pause button (never under
-  reduced motion). Every card is a real link; a pointer click on a SIDE card
+  carousel's focus. **Since 2026-09-23 (Brad) no arrows, counter, "View
+  piece" or Pause, and NO auto-advance** (nothing moving on its own means
+  nothing to pause, WCAG 2.2.2); the centre piece carries AddToBag
+  `compact` (colour, size, Add to bag; no preselected size, ever). Every card is a real link; a pointer click on a SIDE card
   turns the carousel instead of navigating. Swipe/drag (pointer events, mouse and
   touch) and horizontal trackpad swipes turn it too; a drag never opens a card.
 

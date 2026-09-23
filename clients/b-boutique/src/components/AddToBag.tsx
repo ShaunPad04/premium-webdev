@@ -59,7 +59,9 @@ const urlSize = () => new URLSearchParams(window.location.search).get("size");
 type State = "in" | "out" | "unknown";
 type Availability = Record<string, { state: State; restockable: boolean }>;
 
-export function AddToBag({ product }: { product: Product }) {
+/* `compact` (the home page's New In carousel): colour, size and Add to bag
+   only. Buy now and the secure-checkout line stay on the product page. */
+export function AddToBag({ product, compact = false }: { product: Product; compact?: boolean }) {
   const uid = useId();
   const { add } = useCart();
   const router = useRouter();
@@ -273,7 +275,7 @@ export function AddToBag({ product }: { product: Product }) {
       {/* Buy now: the same add, then straight to the bag, where delivery
           details and payment are. Same checks, same stock gate; it is a
           shortcut past "View bag", not a separate way to pay. */}
-      {allOut || chosenOut ? null : (
+      {compact || allOut || chosenOut ? null : (
         <button
           type="button"
           className="cf-submit atb-buy"
@@ -287,13 +289,13 @@ export function AddToBag({ product }: { product: Product }) {
 
       {/* True as stated: payment is taken on SumUp's hosted checkout over
           HTTPS (lib/sumup.ts), never on a form on this site. */}
-      <p className="atb-secure">
+      {compact ? null : <p className="atb-secure">
         <svg width="11" height="13" viewBox="0 0 11 13" fill="none" aria-hidden="true">
           <rect x="0.75" y="5.75" width="9.5" height="6.5" rx="1" stroke="currentColor" strokeWidth="1.2" />
           <path d="M2.75 5.75V3.9a2.75 2.75 0 0 1 5.5 0v1.85" stroke="currentColor" strokeWidth="1.2" />
         </svg>
         Secure checkout
-      </p>
+      </p>}
 
       {/* A polite live region that exists before the add, so it is announced
           when it fills. It names the size and the colour, because "added to

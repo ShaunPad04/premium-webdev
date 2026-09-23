@@ -7373,7 +7373,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 
 .cf-stage {
   position: relative;
-  height: calc(var(--cw) * 1.25 + 150px);
+  height: calc(var(--cw) * 1.25 + 108px);
   display: flex;
   justify-content: center;
   perspective: 1400px;
@@ -7416,54 +7416,9 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .cf-cat { font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bb-grey-dark); }
 .cf-name { font-family: var(--font-display-face), Georgia, serif; font-size: clamp(19px, 1.7vw, 23px); line-height: 1.2; }
 .cf-price { font-size: 14px; font-variant-numeric: tabular-nums; }
-.cf-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  padding-bottom: 3px;
-  border-bottom: 1px solid currentColor;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-.cf-cta svg { transition: transform 300ms var(--bb-ease); }
-@media (hover: hover) and (pointer: fine) { .cf-card.is-centre:hover .cf-cta svg { transform: translateX(4px); } }
 .cf-card:focus-visible { outline: none; }
 .cf-card:focus-visible .cf-photo { outline: 2px solid var(--bb-black); outline-offset: 4px; }
 
-.cf-controls { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 8px; }
-.cf-btn {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border: 1px solid var(--bb-light-border);
-  border-radius: 50%;
-  background: var(--bb-white-pure);
-  color: var(--bb-black);
-  cursor: pointer;
-  transition: background 240ms var(--bb-ease), color 240ms var(--bb-ease), border-color 240ms var(--bb-ease);
-}
-@media (hover: hover) and (pointer: fine) { .cf-btn:hover { background: var(--bb-black); border-color: var(--bb-black); color: var(--bb-white); } }
-.cf-btn:focus-visible, .cf-pause:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
-.cf-count { margin: 0; min-width: 74px; text-align: center; font-size: 12px; letter-spacing: 0.12em; color: var(--bb-grey-dark); font-variant-numeric: tabular-nums; }
-.cf-count > span:first-child { color: var(--bb-black); }
-.cf-pause {
-  min-height: 44px;
-  padding: 0 4px;
-  border: 0;
-  background: none;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--bb-grey-dark);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  cursor: pointer;
-}
 @media (prefers-reduced-motion: reduce) {
   .cf-card, .cf-body, .cf-photo { transition: none; }
 }
@@ -7590,8 +7545,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    again from the left, instead of simply changing colour. A 1px gradient,
    so no layout moves. */
 .cps-view > span,
-.cps-strip-link > span,
-.cf-cta {
+.cps-strip-link > span {
   text-decoration: none;
   border-bottom-color: transparent;
   background: linear-gradient(currentColor, currentColor) no-repeat left 100% / 100% 1px;
@@ -7606,8 +7560,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .cps-view:hover > span,
-  .cps-strip-link:hover > span,
-  .cf-card.is-centre:hover .cf-cta { animation: u-draw 700ms cubic-bezier(0.65, 0, 0.35, 1); }
+  .cps-strip-link:hover > span { animation: u-draw 700ms cubic-bezier(0.65, 0, 0.35, 1); }
 }
 
 /* ══ Page mastheads with photographs (2026-09-23) ═══════════════════════
@@ -8290,3 +8243,16 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   .lm-pic, .lm-item { transition: none; }
   .lm-title[data-anim] .lm-ch, .lm-desc[data-anim] { animation: none; }
 }
+
+/* New In's buy block (2026-09-23): the centre piece's colour, size and Add
+   to bag, where the arrows, counter and Pause used to be. */
+.cf-buy {
+  width: min(100% - 36px, 400px);
+  margin: 0 auto;
+  animation: cf-buy-in 420ms var(--bb-ease) both;
+}
+.cf-buy .atb { margin-top: 4px; text-align: center; }
+.cf-buy legend { margin-inline: auto; }
+.cf-buy :is(.atb-swatch-row, .atb-size-row) { justify-content: center; }
+@keyframes cf-buy-in { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .cf-buy { animation: none; } }

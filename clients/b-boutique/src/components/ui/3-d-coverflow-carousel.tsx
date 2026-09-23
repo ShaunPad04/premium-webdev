@@ -20,8 +20,13 @@
  *     is 4:5, the photographs' own ratio, so nobody's head is cropped.
  *   - Keyboard arrows only while the carousel has focus. The demo listened
  *     on window, so ArrowLeft/Right anywhere on the page spun it.
- *   - It auto-advances, so it has a real Pause button (WCAG 2.2.2), stops on
- *     hover and focus, and never auto-advances under reduced motion.
+ *   - It does NOT auto-advance (2026-09-23, Brad: the arrows, counter,
+ *     "View piece" and Pause came off). With nothing moving on its own there
+ *     is nothing to pause (WCAG 2.2.2), and a piece cannot slide away while
+ *     somebody is choosing a size. It turns by swipe, drag, trackpad, the
+ *     arrow keys, or a click on a side card.
+ *   - The centre piece carries the product page's own buy block (colour,
+ *     size, Add to bag), never a one-tap add that guesses a size.
  *   - Every card is a real link to its piece. A pointer click on a SIDE card
  *     brings it to the centre instead of navigating; the centre card opens.
  *   - The site's type, colours, square photographs and ProductPhoto
@@ -29,19 +34,14 @@
  *     fonts, gold and remote images. */
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
-import { formatPriceShort } from "@/lib/catalogue";
+import { formatPriceShort, isBuyable, productBySlug } from "@/lib/catalogue";
 import { newIn } from "@/lib/shop";
 import { ProductPhoto } from "@/components/ProductPhoto";
-import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
+import { AddToBag } from "@/components/AddToBag";
+import { ColourProvider } from "@/components/ColourChoice";
 import { RevealText } from "@/components/RevealText";
-
-const Chevron = ({ dir }: { dir: "l" | "r" }) => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d={dir === "l" ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
 
 /* Where each card sits, by its distance from the centre. Offsets are in
    units of the card width (--cw), so the layout holds at any screen size. */
@@ -66,10 +66,7 @@ function place(offset: number, total: number) {
 export function CoverFlowCarousel() {
   const items = newIn;
   const total = items.length;
-  const reduced = usePrefersReducedMotion();
   const [current, setCurrent] = useState(0);
-  const [held, setHeld] = useState(false);
-  const [paused, setPaused] = useState(false);
   /* Drag and swipe (2026-09-23, client: "you should be able to just swipe
      this on both mobile and desktop"). Pointer events cover a finger and a
      mouse alike; a horizontal trackpad swipe arrives as wheel deltaX. A drag
@@ -82,14 +79,9 @@ export function CoverFlowCarousel() {
   const next = useCallback(() => setCurrent((i) => (i + 1) % total), [total]);
   const prev = useCallback(() => setCurrent((i) => (i - 1 + total) % total), [total]);
 
-  useEffect(() => {
-    if (reduced || paused || held || total <= 1) return;
-    const t = setInterval(next, 5000);
-    return () => clearInterval(t);
-  }, [reduced, paused, held, next, total]);
-
   if (total === 0) return null;
   const now = items[current];
+  const product = productBySlug(now.slug);
 
   return (
     <section
@@ -97,21 +89,17 @@ export function CoverFlowCarousel() {
       aria-labelledby="cf-heading"
       aria-roledescription="carousel"
       className="cf"
-      onMouseEnter={() => setHeld(true)}
-      onMouseLeave={() => setHeld(false)}
-      onFocusCapture={() => setHeld(true)}
-      onBlurCapture={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setHeld(false);
-      }}
       onKeyDown={(e) => {
+        /* Not inside the buy block: there the arrows move between sizes. */
+        if ((e.target as Element).closest(".cf-buy")) return;
         if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
         if (e.key === "ArrowRight") { e.preventDefault(); next(); }
       }}
       onPointerDown={(e) => {
         if (e.pointerType === "mouse" && e.button !== 0) return;
+        if ((e.target as Element).closest(".cf-buy")) return;
         drag.current = { x: e.clientX, y: e.clientY, id: e.pointerId };
         dragged.current = false;
-        setHeld(true);
       }}
       onPointerMove={(e) => {
         const d = drag.current;
@@ -122,8 +110,8 @@ export function CoverFlowCarousel() {
           (dx < 0 ? next : prev)();
         }
       }}
-      onPointerUp={() => { drag.current = null; setHeld(false); }}
-      onPointerCancel={() => { drag.current = null; setHeld(false); }}
+      onPointerUp={() => { drag.current = null; }}
+      onPointerCancel={() => { drag.current = null; }}
       onWheel={(e) => {
         if (Math.abs(e.deltaX) < 30 || Math.abs(e.deltaX) < Math.abs(e.deltaY)) return;
         const now = Date.now();
@@ -186,40 +174,24 @@ export function CoverFlowCarousel() {
                 <span className="cf-cat">{piece.category}</span>
                 <span className="cf-name">{piece.name}</span>
                 <span className="cf-price">{piece.priced ? formatPriceShort(piece.priceP) : "Price to confirm"}</span>
-                <span className="cf-cta">
-                  View piece
-                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                    <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
               </span>
             </Link>
           );
         })}
       </div>
 
-      <div className="cf-controls">
-        <button type="button" className="cf-btn" onClick={prev} aria-label="Previous piece">
-          <Chevron dir="l" />
-        </button>
-        <p className="cf-count" aria-live="polite">
-          <span>{String(current + 1).padStart(2, "0")}</span> / {String(total).padStart(2, "0")}
-          <span className="sr-only">: {now.name}</span>
-        </p>
-        <button type="button" className="cf-btn" onClick={next} aria-label="Next piece">
-          <Chevron dir="r" />
-        </button>
-        {reduced ? null : (
-          <button
-            type="button"
-            className="cf-pause"
-            onClick={() => setPaused((v) => !v)}
-            aria-pressed={paused}
-          >
-            {paused ? "Play" : "Pause"}
-          </button>
-        )}
-      </div>
+      {/* Which piece is in the centre, for a screen reader. */}
+      <p className="sr-only" aria-live="polite">
+        {`Piece ${current + 1} of ${total}: ${now.name}`}
+      </p>
+
+      {product && isBuyable(product) ? (
+        <div className="cf-buy" key={now.slug}>
+          <ColourProvider colours={product.colourways.map((c) => c.colour)}>
+            <AddToBag product={product} compact />
+          </ColourProvider>
+        </div>
+      ) : null}
     </section>
   );
 }
