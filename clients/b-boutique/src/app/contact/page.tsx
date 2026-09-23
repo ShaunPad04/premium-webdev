@@ -103,7 +103,7 @@ export default function ContactPage() {
                       </span>
                       <span className="ccard-tile-label">Instagram</span>
                       <a className="ccard-tile-value" href={instagram.href} target="_blank" rel="noopener noreferrer">
-                        @bboutiquecleethorpes
+                        @bboutique<wbr />cleethorpes
                       </a>
                     </li>
                   ) : null}
