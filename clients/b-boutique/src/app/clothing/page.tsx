@@ -9,6 +9,7 @@ import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
 import { pendingPriceNotice } from "@/lib/catalogue";
 import { clothingProducts } from "@/lib/pages";
+import { RevealText } from "@/components/RevealText";
 
 export const metadata: Metadata = {
   title: "Clothing",
@@ -63,9 +64,9 @@ export default function ClothingPage() {
         <section aria-labelledby="clothing-all" className="page-section">
           <div className="page-inner">
             <div className="page-head">
-              <h2 id="clothing-all" className="page-h2">
+              <RevealText id="clothing-all" className="page-h2">
                 Everything on the rails.
-              </h2>
+              </RevealText>
               <p className="page-lede">
                 New stock comes in regularly, so this is what is in now rather than a
                 standing range. Everything here can be bought online or seen on

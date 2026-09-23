@@ -261,7 +261,7 @@ export function AddToBag({ product }: { product: Product }) {
             setAdded((prev) => ({ size: size!, colour: colour ?? "", n: (prev?.n ?? 0) + 1 }));
           }}
         >
-          {chosenOut ? "Sold out" : "Add to bag"}
+          <span className="roll"><span>{chosenOut ? "Sold out" : "Add to bag"}</span></span>
           {chosenOut ? null : (
             <span className="cf-submit-arrow" aria-hidden="true">
               &rarr;
@@ -281,7 +281,7 @@ export function AddToBag({ product }: { product: Product }) {
             if (addChosen()) router.push("/bag");
           }}
         >
-          Buy now
+          <span className="roll"><span>Buy now</span></span>
         </button>
       )}
 

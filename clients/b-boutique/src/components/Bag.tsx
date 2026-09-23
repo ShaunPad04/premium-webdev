@@ -109,7 +109,7 @@ export function Bag() {
       <div className="bag-empty">
         <p className="page-body">Your bag is empty.</p>
         <Link href="/shop" className="btn-solid bag-empty-cta">
-          Go to the shop <span aria-hidden="true">&rarr;</span>
+          <span className="roll"><span>Go to the shop</span></span> <span aria-hidden="true">&rarr;</span>
         </Link>
       </div>
     );
@@ -365,7 +365,7 @@ export function Bag() {
               <rect x="0.75" y="5.75" width="9.5" height="6.5" rx="1" stroke="currentColor" strokeWidth="1.2" />
               <path d="M2.75 5.75V3.9a2.75 2.75 0 0 1 5.5 0v1.85" stroke="currentColor" strokeWidth="1.2" />
             </svg>
-            {busy ? "Starting secure checkout…" : "Continue to secure payment"}
+            <span className="roll"><span>{busy ? "Starting secure checkout…" : "Continue to secure payment"}</span></span>
           </button>
 
           <div className="bk-alert-live" role="status" aria-live="polite">

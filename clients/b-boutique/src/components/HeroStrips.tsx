@@ -43,7 +43,7 @@ export function HeroStrips() {
     >
       <div className="flex items-center gap-3">
         <Link href="/shop" className="hero-cta">
-          <span>See what is in</span>
+          <span className="roll"><span>See what is in</span></span>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -91,7 +91,7 @@ export function HeroStill() {
       <div className="absolute inset-x-0 bottom-0 flex items-end gap-6 px-[18px] pb-14 sm:px-10 md:px-[var(--bb-gutter-editorial)] pointer-coarse:flex-col pointer-coarse:items-start">
         <p className="pss-title flex-1" style={{ color: "#FDFAF9" }}>{first.title}</p>
         <Link href="/shop" className="hero-cta">
-          <span>See what is in</span>
+          <span className="roll"><span>See what is in</span></span>
         </Link>
       </div>
     </div>

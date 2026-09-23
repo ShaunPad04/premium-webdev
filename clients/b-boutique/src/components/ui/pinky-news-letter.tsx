@@ -25,6 +25,7 @@ import { useEffect, useRef, useState } from "react";
 import { Warp } from "@paper-design/shaders-react";
 
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
+import { RevealText } from "@/components/RevealText";
 
 /* Paper, stone and champagne. It was paper and three roses until
    2026-09-23, when the client said the pink was "too much considering the
@@ -69,15 +70,15 @@ export default function NewsLetter() {
 
       <div className="pinky-inner">
         <p className="label pinky-eyebrow">New on the rails</p>
-        <h2 id="pinky-h" className="pinky-h">
+        <RevealText id="pinky-h" className="pinky-h">
           Something <em>different</em>, regularly.
-        </h2>
+        </RevealText>
         <p className="pinky-body">
           New stock comes in regularly, and each piece is here until it goes.
           See what has arrived, online or on Sea View Street.
         </p>
         <Link href="/shop" className="pinky-cta">
-          <span>See what is in</span>
+          <span className="roll"><span>See what is in</span></span>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>

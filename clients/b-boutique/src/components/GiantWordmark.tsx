@@ -40,7 +40,18 @@ export function GiantWordmark({ children }: { children: React.ReactNode }) {
 
   return (
     <div ref={ref} className="fw-mask">
-      <div className={`fw-mark${shown ? " is-in" : ""}`}>{children}</div>
+      <div className={`fw-mark${shown ? " is-in" : ""}`}>
+        {/* Letter by letter (2026-09-23): each rises on a short stagger.
+            The whole mark is aria-hidden in Footer, so splitting it costs
+            nothing to a screen reader. */}
+        {typeof children === "string"
+          ? [...children].map((ch, i) => (
+              <span key={i} className="fw-ch" style={{ ["--i" as string]: i }}>
+                {ch === " " ? "\u00a0" : ch}
+              </span>
+            ))
+          : children}
+      </div>
     </div>
   );
 }

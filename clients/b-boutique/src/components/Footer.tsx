@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { footerNav, socials, directionsHref } from "@/lib/nav";
 import { SocialMark } from "./SocialMark";
-import { shop, addressLines } from "@/lib/shop";
+import { shop, addressLines, openingPhrase } from "@/lib/shop";
+import { BackToTop } from "./BackToTop";
 import { GiantWordmark } from "./GiantWordmark";
 
 /* SocialMark moved to its own file on 2026-09-21 so the corner menu can use
@@ -46,6 +48,30 @@ export function Footer() {
 
   return (
     <footer className="ft">
+      {/* The closing call (2026-09-23): the two things a visitor can do
+          next, and the two facts they need to do the second one. Hours and
+          address come from shop.ts, the same source as Visit. */}
+      <div className="ft-cta">
+        <div className="ft-cta-copy">
+          <p className="ft-cta-eyebrow">{shop.street}, {shop.town}</p>
+          <p className="ft-cta-h">
+            Come and see it <em>on the rail.</em>
+          </p>
+          <p className="ft-cta-hours">Open {openingPhrase()}.</p>
+        </div>
+        <div className="ft-cta-acts">
+          <Link href="/shop" className="hero-cta ft-cta-shop">
+            <span className="roll"><span>Shop the rails</span></span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
+          <a href={directionsHref} target="_blank" rel="noopener noreferrer" className="visit-cta ft-cta-dir">
+            <span className="roll"><span>Get directions</span></span> <span aria-hidden="true">&#8599;</span>
+          </a>
+        </div>
+      </div>
+
       <div className="ft-top">
         <div className="ft-brand ft-rise">
           <p className="ft-name">B Boutique</p>
@@ -134,6 +160,7 @@ export function Footer() {
 
       <div className="ft-meta">
         <p>&copy; {year} B Boutique</p>
+        <BackToTop />
         {/* Our credit. An external link, so it carries rel="noopener
             noreferrer" alongside target="_blank" — the one rule this project
             applies to every outbound link without exception. Set quieter than

@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "motion/react";
 
 import { ArrowButton } from "@/components/ArrowButton";
 import { cn } from "@/lib/utils";
+import { RevealText } from "@/components/RevealText";
 
 /* Vendored from the supplied FaqSection component.
  *
@@ -145,9 +146,9 @@ const FaqSection = React.forwardRef<HTMLElement, FaqSectionProps>(
         <div className="faq-inner">
           <div className="faq-intro">
             {eyebrow ? <p className="faq-eyebrow">{eyebrow}</p> : null}
-            <h2 id={headingId} className="faq-h2">
+            <RevealText id={headingId} className="faq-h2">
               {title}
-            </h2>
+            </RevealText>
             {description ? <p className="faq-lede">{description}</p> : null}
             {notice ? <p className="faq-pending">{notice}</p> : null}
           </div>

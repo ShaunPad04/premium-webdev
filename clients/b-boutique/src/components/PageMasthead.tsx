@@ -67,6 +67,11 @@ export function PageMasthead({
            be narrating a generated image as though it were the stock. */
         <div aria-hidden="true" className="pm-texture">
           <picture>
+            {/* Phones get the square phone crop (scripts/build-texture.mjs),
+                not the 2000px frame they only ever showed a slice of. */}
+            <source media="(max-width: 899px)" type="image/avif" srcSet={`/img/texture/${texture}-m.avif`} />
+            <source media="(max-width: 899px)" type="image/webp" srcSet={`/img/texture/${texture}-m.webp`} />
+            <source media="(max-width: 899px)" srcSet={`/img/texture/${texture}-m.jpg`} />
             <source type="image/avif" srcSet={`/img/texture/${texture}.avif`} />
             <source type="image/webp" srcSet={`/img/texture/${texture}.webp`} />
             {/* `fetchpriority="high"`, and it is read out of a trace rather

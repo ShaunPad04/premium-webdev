@@ -441,6 +441,34 @@ is a label on an empty shelf. Each one is now a page listing that category's
 actual stock, `CategoryGrid`'s cards link there, and the header's Clothing menu
 points at them rather than at anchors.
 
+## Premium pass — 2026-09-23
+
+Brad asked for animated buttons, premium mastheads, text and image reveals
+and a better footer, using 21st.dev for reference and Higgsfield for page
+heros (never the landing hero). 21st.dev is blocked from the session; it was
+browsed from a Vercel sandbox, and its component code is login-only, so the
+references (Vertical Cut Reveal, flow/roll buttons, Cinematic/Sticky footer,
+Contact Card) were rebuilt in-house, not vendored.
+
+- **Buttons.** Every primary CTA is a pill. `.roll` rolls the label on hover
+  via a text-shadow copy (a screen reader hears it once); light and outline
+  pills fill with ink from the left, ink pills get the Add-to-bag sheen.
+- **Headings.** `RevealText` splits words in React (no SplitText on React DOM),
+  aria-label carries the name, arms only below the fold, never under reduced
+  motion. Photographs settle via `scale` on a view timeline.
+- **Mastheads.** New Higgsfield frames in `assets/texture` (shop rail, folded
+  knits, ceramics, notecard, parcel; atmosphere, not stock, no text). Phones
+  get a square `-m` crop. The wash was re-tuned and MEASURED with the text
+  hidden: every masthead ≥ 4.5:1 at 390-1920 (lowest 4.9). Re-measure if a
+  texture changes.
+- **Footer.** CTA band, letter-by-letter wordmark (the q's tail was clipped,
+  reading "Boutiaue"; fixed), drawn link underlines, Back to top (native
+  scroll when Lenis is out of step).
+- **Measured.** /shop LCP regressed 3.1s → 3.8s with the heavier masthead
+  until the phone crop; after it, within noise (median 3.33s vs 3.25s, n=3).
+  Home unchanged within noise (median score 80 vs 78; LCP ~5s both — a
+  pre-existing gap, not caused here).
+
 ## Performance — and the trap in measuring it
 
 **Measured 2026-09-08. Desktop 100, mobile 96, CLS 0, TBT 10ms, accessibility

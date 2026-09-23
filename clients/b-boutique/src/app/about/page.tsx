@@ -7,6 +7,7 @@ import { Visit } from "@/components/Visit";
 import { InsideRooms } from "@/components/InsideRooms";
 import { principles, shopPhotos, type ShopPhoto } from "@/lib/about";
 import { owner, shop } from "@/lib/shop";
+import { RevealText } from "@/components/RevealText";
 
 export const metadata: Metadata = {
   title: "About us",
@@ -141,9 +142,9 @@ export default function AboutPage() {
             </div>
             <div className="ab-owner-body">
               <p className="label ab-kicker">{owner.role}</p>
-              <h2 id="ab-owner" className="ab-owner-name">
+              <RevealText id="ab-owner" className="ab-owner-name">
                 {owner.firstName} <em>{owner.lastName}</em>
-              </h2>
+              </RevealText>
               <blockquote className="ab-quote">
                 {owner.bio.map((para) => (
                   <p key={para.slice(0, 24)}>{para}</p>
@@ -160,9 +161,9 @@ export default function AboutPage() {
             head={
               <div className="ab-inside-head">
                 <p className="label ab-kicker">Inside</p>
-                <h2 id="ab-inside" className="ab-h2">
+                <RevealText id="ab-inside" className="ab-h2">
                   18 Sea View Street.
-                </h2>
+                </RevealText>
               </div>
             }
           >

@@ -35,6 +35,7 @@ import { formatPriceShort } from "@/lib/catalogue";
 import { newIn } from "@/lib/shop";
 import { ProductPhoto } from "@/components/ProductPhoto";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
+import { RevealText } from "@/components/RevealText";
 
 const Chevron = ({ dir }: { dir: "l" | "r" }) => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -138,9 +139,9 @@ export function CoverFlowCarousel() {
 
       <div className="cf-head">
         <p className="cf-eyebrow">New arrivals</p>
-        <h2 id="cf-heading" className="cf-h2">
+        <RevealText id="cf-heading" className="cf-h2">
           Just <em>in</em>
-        </h2>
+        </RevealText>
       </div>
 
       <div className="cf-stage">

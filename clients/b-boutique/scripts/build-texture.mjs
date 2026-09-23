@@ -28,6 +28,7 @@ import path from "node:path";
 const SRC = "assets/texture";
 const OUT = "public/img/texture";
 const WIDTH = 2000;
+const MOBILE = 900;
 
 async function main() {
   if (!existsSync(SRC)) throw new Error(`${SRC} is missing`);
@@ -48,10 +49,23 @@ async function main() {
       );
     }
     const pipe = () => sharp(src).resize({ width: WIDTH, withoutEnlargement: true });
+    /* The phone crop (2026-09-23). A masthead on a phone is taller than it
+       is wide, so `object-fit: cover` only ever shows a slice of the 21:9
+       frame, yet phones were downloading the whole 2000px file. This is a
+       square cut of the part a phone shows (centred 82% across, the same
+       point the CSS used), at 900px: sharp at a 390px screen's 2x DPR. */
+    const side = Math.min(meta.width, meta.height);
+    const left = Math.max(0, Math.min(meta.width - side, Math.round(meta.width * 0.82 - side / 2)));
+    const top = Math.round((meta.height - side) / 2);
+    const phone = () =>
+      sharp(src).extract({ left, top, width: side, height: side }).resize({ width: MOBILE, withoutEnlargement: true });
     for (const [name, p] of [
       [`${base}.avif`, pipe().avif({ quality: 48, effort: 4 })],
       [`${base}.webp`, pipe().webp({ quality: 70, effort: 4 })],
       [`${base}.jpg`, pipe().jpeg({ quality: 74, mozjpeg: true, progressive: true })],
+      [`${base}-m.avif`, phone().avif({ quality: 48, effort: 4 })],
+      [`${base}-m.webp`, phone().webp({ quality: 70, effort: 4 })],
+      [`${base}-m.jpg`, phone().jpeg({ quality: 74, mozjpeg: true, progressive: true })],
     ]) {
       const info = await p.toFile(path.join(OUT, name));
       bytes += info.size;
@@ -59,7 +73,7 @@ async function main() {
   }
 
   console.log(
-    `${files.length} textures -> ${files.length * 3} files, ` +
+    `${files.length} textures -> ${files.length * 6} files, ` +
       `${(bytes / 1024).toFixed(0)} KB total`,
   );
 }

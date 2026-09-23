@@ -7947,3 +7947,339 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .bk-alert svg { margin-top: 1px; }
 .dd-error { margin: 6px 0 0; }
 .bk .dd .cf-input[aria-invalid="true"] { border-color: var(--red); box-shadow: 0 0 0 1px var(--red); }
+
+/* ══ Buttons and links, one family (2026-09-23) ══════════════════════════
+   The client asked for animated buttons worthy of the price of the site.
+   Reference: the flow and roll buttons on 21st.dev, rebuilt here in the
+   site's own ink and paper rather than vendored.
+
+   Every primary control is now a pill, which Add to bag already was, so
+   the site has one button shape instead of three (square white on the hero,
+   square black on the bands, square outline on Visit).
+
+   Two motions, both on hover only, both off under reduced motion:
+   - the label ROLLS: .roll clips one line, and the text's own shadow,
+     one line below, is the copy that rolls into place. A shadow, not a
+     duplicate element, so a screen reader hears the label once.
+   - the fill: ink sweeps in from the left on light and outline buttons; a
+     light sheen crosses the ink ones (the same sweep Add to bag has). */
+.roll {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  height: 1.35em;
+  line-height: 1.35;
+}
+.roll > span {
+  display: block;
+  text-shadow: 0 1.35em currentColor;
+  transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  :is(.hero-cta, .pinky-cta, .btn-solid, .visit-cta, .atb-add, .atb-buy, .cx-send, .bk-pay):is(:hover, :focus-visible):not(:disabled) .roll > span {
+    transform: translateY(-1.35em);
+  }
+}
+
+.hero-cta,
+.pinky-cta,
+.btn-solid,
+.visit-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 999px;
+  min-height: 48px;
+  padding: 0 26px;
+  justify-content: center;
+}
+.hero-cta::before,
+.visit-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--bb-black);
+  border-radius: inherit;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hero-cta:hover,
+.hero-cta:focus-visible { background: var(--bb-white-pure); color: var(--bb-white-pure); }
+.visit-cta:hover,
+.visit-cta:focus-visible { background: transparent; color: var(--bb-white); border-color: var(--bb-black); }
+.hero-cta:is(:hover, :focus-visible)::before,
+.visit-cta:is(:hover, :focus-visible)::before { transform: scaleX(1); transform-origin: left center; }
+.visit-cta { border-color: rgba(26, 20, 22, 0.42); }
+
+.pinky-cta::after,
+.btn-solid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.16) 50%, transparent 70%);
+  transform: translateX(-110%);
+  transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pinky-cta:is(:hover, :focus-visible)::after,
+.btn-solid:is(:hover, :focus-visible)::after { transform: translateX(110%); }
+.btn-solid:hover { background: var(--bb-black); color: var(--bb-white); }
+
+@media (hover: none), (pointer: coarse) {
+  .hero-cta:hover { color: var(--bb-black); }
+  .hero-cta:hover::before, .visit-cta:hover::before { transform: scaleX(0); }
+  .visit-cta:hover { color: var(--bb-black); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .roll > span, .hero-cta::before, .visit-cta::before, .pinky-cta::after, .btn-solid::after { transition: none; }
+}
+
+/* Text links draw their underline: it withdraws to the right and is drawn
+   again from the left, instead of simply changing colour. A 1px gradient,
+   so no layout moves. */
+.cps-view > span,
+.cps-strip-link > span,
+.hw-cta,
+.svc-row-link,
+.cf-cta {
+  text-decoration: none;
+  border-bottom-color: transparent;
+  background: linear-gradient(currentColor, currentColor) no-repeat left 100% / 100% 1px;
+}
+.cps-view > span { padding-bottom: 3px; }
+.cps-view { text-decoration: none; }
+.hw-cta { background-position: left calc(100% - 12px); }
+.svc-row-link { min-height: 44px; margin-top: 2px; }
+@keyframes u-draw {
+  0% { background-size: 100% 1px; background-position-x: right; }
+  45% { background-size: 0 1px; background-position-x: right; }
+  46% { background-size: 0 1px; background-position-x: left; }
+  100% { background-size: 100% 1px; background-position-x: left; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .cps-view:hover > span,
+  .cps-strip-link:hover > span,
+  .hw-cta:hover,
+  .svc-row-link:hover,
+  .cf-card.is-centre:hover .cf-cta { animation: u-draw 700ms cubic-bezier(0.65, 0, 0.35, 1); }
+}
+
+/* ══ Page mastheads with photographs (2026-09-23) ═══════════════════════
+   The textures were under a 72-95% ink wash, which left every masthead a
+   near-black band: the client asked for premium page heros. New Higgsfield
+   frames (shop rail, folded knits, ceramics, a notecard, a wrapped parcel;
+   atmosphere, not stock, and no text or shop in any of them) are composed
+   dark on the left, where the headline sits, so the wash can now fall away
+   to the right and let the picture show. The band grows to a proper hero
+   on a wide screen, and the picture settles from a slight enlargement as
+   the page opens, then drifts as it scrolls away. Mobile keeps a heavier
+   wash because the type spans the whole width there. The foot of the band
+   is deeper because the aside (piece counts, the shop email) sits bottom
+   right over the lit half of the frame: measured over the photographs with
+   the text hidden, it was 3.2:1 before this and needs 4.5. */
+@media (min-width: 900px) {
+  .pm[data-textured] { min-height: min(72vh, 680px); display: flex; flex-direction: column; justify-content: flex-end; }
+  .pm-texture::after {
+    background:
+      linear-gradient(to right, rgba(26, 20, 22, 0.92) 0%, rgba(26, 20, 22, 0.78) 30%, rgba(26, 20, 22, 0.32) 60%, rgba(26, 20, 22, 0.1) 100%),
+      linear-gradient(to top, rgba(26, 20, 22, 0.8) 0%, rgba(26, 20, 22, 0.45) 26%, rgba(26, 20, 22, 0) 58%);
+  }
+  .pm-texture img { object-position: right 55%; }
+}
+/* Narrower desktops bring the lit half of each frame under the type: the
+   dark side carries further across here. Measured at 1024: 3.5:1 on the
+   shop eyebrow before, over 4.5 after. */
+@media (min-width: 900px) and (max-width: 1279px) {
+  .pm-texture::after {
+    background:
+      linear-gradient(to right, rgba(26, 20, 22, 0.94) 0%, rgba(26, 20, 22, 0.88) 42%, rgba(26, 20, 22, 0.42) 72%, rgba(26, 20, 22, 0.14) 100%),
+      linear-gradient(to top, rgba(26, 20, 22, 0.8) 0%, rgba(26, 20, 22, 0.45) 26%, rgba(26, 20, 22, 0) 58%);
+  }
+}
+@media (max-width: 899px) {
+  .pm-texture img { object-position: 50% 50%; }
+  .pm-texture::after {
+    background: linear-gradient(to top, rgba(26, 20, 22, 0.94) 0%, rgba(26, 20, 22, 0.82) 55%, rgba(26, 20, 22, 0.6) 100%);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pm-texture img { animation: pm-settle 1800ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  @keyframes pm-settle { from { transform: scale(1.08); } to { transform: scale(1.02); } }
+  @supports (animation-timeline: scroll()) {
+    .pm-texture picture { display: block; height: 100%; animation: pm-drift linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+    @keyframes pm-drift { to { transform: translateY(14%); } }
+  }
+}
+
+/* ══ Scroll reveals (2026-09-23) ════════════════════════════════════════
+   Headings: RevealText.tsx. Each word rises out of its own mask, 60ms
+   after the one before. The mask has a little room below so descenders
+   and italics are not clipped once the word has landed. */
+.rt-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.rt-word { display: inline-block; }
+.rt.is-armed .rt-word {
+  transform: translateY(108%);
+  transition: transform 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+.rt.is-armed.is-in .rt-word { transform: none; }
+
+/* Editorial photographs settle from a slight enlargement as they scroll in,
+   inside the frames whose own entrances (svc, hw, owner, cats) are already
+   defined above, driven by the browser's view timeline (no JavaScript).
+   `scale`, not `transform`, so it composes with the hover zooms these
+   images already have. Browsers
+   without view timelines, and anyone asking for reduced motion, see the
+   photograph as it is. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .svc-media img,
+    .hw-fig img,
+    .owner-portrait img,
+    .cats-img,
+    .prod-media img {
+      animation: img-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+    @keyframes img-settle { from { scale: 1.12; } to { scale: 1; } }
+  }
+}
+
+/* ══ Footer, the closing act (2026-09-23) ═══════════════════════════════
+   After the scroll-reveal footers on 21st.dev, rebuilt in the site's own
+   type. A call to action first, the columns, then the wordmark, whose
+   letters rise one after another. Everything drifts up into place as the
+   footer enters (a view timeline, no JavaScript); nothing about it is
+   sticky or layered under the page, so every link stays an ordinary link. */
+.ft-cta {
+  display: grid;
+  gap: 28px;
+  padding-block: 64px 56px;
+  border-bottom: 1px solid var(--bb-dark-border);
+}
+@media (min-width: 900px) {
+  .ft-cta { grid-template-columns: 1fr auto; align-items: end; padding-block: 96px 72px; }
+}
+.ft-cta-eyebrow {
+  margin: 0 0 16px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bb-rouge-lift);
+}
+.ft-cta-h {
+  margin: 0;
+  font-family: var(--font-display-face), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(38px, 5.6vw, 84px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--bb-white);
+  text-wrap: balance;
+}
+.ft-cta-h em { font-style: italic; font-synthesis: none; }
+.ft-cta-hours { margin: 18px 0 0; font-size: 14px; color: rgba(255, 255, 255, 0.72); }
+.ft-cta-acts { display: flex; flex-wrap: wrap; gap: 12px; }
+.ft-cta-acts .hero-cta,
+.ft-cta-acts .visit-cta { margin-top: 0; font-size: 11px; letter-spacing: 0.16em; }
+.ft .ft-cta-shop { box-shadow: inset 0 0 0 1px var(--bb-white-pure); }
+.ft .ft-cta-shop::before { background: var(--bb-black); }
+.ft .visit-cta { color: var(--bb-white); border-color: rgba(255, 255, 255, 0.42); }
+.ft .visit-cta::before { background: var(--bb-white-pure); }
+.ft .visit-cta:is(:hover, :focus-visible) { color: var(--bb-black); border-color: var(--bb-white-pure); }
+@media (hover: none), (pointer: coarse) {
+  .ft .visit-cta:hover { color: var(--bb-white); }
+}
+.ft a:focus-visible, .ft button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+/* The wordmark: room below the baseline so the q keeps its tail (it read
+   "Boutiaue" with the descender clipped by the mask), and each letter on
+   its own 45ms step. The mark's existing rise still carries the whole. */
+.fw-mark { padding-bottom: 0.22em; }
+.fw-ch { display: inline-block; }
+@media (prefers-reduced-motion: no-preference) {
+  .fw-ch {
+    transform: translateY(70%);
+    opacity: 0;
+    transition: transform 1100ms cubic-bezier(0.22, 1, 0.36, 1), opacity 700ms ease;
+    transition-delay: calc(var(--i, 0) * 45ms);
+  }
+  .fw-mark.is-in .fw-ch { transform: none; opacity: 1; }
+}
+
+/* Footer links: underline drawn in, not a sideways nudge. */
+.ft-link { background: linear-gradient(currentColor, currentColor) no-repeat left 100% / 0 1px; transition: background-size 420ms cubic-bezier(0.22, 1, 0.36, 1), color 200ms ease; }
+.ft-link:hover, .ft-link:focus-visible { transform: none; background-size: 100% 1px; }
+
+.ft-top-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  min-height: 44px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+.ft-top-btn span { display: inline-block; transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+.ft-top-btn:hover span { transform: translateY(-3px); }
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ft-cta-copy, .ft-cta-acts {
+      animation: ft-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+    /* Movement only. A fade here left the text at 30% opacity until it
+       scrolled in, which fails contrast for as long as it lasts. */
+    @keyframes ft-drift { from { transform: translateY(48px); } }
+  }
+}
+
+/* ══ "All three" (2026-09-23) ═══════════════════════════════════════════
+   The strip under the statement pieces read as three boxed template cards.
+   Now: bigger portraits with no box, the name set in the display face
+   with the price beside it, and a lift on hover. The colour-from-the-cursor
+   reveal on the photograph is unchanged. */
+.cps-strip-head { max-width: 1180px; }
+.cps-strip-row { gap: clamp(14px, 2vw, 28px); }
+.cps-card-wrap { flex-basis: min(360px, 72vw); }
+.cps-card { border: 0; }
+.cps-card-media { aspect-ratio: 4 / 5; border-radius: 4px; transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 700ms cubic-bezier(0.22, 1, 0.36, 1); }
+@media (hover: hover) and (pointer: fine) {
+  .cps-card:hover .cps-card-media { transform: translateY(-6px); box-shadow: 0 26px 50px -30px rgba(26, 20, 22, 0.45); }
+}
+.cps-card-body {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "cat cat" "name price";
+  align-items: baseline;
+  gap: 6px 16px;
+  padding: 16px 2px 4px;
+  text-align: left;
+}
+.cps-card-cat { grid-area: cat; letter-spacing: 0.22em; }
+.cps-card-name {
+  grid-area: name;
+  font-family: var(--font-display-face), Georgia, serif;
+  font-size: 19px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--bb-black);
+}
+.cps-card-price { grid-area: price; font-size: 14px; letter-spacing: 0.02em; color: var(--bb-black); font-variant-numeric: tabular-nums; }
+.cps-card:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 6px; }
+@media (prefers-reduced-motion: reduce) { .cps-card-media { transition: none; } }

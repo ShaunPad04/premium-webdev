@@ -38,7 +38,7 @@ export function Visit() {
             rel="noopener noreferrer"
             className="visit-cta"
           >
-            Get directions <span className="visit-cta-arrow" aria-hidden="true">&rarr;</span>
+            <span className="roll"><span>Get directions</span></span> <span className="visit-cta-arrow" aria-hidden="true">&rarr;</span>
           </a>
 
           {/* The phone number, now that there is one. Client-confirmed

@@ -9,6 +9,7 @@ import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
 import { productsIn } from "@/lib/catalogue";
 import { categories, shop } from "@/lib/shop";
+import { RevealText } from "@/components/RevealText";
 
 const homeware = categories.find((c) => c.slug === "homeware")!;
 
@@ -61,9 +62,9 @@ export default function HomewarePage() {
         <section aria-labelledby="home-items" className="page-section">
           <div className="page-inner">
             <div className="page-head">
-              <h2 id="home-items" className="page-h2">
+              <RevealText id="home-items" className="page-h2">
                 What is in.
-              </h2>
+              </RevealText>
             </div>
 
             {items.length ? (

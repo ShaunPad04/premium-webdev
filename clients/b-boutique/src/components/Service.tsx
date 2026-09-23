@@ -8,6 +8,7 @@ import { openingSummary, shop } from "@/lib/shop";
 import { useInView } from "@/lib/useInView";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { ImageSlot } from "./ImageSlot";
+import { RevealText } from "@/components/RevealText";
 
 /* Come in, or have it sent.
  *
@@ -157,9 +158,9 @@ export function Service() {
           <p className="svc-eyebrow">In the shop, or sent to you</p>
           {/* The italic axis, used the way the typography note asks: one word
               in a statement, never a whole heading and never body copy. */}
-          <h2 id="svc-heading" className="svc-h2">
+          <RevealText id="svc-heading" className="svc-h2">
             Come in, or have it <em>sent</em>.
-          </h2>
+          </RevealText>
 
           <ol className="svc-list">
             {rows.map((r, i) => (

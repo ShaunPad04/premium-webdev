@@ -42,6 +42,7 @@ import { ColourProvider } from "@/components/ColourChoice";
 import { PathBand } from "@/components/PathBand";
 import { shop } from "@/lib/shop";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
+import { RevealText } from "@/components/RevealText";
 
 /* The most expensive garments that can actually be bought. Homeware is left
    out: this is a clothing upsell, and a vase in a scroll about fit and size
@@ -237,9 +238,9 @@ export function Component() {
     <section aria-labelledby="cps-h" className="cps">
       <div className="cps-intro">
         <p className="label cps-eyebrow">Treat yourself</p>
-        <h2 id="cps-h" className="cps-h">
+        <RevealText id="cps-h" className="cps-h">
           The <em>statement</em> pieces.
-        </h2>
+        </RevealText>
         {/* Her words, from the owner bio in shop.ts. */}
         <p className="cps-lede">
           Carefully selected pieces that are stylish, affordable and perfect for treating yourself.

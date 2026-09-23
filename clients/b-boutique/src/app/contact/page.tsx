@@ -9,6 +9,7 @@ import { PathBand } from "@/components/PathBand";
 import { Visit } from "@/components/Visit";
 import { addressLines, openingPhrase, shop } from "@/lib/shop";
 import { socials } from "@/lib/nav";
+import { RevealText } from "@/components/RevealText";
 
 const instagram = socials.find((x) => x.name === "Instagram");
 
@@ -63,7 +64,7 @@ export default function ContactPage() {
               </p>
             ) : null
           }
-        texture="plaster"
+        texture="contact"
         />
 
         {/* One card, two panes (2026-09-23; layout after the "Contact
@@ -76,9 +77,9 @@ export default function ContactPage() {
             <div className="ccard">
               <div className="ccard-info">
                 <p className="ccard-eyebrow">Get in touch</p>
-                <h2 id="contact-form-h" className="ccard-h">
+                <RevealText id="contact-form-h" className="ccard-h">
                   Send a <em>message.</em>
-                </h2>
+                </RevealText>
                 <p className="ccard-lede">
                   Sizes, whether something is still in, or anything you would
                   rather ask before making the trip. Write it here and we will

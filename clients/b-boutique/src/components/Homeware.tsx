@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ProductPhoto } from "./ProductPhoto";
+import { RevealText } from "@/components/RevealText";
 
 /* Homeware — the pacing change.
  *
@@ -33,9 +34,9 @@ export function Homeware() {
       <div className="hw-inner">
         <div className="hw-copy">
           <p className="hw-eyebrow">Homeware</p>
-          <h2 id="homeware-heading" className="hw-h2">
+          <RevealText id="homeware-heading" className="hw-h2">
             Things for the house, chosen the same way.
-          </h2>
+          </RevealText>
           <p className="hw-body">
             Glazed ceramic, and things worth wrapping. A small shelf of it,
             chosen a piece at a time, like everything on the rails.

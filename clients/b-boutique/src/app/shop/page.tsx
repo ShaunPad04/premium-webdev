@@ -7,6 +7,7 @@ import { PageMasthead } from "@/components/PageMasthead";
 import { ShopSearch } from "@/components/ShopSearch";
 import { Visit } from "@/components/Visit";
 import { pendingPriceNotice, products } from "@/lib/catalogue";
+import { RevealText } from "@/components/RevealText";
 
 export const metadata: Metadata = {
   title: "Shop",
@@ -38,9 +39,9 @@ export default function ShopPage() {
         <section aria-labelledby="shop-all" className="page-section">
           <div className="page-inner">
             <div className="page-head">
-              <h2 id="shop-all" className="page-h2">
+              <RevealText id="shop-all" className="page-h2">
                 On the rails.
-              </h2>
+              </RevealText>
               <p className="page-lede">
                 Everything is one of one or close to it, so what sells does not
                 come back. Search the rails, or scroll them.
