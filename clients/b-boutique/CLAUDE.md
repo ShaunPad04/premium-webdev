@@ -742,3 +742,9 @@ page and a navigation everywhere else.
 
 Legacy colours, fonts and placeholder design never override the approved
 redesign.
+
+**2026-09-23: palette decisions.** Brad looked at a Mulberry (#3A2036) and
+Mint re-theme and a Cherry/Menthol one. Cherry/Menthol was rejected up
+front (neon, from a vape brand, fails contrast). Mulberry was mocked up
+site-wide and then REJECTED: "I don't like this new theme purple colour".
+The ink stays #1A1416. Do not reintroduce purple/plum grounds.
