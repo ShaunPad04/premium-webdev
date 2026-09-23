@@ -391,8 +391,11 @@ stocking them). Do not reintroduce the word without her confirming stock.
   Higgsfield. The shopfront IS now used, at his request, edited in
   Higgsfield: the fascia's SumUp web address now reads bboutiqueclee.com
   and the outside paintwork is tidied; the window contents are untouched.
-  Its right-hand panel still says "Accessories & Homeware" (asked, not
-  changed).
+  Its right-hand panel still says "Accessories & Homeware" and **must stay**
+  (Brad, repeated 2026-09-23: "Do not remove accessories and homeware sign
+  from the front of the store"). It is her real fascia. Never edit it out,
+  retouch it, or crop the About frame so it falls off the right edge
+  (checked 2026-09-23: fully visible at 390, 768 and 1440).
 - **Home hero is the strip slider** (`components/ui/parallax-strip-slider.tsx`
   via `HeroStrips.tsx`), which replaced `HeroSlideshow`. The first slide's
   title is "For every woman who walks in."; the h1 is sr-only. Changed on the
