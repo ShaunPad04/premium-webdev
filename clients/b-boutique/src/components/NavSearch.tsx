@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { formatPriceShort, products } from "@/lib/catalogue";
 import { liveSuggestions, searchProducts } from "@/lib/search";
 import { shop } from "@/lib/shop";
 import { ProductPhoto } from "./ProductPhoto";
+import { ExpandingSearchDock } from "./ui/expanding-search-dock-shadcnui";
 
 /* Search, in the header, without leaving the page.
  *
@@ -54,7 +56,7 @@ export function NavSearch() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const trigger = useRef<HTMLButtonElement>(null);
-  const input = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   const wrap = useRef<HTMLDivElement>(null);
   const panelId = useId();
 
@@ -71,14 +73,6 @@ export function NavSearch() {
      constant, so a chip can never offer a category the shop has emptied. */
   const chips = useMemo(() => liveSuggestions(products), []);
 
-  /* Focus the field when the panel opens. After paint, so the element exists
-     and the browser does not scroll the header to find it. */
-  useEffect(() => {
-    if (!open) return;
-    const raf = requestAnimationFrame(() => input.current?.focus());
-    return () => cancelAnimationFrame(raf);
-  }, [open]);
-
   /* Escape closes and hands focus back to the trigger, which is where the
      keyboard user was and where they want to carry on from. */
   useEffect(() => {
@@ -86,7 +80,8 @@ export function NavSearch() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       setOpen(false);
-      trigger.current?.focus();
+      /* After the render that un-hides the trigger. */
+      requestAnimationFrame(() => trigger.current?.focus());
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -109,65 +104,25 @@ export function NavSearch() {
 
   return (
     <div ref={wrap} className="navsearch">
-      <button
-        ref={trigger}
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-controls={panelId}
-        /* `nav-link`, the same class BAG carries, and no opacity of its own.
-           It used to add text-bb-white/70, which made SEARCH visibly dimmer
-           than everything beside it — the client spotted it. The 65% belongs
-           to :hover, where it means "this is responding", not to the rest
-           state, where it just means "this one is different". */
-        /* py-[17px] is hit area: 10px type is a 10px target, measured
-           at 390 where this is a thumb's job. The row is items-center, so
-           nothing visible moves. */
-        className="nav-link navsearch-trigger py-[17px] text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
-      >
-        {/* The word on a desktop; on a phone, with the wordmark centred
-            between the controls, a magnifier in its place (2026-09-23). The
-            word stays the accessible name at every width. */}
-        <span className="nb-word">Search</span>
-        <svg className="nb-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M16 16l4.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      </button>
+      {/* The 21st.dev expanding dock replaces the SEARCH word (2026-09-23,
+          Brad). It is only the field; the results below are unchanged. */}
+      <ExpandingSearchDock
+        open={open}
+        onOpenChange={setOpen}
+        value={q}
+        onValueChange={setQ}
+        onSearch={(v) => {
+          setOpen(false);
+          router.push(`/shop?q=${encodeURIComponent(v)}#find`);
+        }}
+        placeholder="Coats, knitwear, a silk dress…"
+        controls={panelId}
+        triggerRef={trigger}
+      />
 
       {open ? (
         <div id={panelId} className="navsearch-panel">
           <div className="navsearch-inner">
-            <form
-              role="search"
-              onSubmit={(e) => e.preventDefault()}
-              className="navsearch-field"
-            >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
-                fill="none"
-                aria-hidden="true"
-                className="navsearch-icon"
-              >
-                <circle cx="6.5" cy="6.5" r="4.6" stroke="currentColor" strokeWidth="1.3" />
-                <path d="M10 10l3.2 3.2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-              </svg>
-              <input
-                ref={input}
-                type="search"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Coats, knitwear, a silk dress…"
-                aria-label="Search the shop"
-                className="navsearch-input"
-              />
-              <button type="button" onClick={close} className="navsearch-close">
-                Close
-              </button>
-            </form>
-
             {/* Announced politely so a screen reader hears the count change
                 without the field being interrupted on every keystroke. */}
             <p aria-live="polite" className="sr-only">

@@ -1,5 +1,5 @@
-import { FaqSection } from "@/components/ui/faq-section";
-import { faq, faqTemporary } from "@/lib/faq";
+import { FaqIndex } from "@/components/ui/faq-index";
+import { faq } from "@/lib/faq";
 import { shop } from "@/lib/shop";
 
 /* The practical questions.
@@ -33,32 +33,18 @@ import { shop } from "@/lib/shop";
  * / We're here to help you / Contact Support", which is a software support
  * desk. This is a shop with a phone on the counter, so it says so. */
 export function Faq() {
+  /* The editorial index layout since 2026-09-23 (Brad: the accordion read
+     as generic). Same confirmed answers, same email as the way out. */
   return (
-    <FaqSection
+    <FaqIndex
       id="faq"
       eyebrow="Questions"
       title="A few things worth knowing."
-      description="Everything you might want to know before visiting."
-      notice={
-        faqTemporary
-          ? "[Some answers below are placeholder copy for this demo — not confirmed shop policy]"
-          : undefined
-      }
       items={faq.map((item) => ({ question: item.q, answer: item.a }))}
-      /* The first row opens on arrival. An index whose first answer is shut
-         is a section that says nothing until it is clicked — and with
-         JavaScript off it is the only one that opens at all. */
-      defaultOpen={0}
-      contactInfo={{
+      contact={{
         title: "Anything we have not covered?",
-        /* Email only since 2026-09-21 — the client asked for phone numbers
-           to come off the site, so the primary action here is the address
-           rather than a number. The copy changed with it: "ring the shop
-           and someone will actually pick up" is a promise the site can no
-           longer keep. */
-        description:
-          "Send an email and we will come back to you, or come into the shop and ask.",
-        buttonText: shop.email,
+        description: "Send an email and we will come back to you, or come into the shop and ask.",
+        label: shop.email,
         href: `mailto:${shop.email}`,
       }}
     />

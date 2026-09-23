@@ -8922,3 +8922,330 @@ h2.ft-group { font-family: var(--font-body); font-size: 12px; font-weight: 600; 
    heading (they are <p>s, so the heading rule does not reach them). */
 .ft-cta-h, .ft-name { font-family: var(--font-display), Didot, Georgia, serif; font-weight: 400; letter-spacing: -0.005em; }
 .ft-cta-h em { font-style: italic; }
+
+/* ── Expanding search dock (components/ui/expanding-search-dock-shadcnui) ──
+   2026-09-23, Brad: the 21st.dev dock in place of the SEARCH word. A round
+   44px icon button; open, a pill of ink with a hairline white edge that is
+   uncovered from the icon outwards by clip-path (no width animation, so the
+   header row never re-lays out). Desktop grows leftwards over the empty
+   spacer; below 1024 it spans the header row between the gutters, over the
+   centred wordmark, because a 320px pill cannot fit beside it at 390. */
+.sdock { position: relative; display: flex; align-items: center; }
+.sdock-trigger {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 999px;
+  color: var(--inverse-ink);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
+  transition: border-color 200ms var(--bb-ease), background-color 200ms var(--bb-ease), transform 200ms var(--bb-ease);
+}
+.sdock-trigger:hover { border-color: #FFFFFF; background: rgba(255, 255, 255, 0.08); }
+.sdock-trigger:active { transform: scale(0.94); }
+.sdock-trigger:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.sdock[data-open] .sdock-trigger { visibility: hidden; }
+
+.sdock-form {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 90;
+  width: 320px;
+  height: 44px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 4px 0 16px;
+  border-radius: 999px;
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  animation: sdock-open-r 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.sdock-form:focus-within { border-color: #FFFFFF; }
+@keyframes sdock-open-r {
+  from { clip-path: inset(0 0 0 calc(100% - 44px) round 999px); }
+  to   { clip-path: inset(0 0 0 0 round 999px); }
+}
+.sdock-icon { display: flex; flex: 0 0 auto; color: rgba(255, 255, 255, 0.72); }
+.sdock-input {
+  flex: 1; min-width: 0; height: 100%;
+  background: transparent; border: 0; outline: none;
+  color: inherit;
+  font: 400 14px/1 var(--font-body);
+  letter-spacing: 0.01em;
+}
+.sdock-input::placeholder { color: rgba(255, 255, 255, 0.72); }
+.sdock-input::-webkit-search-cancel-button { display: none; }
+@media (pointer: coarse) { .sdock-input { font-size: 16px; } }
+.sdock-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 auto; width: 36px; height: 36px; border-radius: 999px;
+  color: rgba(255, 255, 255, 0.8);
+  transition: background-color 200ms var(--bb-ease), color 200ms var(--bb-ease);
+}
+.sdock-close:hover { background: rgba(255, 255, 255, 0.1); color: #FFFFFF; }
+.sdock-close:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
+
+/* The panel no longer carries its own field: the chips/results sit straight
+   under the dock. */
+.navsearch-panel .navsearch-chips--rest,
+.navsearch-panel .navsearch-results,
+.navsearch-panel .navsearch-empty { margin-top: 0; }
+
+@media (max-width: 1023px) {
+  .sdock { position: static; }
+  .sdock-form {
+    left: 12px; right: 12px; width: auto;
+    animation-name: sdock-open-l;
+  }
+  @keyframes sdock-open-l {
+    from { clip-path: inset(0 calc(100% - 92px) 0 44px round 999px); }
+    to   { clip-path: inset(0 0 0 0 round 999px); }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sdock-form { animation: none; }
+  .sdock-trigger { transition: none; }
+}
+
+/* ── Animated wave footer (components/ui/animated-wave-footer.tsx) ───────
+   2026-09-23, Brad. Ink ground, white type, two slow white waves at 4-7%
+   drifting behind the columns. Transform-only animation; stopped for
+   reduced motion. */
+.wf { position: relative; isolation: isolate; padding-inline: 0; }
+.wf-waves { position: absolute; inset: auto 0 0 0; height: 340px; overflow: hidden; z-index: -1; pointer-events: none; }
+.wf-wave { position: absolute; bottom: 0; left: 0; width: 3600px; height: 100%; will-change: transform; animation: wf-drift 38s linear infinite; }
+.wf-wave svg { display: block; width: 100%; height: 100%; }
+.wf-wave--a { color: rgba(255, 255, 255, 0.04); }
+.wf-wave--b { color: rgba(255, 255, 255, 0.065); animation-duration: 56s; animation-direction: reverse; height: 80%; }
+@keyframes wf-drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .wf-wave { animation: none; } }
+
+.wf-inner { max-width: 1440px; margin: 0 auto; padding: 80px 18px 28px; }
+@media (min-width: 640px) { .wf-inner { padding-inline: 24px; } }
+@media (min-width: 1024px) { .wf-inner { padding: 104px 32px 32px; } }
+
+.wf-grid { display: grid; gap: 48px 32px; grid-template-columns: 1fr 1fr; }
+.wf-lead { grid-column: 1 / -1; }
+@media (min-width: 1024px) {
+  .wf-grid { grid-template-columns: 1.6fr 1fr 1fr 1.1fr; gap: 48px clamp(32px, 4vw, 72px); }
+  .wf-lead { grid-column: auto; }
+}
+/* The visit column spans both columns on a phone so the email never wraps. */
+.wf-grid > .wf-col:last-child { grid-column: 1 / -1; }
+@media (min-width: 1024px) { .wf-grid > .wf-col:last-child { grid-column: auto; } }
+
+.wf-eyebrow { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.72); margin: 0 0 18px; }
+h2.wf-h { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.25rem, 4vw, 3.25rem); line-height: 1.05; letter-spacing: -0.01em; text-transform: none; color: #FFFFFF; margin: 0; max-width: 14ch; }
+h2.wf-h em { font-style: italic; }
+.wf-hours { margin: 16px 0 0; color: rgba(255, 255, 255, 0.8); font-size: 15px; line-height: 1.6; }
+.wf-acts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.72); margin: 0 0 20px; }
+.wf-links { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.wf-link { display: inline-block; padding-block: 6px; color: #FFFFFF; font-size: 15px; line-height: 1.4; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size 300ms var(--bb-ease); }
+.wf-link:hover, .wf-link:focus-visible { background-size: 100% 1px; }
+.wf-link:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+.wf-address { font-style: normal; display: grid; gap: 2px; color: #FFFFFF; font-size: 15px; line-height: 1.6; margin-bottom: 10px; }
+.wf-email { overflow-wrap: anywhere; }
+
+.wf-social { list-style: none; display: flex; gap: 10px; margin: 22px 0 0; padding: 0; }
+.wf-social-btn { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 999px; color: #FFFFFF; border: 1px solid rgba(255, 255, 255, 0.28); transition: transform 250ms var(--bb-ease), background-color 250ms var(--bb-ease), border-color 250ms var(--bb-ease); }
+.wf-social-btn:hover { transform: translateY(-3px); background: var(--accent); border-color: var(--accent); }
+.wf-social-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .wf-social-btn:hover { transform: none; } }
+
+.wf-legal { margin-top: 56px; border-top: 1px solid rgba(255, 255, 255, 0.16); padding-top: 20px; }
+.wf-legal ul { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 28px; margin: 0; padding: 0; }
+.wf-legal .wf-link { font-size: 13px; color: rgba(255, 255, 255, 0.8); }
+
+.wf-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 18px; font-size: 13px; color: rgba(255, 255, 255, 0.72); }
+.wf-meta p { margin: 0; }
+
+/* Add to bag: black, inverting to white on hover (2026-09-23, Brad asked
+   for black and white rather than red). Buy now is the mirror image, white
+   inverting to black, so the pair reads as one set. */
+.atb-add { background: var(--ink); color: var(--inverse-ink); border: 1px solid var(--ink); }
+@media (hover: hover) and (pointer: fine) {
+  .atb-add:hover:not(:disabled) { background: var(--bg); color: var(--ink); border-color: var(--ink); }
+}
+.atb-add:disabled { background: var(--bb-grey-light); border-color: transparent; }
+
+/* A colourway change swaps the photo in place; a short fade so it reads as
+   the same piece in another colour rather than a jump. Opacity only. */
+.cf-photo img, .cps-mask img { animation: colour-swap 280ms ease-out both; }
+@keyframes colour-swap { from { opacity: 0.2; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .cf-photo img, .cps-mask img { animation: none; } }
+/* Wave footer corrections after looking at it (2026-09-23). */
+.wf h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.72); }
+.wf .wf-acts > * { margin: 0; }
+@media (min-width: 1024px) { .wf-grid { grid-template-columns: 1.9fr 1fr 1fr 1.25fr; } }
+.wf-wave--a { color: rgba(255, 255, 255, 0.03); }
+.wf-wave--b { color: rgba(255, 255, 255, 0.045); }
+
+/* Opening hours in a card (2026-09-23, Brad asked for a border round it).
+   A hairline box in the line token, soft radius to match the pill buttons'
+   family without going round; the rows keep their inner rules only. */
+.visit-hours {
+  max-width: 420px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 26px 28px 18px;
+  background: var(--bg);
+  box-shadow: 0 1px 0 rgba(14, 11, 12, 0.02), 0 18px 40px -28px rgba(14, 11, 12, 0.25);
+}
+.visit-hours .visit-hours-list { max-width: none; }
+.visit-hours .visit-hours-row:first-child { border-top: 0; }
+.visit-hours .visit-hours-row:last-child { border-bottom: 0; }
+.visit-hours .visit-hours-row { padding-block: 11px; }
+@media (max-width: 480px) { .visit-hours { padding: 22px 20px 12px; } }
+
+/* About hero: the photograph dissolves into the white page instead of ending
+   on a hard line (2026-09-23, Brad: "less brutal and sharp upon scroll").
+   The copy is lifted clear of the fade so white type never sits on white. */
+.ab-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: clamp(110px, 18vh, 180px);
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.55) 55%, var(--bg) 100%);
+}
+.ab-hero-copy { position: relative; z-index: 1; padding-bottom: calc(clamp(110px, 18vh, 180px) + 8px); }
+
+/* ── FAQ as an editorial index (components/ui/faq-index.tsx) ────────────
+   2026-09-23. Numbered questions in the display face on the left; the
+   chosen answer in an ink panel that stays put on the right. Below 1024 the
+   panel is gone and each answer opens under its question. */
+.fqx { background: var(--bg-soft); color: var(--ink); padding: clamp(80px, 11vw, 160px) 0; }
+.fqx-inner { max-width: 1320px; margin: 0 auto; padding-inline: 18px; }
+@media (min-width: 768px) { .fqx-inner { padding-inline: var(--bb-gutter-editorial, 48px); } }
+.fqx-head { margin-bottom: clamp(40px, 6vw, 80px); max-width: 760px; }
+.fqx-eyebrow { font: 500 11px/1 var(--font-body); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); margin: 0 0 20px; }
+.fqx-h2 { margin: 0; }
+
+.fqx-body { display: grid; gap: 48px; }
+@media (min-width: 1024px) {
+  .fqx-body { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(48px, 6vw, 110px); align-items: start; }
+}
+
+.fqx-list { list-style: none; margin: 0; padding: 0; counter-reset: none; }
+.fqx-row { border-top: 1px solid var(--line); }
+.fqx-row:last-child { border-bottom: 1px solid var(--line); }
+.fqx-q-wrap { margin: 0; font: inherit; }
+.fqx-q {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 20px;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  padding: 22px 0;
+  text-align: left;
+  color: rgba(14, 11, 12, 0.6);
+  transition: color 250ms var(--bb-ease);
+}
+.fqx-n { font: 500 11px/1 var(--font-body); letter-spacing: 0.12em; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+.fqx-q-text {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.35rem, 2.1vw, 1.9rem);
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  transition: transform 350ms var(--bb-ease);
+}
+.fqx-q:hover, .fqx-row.is-on .fqx-q { color: var(--ink); }
+.fqx-row.is-on .fqx-q-text { font-style: italic; }
+.fqx-q:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  .fqx-q:hover .fqx-q-text { transform: translateX(6px); }
+}
+/* The one red thing: a short rule marking the chosen question. */
+.fqx-mark { align-self: center; justify-self: end; width: 20px; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: right; transition: transform 350ms var(--bb-ease); }
+.fqx-row.is-on .fqx-mark { transform: scaleX(1); }
+
+.fqx-inline { padding: 0 0 26px 56px; }
+.fqx-inline p { margin: 0; max-width: 60ch; font-size: 15.5px; line-height: 1.7; color: var(--ink); }
+
+.fqx-aside { display: none; }
+@media (min-width: 1024px) {
+  .fqx-inline { display: none !important; }
+  .fqx-aside { display: block; position: sticky; top: 120px; }
+  .fqx-mark { transform: scaleX(0); }
+}
+.fqx-panel {
+  position: relative;
+  overflow: hidden;
+  min-height: 340px;
+  border-radius: 24px;
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  padding: 48px 48px 52px;
+}
+.fqx-panel-n {
+  position: absolute;
+  top: 18px;
+  right: 28px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 120px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+.fqx-panel-q { position: relative; margin: 0 0 22px; max-width: 18ch; font-family: var(--font-display); font-style: italic; font-size: clamp(1.8rem, 2.4vw, 2.3rem); line-height: 1.12; }
+.fqx-panel-a { position: relative; margin: 0; max-width: 52ch; font-size: 16px; line-height: 1.75; color: rgba(255, 255, 255, 0.86); }
+
+.fqx-contact { margin-top: 32px; padding-left: 4px; }
+.fqx-contact-t { margin: 0; font-weight: 600; font-size: 15px; color: var(--ink); }
+.fqx-contact-d { margin: 6px 0 14px; font-size: 14px; line-height: 1.7; color: var(--ink-muted); max-width: 46ch; }
+.fqx-contact-link { display: inline-block; padding-block: 6px; color: var(--ink); font-size: 15px; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(14, 11, 12, 0.3); overflow-wrap: anywhere; }
+.fqx-contact-link:hover { text-decoration-color: currentColor; }
+@media (max-width: 1023px) {
+  .fqx-aside { display: block; }
+  .fqx-aside .fqx-panel { display: none; }
+  .fqx-contact { margin-top: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fqx-q-text, .fqx-mark, .fqx-q { transition: none; }
+}
+
+/* Path band as a ribbon (2026-09-23, Brad: "a border kind of thing" so it
+   is not bare text). The curve is drawn twice: a wider red stroke under a
+   slightly narrower ink one, which leaves a hairline red border either side
+   of an ink band, and the words ride centred on it in white. */
+.pathband-svg .tp-ribbon-edge { stroke: var(--accent); stroke-width: 44px; stroke-linecap: butt; }
+.pathband-svg .tp-ribbon { stroke: var(--inverse-bg); stroke-width: 40px; stroke-linecap: butt; }
+.pathband-svg text { dominant-baseline: central; }
+.pathband-svg .pathband-text { fill: var(--inverse-ink); }
+.pathband { color: var(--inverse-ink); }
+.fqx-panel-n { top: auto; bottom: -18px; right: 26px; font-size: 150px; }
+.fqx-panel-q { max-width: 20ch; }
+.fqx-panel-n::before { content: attr(data-n); }
+
+/* The philosophy line set as a quotation (2026-09-23, Brad). Hanging marks
+   in the display face: the opening one red and outside the measure so the
+   text keeps its left edge, the closing one in ink. Pseudo-content, so the
+   heading's accessible name stays the plain sentence. No attribution: it
+   is the shop's line, not a quote from a named person. */
+.pov-statement > span[aria-hidden] { position: relative; display: inline; }
+.pov-statement > span[aria-hidden]::before {
+  content: "\201C";
+  position: absolute;
+  left: -0.5em;
+  top: -0.08em;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--accent);
+}
+.pov-statement > span[aria-hidden]::after {
+  content: "\201D";
+  font-family: var(--font-display);
+  font-style: italic;
+  margin-left: 0.04em;
+}
+@media (max-width: 640px) {
+  .pov-statement > span[aria-hidden]::before { position: static; margin-right: 0.04em; }
+}
+.pov-statement > span[aria-hidden]::before { position: static; margin-right: 0.04em; }

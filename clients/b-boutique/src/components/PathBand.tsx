@@ -44,6 +44,7 @@ export function PathBand({ words }: { words?: string[] } = {}) {
         viewBox="0 0 1440 220"
         preserveAspectRatio="xMidYMid slice"
         svgClassName="pathband-svg"
+        ribbon
         text={text.toUpperCase()}
         textClassName="pathband-text"
         animationType="scroll"

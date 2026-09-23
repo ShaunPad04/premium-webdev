@@ -47,6 +47,9 @@ interface AnimatedPathTextProps {
   pathClassName?: string;
   preserveAspectRatio?: PreserveAspectRatio;
   showPath?: boolean;
+  /** Draw the path as a bordered ribbon under the text (two strokes of the
+   *  same curve, styled by `.tp-ribbon-edge` / `.tp-ribbon`). */
+  ribbon?: boolean;
 
   // SVG properties
   width?: string | number;
@@ -84,6 +87,7 @@ const AnimatedPathText = ({
   pathClassName,
   preserveAspectRatio = "xMidYMid meet",
   showPath = false,
+  ribbon = false,
 
   width = "100%",
   height = "100%",
@@ -158,6 +162,12 @@ const AnimatedPathText = ({
         stroke={showPath ? "currentColor" : "none"}
         fill="none"
       />
+      {ribbon ? (
+        <>
+          <path d={path} className="tp-ribbon-edge" fill="none" />
+          <path d={path} className="tp-ribbon" fill="none" />
+        </>
+      ) : null}
 
       <text textAnchor={textAnchor} fill="currentColor">
         <textPath

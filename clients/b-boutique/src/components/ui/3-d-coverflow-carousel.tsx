@@ -67,6 +67,10 @@ export function CoverFlowCarousel() {
   const items = newIn;
   const total = items.length;
   const [current, setCurrent] = useState(0);
+  /* The colourway picked in the buy block, for the centre card's photo
+     (2026-09-23, Brad: choosing Beige should show the beige one). Keyed by
+     slug so turning the carousel falls back to each piece's first photo. */
+  const [pick, setPick] = useState<{ slug: string; i: number } | null>(null);
   /* Drag and swipe (2026-09-23, client: "you should be able to just swipe
      this on both mobile and desktop"). Pointer events cover a finger and a
      mouse alike; a horizontal trackpad swipe arrives as wheel deltaX. A drag
@@ -137,6 +141,11 @@ export function CoverFlowCarousel() {
           const offset = (i - current + total) % total;
           const p = place(offset, total);
           const centre = offset === 0;
+          const chosen =
+            centre && pick?.slug === piece.slug
+              ? productBySlug(piece.slug)?.colourways[pick.i]?.image
+              : undefined;
+          const photo = chosen ?? piece.photo;
           return (
             <Link
               key={piece.slug}
@@ -163,7 +172,8 @@ export function CoverFlowCarousel() {
             >
               <span className="cf-photo">
                 <ProductPhoto
-                  photo={piece.photo}
+                  key={photo}
+                  photo={photo}
                   square={piece.category === "Homeware"}
                   alt=""
                   sizes="(min-width: 768px) 330px, 62vw"
@@ -187,7 +197,10 @@ export function CoverFlowCarousel() {
 
       {product && isBuyable(product) ? (
         <div className="cf-buy" key={now.slug}>
-          <ColourProvider colours={product.colourways.map((c) => c.colour)}>
+          <ColourProvider
+            colours={product.colourways.map((c) => c.colour)}
+            onChange={(i) => setPick({ slug: now.slug, i })}
+          >
             <AddToBag product={product} compact />
           </ColourProvider>
         </div>

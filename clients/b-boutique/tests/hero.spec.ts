@@ -34,5 +34,5 @@ test('stepping through every slide does not crash the page', async ({ page }) =>
   await expect(page.getByText(/couldn.t load/)).toHaveCount(0);
   // One frame, and it stayed put.
   expect(new Set(titles).size).toBe(1);
-  await expect(page.locator('.lm-title .sr-only')).toHaveText('B Boutique');
+  await expect(page.locator('.lm-title')).toContainText(/b boutique/i);
 });

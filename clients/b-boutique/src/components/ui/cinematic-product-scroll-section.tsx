@@ -32,7 +32,7 @@
  */
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animate, stagger } from "animejs";
 
 import { FREE_DELIVERY_OVER_P, formatPriceShort, isBuyable, products, type Product } from "@/lib/catalogue";
@@ -110,6 +110,9 @@ function ProductHero({ product, reversed, reduced, index, total }: { product: Pr
   }, [reduced]);
 
   const pad = (n: number) => String(n).padStart(2, "0");
+  /* The colourway picked below drives the photograph (2026-09-23, Brad). */
+  const [ci, setCi] = useState(0);
+  const photo = product.colourways[ci]?.image ?? product.photo;
 
   return (
     <div ref={sectionRef} className="cps-scene">
@@ -118,11 +121,12 @@ function ProductHero({ product, reversed, reduced, index, total }: { product: Pr
           <div className="cps-media">
             <div className="cps-frame">
               <div className="cps-grey" aria-hidden="true">
-                <ProductPhoto photo={product.photo} sizes="(min-width: 768px) 50vw, 92vw" className="cps-img" />
+                <ProductPhoto key={photo} photo={photo} sizes="(min-width: 768px) 50vw, 92vw" className="cps-img" />
               </div>
               <div className="cps-mask" style={{ clipPath: "inset(0 0 100% 0)" }}>
                 <ProductPhoto
-                  photo={product.photo}
+                  key={photo}
+                  photo={photo}
                   alt={product.name}
                   sizes="(min-width: 768px) 50vw, 92vw"
                   className="cps-img"
@@ -174,7 +178,7 @@ function ProductHero({ product, reversed, reduced, index, total }: { product: Pr
               {/* The product page's own buy block: colour swatches, size,
                   Add to bag, Buy now, the same stock and size checks. */}
               <div className="cps-step cps-buy" data-progress="0.5">
-                <ColourProvider colours={product.colourways.map((c) => c.colour)}>
+                <ColourProvider colours={product.colourways.map((c) => c.colour)} onChange={setCi}>
                   <AddToBag product={product} />
                 </ColourProvider>
                 <ul className="cps-reassure">

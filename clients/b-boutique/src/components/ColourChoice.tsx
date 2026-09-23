@@ -49,9 +49,13 @@ const Ctx = createContext<ColourState | null>(null);
 
 export function ColourProvider({
   colours,
+  onChange,
   children,
 }: {
   colours: readonly string[];
+  /** Told the chosen colourway's index, so a photo outside this provider
+   *  (a carousel card, a statement piece) can follow the choice. */
+  onChange?: (index: number) => void;
   children: ReactNode;
 }) {
   /* A piece with one colourway has nothing to choose, so that colour is
@@ -63,8 +67,13 @@ export function ColourProvider({
 
   const value = useMemo<ColourState>(() => {
     const i = colour === null ? -1 : colours.indexOf(colour);
-    return { colour, setColour, index: i < 0 ? 0 : i };
-  }, [colour, colours]);
+    const pick = (c: string | null) => {
+      setColour(c);
+      const j = c === null ? -1 : colours.indexOf(c);
+      onChange?.(j < 0 ? 0 : j);
+    };
+    return { colour, setColour: pick, index: i < 0 ? 0 : i };
+  }, [colour, colours, onChange]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
