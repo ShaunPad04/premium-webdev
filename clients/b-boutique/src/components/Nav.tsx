@@ -62,7 +62,8 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
   /* Over the home hero the page already says B BOUTIQUE in large type, so
      the header's own wordmark stands down until the bar turns solid
      (2026-09-23, Brad). Every other route keeps it. */
-  const markHidden = usePathname() === "/" && !opaque;
+  const pathname = usePathname();
+  const markHidden = pathname === "/" && !opaque;
 
   return (
     <header
@@ -207,6 +208,7 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
                 <li key={item.label} className="nav-item">
                   <a
                     href={item.href}
+                    aria-current={pathname === item.href ? "page" : undefined}
                     className="nav-link nav-link--bar flip-host text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
                   >
                     <FlipText>{item.label}</FlipText>

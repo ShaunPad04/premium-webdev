@@ -54,10 +54,9 @@ export function BagLink() {
         />
       </svg>
       {count > 0 ? (
-        <span
-          aria-hidden="true"
-          className="absolute left-1/2 top-[calc(50%+2.5px)] -translate-x-1/2 -translate-y-1/2 text-[8.5px] font-semibold leading-none tabular-nums"
-        >
+        /* A red count badge that pops each time the count changes (the key
+           remounts it, which replays the CSS animation). */
+        <span key={count} aria-hidden="true" className="bag-badge">
           {count > 9 ? "9+" : count}
         </span>
       ) : null}
