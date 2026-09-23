@@ -3635,7 +3635,8 @@ body {
 
 /* 4 — Inside the shop: a lookbook (components/InsideRooms.tsx).
    Rebuilt 2026-09-23; the offset five-size spread read as unorganised. One
-   frame (4:5), one column, one rhythm; the title and a numbered index held
+   frame (3:2 since the same evening: her photos hold ~960px of real detail
+   and a 4:5 crop kept under half of it), one column, one rhythm; the title and a numbered index held
    beside it on a desktop. */
 .ab-inside {
   background: var(--bone);
@@ -3657,7 +3658,7 @@ body {
 .ab-rooms-list { display: grid; gap: clamp(48px, 9vh, 112px); }
 
 .ab-room { margin: 0; scroll-margin-top: 120px; }
-.ab-room-frame { aspect-ratio: 4 / 5; overflow: hidden; background: var(--bb-grey-light); }
+.ab-room-frame { aspect-ratio: 3 / 2; overflow: hidden; background: var(--bb-grey-light); }
 .ab-room-frame picture { display: block; width: 100%; height: 100%; }
 .ab-room-img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .ab-room figcaption {
@@ -5071,6 +5072,12 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   flex-direction: column;
   background: var(--bone);
   color: var(--bb-black);
+  /* The fixed header is 106px at the top of the page (the 34px announcement
+     strip plus the 72px bar). Without this the photograph started at 0 and
+     the header covered its top 106px on a phone: the model's head. The
+     client's screenshot, 2026-09-23. On a desktop the sticky photograph then
+     rises 34px and holds at 72px once the strip has collapsed. */
+  padding-top: calc(var(--header-h) + 34px);
 }
 
 @media (min-width: 1024px) {
@@ -5293,7 +5300,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
  * right offset for the sticky media column beside this one. The two want
  * different figures because they are measured at different scroll positions. */
 @media (min-width: 1024px) {
-  .pdp-body { padding-top: max(clamp(40px, 6vw, 96px), 124px); }
+  .pdp-body { padding-top: clamp(24px, 3vw, 48px); }
 }
 .pdp-inner { width: 100%; max-width: 520px; }
 
@@ -7081,8 +7088,12 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   /* 44px minimum, met by padding rather than a fixed height, so a label that
      wraps at a narrow width still owns its whole target. */
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 10px 18px;
   border: 1px solid var(--bb-light-border);
+  /* Pills since 2026-09-23, matching the size chips and buy buttons; the
+     square tiles wrapped into three ragged rows on a phone. */
+  border-radius: 999px;
+  white-space: nowrap;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -7118,6 +7129,23 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 /* On the ink fill the grey would drop to roughly 1.5:1, so the count borrows
    the label's own colour at a reduced alpha instead — 8.6:1 on the ink. */
 .catbar-link[aria-current="page"] .catbar-n { color: rgba(250, 245, 243, 0.82); }
+
+/* Phone: one swipeable row that bleeds to the screen edge, with a fade on
+   the right saying there is more. CatbarScroll brings the current pill in. */
+@media (max-width: 767px) {
+  .catbar-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-inline: -18px;
+    padding: 2px 18px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, #000 88%, transparent);
+    mask-image: linear-gradient(to right, #000 88%, transparent);
+  }
+  .catbar-list::-webkit-scrollbar { display: none; }
+  .catbar-list > li { scroll-snap-align: start; flex: none; }
+}
 
 /* ── The grid → product morph ─────────────────────────────────────────────
  *
@@ -7618,3 +7646,19 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    targets .bk-steps span, so the label span opts out of it. */
 .bk-steps .bk-hide-xs { display: inline; width: auto; height: auto; box-shadow: none; border-radius: 0; font-size: inherit; letter-spacing: inherit; }
 @media (max-width: 379px) { .bk-steps .bk-hide-xs { display: none; } }
+
+/* /stock: the one-off opening-count import. */
+.st-import {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 12px;
+  border: 1px solid var(--bb-black);
+  border-radius: 999px;
+  background: var(--bb-black);
+  color: var(--bb-white);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.st-import:disabled { opacity: 0.6; cursor: progress; }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { clothingCounts } from "@/lib/pages";
+import { CatbarScroll } from "./CatbarScroll";
 
 /* The rail selector, above the products.
  *
@@ -78,6 +79,7 @@ export function CategoryBar({
           </li>
         ))}
       </ul>
+      <CatbarScroll />
     </nav>
   );
 }

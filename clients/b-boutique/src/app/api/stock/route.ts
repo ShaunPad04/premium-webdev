@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
-import { adjust, setCount, setRestockable, stockIsConfigured } from "@/lib/stock";
+import { adjust, readStock, setCount, setRestockable, stockIsConfigured } from "@/lib/stock";
+import { openingPlan } from "@/lib/opening-stock";
 import { isSignedIn, signIn, signOut, stockAuthIsConfigured, tooManyAttempts } from "@/lib/stock-auth";
 
 /** Every change to what is in the shop comes through here.
@@ -69,6 +70,28 @@ export async function POST(request: NextRequest) {
 
   if (!stockIsConfigured()) {
     return json({ ok: false, code: "not_configured" }, 503);
+  }
+
+  /* Load the opening counts from the master list (lib/opening-stock.ts).
+     Signed-in only, like everything below. Sets ONLY variants that have no
+     count yet, through setCount, so every one is logged and nothing a person
+     has already counted or sold is touched. Safe to press twice. */
+  if (action === "import-opening") {
+    const current = await readStock();
+    if (!current) return json({ ok: false, code: "not_configured" }, 503);
+    const uncounted = new Set(current.filter((v) => v.qty === null).map((v) => v.id));
+    const { plan, skipped } = openingPlan();
+    let set = 0;
+    let held = 0;
+    for (const item of plan) {
+      if (!uncounted.has(item.id)) {
+        held += 1;
+        continue;
+      }
+      const r = await setCount(item.id, item.qty, "opening count, master stock list 2026-09-22");
+      if (r.ok) set += 1;
+    }
+    return json({ ok: true, set, held, notImportable: skipped.length }, 200);
   }
 
   const id = str(body.id);

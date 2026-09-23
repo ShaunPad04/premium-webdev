@@ -40,72 +40,20 @@
  * Hence --force: without it the script refuses to touch a variant that
  * already has a count.
  *
- *   DATABASE_URL=... node scripts/import-stock.mjs          # dry run
- *   DATABASE_URL=... node scripts/import-stock.mjs --write
- *   DATABASE_URL=... node scripts/import-stock.mjs --write --force
+ *   node scripts/import-stock.mjs          # dry run: prints the plan
+ *   Applying it: /stock -> "Load opening counts from the master list"
  */
 import { readFileSync } from "node:fs";
 
 const WRITE = process.argv.includes("--write");
-const FORCE = process.argv.includes("--force");
 
-/* Opening counts per colourway, from the MASTER stock list Brad supplied on
-   2026-09-22 (40 pieces, all on the site). It replaced the
-   earlier dashboard figures, which covered 35 of 54 colourways; this covers
-   every colourway on the site. Generated from the list, not retyped. */
-const OPENING = {
-  "fair-isle-jumper": { Beige: 2, Brown: 4 },
-  "faux-feather-sleeveless-jumper": { Black: 3, Beige: 3 },
-  "paisley-fringe-belted-cardigan-vest": { Burgundy: 3, Brown: 3 },
-  "fine-knit-jumper-with-asymmetric-hem": { Brown: 3, Beige: 6 },
-  "lace-blouse-with-layered-ruffle": { Burgundy: 3, Brown: 3 },
-  "zebra-print-balloon-leg-jeans": { "Zebra Print": 10 },
-  "striped-fuzzy-zip-up-jumper": { Beige: 3, "Red / Pink": 3 },
-  "plaid-check-hooded-jacket": { Beige: 3 },
-  "balloon-sleeve-longline-coat": { Burgundy: 2, Brown: 2, Camel: 2 },
-  "amour-half-zip-wool-jumper": { Navy: 3 },
-  "piping-detail-denim-jacket-trouser-set": { "Denim Blue": 5 },
-  "pleated-barrel-trouser": { Navy: 3, Beige: 3 },
-  "jewelled-collar-cardigan": { Black: 2, Burgundy: 2, Cream: 1 },
-  "multi-jumper": { Brown: 3, Olive: 3 },
-  "argyle-vest-t-shirt": { Brown: 2, Burgundy: 2 },
-  "pinstripe-lined-top": { Black: 3, Burgundy: 3, Brown: 3 },
-  "velour-lounge-set": { Khaki: 2, Burgundy: 2, "Chocolate Brown": 2 },
-  "straight-leg-wide-trouser": { Black: 5, Brown: 4 },
-  "wide-leg-trouser": { Beige: 5, "Chocolate Brown": 5 },
-  "sheer-sleeve-knit-dress": { Burgundy: 3, Brown: 3 },
-  "jean-jogger": { Blue: 6, Black: 6 },
-  "paisley-oversized-knitted-jumper": { Brown: 3, Burgundy: 3 },
-  "leopard-print-longline-coat": { "Leopard Print": 1 },
-  "short-trench-coat": { Sand: 3 },
-  "high-neck-checked-bomber": { "Pink / Burgundy Check": 2 },
-  "italian-knit-belted-cardigan": { Brown: 3 },
-  "italian-knit-rosette-jumper": { Cream: 3 },
-  "italian-knit-ribbed-cardigan": { Cream: 3 },
-  "chunky-knit-flower-cardigan": { Brown: 3 },
-  "tomato-vase": { Red: 4 },
-  "banana-jar": { Yellow: 3 },
-  "bell-vase": { Gold: 4 },
-  "cord-barrel-leg-trousers": { "Beige": 3, "Burgundy": 3, "Dark Brown": 3, "Khaki": 3 },
-  "leopard-embroidered-velvet-bomber": { "Beige": 3, "Black": 3 },
-  "check-tweed-culotte-shorts": { "Burgundy": 3 },
-  "pinstripe-pleated-shirt": { "Chocolate": 4 },
-  "check-tweed-shirt": { "Camel": 4 },
-  "amour-zip-up-track-knit": { "Chocolate Brown": 3 },
-  "striped-asymmetric-knit-top": { "Chocolate / Pink": 4 },
-  "cosy-hooded-boucle-coat": { "Brown": 3 },
-};
-
-
-/** Pieces whose per-size split the list STATES, so importing it is copying,
- *  not inferring. jean-jogger: "S/M, M/L, L/XL (2 of each)". The jeans and the
- *  denim set give an exact count per size in the master list; each split was
- *  checked to add up to its colourway total before being written here. */
-const STATED_SPLIT = { "jean-jogger": 2, "pinstripe-pleated-shirt": 2, "check-tweed-shirt": 2 };
-const STATED_SIZES = {
-  "zebra-print-balloon-leg-jeans": {"XS": 1, "S": 3, "M": 3, "L": 2, "XL": 1},
-  "piping-detail-denim-jacket-trouser-set": {"XXS": 1, "XS": 2, "M": 1, "L": 1},
-};
+/* The counts and the stated splits live in ONE place, src/data/
+   opening-stock.json, which the site's own importer also reads
+   (src/lib/opening-stock.ts, the "Load opening counts" button on /stock). */
+const DATA = JSON.parse(readFileSync("src/data/opening-stock.json", "utf8"));
+const OPENING = DATA.opening;
+const STATED_SPLIT = DATA.statedSplit;
+const STATED_SIZES = DATA.statedSizes;
 
 function variantId(slug, size, colour) {
   const part = (s) =>
@@ -181,40 +129,11 @@ async function main() {
     return;
   }
 
-  if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
-    throw new Error("No DATABASE_URL — nothing to write to.");
-  }
-
-  const { neon } = await import("@neondatabase/serverless");
-  const q = neon(process.env.DATABASE_URL ?? process.env.POSTGRES_URL);
-
-  const existing = new Map(
-    (
-      await q`SELECT id, qty FROM stock WHERE id = ANY(${plan.map((p) => p.id)})`
-    ).map((r) => [r.id, Number(r.qty)]),
-  );
-
-  let wrote = 0;
-  let held = 0;
-  for (const p of plan) {
-    const have = existing.get(p.id);
-    if (have !== undefined && have !== null && !FORCE) {
-      held += 1;
-      console.log(`  HELD  ${p.id} already counted (${have}) — --force to overwrite`);
-      continue;
-    }
-    await q`
-      INSERT INTO stock (id, slug, size, colour, qty, restockable)
-      VALUES (${p.id}, ${p.id.split("·")[0]}, '', '', ${p.qty}, false)
-      ON CONFLICT (id) DO UPDATE SET qty = ${p.qty}
-    `;
-    await q`
-      INSERT INTO stock_log (id, delta, reason)
-      VALUES (${p.id}, ${p.qty}, 'opening count imported from the stock dashboard')
-    `;
-    wrote += 1;
-  }
-  console.log(`\nwrote ${wrote}, held ${held}.`);
+  /* The write path was removed on 2026-09-23. It wrote rows in a shape the
+     stock tables no longer have (and DATABASE_URL is a sensitive Vercel
+     secret that cannot be read out anyway). Apply the counts from the site:
+     /stock -> "Load opening counts from the master list". */
+  throw new Error("Writing moved into the site: sign in on /stock and press 'Load opening counts from the master list'.");
 }
 
 main().catch((e) => {

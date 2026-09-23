@@ -100,7 +100,7 @@ export default function AboutPage() {
      mannequins. */
   const rooms = [
     { photo: walkin, pos: "50% 50%" },
-    { photo: mustard, pos: "4% 50%" },
+    { photo: mustard, pos: "50% 50%" },
     { photo: win, pos: "45% 50%" },
     { photo: fitting, pos: "50% 50%" },
     { photo: homeware, pos: "50% 50%" },

@@ -1,0 +1,171 @@
+{
+  "_source": "Brad's master stock list, 2026-09-22. Counts are per COLOURWAY; only one-size runs and runs whose per-size split the list states are importable (see src/lib/opening-stock.ts).",
+  "opening": {
+    "fair-isle-jumper": {
+      "Beige": 2,
+      "Brown": 4
+    },
+    "faux-feather-sleeveless-jumper": {
+      "Black": 3,
+      "Beige": 3
+    },
+    "paisley-fringe-belted-cardigan-vest": {
+      "Burgundy": 3,
+      "Brown": 3
+    },
+    "fine-knit-jumper-with-asymmetric-hem": {
+      "Brown": 3,
+      "Beige": 6
+    },
+    "lace-blouse-with-layered-ruffle": {
+      "Burgundy": 3,
+      "Brown": 3
+    },
+    "zebra-print-balloon-leg-jeans": {
+      "Zebra Print": 10
+    },
+    "striped-fuzzy-zip-up-jumper": {
+      "Beige": 3,
+      "Red / Pink": 3
+    },
+    "plaid-check-hooded-jacket": {
+      "Beige": 3
+    },
+    "balloon-sleeve-longline-coat": {
+      "Burgundy": 2,
+      "Brown": 2,
+      "Camel": 2
+    },
+    "amour-half-zip-wool-jumper": {
+      "Navy": 3
+    },
+    "piping-detail-denim-jacket-trouser-set": {
+      "Denim Blue": 5
+    },
+    "pleated-barrel-trouser": {
+      "Navy": 3,
+      "Beige": 3
+    },
+    "jewelled-collar-cardigan": {
+      "Black": 2,
+      "Burgundy": 2,
+      "Cream": 1
+    },
+    "multi-jumper": {
+      "Brown": 3,
+      "Olive": 3
+    },
+    "argyle-vest-t-shirt": {
+      "Brown": 2,
+      "Burgundy": 2
+    },
+    "pinstripe-lined-top": {
+      "Black": 3,
+      "Burgundy": 3,
+      "Brown": 3
+    },
+    "velour-lounge-set": {
+      "Khaki": 2,
+      "Burgundy": 2,
+      "Chocolate Brown": 2
+    },
+    "straight-leg-wide-trouser": {
+      "Black": 5,
+      "Brown": 4
+    },
+    "wide-leg-trouser": {
+      "Beige": 5,
+      "Chocolate Brown": 5
+    },
+    "sheer-sleeve-knit-dress": {
+      "Burgundy": 3,
+      "Brown": 3
+    },
+    "jean-jogger": {
+      "Blue": 6,
+      "Black": 6
+    },
+    "paisley-oversized-knitted-jumper": {
+      "Brown": 3,
+      "Burgundy": 3
+    },
+    "leopard-print-longline-coat": {
+      "Leopard Print": 1
+    },
+    "short-trench-coat": {
+      "Sand": 3
+    },
+    "high-neck-checked-bomber": {
+      "Pink / Burgundy Check": 2
+    },
+    "italian-knit-belted-cardigan": {
+      "Brown": 3
+    },
+    "italian-knit-rosette-jumper": {
+      "Cream": 3
+    },
+    "italian-knit-ribbed-cardigan": {
+      "Cream": 3
+    },
+    "chunky-knit-flower-cardigan": {
+      "Brown": 3
+    },
+    "tomato-vase": {
+      "Red": 4
+    },
+    "banana-jar": {
+      "Yellow": 3
+    },
+    "bell-vase": {
+      "Gold": 4
+    },
+    "cord-barrel-leg-trousers": {
+      "Beige": 3,
+      "Burgundy": 3,
+      "Dark Brown": 3,
+      "Khaki": 3
+    },
+    "leopard-embroidered-velvet-bomber": {
+      "Beige": 3,
+      "Black": 3
+    },
+    "check-tweed-culotte-shorts": {
+      "Burgundy": 3
+    },
+    "pinstripe-pleated-shirt": {
+      "Chocolate": 4
+    },
+    "check-tweed-shirt": {
+      "Camel": 4
+    },
+    "amour-zip-up-track-knit": {
+      "Chocolate Brown": 3
+    },
+    "striped-asymmetric-knit-top": {
+      "Chocolate / Pink": 4
+    },
+    "cosy-hooded-boucle-coat": {
+      "Brown": 3
+    }
+  },
+  "statedSplit": {
+    "jean-jogger": 2,
+    "pinstripe-pleated-shirt": 2,
+    "check-tweed-shirt": 2
+  },
+  "statedSizes": {
+    "zebra-print-balloon-leg-jeans": {
+      "XS": 1,
+      "S": 3,
+      "M": 3,
+      "L": 2,
+      "XL": 1
+    },
+    "piping-detail-denim-jacket-trouser-set": {
+      "XXS": 1,
+      "XS": 2,
+      "M": 1,
+      "L": 1
+    }
+  }
+}

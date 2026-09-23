@@ -153,15 +153,15 @@ export function VisitMap({
                                 aria-hidden on a focusable element is itself a
                                 violation. */}
         <picture>
-          <source type="image/avif" srcSet="/img/about/window-640.avif 640w, /img/about/window-960.avif 960w, /img/about/window-1280.avif 1280w" sizes="(min-width: 1024px) 50vw, 92vw" />
-          <source type="image/webp" srcSet="/img/about/window-640.webp 640w, /img/about/window-960.webp 960w, /img/about/window-1280.webp 1280w" sizes="(min-width: 1024px) 50vw, 92vw" />
+          <source type="image/avif" srcSet="/img/about/window-960.avif 960w, /img/about/window-1440.avif 1440w, /img/about/window-1920.avif 1920w" sizes="(min-width: 1024px) 50vw, 92vw" />
+          <source type="image/webp" srcSet="/img/about/window-960.webp 960w, /img/about/window-1440.webp 1440w, /img/about/window-1920.webp 1920w" sizes="(min-width: 1024px) 50vw, 92vw" />
           <img
             src="/img/about/window-960.jpg"
             alt=""
             className="vm-still"
             loading="lazy"
             decoding="async"
-            width={2160}
+            width={3240}
             height={2160}
           />
         </picture>
