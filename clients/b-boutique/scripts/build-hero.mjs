@@ -149,6 +149,30 @@ for (const name of slides) {
     small.clone().webp({ quality: 70 }).toFile(`public/img/hero/${name}-s.webp`),
   ]);
 
+  /* A 1200 phone step (2026-09-23): with a 4K source the 1536 phone file
+     is ~460 KB, and a DPR 2.6-3 phone (1071-1170 device px) was being sent
+     it. 1200 at q46 covers those screens at a fraction of the weight. */
+  {
+    const mid = sharp(port).resize({ width: 1200, withoutEnlargement: true });
+    await Promise.all([
+      mid.clone().avif({ quality: 46, effort: 6 }).toFile(`public/img/hero/${name}-s1200.avif`),
+      mid.clone().webp({ quality: 70 }).toFile(`public/img/hero/${name}-s1200.webp`),
+    ]);
+  }
+
+  /* ── Desktop steps below 4K (2026-09-23) ──────────────────────────────
+     The hero became a true 4K frame (4096 source) at Brad's request, and
+     the 3840 AVIF alone is ~1.2 MB of dense red texture. A 1440 laptop at
+     DPR 1 needs 1440 px, not 3840, so desktops get a srcset: 1920 and 2560
+     steps, with the full 3840 kept for retina and 4K screens. */
+  for (const w of [1920, 2560]) {
+    const step = sharp(land).resize({ width: w, withoutEnlargement: true });
+    await Promise.all([
+      step.clone().avif({ quality: 56, effort: 6 }).toFile(`public/img/hero/${name}-d${w}.avif`),
+      step.clone().webp({ quality: 74 }).toFile(`public/img/hero/${name}-d${w}.webp`),
+    ]);
+  }
+
   console.log(
     `${name.padEnd(11)} land ${lm.width}x${lm.height} port ${pm.width}x${pm.height}  ->  ` +
       `desktop ${da.width}x${da.height} avif ${kb(da.size)} webp ${kb(dw.size)} jpg ${kb(dj.size)}  |  ` +

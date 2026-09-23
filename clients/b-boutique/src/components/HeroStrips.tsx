@@ -7,13 +7,15 @@ import { LuminaInteractiveList, LuminaTitle, type LuminaSlide } from "@/componen
  * pre-encoded by scripts/build-hero.mjs from assets/hero. */
 
 const sources = (file: string) => [
-  { media: "(min-width: 1024px)", type: "image/avif", srcSet: `/img/hero/${file}-d.avif` },
-  { media: "(min-width: 1024px)", type: "image/webp", srcSet: `/img/hero/${file}-d.webp` },
+  /* 1920 / 2560 / 3840 (the 4K frame): a laptop takes 1920, retina and 4K
+     screens take the larger steps. The frame is full-bleed, so 100vw. */
+  { media: "(min-width: 1024px)", type: "image/avif", srcSet: `/img/hero/${file}-d1920.avif 1920w, /img/hero/${file}-d2560.avif 2560w, /img/hero/${file}-d.avif 3840w`, sizes: "100vw" },
+  { media: "(min-width: 1024px)", type: "image/webp", srcSet: `/img/hero/${file}-d1920.webp 1920w, /img/hero/${file}-d2560.webp 2560w, /img/hero/${file}-d.webp 3840w`, sizes: "100vw" },
   { media: "(min-width: 1024px)", type: "image/jpeg", srcSet: `/img/hero/${file}-d.jpg` },
   /* Cover-cropped from a 9:16 portrait, so on a phone the frame is as wide
      as the screen or 0.56 of its height, whichever is larger. */
-  { type: "image/avif", srcSet: `/img/hero/${file}-s.avif 900w, /img/hero/${file}-m.avif 1536w`, sizes: "max(100vw, 56svh)" },
-  { type: "image/webp", srcSet: `/img/hero/${file}-s.webp 900w, /img/hero/${file}-m.webp 1536w`, sizes: "max(100vw, 56svh)" },
+  { type: "image/avif", srcSet: `/img/hero/${file}-s.avif 900w, /img/hero/${file}-s1200.avif 1200w, /img/hero/${file}-m.avif 1536w`, sizes: "max(100vw, 56svh)" },
+  { type: "image/webp", srcSet: `/img/hero/${file}-s.webp 900w, /img/hero/${file}-s1200.webp 1200w, /img/hero/${file}-m.webp 1536w`, sizes: "max(100vw, 56svh)" },
 ];
 
 const SLIDES: LuminaSlide[] = [

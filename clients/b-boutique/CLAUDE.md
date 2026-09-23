@@ -911,3 +911,14 @@ decorative and aria-hidden), replacing `StatementRail` (deleted;
 PAUSED at Brad's request**: a 3-photo pilot (Seedream 4.5 grey backdrop +
 Higgsfield cut-out, original garment pixels composited back, never
 regenerated) exists only in the session scratchpad. Nothing was committed.
+
+**Hero is 4K since 2026-09-23 (late).** Re-rendered in Seedream 4.5 from the
+old frame (same composition; a pristine white and a glossy jet-black horse,
+larger), then upscaled to 4096x2304 / 2304x4096. The 3840 AVIF is ~1.2 MB,
+so desktops get a srcset (1920 / 2560 / 3840, sizes 100vw) and phones a
+1200 step (900 / 1200 / 1536). Without the 1200 step the simulated phone LCP
+went 5.95 -> 7.47s (the 4K 1536 file is 464 KB); with it, n=5 vs bd6664c:
+LCP 5.94 vs 5.94s, 1247 vs 1244 KB. Also: announcement strip solid black,
+white Anton caps, taller; Shop all fills black on hover; the philosophy
+section is ivory with red type (a token swap inside .pov) and the category
+photos below sit on ivory too.

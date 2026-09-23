@@ -8363,14 +8363,15 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .navbar-mark[data-hidden] { opacity: 0; visibility: hidden; }
 @media (prefers-reduced-motion: reduce) { .navbar-mark { transition: none; } }
 
-/* Announcement strip: the red fades down into black (2026-09-23, Brad), so
-   it melts into the dark top of the hero instead of sitting on it as a
-   band. Text stays on the fully-red upper part; both ends clear AA for the
-   ivory text (measured, see commit). No hard line underneath. */
+/* Announcement strip: solid black, white type, white diamonds (2026-09-23,
+   Brad; it was a red-to-black fade for an hour). White on #0E0B0C is about
+   19:1. No hard line underneath. */
 .announce {
-  background: linear-gradient(to bottom, var(--bb-black) 0%, var(--bb-black) 35%, #1A1416 100%);
+  --announce-ink: #FFFFFF;
+  background: #0E0B0C;
   border-bottom: 0;
 }
+.announce-item + .announce-item::before { background: #FFFFFF; }
 
 /* NEW ARRIVAL marquee (NewArrivalRail): the stmt-* track, in the hero's
    Anton caps, white on black with a red dot between. The dot is decoration
@@ -8388,3 +8389,49 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .arr-rail .stmt-item { gap: clamp(20px, 2.4vw, 34px); padding-inline-end: clamp(20px, 2.4vw, 34px); }
 .arr-dot { display: block; width: 8px; height: 8px; border-radius: 50%; background: #E0201A; flex: none; }
 .arr-rail .stmt-track { animation-duration: 30s; }
+
+/* Taller strip (2026-09-23, Brad: "shouldn't be that thin"). */
+.announce-shell { max-height: 80px; }
+.announce-list { padding-block: 13px; }
+.announce-item { font-size: 14px; }
+@media (min-width: 640px) { .announce-list { padding-block: 14px; } .announce-item { font-size: 15px; } }
+
+/* Hero-style buttons fill with BLACK on hover (2026-09-23, Brad), not the
+   theme red: white pill, black sweep from the left, white label. */
+.hero-cta::before { background: #0E0B0C; }
+
+/* The announcement strip in the hero's condensed caps (Anton, standing in
+   for "Madrid"), upright rather than the Playfair italic it had. */
+.announce-item {
+  font-family: var(--font-hero), "Arial Narrow", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 14px;
+  line-height: 18px;
+}
+@media (min-width: 640px) { .announce-item { font-size: 15px; } }
+
+/* The philosophy section on ivory cream, type in the deep red (2026-09-23,
+   Brad). Done by swapping the ground/ink tokens INSIDE the section, so
+   every rule in it that says "light text on the dark ground" now reads
+   "red text on ivory" without a second copy of each. The dark-ground-only
+   colours (rouge-lift, grey-mid, grey-light) are re-pointed at their
+   light-ground twins, which are the ones that pass on ivory. The category
+   photographs directly under it lose the red ground too, so the band does
+   not change colour halfway down. */
+.pov {
+  --bb-black: #F8F2E7;
+  --bb-white: #6E0A10;
+  --bb-white-pure: #6E0A10;
+  --bb-rouge-lift: var(--bb-rouge);
+  --bb-grey-mid: #6B5048;
+  --bb-grey-light: #6B5048;
+  --bb-dark-border: rgba(110, 10, 16, 0.2);
+}
+.cats { background: #F8F2E7; }
+/* Hard-coded white in the philosophy note, which the token swap cannot
+   reach: red on the ivory instead. */
+.pov .pov-note-text { color: #6E0A10; }
+.pov .pov-rule { background: rgba(110, 10, 16, 0.35); }
