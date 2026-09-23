@@ -219,13 +219,6 @@ export function CoverFlowCarousel() {
           </button>
         )}
       </div>
-
-      <p className="cf-foot">
-        New stock comes in regularly, and everything here is a single piece.{" "}
-        <Link href="/shop" className="cf-all">
-          Shop everything <span aria-hidden="true">&rarr;</span>
-        </Link>
-      </p>
     </section>
   );
 }

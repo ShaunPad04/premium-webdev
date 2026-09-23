@@ -7901,8 +7901,6 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   text-underline-offset: 4px;
   cursor: pointer;
 }
-.cf-foot { margin: 28px auto 0; padding-inline: 18px; max-width: 60ch; text-align: center; font-size: 13px; color: var(--bb-grey-dark); }
-.cf-all { color: var(--bb-black); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) {
   .cf-card, .cf-body, .cf-photo { transition: none; }
 }
