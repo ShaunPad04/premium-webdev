@@ -3,7 +3,6 @@ import { Hero } from "@/components/Hero";
 import { NewArrivalRail } from "@/components/NewArrivalRail";
 import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
-import NewsLetter from "@/components/ui/pinky-news-letter";
 import CinematicProducts from "@/components/ui/cinematic-product-scroll-section";
 import { SafeBoundary } from "@/components/SafeBoundary";
 import { CoverFlowCarousel } from "@/components/ui/3-d-coverflow-carousel";
@@ -60,10 +59,7 @@ export default function Home() {
         <Service />
         {/* 05 The practical questions, once they are interested */}
         <Faq />
-        {/* 06 The ask — a postcode, not a basket */}
-        <SafeBoundary name="new on the rails" fallback={null}>
-          <NewsLetter />
-        </SafeBoundary>
+        {/* "Something different, regularly" band removed 2026-09-23 (Brad). */}
 
         <Visit />
       </main>

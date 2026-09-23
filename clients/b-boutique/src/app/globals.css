@@ -51,23 +51,24 @@
 
   /* Warm near-black. True black against a warm paper reads as a hole
      punched in the page rather than as ink on it. */
-  --bb-black:        #6E0A10;   /* deep red since 2026-09-23 (was ink #1A1416); see CLAUDE.md */
-  --bb-black-soft:   #7C1119;
-  --bb-black-raised: #8A1A22;
+  --bb-black:        #1A1416;   /* ink again (2026-09-23 late): body text and dark grounds black; red is --bb-red, for headings */
+  --bb-red:          #6E0A10;
+  --bb-black-soft:   #241C1F;
+  --bb-black-raised: #2E2429;
 
   /* Warm white that leans PINK, not yellow. The difference is the whole
      brief: measured, #FAF5F3 is R250 G245 B243 — a red-to-blue spread of 7
      with a green-to-blue gap of only 2. Cream has a large green-to-blue gap,
      which is what makes it read yellow, bridal and banned. */
-  --bb-white:        #F8F2E7;   /* ivory cream since 2026-09-23 */
-  --bb-white-pure:   #FDFAF3;
+  --bb-white:        #FAF8F4;   /* off-white (2026-09-23 late: "whiter rather than cream") */
+  --bb-white-pure:   #FFFFFF;
 
-  --bb-grey-light:   #E6DCCB;
-  --bb-grey-mid:     #D8A9AC;   /* dark grounds only; #9A8F8D failed on the red */
-  --bb-grey-dark:    #6B5048;
+  --bb-grey-light:   #E4DFD8;
+  --bb-grey-mid:     #A89F9B;   /* dark grounds only */
+  --bb-grey-dark:    #5F5654;
 
   --bb-dark-border:  rgba(255, 255, 255, 0.14);
-  --bb-light-border: rgba(110, 10, 16, 0.16);
+  --bb-light-border: rgba(26, 20, 22, 0.14);
 
   /* Measured in a live render, not assumed, and each value is recorded
      against the ground it is safe on — the rule this project already had,
@@ -97,7 +98,7 @@
   --red:             #8A070B;
   --bb-rouge:        var(--red);
   --bb-rouge-deep:   #6E0509;   /* hover, on light: 11.69:1 on paper */
-  --bb-rouge-lift:   #F2B8BF;   /* the dark-ground twin; #DE6376 was ~2.5:1 on the red */
+  --bb-rouge-lift:   #E57A8A;   /* the dark-ground twin, on black */
 
   /* ── legacy semantic names, re-pointed ───────────────────────────
      Twenty components already reference these. Re-pointing them here turned
@@ -8422,7 +8423,7 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
    photographs directly under it lose the red ground too, so the band does
    not change colour halfway down. */
 .pov {
-  --bb-black: #F8F2E7;
+  --bb-black: #FAF8F4;
   /* Type black, not red (Brad, 2026-09-23); the eyebrow stays red. */
   --bb-white: #1A1416;
   --bb-white-pure: #1A1416;
@@ -8431,7 +8432,7 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   --bb-grey-light: #6B5048;
   --bb-dark-border: rgba(110, 10, 16, 0.2);
 }
-.cats { background: #F8F2E7; }
+.cats { background: #FAF8F4; }
 /* Hard-coded white in the philosophy note, which the token swap cannot
    reach: red on the ivory instead. */
 .pov .pov-note-text { color: #1A1416; }
@@ -8521,3 +8522,57 @@ html[data-nav] #main { animation: page-in 900ms cubic-bezier(0.22, 1, 0.36, 1) b
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
 }
+
+
+/* ══ Late 2026-09-23 (Brad): black type, red headings, white header ══════
+   --bb-black is ink again, so body copy, the footer and the dark bands are
+   black. Headings take the red: inside a heading --bb-black is re-pointed
+   at --bb-red, so whatever rule gives a heading "var(--bb-black)" now gives
+   it red, and a heading with no colour of its own gets red too. Headings on
+   dark grounds set light colours of their own and are unaffected. */
+:is(h1, h2, h3) { --bb-black: var(--bb-red); }
+:where(h1, h2, h3) { color: var(--bb-black); }
+
+/* Header type pure white, not the off-white paper. */
+header.fixed { color: #FFFFFF; }
+.navbar .nav-link, .navbar .nb-word, .navbar-mark { color: #FFFFFF; }
+
+/* "Shop all" on hover: black chrome. A gunmetal gradient fills from the
+   left, and a light sheen crosses it once. */
+.hero-cta::before {
+  background:
+    linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.38) 46%, rgba(255, 255, 255, 0.08) 54%, transparent 64%) -120% 0 / 220% 100% no-repeat,
+    linear-gradient(180deg, #5B5B60 0%, #2A2A2E 38%, #0C0C0E 55%, #2E2E33 78%, #6A6A70 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1), background-position 900ms cubic-bezier(0.22, 1, 0.36, 1) 120ms;
+}
+.hero-cta:is(:hover, :focus-visible)::before { background-position: 140% 0, 0 0; }
+@media (prefers-reduced-motion: reduce) { .hero-cta::before { transition: none; } }
+.ab-principle-t { color: var(--bb-white); }
+/* Contact card links: 21-22px tall measured on phones and tablets, under the
+   24px target minimum. Padding makes them 32px without moving the text. */
+.ccard-tile-value { display: inline-block; padding-block: 5px; margin-block: -5px; }
+
+/* The Catalogue dropdown in the new header's clothes (2026-09-23, Brad):
+   the same solid black as the bar, white Anton caps, and the same flip on
+   hover as the header links (FlipText) instead of a sideways nudge. */
+.nav-menu {
+  background: #0E0B0C;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 0;
+  min-width: 230px;
+}
+.nav-menu-link {
+  padding: 10px 24px;
+  font-family: var(--font-hero), "Arial Narrow", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+}
+@media (hover: hover) and (pointer: fine) { .nav-menu-link:hover { color: #FFFFFF; transform: none; } }
+.nav-menu-item:last-child { border-top-color: rgba(255, 255, 255, 0.12); }
+.nav-menu-item:last-child .nav-menu-link { color: #FFFFFF; }
+.nav-menu-item:last-child .nav-menu-link::after { content: " \2192" / ""; }

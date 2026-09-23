@@ -933,3 +933,20 @@ changes fade and sweep in from the left: cross-document View Transitions for
 the plain-<a> header links, plus `NavMotion` + `html[data-nav] #main` for
 client-side ones. A first page load never animates. The philosophy type is
 black (#1A1416) on ivory; its eyebrow stays red.
+
+**Late 2026-09-23: ink is back.** `--bb-black` is #1A1416 again: body text,
+the footer and dark bands are black, and the filled buttons are black.
+Headings are red via `--bb-red` #6E0A10 (inside h1-h3 `--bb-black` is
+re-pointed at it; a heading on a dark ground must set its own light colour,
+see `.ab-principle-t`). Paper is off-white #FAF8F4 (pure #FFFFFF), header
+type pure white, the Catalogue dropdown black with Anton caps and the flip,
+"Shop all" hover is black chrome. The "Something different, regularly"
+band (pinky-news-letter) is deleted.
+
+**Measured on the build that went live** (Lighthouse, 3 runs each, medians):
+mobile / 78 (LCP 5.86s), /shop 91 (3.54s); desktop / 96 (1.35s), /shop 100
+(0.81s). Accessibility 100 and Best Practices 100 everywhere; SEO 63-66 is
+the deliberate noindex (known, expected, not a bug). CLS 0 everywhere.
+QA sweep, 10 routes x 390/768/1024/1440: no overflow, no broken images, no
+console errors. Axe flags /about room captions only while they fade in (0
+once settled). Contact links padded to 32px tall.

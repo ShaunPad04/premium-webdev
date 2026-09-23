@@ -306,8 +306,8 @@ function NavMenuItem({
         <ul className="nav-menu" aria-label={`${item.label} categories`}>
           {item.menu.map((sub, i) => (
             <li key={sub.href} className="nav-menu-item" style={{ "--i": i } as React.CSSProperties}>
-              <a href={sub.href} className="nav-menu-link">
-                {sub.label}
+              <a href={sub.href} className="nav-menu-link flip-host">
+                <FlipText>{sub.label}</FlipText>
               </a>
             </li>
           ))}
