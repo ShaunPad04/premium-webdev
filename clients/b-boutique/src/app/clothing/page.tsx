@@ -67,7 +67,7 @@ export default function ClothingPage() {
                 Everything on the rails.
               </h2>
               <p className="page-lede">
-                Stock changes weekly, so this is what is in now rather than a
+                New stock comes in regularly, so this is what is in now rather than a
                 standing range. Everything here can be bought online or seen on
                 the rail. Narrow it by category above.
               </p>

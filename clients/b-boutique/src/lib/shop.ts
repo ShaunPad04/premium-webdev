@@ -304,7 +304,7 @@ export function openingPhrase(): string {
  *  is untouched because it is about the shop. /accessories says exactly that
  *  rather than rendering an empty grid. */
 export const categories = [
-  { slug: "all",            name: "Shop All",         note: "Everything on the rails this week, in one place." },
+  { slug: "all",            name: "Shop All",         note: "Everything on the rails now, in one place." },
   { slug: "knitwear",       name: "Knitwear",         note: "Fair Isle, boucle, cable and rib — the bulk of this drop." },
   { slug: "coats-jackets",  name: "Coats & Jackets",  note: "Trench, leopard, quilted check and longline." },
   { slug: "trousers",       name: "Trousers",         note: "Barrel, wide, straight and a jean jogger." },

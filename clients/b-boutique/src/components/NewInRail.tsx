@@ -372,7 +372,7 @@ export function NewInRail() {
         <div className="newin-title">
           <p className="newin-eyebrow">New arrivals</p>
           <h2 id="newin-heading" className="newin-h2">
-            New in this week
+            Just in
           </h2>
         </div>
 
@@ -523,7 +523,7 @@ export function NewInRail() {
       </ul>
 
       <p className="newin-foot">
-        Stock changes weekly, and everything here is a single piece.{" "}
+        New stock comes in regularly, and everything here is a single piece.{" "}
         <Link href="/shop" className="newin-viewall">
           Shop all new in <span className="newin-viewall-arrow" aria-hidden="true">&rarr;</span>
         </Link>

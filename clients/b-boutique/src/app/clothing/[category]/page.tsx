@@ -100,7 +100,7 @@ export default async function CategoryPage({
                 What is in.
               </h2>
               <p className="page-lede">
-                Stock changes weekly. What is here is what is on the rail now —
+                New stock comes in regularly. What is here is what is on the rail now —
                 everything is one of one or close to it, so what sells does not
                 come back.
               </p>

@@ -756,5 +756,6 @@ The ink stays #1A1416. Do not reintroduce purple/plum grounds.
   own product photo** (AddToBag, position set per category). Brad asked for
   the colour to fill the button; cropping her photo shows the real garment
   and asserts no invented hex. Do not replace with guessed colour values.
-- Add to bag / Buy now are pills (brass sheen; ink filling with brass). The
+- Add to bag / Buy now are pills in theme colours (ink with a sheen; rouge
+  filling with deep rouge). Gold was dropped: the theme has none. The
   statement pieces on the home page carry the same AddToBag block.

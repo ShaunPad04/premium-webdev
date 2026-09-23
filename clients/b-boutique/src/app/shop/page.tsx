@@ -31,7 +31,7 @@ export default function ShopPage() {
         <PageMasthead
           eyebrow="Shop"
           title="Everything in."
-          lede="What is on the rails this week, and how to have it sent. Stock changes weekly, so this is what is here now rather than a standing range."
+          lede="What is on the rails now, and how to have it sent. New stock comes in regularly, so this is what is here now rather than a standing range."
         texture="shop"
         />
 
@@ -39,7 +39,7 @@ export default function ShopPage() {
           <div className="page-inner">
             <div className="page-head">
               <h2 id="shop-all" className="page-h2">
-                In this week.
+                In now.
               </h2>
               <p className="page-lede">
                 Everything is one of one or close to it, so what sells does not

@@ -122,7 +122,7 @@ export const faq: FaqItem[] = [
        no checkout in the codebase, and an answer is a description of what
        exists. There is now, so it says so. Still not marked temporary: it
        describes the site rather than a policy nobody has confirmed. */
-    a: "Yes. There is an online shop, and everything on it is a piece that is physically on the rail in Cleethorpes. Stock changes weekly, so what is listed is what is in — and if you would rather see something in person first, it is on the rail.",
+    a: "Yes. There is an online shop, and everything on it is a piece that is physically on the rail in Cleethorpes. New stock comes in regularly, so what is listed is what is in — and if you would rather see something in person first, it is on the rail.",
   },
 ];
 

@@ -46,25 +46,14 @@ export function VisitMap({
   title: string;
 }) {
   const [open, setOpen] = useState(false);
-  /* Did the inline map actually paint?
-     Consent tools and ad blockers stop Google Maps for a large share of UK
-     visitors, and what the page shows when a third party fails is not an edge
-     case — it is what those visitors see. Removing the address that used to
-     be printed over the map (it duplicated the column beside it, and needed a
-     heavy plate to stay legible) left a browser error tile in a grey box,
-     which is exactly the hole this component was written to avoid.
-     So the failure gets its own state. A blocker that removes the frame
-     outright never fires `load`, and after six seconds the panel says plainly
-     what it is and where the shop is. When the map does load, nothing shows
-     and the client gets the clean colour map she asked for. */
-  const [mapPainted, setMapPainted] = useState(false);
-  const [mapLate, setMapLate] = useState(false);
-
-  useEffect(() => {
-    if (mapPainted) return;
-    const t = setTimeout(() => setMapLate(true), 6000);
-    return () => clearTimeout(t);
-  }, [mapPainted]);
+  /* No map on the page until it is asked for (2026-09-23). The panel used
+     to hold a lazy Google iframe as a preview, which (1) reached Google as
+     soon as a visitor scrolled near it, contradicting /privacy ("nothing
+     reaches Google unless you press it"), and (2) under an ad blocker or
+     consent tool showed the browser's own broken-page tile, because a
+     blocked frame still fires `load`. The panel is now her own photograph
+     of the window onto Sea View Street and one button; the real map mounts
+     only in the dialog that button opens. */
   const opener = useRef<HTMLButtonElement>(null);
   const dialog = useRef<HTMLDivElement>(null);
 
@@ -163,26 +152,24 @@ export function VisitMap({
                                 dialog. Both attributes are needed together:
                                 aria-hidden on a focusable element is itself a
                                 violation. */}
-        <iframe
-          title={`Map showing ${street}, ${town}`}
-          src={embedSrc}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          className="vm-preview"
-          tabIndex={-1}
-          aria-hidden="true"
-          onLoad={() => setMapPainted(true)}
-        />
+        <picture>
+          <source type="image/avif" srcSet="/img/about/window-640.avif 640w, /img/about/window-960.avif 960w, /img/about/window-1280.avif 1280w" sizes="(min-width: 1024px) 50vw, 92vw" />
+          <source type="image/webp" srcSet="/img/about/window-640.webp 640w, /img/about/window-960.webp 960w, /img/about/window-1280.webp 1280w" sizes="(min-width: 1024px) 50vw, 92vw" />
+          <img
+            src="/img/about/window-960.jpg"
+            alt=""
+            className="vm-still"
+            loading="lazy"
+            decoding="async"
+            width={2160}
+            height={2160}
+          />
+        </picture>
         <span className="vm-preview-scrim" aria-hidden="true" />
-
-        {/* Only when it did not arrive. Small and factual — the address is
-            already set large in the column beside this, so this is a caption
-            explaining an absence, not a second masthead. */}
-        {mapLate && !mapPainted ? (
-          <p className="vm-offline">
-            Map unavailable &mdash; {street}, {town} {postcode}
-          </p>
-        ) : null}
+        {/* A caption, not the address: the address is set large in the
+            column beside this, and the client has already said no to
+            seeing it twice on one screen. */}
+        <p className="vm-still-note">The map opens from Google when you ask for it.</p>
 
         <button
           ref={opener}
@@ -191,7 +178,7 @@ export function VisitMap({
           onClick={() => setOpen(true)}
           aria-haspopup="dialog"
         >
-          Expand map <span aria-hidden="true">&#8599;</span>
+          View map <span aria-hidden="true">&#8599;</span>
         </button>
       </div>
 

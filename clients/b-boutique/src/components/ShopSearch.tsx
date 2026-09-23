@@ -274,7 +274,7 @@ export function ShopSearch({ items }: { items: Product[] }) {
               client's own, confirmed. Nothing here promises that a piece can
               be found, ordered in or held — none of that is known. */}
           <p className="find-empty-body">
-            Stock changes weekly and one room only holds so much. Try a
+            New stock comes in regularly and one room only holds so much. Try a
             category, or email the shop at{" "}
             <a className="find-empty-tel" href={`mailto:${shop.email}`}>
               {shop.email}
