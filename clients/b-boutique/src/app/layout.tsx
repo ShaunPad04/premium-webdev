@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Gloock, Inter } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
@@ -24,20 +24,20 @@ import "./globals.css";
  * on every boutique site. That still holds, and this is not it: the display
  * face is Bodoni, which is a far sharper, higher-contrast letter than
  * Playfair. Inter is doing the quiet half of the job, not the loud one. */
-/* Display face: Gloock, since 2026-09-23 (Brad picked it from a sheet of
- * free lookalikes for Olivera, a paid face). Replaced Bodoni Moda.
+/* Display face: Playfair Display, regular weight, since 2026-09-23.
+ * Bodoni Moda until that morning; then Gloock, which Brad picked from a sheet
+ * of free lookalikes for Olivera (a paid face) and then found "too thick and
+ * bold" — it ships one heavy weight. Playfair at 400 keeps Olivera's high
+ * contrast with a far lighter stroke, and it has a REAL italic, so the <em>
+ * accents are drawn rather than slanted.
  *
- * Gloock ships ONE style, upright 400. There is no italic file, so the
- * italic accents on the site (the <em> in headings) are the browser's
- * slanted roman, which is exactly what Brad approved on the sample sheet.
- * font-synthesis is allowed for `style` on those rules in globals.css.
- *
- * Self-hosted by next/font at build time, so the page still requests
- * nothing from Google on load (/privacy says so). */
-const display = Gloock({
-  variable: "--font-gloock",
+ * Self-hosted by next/font at build time: the page still requests nothing
+ * from Google on load (/privacy says so). */
+const display = Playfair_Display({
+  variable: "--font-display-face",
   subsets: ["latin"],
   weight: "400",
+  style: ["normal", "italic"],
   display: "swap",
 });
 

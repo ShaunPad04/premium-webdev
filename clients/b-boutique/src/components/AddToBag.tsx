@@ -119,6 +119,13 @@ export function AddToBag({ product }: { product: Product }) {
 
   const chosenOut = size !== null && sizeOut(size);
 
+  /* Where in the photograph the swatch crops: the garment's own fabric, off
+     the zip line. Measured on the catalogue's photos: chest-left for tops,
+     knits and coats; the thigh for trousers; the object's centre for
+     homeware. */
+  const swatchAt =
+    product.category === "Homeware" ? "50% 50%" : product.category === "Trousers" ? "44% 64%" : "44% 32%";
+
   /* The one add both buttons use: refuses, with a message, until a colour
      (where there is a choice) and a size are chosen. */
   const addChosen = () => {
@@ -136,33 +143,42 @@ export function AddToBag({ product }: { product: Product }) {
 
   return (
     <div className="atb">
-      {colourChoice ? (
+      {/* Colour, as swatches. Each swatch is filled with a close crop of
+          that colourway's OWN photograph (the garment's body), so "Denim
+          Blue" shows her denim and "Leopard Print" shows the print — not a
+          hex somebody guessed. The name stays beside the legend, because a
+          swatch alone is not a label. One colourway: the one swatch, chosen,
+          stated rather than asked. */}
+      {colourKnown || colourChoice ? (
         <fieldset className="atb-sizes">
-          <legend className="cf-label">Colour</legend>
-          <div className="atb-size-row">
-            {colours.map((c) => (
-              <label key={c} className={`atb-size${colour === c ? " is-on" : ""}`}>
-                <input
-                  type="radio"
-                  name={`${uid}-colour`}
-                  value={c}
-                  checked={colour === c}
-                  onChange={() => {
-                    setColour(c);
-                    setError(null);
-                  }}
-                />
-                <span>{c}</span>
-              </label>
-            ))}
+          <legend className="cf-label">
+            Colour <span className="atb-colour-name">{colour ?? (colourChoice ? "Choose" : colours[0])}</span>
+          </legend>
+          <div className="atb-swatch-row">
+            {colours.map((c) => {
+              const img = product.colourways.find((w) => w.colour === c)?.image ?? product.photo;
+              return (
+                <label
+                  key={c}
+                  className={`atb-swatch${(colour ?? (colourChoice ? null : colours[0])) === c ? " is-on" : ""}`}
+                  style={{ backgroundImage: `url(/img/product/${img}-640.jpg)`, backgroundPosition: swatchAt }}
+                >
+                  <input
+                    type="radio"
+                    name={`${uid}-colour`}
+                    value={c}
+                    checked={(colour ?? (colourChoice ? null : colours[0])) === c}
+                    onChange={() => {
+                      setColour(c);
+                      setError(null);
+                    }}
+                  />
+                  <span className="sr-only">{c}</span>
+                </label>
+              );
+            })}
           </div>
         </fieldset>
-      ) : colourKnown ? (
-        /* One colour is a fact, not a question. Stated, so the bag and the
-           confirmation are not saying something the page never said. */
-        <p className="atb-onecolour">
-          Colour <span>{colours[0]}</span>
-        </p>
       ) : null}
 
       {!singleSize ? (

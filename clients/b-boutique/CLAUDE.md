@@ -748,3 +748,13 @@ Mint re-theme and a Cherry/Menthol one. Cherry/Menthol was rejected up
 front (neon, from a vape brand, fails contrast). Mulberry was mocked up
 site-wide and then REJECTED: "I don't like this new theme purple colour".
 The ink stays #1A1416. Do not reintroduce purple/plum grounds.
+
+**2026-09-23: buy block, swatches, display face.**
+- Display face is **Playfair Display 400** (real italic). Bodoni Moda, then
+  Gloock (rejected as "too thick and bold"). Self-hosted via next/font.
+- Colour is a row of **swatch buttons filled with a crop of that colourway's
+  own product photo** (AddToBag, position set per category). Brad asked for
+  the colour to fill the button; cropping her photo shows the real garment
+  and asserts no invented hex. Do not replace with guessed colour values.
+- Add to bag / Buy now are pills (brass sheen; ink filling with brass). The
+  statement pieces on the home page carry the same AddToBag block.

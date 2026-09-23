@@ -37,6 +37,8 @@ import { animate, stagger } from "animejs";
 
 import { formatPriceShort, isBuyable, products, type Product } from "@/lib/catalogue";
 import { ProductPhoto } from "@/components/ProductPhoto";
+import { AddToBag } from "@/components/AddToBag";
+import { ColourProvider } from "@/components/ColourChoice";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 /* The most expensive garments that can actually be bought. Homeware is left
@@ -107,7 +109,6 @@ function ProductHero({ product, reversed, reduced }: { product: Product; reverse
   }, [reduced]);
 
   const href = `/shop/${product.slug}`;
-  const colours = product.colourways.map((c) => c.colour);
 
   return (
     <div ref={sectionRef} className="cps-scene">
@@ -141,37 +142,14 @@ function ProductHero({ product, reversed, reduced }: { product: Product; reverse
                 <p className="cps-desc">{product.short}</p>
               </div>
 
-              <div className="cps-step cps-opts" data-progress="0.55">
-                <div>
-                  <span className="cps-opt-h">{colours.length > 1 ? "Colours" : "Colour"}</span>
-                  <span className="cps-opt-v">{colours.join(" · ")}</span>
-                </div>
-                <div>
-                  <span className="cps-opt-h" id={`cps-size-${product.slug}`}>Size</span>
-                  {product.sizes.length > 1 ? (
-                    /* Each size opens the piece with it already chosen
-                       (AddToBag reads ?size=). */
-                    <ul className="cps-sizes" aria-labelledby={`cps-size-${product.slug}`}>
-                      {product.sizes.map((sz) => (
-                        <li key={sz}>
-                          <Link
-                            href={`${href}?size=${encodeURIComponent(sz)}`}
-                            className="cps-size"
-                            aria-label={`${product.name}, size ${sz}`}
-                          >
-                            {sz}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <span className="cps-opt-v">{product.sizes[0]}</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="cps-step" data-progress="0.75">
-                <Link href={href} className="cps-cta">
+              {/* The product page's own buy block: colour swatches, size,
+                  Add to bag, Buy now, the same stock and size checks. Asked
+                  for 2026-09-23 ("where is the buy now / add to basket"). */}
+              <div className="cps-step cps-buy" data-progress="0.55">
+                <ColourProvider colours={product.colourways.map((c) => c.colour)}>
+                  <AddToBag product={product} />
+                </ColourProvider>
+                <Link href={href} className="cps-view">
                   <span>View the piece</span>
                   <Arrow />
                 </Link>
