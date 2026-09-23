@@ -41,7 +41,7 @@ import { existsSync } from "node:fs";
 
 await mkdir("public/img/hero", { recursive: true });
 
-const slides = ["1-paris", "2-street", "3-terrace", "4-flowers", "5-sea"];
+const slides = ["blur-1", "blur-2", "blur-3", "blur-4", "blur-5"];
 
 /* ── 2026-09-21, second correction: stop downscaling below the source ──────
  *
