@@ -5587,10 +5587,9 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    Pills with their own hovers, in the site's own colours. They were brass
    for a day, copied from the client's reference; he pointed out the theme
    has no gold, and he is right. Add to bag: ink, a light sheen sweeps
-   across it. Buy now: the rouge (the shop's red, sampled from her hero
-   photograph), filling with the deeper rouge from the left.
-   Measured: paper on ink 16.8:1; white on rouge #8A070B 9.6:1; white on
-   the deep rouge #6E0509 12.0:1. */
+   across it. Buy now: an ink outline that fills with ink from the left
+   (it was the rouge for an hour; the client asked for it changed).
+   Measured: paper on ink 16.8:1 both ways. */
 .atb-add,
 .atb-buy {
   position: relative;
@@ -5621,28 +5620,32 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 .atb-buy {
   margin-top: 10px;
-  background: var(--bb-rouge);
-  color: var(--bb-white-pure);
+  background: transparent;
+  color: var(--bb-black);
+  box-shadow: inset 0 0 0 1px var(--bb-black);
 }
 .atb-buy::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--bb-rouge-deep);
+  background: var(--bb-black);
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 @media (hover: hover) and (pointer: fine) {
-  .atb-add:hover:not(:disabled),
-  .atb-buy:hover:not(:disabled) {
+  .atb-add:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 10px 24px -12px rgba(26, 20, 22, 0.55);
   }
+  .atb-buy:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: inset 0 0 0 1px var(--bb-black), 0 10px 24px -12px rgba(26, 20, 22, 0.55);
+  }
   .atb-add:hover:not(:disabled) { background: var(--bb-black); color: var(--bb-white); }
   .atb-add:hover:not(:disabled)::after { transform: translateX(110%); }
-  .atb-buy:hover:not(:disabled) { background: var(--bb-rouge); color: var(--bb-white-pure); }
+  .atb-buy:hover:not(:disabled) { background: transparent; color: var(--bb-white); }
   .atb-buy:hover:not(:disabled)::before { transform: scaleX(1); }
 }
 .atb-add:focus-visible, .atb-buy:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
@@ -6825,12 +6828,10 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    improve on. Measured at 390/640/768/900/1024/1440/1920 rather than assumed;
    every width now lands in the 45-75 band. The row only earns its place once
    there is room for both. */
-@media (min-width: 1024px) {
-  .owner-details {
-    flex-direction: row;
-    gap: clamp(20px, 3vw, 34px);
-  }
-}
+/* Since 2026-09-23 the control is a labelled "Get in touch" and sits after
+   her words at every width (order), rather than beside them: beside, it read
+   as a stray button between her name and her paragraph. */
+.owner-details .owner-cta { order: 2; }
 
 /* The circular control. 72px, comfortably past the 44px target minimum, and
    the arrow rotates on hover — the snippet's `whileHover` as a transition,
@@ -6839,26 +6840,35 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
+  gap: 16px;
+  align-self: flex-start;
+  color: var(--bb-black);
+}
+.owner-cta-ring {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  width: 72px;
-  height: 72px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   border: 1px solid var(--bb-light-border);
-  color: var(--bb-black);
   transition: background var(--bb-dur-quick) var(--bb-ease),
               color var(--bb-dur-quick) var(--bb-ease),
               border-color var(--bb-dur-quick) var(--bb-ease);
 }
-
+.owner-cta-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
 .owner-cta svg { transition: transform 320ms var(--bb-ease); }
-
-.owner-cta:hover,
-.owner-cta:focus-visible {
+.owner-cta:hover .owner-cta-ring,
+.owner-cta:focus-visible .owner-cta-ring {
   background: var(--bb-black);
   border-color: var(--bb-black);
   color: var(--bb-white);
 }
-
 .owner-cta:hover svg,
 .owner-cta:focus-visible svg { transform: rotate(-45deg); }
 
@@ -6876,6 +6886,8 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   color: var(--bb-grey-dark);
   text-wrap: pretty;
 }
+/* Her two paragraphs ran together (2026-09-23 review). */
+.owner-bio-text + .owner-bio-text { margin-top: 1em; }
 
 /* The ask, not a guess. Italic so it reads as a note in the layout rather
    than as her voice — nobody should be able to mistake this for copy. */
@@ -7316,3 +7328,22 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   line-height: 1.5;
   color: rgba(26, 20, 22, 0.72);
 }
+
+/* ── 404 (app/not-found.tsx) ───────────────────────────────────────────── */
+.nf-links { display: flex; flex-wrap: wrap; gap: 12px; }
+.nf-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--bb-black);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-black);
+  transition: background 260ms var(--bb-ease), color 260ms var(--bb-ease);
+}
+.nf-link:hover, .nf-link:focus-visible { background: var(--bb-black); color: var(--bb-white); }

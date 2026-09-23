@@ -118,6 +118,7 @@ export function OwnerCard() {
                 aria-label={`Contact ${fullName}`}
                 className="owner-cta"
               >
+                <span className="owner-cta-ring">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                   <path
                     d="M4 10h12M11.5 5.5L16 10l-4.5 4.5"
@@ -127,6 +128,10 @@ export function OwnerCard() {
                     strokeLinejoin="round"
                   />
                 </svg>
+                </span>
+                {/* A visible label: an unlabelled circle between her name and
+                    her words read as a stray control (2026-09-23 review). */}
+                <span className="owner-cta-label">Get in touch</span>
               </Link>
 
               {/* Her words, verbatim, one paragraph per entry. Not a

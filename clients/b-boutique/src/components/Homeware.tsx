@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ImageSlot } from "./ImageSlot";
+import { ProductPhoto } from "./ProductPhoto";
 
 /* Homeware — the pacing change.
  *
@@ -37,10 +37,8 @@ export function Homeware() {
             Things for the house, chosen the same way.
           </h2>
           <p className="hw-body">
-            Stoneware, candles, glass and linen. Most of it comes from small
-            British makers, most of it arrives a few at a time, and all of it is
-            here because someone liked it — not because a category needed
-            filling.
+            Glazed ceramic, and things worth wrapping. A small shelf of it,
+            chosen a piece at a time, like everything on the rails.
           </p>
           {/* To /homeware, the category's own page. This pointed at /#visit —
               the shop's address — so "Explore homeware" explored a map. Fixed
@@ -53,16 +51,21 @@ export function Homeware() {
           </Link>
         </div>
 
+        {/* Her real homeware since 2026-09-23. The three pictures here were
+            stock stills of candles, folded linen and a stoneware jug, none of
+            which the shop sells, under copy claiming "small British makers"
+            that nobody had confirmed. Now: three pieces from her catalogue. (Her
+            photo of the homeware shelf was tried first; at this size the
+            source is too small and read as blurry.) */}
         <div className="hw-media">
           <figure className="hw-fig hw-a">
             <span className="hw-par">
-              <ImageSlot
-                tone="onyx"
-                seed={21}
-                slot="panel-homeware"
-                alt="Stoneware vases, a lit candle and folded linen on a black marble shelf"
+              <ProductPhoto
+                photo="bb-vase-bell"
+                square
+                alt="The Bell Vase: a vase covered in polished gold bells."
                 sizes="(min-width: 1024px) 30vw, 92vw"
-                className="absolute inset-0 h-full w-full"
+                className="absolute inset-0 h-full w-full object-cover"
               />
             </span>
           </figure>
@@ -70,33 +73,24 @@ export function Homeware() {
           <div className="hw-stack">
             <figure className="hw-fig hw-b">
               <span className="hw-par">
-                <ImageSlot
-                  tone="bone"
-                  seed={22}
-                  slot="homeware-linen"
-                  alt="Folded linen napkins and a ribbed glass tumbler on black marble"
+                <ProductPhoto
+                  photo="bb-vase-tomato"
+                  square
+                  alt="The Tomato Vase: a ceramic vase covered in three-dimensional tomatoes."
                   sizes="(min-width: 1024px) 20vw, 68vw"
-                  className="absolute inset-0 h-full w-full"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               </span>
             </figure>
 
             <figure className="hw-fig hw-c">
               <span className="hw-par">
-                <ImageSlot
-                  /* bone, not gold. The designed gold panel is a bright warm
-                     gradient, and in the smallest slot of a cool-white spread
-                     it was the loudest thing on the screen — reintroducing
-                     exactly the warm UI this palette removed. Bone reads as a
-                     quiet neutral swatch instead. The slot is still there and
-                     still labelled; it is just no longer shouting about being
-                     the one photograph we are missing. */
-                  tone="bone"
-                  seed={23}
-                  slot="homeware-ceramics"
-                  alt="A stoneware jug, ceramic bowls and a lit taper candle"
+                <ProductPhoto
+                  photo="bb-jar-banana"
+                  square
+                  alt="The Banana Jar: a lidded ceramic jar formed from a bunch of bananas."
                   sizes="(min-width: 1024px) 18vw, 56vw"
-                  className="absolute inset-0 h-full w-full"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               </span>
             </figure>

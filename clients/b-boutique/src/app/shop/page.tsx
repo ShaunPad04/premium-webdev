@@ -39,7 +39,7 @@ export default function ShopPage() {
           <div className="page-inner">
             <div className="page-head">
               <h2 id="shop-all" className="page-h2">
-                In now.
+                On the rails.
               </h2>
               <p className="page-lede">
                 Everything is one of one or close to it, so what sells does not

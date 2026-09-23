@@ -33,7 +33,14 @@ So: **when the product changes, refresh them in the same pass.** Run
 A design brief that disagrees with the code is worse than none, because it
 passes the gate and gets believed.
 
-# Typography — APPROVED, reopened once by the client
+# Typography — SUPERSEDED 2026-09-23
+
+**The display face is now Playfair Display 400** (Bodoni Moda → Gloock →
+Playfair, all on 2026-09-23, at Brad's request; see the end of this file).
+The history below is kept so the reasoning is not lost; where it says Bodoni,
+read "the display face".
+
+# Typography — as approved, reopened once by the client
 
 Signed off by the client 2026-09-01; the wordmark MOVED 2026-09-02.
 
@@ -402,9 +409,9 @@ stocking them). Do not reintroduce the word without her confirming stock.
   words derived from shop.ts, scroll-driven, aria-hidden.
 - **`components/ui/cinematic-product-scroll-section.tsx`** on the home page
   after New In: the upsell. Its three pieces are DERIVED, the most expensive
-  buyable garments by priceP, never hand-picked, so it follows the stock. No
-  colour swatches, because no swatch colour is confirmed; the colour names
-  are printed instead. The demo's mock products, $ prices and invented
+  buyable garments by priceP, never hand-picked, so it follows the stock.
+  Since 2026-09-23 it carries the full AddToBag block, whose colour swatches
+  are crops of her own product photos (no guessed colour values). The demo's mock products, $ prices and invented
   brand are gone. Uses animejs for the card drop.
 - **New In rail on touch**: free swipe (no snap) once touched; the drift is
   torn down under a finger and resumes 2.5s after the rail is still. A
@@ -416,7 +423,8 @@ button — had pointed at `/#homeware`, a home-page section of stock shelf
 photography, and the button pointed at `/#visit`. The client clicked it
 expecting the Tomato Vase, Banana Jar and Bell Vase. It is not under
 `/clothing` on purpose. The home section's copy ("small British makers",
-candles, linen) is NOT confirmed and is flagged, not rewritten.
+candles, linen) and its stock stills of things she does not sell were
+replaced on 2026-09-23 with her own homeware lede and three catalogue photos.
 
 `/clothing/[category]` is what stopped the site reading as disorganised: the
 category grid showed nine categories with nothing underneath any of them, which
@@ -756,6 +764,6 @@ The ink stays #1A1416. Do not reintroduce purple/plum grounds.
   own product photo** (AddToBag, position set per category). Brad asked for
   the colour to fill the button; cropping her photo shows the real garment
   and asserts no invented hex. Do not replace with guessed colour values.
-- Add to bag / Buy now are pills in theme colours (ink with a sheen; rouge
-  filling with deep rouge). Gold was dropped: the theme has none. The
+- Add to bag / Buy now are pills in theme colours (ink with a sheen; Buy now
+  -> ink outline filling with ink). Gold was dropped: the theme has none. The
   statement pieces on the home page carry the same AddToBag block.
