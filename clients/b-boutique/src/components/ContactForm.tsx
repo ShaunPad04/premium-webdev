@@ -28,6 +28,16 @@ import { shop } from "@/lib/shop";
  * styleable, they vanish on blur, and they are announced inconsistently; the
  * same checks run below and produce persistent, associated messages instead.
  *
+ * ── Design (2026-09-23) ───────────────────────────────────────────────────
+ * The client called the old version generic, and its colours were off for a
+ * real reason: it used the class `.cf`, which the New In coverflow also uses,
+ * so the coverflow's padding, fill and vignette landed inside the form. It
+ * is `.cx` now. It sits in the right pane of the contact card
+ * (contact/page), with labels that sit in the field and lift when it is
+ * used, name and email side by side on a wide screen, an optional topic
+ * (sent as the message's first line, so the server and the shop's inbox
+ * need no change) and the site's ink pill.
+ *
  * ── Spam ──────────────────────────────────────────────────────────────────
  * One honeypot field, hidden from sight AND from assistive technology, and
  * never focusable. No CAPTCHA: a brochure site's contact form does not earn
@@ -39,6 +49,8 @@ type Status =
   | { kind: "sending" }
   | { kind: "sent" }
   | { kind: "failed"; message: string; showPhone: boolean };
+
+const TOPICS = ["Sizes & fit", "Is it still in?", "An order", "Something else"] as const;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -57,6 +69,7 @@ function validate(values: { name: string; email: string; message: string }): Err
 export function ContactForm() {
   const uid = useId();
   const [values, setValues] = useState({ name: "", email: "", message: "", company: "" });
+  const [topic, setTopic] = useState<string>("");
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const formRef = useRef<HTMLFormElement>(null);
@@ -103,7 +116,10 @@ export function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...values,
+          message: topic ? `About: ${topic}\n\n${values.message}` : values.message,
+        }),
       });
       const data = (await res.json().catch(() => ({}))) as {
         ok?: boolean;
@@ -115,6 +131,7 @@ export function ContactForm() {
       if (res.ok && data.ok) {
         setStatus({ kind: "sent" });
         setValues({ name: "", email: "", message: "", company: "" });
+        setTopic("");
         return;
       }
 
@@ -142,45 +159,59 @@ export function ContactForm() {
     }
   }
 
+  const input = (key: "name" | "email", label: string, type: string, auto: string, max: number) => (
+    <div className="cx-field">
+      <div className="cx-box">
+        <input className="cx-input" type={type} autoComplete={auto} maxLength={max} placeholder=" " {...field(key)} />
+        <label className="cx-label" htmlFor={`${uid}-${key}`}>
+          {label}
+        </label>
+      </div>
+      {errors[key] ? (
+        <p className="cx-error" id={`${uid}-${key}-error`}>
+          {errors[key]}
+        </p>
+      ) : null}
+    </div>
+  );
+
   return (
-    <form ref={formRef} className="cf" onSubmit={onSubmit} noValidate>
-      <div className="cf-row">
-        <label className="cf-label" htmlFor={`${uid}-name`}>
-          Your name
-        </label>
-        <input className="cf-input" type="text" autoComplete="name" maxLength={100} {...field("name")} />
-        {errors.name ? (
-          <p className="cf-error" id={`${uid}-name-error`}>
-            {errors.name}
-          </p>
-        ) : null}
+    <form ref={formRef} className="cx" onSubmit={onSubmit} noValidate>
+      <fieldset className="cx-topics">
+        <legend className="cx-legend">
+          What is it about? <span>Optional</span>
+        </legend>
+        <div className="cx-chips">
+          {TOPICS.map((t) => (
+            <label key={t} className="cx-chip">
+              <input
+                type="radio"
+                name="topic"
+                value={t}
+                checked={topic === t}
+                onChange={() => setTopic(t)}
+                onClick={() => { if (topic === t) setTopic(""); }}
+              />
+              <span>{t}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <div className="cx-pair">
+        {input("name", "Your name", "text", "name", 100)}
+        {input("email", "Email address", "email", "email", 200)}
       </div>
 
-      <div className="cf-row">
-        <label className="cf-label" htmlFor={`${uid}-email`}>
-          Email address
-        </label>
-        <input
-          className="cf-input"
-          type="email"
-          autoComplete="email"
-          maxLength={200}
-          {...field("email")}
-        />
-        {errors.email ? (
-          <p className="cf-error" id={`${uid}-email-error`}>
-            {errors.email}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="cf-row">
-        <label className="cf-label" htmlFor={`${uid}-message`}>
-          Message
-        </label>
-        <textarea className="cf-input cf-textarea" rows={6} maxLength={4000} {...field("message")} />
+      <div className="cx-field">
+        <div className="cx-box cx-box--area">
+          <textarea className="cx-input cx-textarea" rows={6} maxLength={3900} placeholder=" " {...field("message")} />
+          <label className="cx-label" htmlFor={`${uid}-message`}>
+            Your message
+          </label>
+        </div>
         {errors.message ? (
-          <p className="cf-error" id={`${uid}-message-error`}>
+          <p className="cx-error" id={`${uid}-message-error`}>
             {errors.message}
           </p>
         ) : null}
@@ -190,7 +221,7 @@ export function ContactForm() {
           technology and the keyboard; a bot filling every input trips it.
           autoComplete="off" stops a password manager doing the same by
           accident, which is the classic way honeypots reject real people. */}
-      <div className="cf-hp" aria-hidden="true">
+      <div className="cx-hp" aria-hidden="true">
         <label htmlFor={`${uid}-company`}>Company</label>
         <input
           id={`${uid}-company`}
@@ -203,27 +234,28 @@ export function ContactForm() {
         />
       </div>
 
-      <div className="cf-actions">
-        <button type="submit" className="cf-submit" disabled={sending}>
-          {sending ? "Sending…" : "Send message"}
+      <div className="cx-foot">
+        <p className="cx-note">We reply by email.</p>
+        <button type="submit" className="cx-send" disabled={sending}>
+          <span>{sending ? "Sending…" : "Send message"}</span>
           {sending ? null : (
-            <span className="cf-submit-arrow" aria-hidden="true">
-              &rarr;
-            </span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           )}
         </button>
       </div>
 
       {/* Present from first render so it is announced when it fills. */}
-      <div className="cf-status" role="status" aria-live="polite">
+      <div className="cx-status" role="status" aria-live="polite">
         {status.kind === "sent" ? (
-          <p className="cf-ok">
+          <p className="cx-ok">
             Thank you — your message has been sent. We will reply to the address
             you gave.
           </p>
         ) : null}
         {status.kind === "failed" ? (
-          <p className="cf-fail">
+          <p className="cx-fail">
             {status.message}
             {/* Locked decision 11 said this failure must carry "a plainly
                 worded failure plus the phone number". The number came off the
@@ -237,7 +269,7 @@ export function ContactForm() {
               <>
                 {" "}
                 Please email the shop at{" "}
-                <a href={`mailto:${shop.email}`} className="cf-fail-link">
+                <a href={`mailto:${shop.email}`} className="cx-fail-link">
                   {shop.email}
                 </a>
                 .

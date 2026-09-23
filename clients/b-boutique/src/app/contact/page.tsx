@@ -8,6 +8,9 @@ import { ContactForm } from "@/components/ContactForm";
 import { PathBand } from "@/components/PathBand";
 import { Visit } from "@/components/Visit";
 import { addressLines, openingPhrase, shop } from "@/lib/shop";
+import { socials } from "@/lib/nav";
+
+const instagram = socials.find((x) => x.name === "Instagram");
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -63,25 +66,64 @@ export default function ContactPage() {
         texture="plaster"
         />
 
+        {/* One card, two panes (2026-09-23; layout after the "Contact
+            Card" on 21st.dev, the client's pick): how to reach the shop on
+            the left, the message on the right. Only confirmed details: the
+            shop's email, its Instagram and its address. The phone number came
+            off the site at the client's instruction and stays off. */}
         <section aria-labelledby="contact-form-h" className="page-section">
-          <div className="page-inner contact-grid">
-            <div className="contact-copy">
-              <h2 id="contact-form-h" className="page-h2">
-                Send a message.
-              </h2>
-              <p className="page-body">
-                Sizes, whether something is still in, or anything you would
-                rather ask before making the trip — write it here and we will
-                come back to you.
-              </p>
-              <p className="page-body-small">
-                We reply to the address you give and nothing else. Your details
-                are used to answer you and are not added to a mailing list.
-              </p>
-            </div>
+          <div className="page-inner">
+            <div className="ccard">
+              <div className="ccard-info">
+                <p className="ccard-eyebrow">Get in touch</p>
+                <h2 id="contact-form-h" className="ccard-h">
+                  Send a <em>message.</em>
+                </h2>
+                <p className="ccard-lede">
+                  Sizes, whether something is still in, or anything you would
+                  rather ask before making the trip. Write it here and we will
+                  come back to you.
+                </p>
 
-            <div className="contact-form-col">
-              <div className="cf-tray">
+                <ul className="ccard-tiles">
+                  <li className="ccard-tile">
+                    <span className="ccard-icon" aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5.5" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="1.5" /><path d="M3.5 7l8.5 6 8.5-6" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /></svg>
+                    </span>
+                    <span className="ccard-tile-label">Email</span>
+                    <a className="ccard-tile-value" href={`mailto:${shop.email}`}>
+                      {/* If it has to wrap on a small phone, at the @. */}
+                      {shop.email.split("@")[0]}<wbr />@{shop.email.split("@")[1]}
+                    </a>
+                  </li>
+                  {instagram ? (
+                    <li className="ccard-tile">
+                      <span className="ccard-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" strokeWidth="1.5" /><circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5" /><circle cx="17.2" cy="6.8" r="1" fill="currentColor" /></svg>
+                      </span>
+                      <span className="ccard-tile-label">Instagram</span>
+                      <a className="ccard-tile-value" href={instagram.href} target="_blank" rel="noopener noreferrer">
+                        @bboutiquecleethorpes
+                      </a>
+                    </li>
+                  ) : null}
+                  <li className="ccard-tile">
+                    <span className="ccard-icon" aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /><circle cx="12" cy="10" r="2.3" stroke="currentColor" strokeWidth="1.5" /></svg>
+                    </span>
+                    <span className="ccard-tile-label">The shop</span>
+                    <a className="ccard-tile-value" href="#visit">{addressLines.join(", ")}</a>
+                  </li>
+                </ul>
+
+                <p className="ccard-small">
+                  We reply to the address you give and nothing else. Your
+                  details are used to answer you and are not added to a mailing
+                  list.
+                </p>
+              </div>
+
+              <div className="ccard-form">
                 <ContactForm />
               </div>
             </div>

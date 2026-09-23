@@ -43,7 +43,11 @@ import { useId } from "react";
 export type Details = {
   name: string;
   email: string;
-  address: string;
+  /** House number and street. */
+  line1: string;
+  /** Flat, building or area. Optional. */
+  line2: string;
+  town: string;
   postcode: string;
   /** Optional. Empty string when not given. */
   phone: string;
@@ -52,24 +56,44 @@ export type Details = {
 export const EMPTY_DETAILS: Details = {
   name: "",
   email: "",
-  address: "",
+  line1: "",
+  line2: "",
+  town: "",
   postcode: "",
   phone: "",
 };
+
+/** The address as one line for the order and the parcel label. The server
+ *  still takes a single `address` field, so it is joined here and nothing
+ *  downstream changes. */
+export function fullAddress(d: Details): string {
+  return [d.line1, d.line2, d.town].map((x) => x.trim()).filter(Boolean).join(", ");
+}
 
 /** The same rules the server applies. Duplicated on purpose — the browser's
  *  copy is there to tell somebody before they press the button, and the
  *  server's is the one that counts, because anything a browser checks a
  *  browser can skip. */
-export function detailsProblem(d: Details): string | null {
-  if (d.name.trim().length < 2) return "Please give the name the parcel goes to.";
+export type DetailsField = "name" | "email" | "line1" | "town" | "postcode" | "phone";
+
+/** The first field that is wrong, and what to say about it. */
+export function firstProblem(d: Details): { field: DetailsField; message: string } | null {
+  if (d.name.trim().length < 2) return { field: "name", message: "Please give the name the parcel goes to." };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email.trim()))
-    return "Please give an email address we can send the confirmation to.";
-  if (d.address.trim().length < 10)
-    return "Please give the full address, including the house number and street.";
-  if (d.postcode.trim().length < 5) return "Please give the postcode.";
-  if (phoneProblem(d.phone)) return phoneProblem(d.phone);
+    return { field: "email", message: "Please give an email address we can send the confirmation to." };
+  if (d.line1.trim().length < 3)
+    return { field: "line1", message: "Please give the house number and street." };
+  if (d.town.trim().length < 2) return { field: "town", message: "Please give the town or city." };
+  if (fullAddress(d).length < 10)
+    return { field: "line1", message: "Please give the full address, including the house number and street." };
+  if (d.postcode.trim().length < 5) return { field: "postcode", message: "Please give the postcode." };
+  const phone = phoneProblem(d.phone);
+  if (phone) return { field: "phone", message: phone };
   return null;
+}
+
+export function detailsProblem(d: Details): string | null {
+  return firstProblem(d)?.message ?? null;
 }
 
 /** Empty is fine — the field is optional. Anything typed must look like a
@@ -87,14 +111,68 @@ export function DeliveryDetails({
   value,
   onChange,
   disabled,
+  invalid,
 }: {
   value: Details;
   onChange: (next: Details) => void;
   disabled?: boolean;
+  /** Set after a pay attempt: the field that stopped it, shown on the field
+      itself so the customer is not reading an error a screen away. */
+  invalid?: { field: DetailsField; message: string } | null;
 }) {
   const uid = useId();
   const set = (k: keyof Details) => (e: { target: { value: string } }) =>
     onChange({ ...value, [k]: e.target.value });
+  const bad = (k: DetailsField) => invalid?.field === k;
+  /* aria-invalid, the error's id first in aria-describedby, and the words
+     under the field. */
+  const errorFor = (k: DetailsField, hint?: string) => ({
+    "aria-invalid": bad(k) ? (true as const) : undefined,
+    "aria-describedby": [bad(k) ? `${uid}-${k}-error` : "", hint ?? ""].filter(Boolean).join(" ") || undefined,
+  });
+  const message = (k: DetailsField) =>
+    bad(k) ? (
+      <p className="cf-error dd-error" id={`${uid}-${k}-error`}>
+        {invalid!.message}
+      </p>
+    ) : null;
+
+  const row = (
+    k: keyof Details,
+    label: string,
+    attrs: React.InputHTMLAttributes<HTMLInputElement>,
+    hint?: string,
+    className?: string,
+    required = true,
+  ) => {
+    const hintId = hint ? `${uid}-${k}-hint` : undefined;
+    const checked = k !== "line2";
+    return (
+      <div className={`cf-field${className ? ` ${className}` : ""}`}>
+        <label className="cf-label" htmlFor={`${uid}-${k}`}>
+          {label}
+        </label>
+        <input
+          className="cf-input"
+          id={`${uid}-${k}`}
+          type="text"
+          {...attrs}
+          name={k}
+          value={value[k]}
+          onChange={set(k)}
+          disabled={disabled}
+          required={required}
+          {...(checked ? errorFor(k as DetailsField, hintId) : { "aria-describedby": hintId })}
+        />
+        {checked ? message(k as DetailsField) : null}
+        {hint ? (
+          <p className="dd-hint" id={hintId}>
+            {hint}
+          </p>
+        ) : null}
+      </div>
+    );
+  };
 
   return (
     <div className="dd">
@@ -106,106 +184,17 @@ export function DeliveryDetails({
         We post within the UK only, by Royal Mail, next working day.
       </p>
 
-      <div className="cf-field">
-        <label className="cf-label" htmlFor={`${uid}-name`}>
-          Name
-        </label>
-        <input
-          className="cf-input"
-          id={`${uid}-name`}
-          type="text"
-          autoComplete="name"
-          maxLength={100}
-          value={value.name}
-          onChange={set("name")}
-          disabled={disabled}
-          required
-        />
-      </div>
-
-      <div className="cf-field">
-        <label className="cf-label" htmlFor={`${uid}-email`}>
-          Email
-        </label>
-        <input
-          className="cf-input"
-          id={`${uid}-email`}
-          type="email"
-          inputMode="email"
-          autoComplete="email"
-          maxLength={200}
-          value={value.email}
-          onChange={set("email")}
-          disabled={disabled}
-          required
-          aria-describedby={`${uid}-email-why`}
-        />
-        <p className="dd-hint" id={`${uid}-email-why`}>
-          For your order confirmation. Nothing else is sent to it.
-        </p>
-      </div>
-
-      <div className="cf-field">
-        {/* "(optional)" is in the label itself, not signalled by the absence
-            of an asterisk: a screen reader announces the label, and nothing
-            else on this form marks required-ness visually either. */}
-        <label className="cf-label" htmlFor={`${uid}-phone`}>
-          Phone (optional)
-        </label>
-        <input
-          className="cf-input"
-          id={`${uid}-phone`}
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          maxLength={20}
-          value={value.phone}
-          onChange={set("phone")}
-          disabled={disabled}
-          aria-describedby={`${uid}-phone-why`}
-        />
-        <p className="dd-hint" id={`${uid}-phone-why`}>
-          Only used if there is a problem with your order.
-        </p>
-      </div>
-
-      <div className="cf-field">
-        <label className="cf-label" htmlFor={`${uid}-address`}>
-          Address
-        </label>
-        <textarea
-          className="cf-input cf-textarea"
-          id={`${uid}-address`}
-          rows={4}
-          maxLength={500}
-          autoComplete="street-address"
-          value={value.address}
-          onChange={set("address")}
-          disabled={disabled}
-          required
-          aria-describedby={`${uid}-address-hint`}
-        />
-        <p className="dd-hint" id={`${uid}-address-hint`}>
-          House number, street, and town — as you would write it on an envelope.
-        </p>
-      </div>
-
-      <div className="cf-field dd-postcode">
-        <label className="cf-label" htmlFor={`${uid}-postcode`}>
-          Postcode
-        </label>
-        <input
-          className="cf-input"
-          id={`${uid}-postcode`}
-          type="text"
-          autoComplete="postal-code"
-          maxLength={12}
-          value={value.postcode}
-          onChange={set("postcode")}
-          disabled={disabled}
-          required
-        />
-      </div>
+      {row("name", "Name", { autoComplete: "name", maxLength: 100 })}
+      {row("email", "Email", { type: "email", inputMode: "email", autoComplete: "email", maxLength: 200 },
+        "For your order confirmation. Nothing else is sent to it.")}
+      {row("line1", "Address line 1", { autoComplete: "address-line1", maxLength: 200, placeholder: "House number and street" }, undefined, "dd-wide")}
+      {row("line2", "Address line 2 (optional)", { autoComplete: "address-line2", maxLength: 200, placeholder: "Flat, building or area" }, undefined, undefined, false)}
+      {row("town", "Town or city", { autoComplete: "address-level2", maxLength: 100 })}
+      {row("postcode", "Postcode", { autoComplete: "postal-code", maxLength: 12 })}
+      {/* "(optional)" is in the label itself: a screen reader announces the
+          label, and nothing else on this form marks required-ness. */}
+      {row("phone", "Phone (optional)", { type: "tel", inputMode: "tel", autoComplete: "tel", maxLength: 20 },
+        "Only used if there is a problem with your order.", undefined, false)}
     </div>
   );
 }

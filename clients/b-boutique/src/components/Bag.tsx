@@ -15,7 +15,9 @@ import { ProductPhoto } from "@/components/ProductPhoto";
 import {
   DeliveryDetails,
   EMPTY_DETAILS,
-  detailsProblem,
+  firstProblem,
+  fullAddress,
+  type DetailsField,
   type Details,
 } from "@/components/DeliveryDetails";
 import { useCart } from "@/lib/useCart";
@@ -40,6 +42,8 @@ export function Bag() {
     useCart();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /* The delivery field that stopped the last attempt, shown on the field. */
+  const [invalid, setInvalid] = useState<{ field: DetailsField; message: string } | null>(null);
   /* Deliberately NOT persisted to localStorage alongside the bag. The bag is
      a list of garments; this is somebody's name and home address, and keeping
      it in the browser of a shared or family computer is a different kind of
@@ -116,20 +120,26 @@ export function Bag() {
 
     /* Checked here so somebody is told before the button does anything, and
        checked again on the server because this one can be skipped. */
-    const problem = unpricedMessage ?? detailsProblem(details);
+    if (unpricedMessage) {
+      setError(unpricedMessage);
+      return;
+    }
+    const problem = firstProblem(details);
     if (problem) {
-      setError(problem);
-      /* A missing field is above; on a phone the message is a screen away
-         from it. Take the customer to the form rather than leave them
-         hunting. */
-      if (!unpricedMessage) {
-        document.getElementById("bk-delivery")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      /* Said on the field itself, and the customer is taken to it: on a
+         phone the button is a screen away from the form. The summary only
+         points back to it. */
+      setInvalid(problem);
+      setError("Check your delivery details. One of them needs finishing before you can pay.");
+      const el = document.querySelector<HTMLElement>(`#bk-delivery-card [name="${problem.field}"]`);
+      el?.focus({ preventScroll: true });
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
 
     setBusy(true);
     setError(null);
+    setInvalid(null);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -144,7 +154,7 @@ export function Bag() {
           customer: {
             name: details.name.trim(),
             email: details.email.trim(),
-            address: details.address.trim(),
+            address: fullAddress(details),
             postcode: details.postcode.trim(),
             phone: details.phone.trim(),
           },
@@ -299,12 +309,24 @@ export function Bag() {
             </Link>
           </section>
 
-          <section className="bk-card" aria-labelledby="bk-delivery">
+          <section id="bk-delivery-card" className="bk-card" aria-labelledby="bk-delivery">
             <h2 id="bk-delivery" className="bk-card-h">
               <span className="bk-num">02</span>Delivery details
             </h2>
             <p className="bk-lede">We post within the UK only, by Royal Mail, next working day.</p>
-            <DeliveryDetails value={details} onChange={setDetails} disabled={busy} />
+            <DeliveryDetails
+              value={details}
+              onChange={(next) => {
+                setDetails(next);
+                /* Once the flagged field passes, stop flagging it. */
+                if (invalid && firstProblem(next)?.field !== invalid.field) {
+                  setInvalid(null);
+                  setError(null);
+                }
+              }}
+              disabled={busy}
+              invalid={invalid}
+            />
           </section>
         </div>
 
@@ -346,8 +368,17 @@ export function Bag() {
             {busy ? "Starting secure checkout…" : "Continue to secure payment"}
           </button>
 
-          <div className="cf-status" role="status" aria-live="polite">
-            {error ? <p className="cf-fail">{error}</p> : null}
+          <div className="bk-alert-live" role="status" aria-live="polite">
+            {error ? (
+              <p className="bk-alert">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <circle cx="10" cy="10" r="8.25" stroke="currentColor" strokeWidth="1.3" />
+                  <path d="M10 5.8v5.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <circle cx="10" cy="14" r="0.95" fill="currentColor" />
+                </svg>
+                <span>{error}</span>
+              </p>
+            ) : null}
           </div>
 
           {/* What happens next, stated as fact: the card is taken on SumUp's
