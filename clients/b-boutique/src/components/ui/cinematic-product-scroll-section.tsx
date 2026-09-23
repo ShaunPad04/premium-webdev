@@ -138,15 +138,21 @@ function ProductHero({ product, reversed, reduced, index, total }: { product: Pr
                   name and its line; up to three details from the piece's own
                   catalogue entry; then the price where the decision is made,
                   directly above size and Add to bag. */}
+              {/* Re-laid 2026-09-23 as a product panel (Brad: "make this feel
+                  more premium, like an ecommerce store"): index and category
+                  on one quiet line, the name with its price beside it, the
+                  line, three details with ticks, then colour, size and the
+                  one red action, with delivery and secure checkout under it. */}
               <div className="cps-step" data-progress="0.15">
                 <p className="cps-meta">
-                  <span className="cps-index">
-                    {pad(index + 1)}
-                    <span className="cps-of"> / {pad(total)}</span>
-                  </span>
-                  <span className="label cps-cat">{product.category}</span>
+                  <span className="cps-index">{pad(index + 1)}<span className="cps-of"> / {pad(total)}</span></span>
+                  <span className="cps-dot" aria-hidden="true" />
+                  <span className="cps-cat">{product.category}</span>
                 </p>
-                <h3 className="cps-name">{product.name}</h3>
+                <div className="cps-head">
+                  <h3 className="cps-name">{product.name}</h3>
+                  <p className="cps-price">{formatPriceShort(product.priceP)}</p>
+                </div>
                 <p className="cps-desc">{product.short}</p>
               </div>
 
@@ -154,7 +160,12 @@ function ProductHero({ product, reversed, reduced, index, total }: { product: Pr
                 <div className="cps-step" data-progress="0.3">
                   <ul className="cps-features">
                     {product.features.slice(0, 3).map((f) => (
-                      <li key={f}>{f}</li>
+                      <li key={f}>
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                          <path d="M2.5 7.4 5.6 10.3 11.5 3.9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        {f}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -163,13 +174,19 @@ function ProductHero({ product, reversed, reduced, index, total }: { product: Pr
               {/* The product page's own buy block: colour swatches, size,
                   Add to bag, Buy now, the same stock and size checks. */}
               <div className="cps-step cps-buy" data-progress="0.5">
-                <div className="cps-price-row">
-                  <p className="cps-price">{formatPriceShort(product.priceP)}</p>
-                  <p className="cps-price-note">Free UK delivery over {formatPriceShort(FREE_DELIVERY_OVER_P)}</p>
-                </div>
                 <ColourProvider colours={product.colourways.map((c) => c.colour)}>
                   <AddToBag product={product} />
                 </ColourProvider>
+                <ul className="cps-reassure">
+                  <li>
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                      <path d="M1.5 4.5h9v7.5h-9zM10.5 7.5h3.2l2.8 2.8V12h-6z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+                      <circle cx="4.5" cy="13.2" r="1.4" stroke="currentColor" strokeWidth="1.2" />
+                      <circle cx="13" cy="13.2" r="1.4" stroke="currentColor" strokeWidth="1.2" />
+                    </svg>
+                    Free UK delivery over {formatPriceShort(FREE_DELIVERY_OVER_P)}
+                  </li>
+                </ul>
               </div>
             </div>
           </div>

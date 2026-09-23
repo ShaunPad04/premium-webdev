@@ -8758,3 +8758,112 @@ h2.ft-group { font-size: 15px; letter-spacing: 0.06em; line-height: 1.2; }
   }
 }
 @keyframes hero-drift { from { transform: none; } to { transform: translateY(9%) scale(1.06); } }
+/* New In card text: room for a two-line name (DM Sans since the type
+   change) so the price never meets the colour label below. */
+.cf-stage { height: calc(var(--cw) * 1.25 + 150px); }
+.cf-name { font-size: 18px; line-height: 1.3; max-width: 100%; }
+.cf-body { gap: 6px; }
+.cf-price { margin-top: 2px; font-weight: 600; }
+
+/* ══ Product panel (statement pieces) + buy block, 2026-09-23 ════════════
+   An e-commerce panel rather than an editorial list: quiet meta line, name
+   and price on one row, the line, three ticked details, then colour, size
+   and one red action, with reassurance underneath. The buy-block rules
+   (.atb-*) are shared with the product page, so both read the same. */
+.cps-copy-inner { max-width: 440px; gap: 26px; }
+.cps-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.cps-meta .cps-index { font-family: var(--font-body); font-size: 12px; color: var(--ink); letter-spacing: 0.14em; }
+.cps-meta .cps-of { font-size: 12px; color: var(--ink-muted); letter-spacing: 0.14em; }
+.cps-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-muted); }
+.cps-meta .cps-cat { margin: 0; color: var(--ink-muted); }
+.cps-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 20px; }
+h3.cps-name, .cps-name {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.012em;
+  text-transform: none;
+}
+.cps-head .cps-price, .cps-buy .cps-price {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(20px, 1.6vw, 24px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.cps-desc { margin: 12px 0 0; font-size: 15px; line-height: 1.6; color: var(--ink-muted); border: 0; padding: 0; }
+.cps-features { display: grid; gap: 10px; margin: 0; padding: 18px 0 0; border-top: 1px solid var(--line); list-style: none; }
+.cps-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.cps-features li::before { content: none; }
+.cps-features li svg { flex: none; color: var(--ink); }
+.cps-buy { padding-top: 18px; border-top: 1px solid var(--line); }
+.cps-buy .atb { margin-top: 0; }
+.cps-reassure { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 16px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--ink-muted); }
+.cps-reassure li { display: inline-flex; align-items: center; gap: 8px; }
+
+/* Buy block: labels, swatches, sizes, buttons. */
+.atb .cf-label, .atb legend {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.atb .atb-colour-name { color: var(--ink); }
+.atb .atb-sizes { margin: 0 0 22px; }
+.atb .atb-size-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.atb .atb-size {
+  min-width: 56px;
+  height: 44px;
+  padding: 0 14px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) { .atb .atb-size:hover { border-color: var(--ink); } }
+.atb .atb-size.is-on, .atb .atb-size:has(input:checked) { background: var(--ink); border-color: var(--ink); color: var(--inverse-ink); }
+.atb .atb-size.is-out { color: var(--ink-muted); text-decoration: line-through; opacity: 0.6; }
+.atb .atb-swatch-row { gap: 10px; }
+.atb .atb-add, .atb .atb-buy { min-height: 52px; padding-block: 0; }
+.atb .atb-buy { margin-top: 10px; }
+.atb .atb-secure { margin-top: 14px; font-size: 12px; color: var(--ink-muted); }
+/* Button labels never wrap: the label-roll hover draws a copy one line
+   below, so a wrapped label stacked two lines on top of each other ("Continue
+   to secure payment" in the bag, found 2026-09-23). Long labels tighten
+   their tracking instead. */
+:is(.btn-solid, .cx-send, .cf-submit, .bk-pay, .atb-add, .atb-buy, .hero-cta, .visit-cta) .roll { white-space: nowrap; }
+.bk-pay { letter-spacing: 0.06em; padding-inline: 18px; }

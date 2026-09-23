@@ -451,7 +451,9 @@ export function LuminaInteractiveList({
           </p>
         ) : null}
         <p key={`t${caption}`} className="lm-title" data-anim={animated || undefined}>
-          <LuminaTitle text={slide.title} />
+          {/* One slide: no change animation, so no per-letter spans either
+              (they made a single letter the page's largest paint). */}
+          {total > 1 ? <LuminaTitle text={slide.title} /> : slide.title}
         </p>
         {slide.description ? (
           <p key={`d${caption}`} className="lm-desc" data-anim={animated || undefined}>
