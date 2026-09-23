@@ -406,7 +406,8 @@ stocking them). Do not reintroduce the word without her confirming stock.
   rotated). All five trimmed 4% per side: the model paints film borders,
   one with printed edge numbers. Campaign imagery: no shop, stock or real
   person, no text. Sources are 2048 wide (not upscaled); the blur carries it.
-  Layout: `LuminaInteractiveList layout="centre" list={false}`: the name
+  blur-4 (the burgundy dress) was REMOVED later the same day at Brad's
+  request; the hero rotates four frames. Layout: `LuminaInteractiveList layout="centre" list={false}`: the name
   and one "Shop all" button, nothing else (Brad). The pause icon stays, in
   the corner, because the frames still change by themselves (WCAG 2.2.2).
   Centre wash MEASURED (text hidden, brightest pixel under the name, all

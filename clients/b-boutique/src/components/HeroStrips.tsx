@@ -24,7 +24,6 @@ const SLIDES: LuminaSlide[] = [
   { file: "blur-1", label: "In motion" },
   { file: "blur-2", label: "Golden hour" },
   { file: "blur-3", label: "Soft knit" },
-  { file: "blur-4", label: "Evening" },
   { file: "blur-5", label: "Out and about" },
 ].map(({ file, ...s }) => ({ ...s, title: "B Boutique", src: `/img/hero/${file}-m.jpg`, sources: sources(file) }));
 

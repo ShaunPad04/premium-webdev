@@ -22,7 +22,7 @@ test('stepping through every slide does not crash the page', async ({ page }) =>
   const titles: string[] = [];
   const box = (await page.locator('.lm').boundingBox())!;
   const y = box.y + box.height * 0.3;
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 5; i++) {
     await page.mouse.move(box.x + box.width * 0.7, y);
     await page.mouse.down();
     await page.mouse.move(box.x + box.width * 0.3, y, { steps: 6 });
@@ -33,7 +33,7 @@ test('stepping through every slide does not crash the page', async ({ page }) =>
 
   expect(errors, errors.join('\n')).toEqual([]);
   await expect(page.getByText(/couldn.t load/)).toHaveCount(0);
-  // A full lap of five, then the first of the next: the titles really moved.
-  expect(new Set(titles).size).toBe(5);
-  expect(titles[5]).toBe(titles[0]);
+  // A full lap of four, then the first of the next: the frames really moved.
+  expect(new Set(titles).size).toBe(4);
+  expect(titles[4]).toBe(titles[0]);
 });
