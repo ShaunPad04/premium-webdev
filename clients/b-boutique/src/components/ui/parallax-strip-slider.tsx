@@ -40,13 +40,34 @@ import {
   useRef,
   useState,
 } from "react";
-import gsap from "gsap";
+import type { gsap as GsapNamespace } from "gsap";
+
+/* GSAP is loaded on demand (2026-09-23), not bundled into the page.
+ *
+ * The first frame is plain HTML and CSS: the photograph, the title, the
+ * button. GSAP only ever runs the things that happen AFTER it, namely the
+ * strip wipe, the caption rise and the desktop cursor. Importing it at the
+ * top of this file put ~200 KB of script (unpacked) in front of the home
+ * page's first paint for every visitor, and Lighthouse charges every early
+ * byte to the LCP. It is now fetched once the page has settled (the same
+ * moment autoplay is allowed to start), or at once if somebody points at or
+ * taps the hero. A tap that arrives first is held and replayed when GSAP
+ * lands. If it never lands, slides still change, instantly, the way they do
+ * under reduced motion. Measured before and after: see CLAUDE.md. */
+type Gsap = typeof GsapNamespace;
+let gsapLoad: Promise<Gsap> | null = null;
+function loadGsap(): Promise<Gsap> {
+  gsapLoad ??= import("gsap").then((m) => m.gsap);
+  return gsapLoad;
+}
 
 /* Inline stand-in for @gsap/react's useGSAP. Mirrors its default
    `revertOnUpdate: false`: one gsap.context lives for the component's
    lifetime, the callback is re-added when dependencies change, and the
-   context is reverted only on unmount. */
+   context is reverted only on unmount. It waits for GSAP to arrive: until
+   then there is no context and the callback does not run. */
 function useGSAP(
+  g: Gsap | null,
   callback: () => void | (() => void),
   options?: {
     dependencies?: unknown[];
@@ -55,21 +76,22 @@ function useGSAP(
 ) {
   const deps = options?.dependencies ?? [];
   const scope = options?.scope;
-  const ctxRef = useRef<gsap.Context | null>(null);
+  const ctxRef = useRef<ReturnType<Gsap["context"]> | null>(null);
   const cleanupRef = useRef<(() => void) | undefined>(undefined);
 
   useLayoutEffect(() => {
+    if (!g) return;
     const el =
       scope && typeof scope === "object" && "current" in scope
         ? scope.current
         : (scope as Element | null);
-    ctxRef.current = gsap.context(() => {}, el ?? undefined);
+    ctxRef.current = g.context(() => {}, el ?? undefined);
     return () => {
       ctxRef.current?.revert();
       ctxRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [g]);
 
   useLayoutEffect(() => {
     if (!ctxRef.current) return;
@@ -77,7 +99,7 @@ function useGSAP(
     const ret = ctxRef.current.add(callback);
     cleanupRef.current = typeof ret === "function" ? ret : undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+  }, [...deps, g]);
 }
 
 const STRIP_COUNT = 10;
@@ -170,6 +192,14 @@ export default function ParallaxStripSlider({
   /* The other frames are fetched once the page has settled, so the first
      wipe has a picture to reveal rather than an empty strip. */
   const [warm, setWarm] = useState(false);
+  /* GSAP, once it has arrived (see loadGsap). `gsapFailed` means the import
+     was refused (offline, a blocker): slides then change without the wipe. */
+  const [g, setG] = useState<Gsap | null>(null);
+  const [gsapFailed, setGsapFailed] = useState(false);
+  const pendingNav = useRef<{ next: number; dir: TransitionDirection } | null>(null);
+  const wantGsap = useCallback(() => {
+    loadGsap().then(setG, () => setGsapFailed(true));
+  }, []);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const captionRef = useRef<HTMLDivElement>(null);
@@ -214,15 +244,42 @@ export default function ParallaxStripSlider({
     };
   }, []);
 
+  /* Fetch GSAP once the page has settled: the same moment autoplay is
+     allowed to begin, so the first wipe normally finds it already here. */
+  useEffect(() => {
+    if (warm) wantGsap();
+  }, [warm, wantGsap]);
+
   const goTo = useCallback(
     (next: number, transitionDirection: TransitionDirection) => {
       if (isAnimating.current || next === current || total < 2) return;
+      /* No wipe to run: change the slide outright, as reduced motion does. */
+      if (gsapFailed || prefersReducedMotion()) {
+        setCaption(next);
+        setCurrent(next);
+        return;
+      }
+      /* Asked for before GSAP has arrived: hold it and fetch now. */
+      if (!g) {
+        pendingNav.current = { next, dir: transitionDirection };
+        wantGsap();
+        return;
+      }
       isAnimating.current = true;
       setDirection(transitionDirection);
       setIncoming(next);
     },
-    [current, total]
+    [current, total, g, gsapFailed, wantGsap]
   );
+
+  /* Replay a held tap the moment GSAP lands (or change instantly if it
+     never will). */
+  useEffect(() => {
+    if (!pendingNav.current || (!g && !gsapFailed)) return;
+    const { next, dir } = pendingNav.current;
+    pendingNav.current = null;
+    goTo(next, dir);
+  }, [g, gsapFailed, goTo]);
 
   const onNext = useCallback(() => goTo((current + 1) % total, "next"), [current, total, goTo]);
   const onPrev = useCallback(() => goTo((current - 1 + total) % total, "prev"), [current, total, goTo]);
@@ -238,8 +295,9 @@ export default function ParallaxStripSlider({
 
   // Wipe + zoom + progress on slide change.
   useGSAP(
+    g,
     () => {
-      if (incoming === null) return;
+      if (incoming === null || !g) return;
 
       const strips = stripsRef.current.slice(0, stripCount).filter(Boolean);
       const zooms = zoomRef.current.slice(0, stripCount).filter(Boolean);
@@ -259,7 +317,7 @@ export default function ParallaxStripSlider({
         return;
       }
 
-      const tl = gsap.timeline({ onComplete: settle });
+      const tl = g.timeline({ onComplete: settle });
 
       tl.fromTo(
         orderedStrips,
@@ -297,17 +355,19 @@ export default function ParallaxStripSlider({
 
   // Incoming caption reveal.
   useGSAP(
+    g,
     () => {
+      if (!g) return;
       if (isFirstCaption.current) {
         isFirstCaption.current = false;
         return;
       }
       if (!captionRef.current || !titleRef.current) return;
 
-      gsap.set([captionRef.current, titleRef.current], { autoAlpha: 1, y: 0 });
+      g.set([captionRef.current, titleRef.current], { autoAlpha: 1, y: 0 });
 
       if (prefersReducedMotion()) {
-        gsap.set([chapterRef.current, titleRef.current], { autoAlpha: 1, y: 0, yPercent: 0 });
+        g.set([chapterRef.current, titleRef.current], { autoAlpha: 1, y: 0, yPercent: 0 });
         return;
       }
 
@@ -323,7 +383,7 @@ export default function ParallaxStripSlider({
          here touches the DOM React renders now: the inner span is moved by
          a transform and nothing else, so there is nothing left to disagree
          about. */
-      const tl = gsap.timeline();
+      const tl = g.timeline();
       if (titleInnerRef.current) {
         tl.fromTo(
           titleInnerRef.current,
@@ -342,15 +402,15 @@ export default function ParallaxStripSlider({
 
   // Circular cursor: smooth follow + arrow that flips with the pointer side.
   useEffect(() => {
-    if (!showControls || isCoarsePointer) return;
+    if (!showControls || isCoarsePointer || !g) return;
     const cursor = cursorRef.current;
     const l1 = line1Ref.current;
     const l2 = line2Ref.current;
     if (!cursor || !l1 || !l2) return;
 
-    gsap.set(cursor, { xPercent: -50, yPercent: -50, opacity: 0, scale: 0.6 });
-    gsap.set(l1, { transformOrigin: "100% 50%", xPercent: -50, yPercent: -50, y: -1.5, rotation: 45, x: 0 });
-    gsap.set(l2, { transformOrigin: "100% 50%", xPercent: -50, yPercent: -50, y: 1.5, rotation: -45, x: 0 });
+    g.set(cursor, { xPercent: -50, yPercent: -50, opacity: 0, scale: 0.6 });
+    g.set(l1, { transformOrigin: "100% 50%", xPercent: -50, yPercent: -50, y: -1.5, rotation: 45, x: 0 });
+    g.set(l2, { transformOrigin: "100% 50%", xPercent: -50, yPercent: -50, y: 1.5, rotation: -45, x: 0 });
 
     let currentSide: "left" | "right" = "right";
     let rafId: number | null = null;
@@ -372,7 +432,7 @@ export default function ParallaxStripSlider({
       if (isOut || isOverControls) {
         if (isInside.current) {
           isInside.current = false;
-          gsap.to(cursor, { opacity: 0, scale: 0.6, duration: 0.25, ease: "power3.inOut" });
+          g.to(cursor, { opacity: 0, scale: 0.6, duration: 0.25, ease: "power3.inOut" });
         }
         return;
       }
@@ -380,8 +440,8 @@ export default function ParallaxStripSlider({
       if (!isInside.current) {
         pos.current.x = x;
         pos.current.y = y;
-        gsap.set(cursor, { x, y });
-        gsap.to(cursor, { opacity: 1, scale: 1, duration: 0.25, ease: "power3.out" });
+        g.set(cursor, { x, y });
+        g.to(cursor, { opacity: 1, scale: 1, duration: 0.25, ease: "power3.out" });
         isInside.current = true;
       }
 
@@ -391,15 +451,15 @@ export default function ParallaxStripSlider({
       if (nextSide !== currentSide) {
         currentSide = nextSide;
         const flip = nextSide === "left";
-        gsap.to(l1, { rotation: flip ? 135 : 45, x: flip ? "-1vw" : 4, duration: 0.35, ease: "power3.inOut" });
-        gsap.to(l2, { rotation: flip ? -135 : -45, x: flip ? "-1vw" : 4, duration: 0.35, ease: "power3.inOut" });
+        g.to(l1, { rotation: flip ? 135 : 45, x: flip ? "-1vw" : 4, duration: 0.35, ease: "power3.inOut" });
+        g.to(l2, { rotation: flip ? -135 : -45, x: flip ? "-1vw" : 4, duration: 0.35, ease: "power3.inOut" });
       }
     };
 
     const render = () => {
       pos.current.x += (mouse.current.x - pos.current.x) * 0.12;
       pos.current.y += (mouse.current.y - pos.current.y) * 0.12;
-      gsap.set(cursor, { x: pos.current.x, y: pos.current.y });
+      g.set(cursor, { x: pos.current.x, y: pos.current.y });
       rafId = requestAnimationFrame(render);
     };
 
@@ -410,7 +470,7 @@ export default function ParallaxStripSlider({
       window.removeEventListener("mousemove", handleMove);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [showControls, isCoarsePointer]);
+  }, [showControls, isCoarsePointer, g]);
 
   const renderStrips = (slide: Slide) => {
     const width = 100 / stripCount;
@@ -449,6 +509,9 @@ export default function ParallaxStripSlider({
       ref={rootRef}
       style={{ backgroundColor }}
       className={`parallax-strip-slider relative h-full w-full overflow-hidden ${className}`}
+      /* A pointer on the hero means the cursor and a click are near: fetch
+         GSAP now rather than waiting for the page to settle. */
+      onPointerEnter={wantGsap}
     >
       {/* Outgoing slide, revealed away underneath. */}
       <div className="absolute inset-0">
@@ -473,7 +536,8 @@ export default function ParallaxStripSlider({
       {showControls && total > 1 && (
         <div
           aria-hidden="true"
-          className="absolute inset-0 z-20 cursor-none pointer-coarse:cursor-pointer"
+          /* The native cursor is only hidden once the custom one can draw. */
+          className={`absolute inset-0 z-20 ${g ? "cursor-none" : "cursor-pointer"} pointer-coarse:cursor-pointer`}
           onClick={(e) => {
             if (isAnimating.current) return;
             const rect = e.currentTarget.getBoundingClientRect();
@@ -536,7 +600,7 @@ export default function ParallaxStripSlider({
       </div>
 
       {showControls && total > 1 && !isCoarsePointer && (
-        <div ref={cursorRef} className="pointer-events-none fixed left-0 top-0 z-[100]" aria-hidden="true">
+        <div ref={cursorRef} className="pointer-events-none fixed left-0 top-0 z-[100]" style={{ opacity: 0 }} aria-hidden="true">
           <div className="flex size-15 items-center justify-center rounded-full" style={{ backgroundColor: accentColor }}>
             <div className="relative size-7.5">
               <span ref={line1Ref} className="absolute left-1/2 top-1/2 h-0.5 w-4" style={{ backgroundColor: "#1A1416" }} />

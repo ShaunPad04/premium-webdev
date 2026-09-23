@@ -82,7 +82,7 @@ export function HeroStill() {
     <div className="relative h-full w-full overflow-hidden bg-bb-black">
       <picture>
         {first.sources?.map((s) => (
-          <source key={`${s.media ?? ""}${s.type}`} media={s.media} type={s.type} srcSet={s.srcSet} />
+          <source key={`${s.media ?? ""}${s.type}`} media={s.media} type={s.type} srcSet={s.srcSet} sizes={s.sizes} />
         ))}
         <img src={first.src} alt="" className="absolute inset-0 h-full w-full object-cover" />
       </picture>

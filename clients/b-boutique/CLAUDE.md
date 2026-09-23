@@ -483,10 +483,13 @@ Contact Card) were rebuilt in-house, not vendored.
   (GSAP + SplitText, used only by the philosophy statement) is gone.
   Lighthouse mobile, n=3 medians, before/after: score 80/82, LCP 5.1/5.0s
   (within noise), SI 2.2/1.6s, TBT 127/55ms, weight 1839/1182 KB.
-  Remaining lever, not taken: the hero slider imports GSAP eagerly (~200 KB
-  unpacked) though the first frame needs none of it. Deferring it means
-  reworking a component that crashed twice on 2026-09-22; do it as its own
-  tested change.
+  GSAP is now loaded on demand by the hero slider (after the page settles,
+  or on first pointer/tap; an early tap is held and replayed; if the import
+  fails slides change instantly). Lighthouse mobile, n=10 each (two
+  interleaved rounds of 5): LCP median 4.80s -> 4.49s (ranges 4.44-4.98 vs
+  4.29-4.68), score 82.5 -> 84, SI ~1.66 -> ~1.54s, TBT ~64 -> ~52ms. A real
+  throttled browser (Slow 4G, 4x CPU, n=3) shows LCP ~1.74s both before and
+  after: the gain is in the simulated score, not in what visitors see.
 - **Philosophy statement** lights word by word on a view timeline (CSS only).
   The dim state is 0.38 opacity because 0.22 failed 3:1 (axe).
 - **Homeware** on the home page is one 21:9 band (the masthead's ceramics
