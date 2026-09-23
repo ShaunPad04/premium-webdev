@@ -4,6 +4,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { Visit } from "@/components/Visit";
+import { InsideRooms } from "@/components/InsideRooms";
 import { principles, shopPhotos, type ShopPhoto } from "@/lib/about";
 import { owner, shop } from "@/lib/shop";
 
@@ -28,8 +29,8 @@ export const metadata: Metadata = {
  *      a generated image; her real photographs carry the rest of the page.)
  *   2. Hayley, in her own words (owner.bio — the same copy the home page's
  *      owner card reads).
- *   3. Inside the shop: five of her photographs, captioned with what is in
- *      the frame and nothing else.
+ *   3. Inside the shop: five of her photographs in one 4:5 lookbook column,
+ *      with a sticky numbered index (components/InsideRooms.tsx).
  *   4. Three principles, beside a boucle macro (the second AI texture).
  *   5. Visit, unchanged.
  *
@@ -48,11 +49,13 @@ function Pic({
   photo,
   sizes,
   className,
+  style,
   priority = false,
 }: {
   photo: ShopPhoto;
   sizes: string;
   className?: string;
+  style?: React.CSSProperties;
   priority?: boolean;
 }) {
   const set = (ext: string) =>
@@ -69,6 +72,7 @@ function Pic({
         height={photo.h}
         alt={photo.alt}
         className={className}
+        style={style}
         loading={priority ? "eager" : "lazy"}
         fetchPriority={priority ? "high" : undefined}
         decoding="async"
@@ -91,6 +95,16 @@ const vintage: ShopPhoto = {
 
 export default function AboutPage() {
   const { walkin, mustard, fitting, window: win, homeware } = shopPhotos;
+  /* One 4:5 frame for every room. `pos` keeps each photograph's subject in
+     it: all three of the mustard wall's prints, the window's
+     mannequins. */
+  const rooms = [
+    { photo: walkin, pos: "50% 50%" },
+    { photo: mustard, pos: "4% 50%" },
+    { photo: win, pos: "45% 50%" },
+    { photo: fitting, pos: "50% 50%" },
+    { photo: homeware, pos: "50% 50%" },
+  ];
 
   return (
     <>
@@ -142,36 +156,36 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* 3 ── Inside the shop. */}
+        {/* 3 ── Inside the shop: a lookbook, index held beside it. */}
         <section aria-labelledby="ab-inside" className="ab-inside">
-          <div className="ab-inside-head">
-            <p className="label ab-kicker">Inside</p>
-            <h2 id="ab-inside" className="ab-h2">
-              18 Sea View Street.
-            </h2>
-          </div>
-          <div className="ab-gallery">
-            <figure className="ab-fig ab-fig--a">
-              <Pic photo={walkin} sizes="(min-width: 900px) 40vw, 92vw" className="ab-fig-img" />
-              <figcaption>{walkin.caption}</figcaption>
-            </figure>
-            <figure className="ab-fig ab-fig--b">
-              <Pic photo={mustard} sizes="(min-width: 900px) 50vw, 92vw" className="ab-fig-img" />
-              <figcaption>{mustard.caption}</figcaption>
-            </figure>
-            <figure className="ab-fig ab-fig--c">
-              <Pic photo={win} sizes="(min-width: 900px) 34vw, 80vw" className="ab-fig-img" />
-              <figcaption>{win.caption}</figcaption>
-            </figure>
-            <figure className="ab-fig ab-fig--d">
-              <Pic photo={fitting} sizes="(min-width: 900px) 30vw, 70vw" className="ab-fig-img" />
-              <figcaption>{fitting.caption}</figcaption>
-            </figure>
-            <figure className="ab-fig ab-fig--e">
-              <Pic photo={homeware} sizes="(min-width: 900px) 42vw, 92vw" className="ab-fig-img" />
-              <figcaption>{homeware.caption}</figcaption>
-            </figure>
-          </div>
+          <InsideRooms
+            rooms={rooms.map((r, i) => ({ id: `room-${i + 1}`, n: String(i + 1).padStart(2, "0"), caption: r.photo.caption }))}
+            head={
+              <div className="ab-inside-head">
+                <p className="label ab-kicker">Inside</p>
+                <h2 id="ab-inside" className="ab-h2">
+                  18 Sea View Street.
+                </h2>
+              </div>
+            }
+          >
+            {rooms.map((r, i) => (
+              <figure key={r.photo.name} id={`room-${i + 1}`} className="ab-room">
+                <div className="ab-room-frame">
+                  <Pic
+                    photo={r.photo}
+                    sizes="(min-width: 900px) 560px, 92vw"
+                    className="ab-room-img"
+                    style={{ objectPosition: r.pos }}
+                  />
+                </div>
+                <figcaption>
+                  <span className="ab-rooms-n">{String(i + 1).padStart(2, "0")}</span>
+                  {r.photo.caption}
+                </figcaption>
+              </figure>
+            ))}
+          </InsideRooms>
         </section>
 
         {/* 4 ── Three principles, beside the boucle. */}
