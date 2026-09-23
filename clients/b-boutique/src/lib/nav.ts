@@ -164,15 +164,19 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
  *  shop.ts, which is checked against the catalogue at build. A category
  *  cannot be in this menu unless it exists AND has stock behind it, and
  *  nobody has to remember to edit two files. */
-export const CLOTHING_MENU = [
+/* The header's Catalogue dropdown (was "Clothing" until 2026-09-23, renamed
+   at the client's request). A catalogue is everything she sells, so Homeware
+   sits after the clothing categories. */
+export const CATALOGUE_MENU = [
   ...clothingCards.map((c) => ({ label: c.name, href: `/clothing/${c.slug}` })),
+  { label: "Homeware", href: "/homeware" },
   { label: "View all clothing", href: "/clothing" },
 ];
 
 export const PRIMARY = [
   { label: "Shop", href: "/shop" },
   { label: "New In", href: "/#new-in" },
-  { label: "Clothing", href: "/clothing", menu: CLOTHING_MENU },
+  { label: "Catalogue", href: "/clothing", menu: CATALOGUE_MENU },
   /* Accessories came out of all three navigations on 2026-09-22 at the
      client's instruction: the shop does not stock them. /accessories now
      redirects to /shop (next.config.ts) so no old link lands on a 404. */

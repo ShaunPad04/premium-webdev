@@ -4322,6 +4322,17 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   pointer-events: none;
 }
 
+/* .nav-link is display:block for its hit area; flex keeps that box and puts
+   the caret on the label's line instead of under it. */
+.nav-link--caret { display: flex; align-items: center; gap: 6px; }
+.nav-caret { flex: none; transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1); }
+@media (hover: hover) and (pointer: fine) {
+  .nav-item.has-menu:hover .nav-caret { transform: rotate(180deg); }
+}
+.nav-item.has-menu:focus-within .nav-caret { transform: rotate(180deg); }
+.nav-item.has-menu[data-dismissed] .nav-caret { transform: none; }
+@media (prefers-reduced-motion: reduce) { .nav-caret { transition: none; } }
+
 .nav-menu {
   min-width: 210px;
   padding: 14px 0;

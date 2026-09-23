@@ -270,9 +270,13 @@ function NavMenuItem({
       <a
         ref={trigger}
         href={item.href}
-        className="nav-link nav-link--bar text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
+        className="nav-link nav-link--bar nav-link--caret text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
       >
         {item.label}
+        {/* Says "there is a list here". Turns over when the list opens. */}
+        <svg className="nav-caret" width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true">
+          <path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </a>
 
       <div className="nav-menu-wrap">
