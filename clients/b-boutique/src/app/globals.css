@@ -63,7 +63,7 @@
   --bb-white-pure:   #FDFAF3;
 
   --bb-grey-light:   #E6DCCB;
-  --bb-grey-mid:     #9A8F8D;
+  --bb-grey-mid:     #D8A9AC;   /* PREVIEW: only used on dark grounds; #9A8F8D fails on the red */
   --bb-grey-dark:    #6B5048;
 
   --bb-dark-border:  rgba(255, 255, 255, 0.14);
@@ -1671,7 +1671,7 @@ body {
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 /* The map panel's picture (2026-09-23): her window onto Sea View Street,
@@ -1805,7 +1805,7 @@ body {
   letter-spacing: 0.15em;
   transition: background var(--bb-dur-quick) var(--bb-ease), border-color var(--bb-dur-quick) var(--bb-ease);
 }
-.vm-expand:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.5); }
+.vm-expand:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.72); }
 
 /* ── Expanded ── */
 .vm-overlay { position: fixed; inset: 0; z-index: 90; }
@@ -1864,7 +1864,7 @@ body {
 .vm-close { top: 16px; right: 16px; }
 .vm-open-external { bottom: 16px; left: 16px; }
 .vm-close:hover,
-.vm-open-external:hover { background: var(--bb-black-raised); border-color: rgba(255, 255, 255, 0.5); }
+.vm-open-external:hover { background: var(--bb-black-raised); border-color: rgba(255, 255, 255, 0.72); }
 .vm-close-x { font-size: 15px; line-height: 1; }
 
 @keyframes vm-fade { from { opacity: 0; } to { opacity: 1; } }
@@ -2063,7 +2063,7 @@ body {
   max-width: 330px;
   font-size: 13px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.68);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .ft-address {
@@ -2118,7 +2118,7 @@ body {
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: rgba(255, 255, 255, 0.68);   /* PREVIEW: .52 was 4.09:1 on the red */
+  color: rgba(255, 255, 255, 0.72);   /* PREVIEW: .52 was 4.09:1 on the red */
   margin-bottom: 14px;
 }
 
@@ -2209,7 +2209,7 @@ body {
    copyright. `margin-left: auto` on a flex row rather than a float or a
    grid: it takes the space that is left and collapses to a normal wrap on a
    phone, where "Made by" underneath the copyright is the right order anyway. */
-.ft-made { color: rgba(255, 255, 255, 0.5); }
+.ft-made { color: rgba(255, 255, 255, 0.72); }
 @media (min-width: 640px) { .ft-made { margin-left: auto; } }
 /* Inline padding: a taller hit area (24px+, WCAG 2.5.8) with no change to
    the line. Same trick on the announcement link and the product breadcrumb. */
@@ -2218,7 +2218,7 @@ body {
   color: rgba(255, 255, 255, 0.78);
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: rgba(255, 255, 255, 0.3);
+  text-decoration-color: rgba(255, 255, 255, 0.72);
   transition: color 200ms var(--bb-ease), text-decoration-color 200ms var(--bb-ease);
 }
 .ft-made-link:hover,
@@ -2237,7 +2237,7 @@ body {
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 /* Upper footer entrance. Per column, not per link. */
@@ -6226,7 +6226,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   box-shadow: 0 1px 0 0 var(--bb-white);
 }
 
-.navsearch-icon { flex: 0 0 auto; color: rgba(250, 245, 243, 0.55); }
+.navsearch-icon { flex: 0 0 auto; color: rgba(250, 245, 243, 0.72); }
 
 .navsearch-input {
   flex: 1 1 auto;
@@ -6242,7 +6242,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 
 .navsearch-input:focus-visible { outline: none; }
-.navsearch-input::placeholder { color: rgba(250, 245, 243, 0.45); }
+.navsearch-input::placeholder { color: rgba(250, 245, 243, 0.72); }
 /* The UA's own clear button is drawn in the platform's colours and is
    invisible on this ground. The field is cleared by deleting or by Close. */
 .navsearch-input::-webkit-search-cancel-button { display: none; }
@@ -6301,7 +6301,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   font-size: 10px;
   letter-spacing: 0.06em;
   /* .68 measures 6.4:1 on the ink. */
-  color: rgba(250, 245, 243, 0.68);
+  color: rgba(250, 245, 243, 0.72);
 }
 
 .navsearch-all {
@@ -6366,7 +6366,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 
 .navsearch-chip:hover, .navsearch-chip:focus-visible {
-  border-color: rgba(250, 245, 243, 0.55);
+  border-color: rgba(250, 245, 243, 0.72);
   color: var(--bb-white);
 }
 
@@ -7689,7 +7689,7 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .ft-cta-acts .visit-cta { margin-top: 0; font-size: 11px; letter-spacing: 0.16em; }
 .ft .ft-cta-shop { box-shadow: inset 0 0 0 1px var(--bb-white-pure); }
 .ft .ft-cta-shop::before { background: var(--bb-black); }
-.ft .visit-cta { color: var(--bb-white); border-color: rgba(255, 255, 255, 0.42); }
+.ft .visit-cta { color: var(--bb-white); border-color: rgba(255, 255, 255, 0.72); }
 .ft .visit-cta::before { background: var(--bb-white-pure); }
 .ft .visit-cta:is(:hover, :focus-visible) { color: var(--bb-black); border-color: var(--bb-white-pure); }
 @media (hover: none), (pointer: coarse) {
