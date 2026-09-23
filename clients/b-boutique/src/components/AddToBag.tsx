@@ -269,6 +269,16 @@ export function AddToBag({ product }: { product: Product }) {
         </button>
       )}
 
+      {/* True as stated: payment is taken on SumUp's hosted checkout over
+          HTTPS (lib/sumup.ts), never on a form on this site. */}
+      <p className="atb-secure">
+        <svg width="11" height="13" viewBox="0 0 11 13" fill="none" aria-hidden="true">
+          <rect x="0.75" y="5.75" width="9.5" height="6.5" rx="1" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M2.75 5.75V3.9a2.75 2.75 0 0 1 5.5 0v1.85" stroke="currentColor" strokeWidth="1.2" />
+        </svg>
+        Secure checkout
+      </p>
+
       {/* A polite live region that exists before the add, so it is announced
           when it fills. It names the size and the colour, because "added to
           bag" is not enough information to catch a mistake. */}
