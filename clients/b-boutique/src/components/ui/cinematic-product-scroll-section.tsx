@@ -147,8 +147,26 @@ function ProductHero({ product, reversed, reduced }: { product: Product; reverse
                   <span className="cps-opt-v">{colours.join(" · ")}</span>
                 </div>
                 <div>
-                  <span className="cps-opt-h">Size</span>
-                  <span className="cps-opt-v">{product.sizes.join(" · ")}</span>
+                  <span className="cps-opt-h" id={`cps-size-${product.slug}`}>Size</span>
+                  {product.sizes.length > 1 ? (
+                    /* Each size opens the piece with it already chosen
+                       (AddToBag reads ?size=). */
+                    <ul className="cps-sizes" aria-labelledby={`cps-size-${product.slug}`}>
+                      {product.sizes.map((sz) => (
+                        <li key={sz}>
+                          <Link
+                            href={`${href}?size=${encodeURIComponent(sz)}`}
+                            className="cps-size"
+                            aria-label={`${product.name}, size ${sz}`}
+                          >
+                            {sz}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <span className="cps-opt-v">{product.sizes[0]}</span>
+                  )}
                 </div>
               </div>
 

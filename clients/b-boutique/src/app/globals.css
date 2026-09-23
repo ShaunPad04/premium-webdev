@@ -3787,6 +3787,26 @@ body {
 .cps-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .cps-opt-h { display: block; margin-bottom: 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bb-grey-dark); }
 .cps-opt-v { font-size: 14px; }
+/* Sizes are links: a size clicked here opens the piece with it chosen. */
+.cps-sizes { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; }
+.cps-size {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--bb-light-border);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--bb-black);
+  transition: border-color var(--bb-dur-quick) var(--bb-ease), background var(--bb-dur-quick) var(--bb-ease), color var(--bb-dur-quick) var(--bb-ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .cps-size:hover { background: var(--bb-black); border-color: var(--bb-black); color: var(--bb-white); }
+}
+.cps-size:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
 .cps-cta {
   display: inline-flex;
   align-items: center;
@@ -5488,6 +5508,18 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .atb-out-tel { text-decoration: underline; text-underline-offset: 3px; }
 
 .atb-add { width: 100%; justify-content: center; }
+/* Buy now sits under Add to bag as its outline twin: one filled action per
+   screen, and the faster route still reads as the second choice. */
+.atb-buy {
+  width: 100%;
+  justify-content: center;
+  margin-top: 10px;
+  background: transparent;
+  color: var(--bb-black);
+}
+@media (hover: hover) and (pointer: fine) {
+  .atb-buy:hover { background: var(--bb-black); color: var(--bb-white); }
+}
 .atb-status:empty { display: none; }
 /* The confirmation arrives rather than appearing.
  *

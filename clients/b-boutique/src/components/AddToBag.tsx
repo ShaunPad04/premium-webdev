@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import type { Product } from "@/lib/catalogue";
 import { useCart } from "@/lib/useCart";
@@ -46,12 +47,22 @@ import { useColour } from "./ColourChoice";
  * anything it is told. This is here so a customer finds out before the card,
  * not after it. */
 
+/* ── A size chosen elsewhere ───────────────────────────────────────────────
+ * The home page's statement pieces link here as /shop/<slug>?size=M, so a
+ * size clicked there arrives already chosen. That is not a preselect in the
+ * sense above: the customer picked it. Read from the URL without state or an
+ * effect, and only honoured when it is one of this piece's real sizes. Any
+ * size picked on this page wins over it. */
+const noSubscribe = () => () => {};
+const urlSize = () => new URLSearchParams(window.location.search).get("size");
+
 type State = "in" | "out" | "unknown";
 type Availability = Record<string, { state: State; restockable: boolean }>;
 
 export function AddToBag({ product }: { product: Product }) {
   const uid = useId();
   const { add } = useCart();
+  const router = useRouter();
 
   const colours = coloursFor(product.slug);
   const colourChoice = colours.length > 1;
@@ -63,9 +74,12 @@ export function AddToBag({ product }: { product: Product }) {
      one decision is how somebody ends up looking at the camel coat with the
      burgundy one in their bag. See ColourChoice.tsx. */
   const { colour, setColour } = useColour();
-  const [size, setSize] = useState<string | null>(
+  const [picked, setSize] = useState<string | null>(
     singleSize ? product.sizes[0] : null,
   );
+  const fromUrl = useSyncExternalStore(noSubscribe, urlSize, () => null);
+  const size =
+    picked ?? (fromUrl && product.sizes.includes(fromUrl) ? fromUrl : null);
   const [error, setError] = useState<string | null>(null);
   /* `n` counts the adds. It is the element's key, so adding the same size
      twice replays the confirmation instead of quietly rewriting text that is
@@ -104,6 +118,21 @@ export function AddToBag({ product }: { product: Product }) {
     );
 
   const chosenOut = size !== null && sizeOut(size);
+
+  /* The one add both buttons use: refuses, with a message, until a colour
+     (where there is a choice) and a size are chosen. */
+  const addChosen = () => {
+    if (colourChoice && colour === null) {
+      setError("Please choose a colour first.");
+      return false;
+    }
+    if (!size) {
+      setError("Please choose a size first.");
+      return false;
+    }
+    add(product.slug, size, colour ?? "");
+    return true;
+  };
 
   return (
     <div className="atb">
@@ -212,17 +241,8 @@ export function AddToBag({ product }: { product: Product }) {
           className="cf-submit atb-add"
           disabled={chosenOut}
           onClick={() => {
-            if (colourChoice && colour === null) {
-              setError("Please choose a colour first.");
-              return;
-            }
-            if (!size) {
-              setError("Please choose a size first.");
-              return;
-            }
-            const c = colour ?? "";
-            add(product.slug, size, c);
-            setAdded((prev) => ({ size, colour: c, n: (prev?.n ?? 0) + 1 }));
+            if (!addChosen()) return;
+            setAdded((prev) => ({ size: size!, colour: colour ?? "", n: (prev?.n ?? 0) + 1 }));
           }}
         >
           {chosenOut ? "Sold out" : "Add to bag"}
@@ -231,6 +251,21 @@ export function AddToBag({ product }: { product: Product }) {
               &rarr;
             </span>
           )}
+        </button>
+      )}
+
+      {/* Buy now: the same add, then straight to the bag, where delivery
+          details and payment are. Same checks, same stock gate; it is a
+          shortcut past "View bag", not a separate way to pay. */}
+      {allOut || chosenOut ? null : (
+        <button
+          type="button"
+          className="cf-submit atb-buy"
+          onClick={() => {
+            if (addChosen()) router.push("/bag");
+          }}
+        >
+          Buy now
         </button>
       )}
 
