@@ -423,7 +423,8 @@ stocking them). Do not reintroduce the word without her confirming stock.
   `newIn` pieces, 4:5 cards sized from the viewport, arrows scoped to the
   carousel's focus, auto-advance with a real Pause button (never under
   reduced motion). Every card is a real link; a pointer click on a SIDE card
-  turns the carousel instead of navigating.
+  turns the carousel instead of navigating. Swipe/drag (pointer events, mouse and
+  touch) and horizontal trackpad swipes turn it too; a drag never opens a card.
 
 **`/homeware` was built 2026-09-22.** Every Homeware link — corner menu,
 header Shop menu, footer, the Accessories page, the home section's own
@@ -534,9 +535,11 @@ left:
 - **Stock counts.** Checkout reserves a variant atomically (`lib/orders.ts`,
   `adjust()` against a `CHECK (qty >= 0)`), but a variant nobody has counted
   (`qty: null`) is sold unreserved, so the protection only exists once counts
-  are in. `scripts/import-stock.mjs` imports the 69 unambiguous counts from the
-  master list and refuses 10 with reasons; it needs `DATABASE_URL`, which lives
-  in Vercel, not in a web session. The other 10 go in on `/stock`.
+  are in. The 69 unambiguous counts from the master list
+  (`src/data/opening-stock.json`) load from `/stock` → "Load opening counts
+  from the master list" (2026-09-23; DATABASE_URL is a sensitive Vercel
+  secret and cannot be read into a session). It fills only never-counted
+  lines. The other 10 go in on `/stock` by size.
 - **A test card through SumUp**, after `NEXT_PUBLIC_SITE_URL` is set.
 - **A qualified read of the statutory text.** See Selling terms.
 - **The ICO registration number.** Applied and paying by direct debit as of

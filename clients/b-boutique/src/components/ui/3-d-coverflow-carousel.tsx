@@ -69,7 +69,14 @@ export function CoverFlowCarousel() {
   const [current, setCurrent] = useState(0);
   const [held, setHeld] = useState(false);
   const [paused, setPaused] = useState(false);
-  const touchX = useRef(0);
+  /* Drag and swipe (2026-09-23, client: "you should be able to just swipe
+     this on both mobile and desktop"). Pointer events cover a finger and a
+     mouse alike; a horizontal trackpad swipe arrives as wheel deltaX. A drag
+     past 45px turns one card; `dragged` then swallows the click that ends
+     the drag, so letting go over a card does not also open it. */
+  const drag = useRef<{ x: number; y: number; id: number } | null>(null);
+  const dragged = useRef(false);
+  const wheelLock = useRef(0);
 
   const next = useCallback(() => setCurrent((i) => (i + 1) % total), [total]);
   const prev = useCallback(() => setCurrent((i) => (i - 1 + total) % total), [total]);
@@ -99,11 +106,29 @@ export function CoverFlowCarousel() {
         if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
         if (e.key === "ArrowRight") { e.preventDefault(); next(); }
       }}
-      onTouchStart={(e) => { touchX.current = e.touches[0].clientX; setHeld(true); }}
-      onTouchEnd={(e) => {
-        const dx = e.changedTouches[0].clientX - touchX.current;
-        if (Math.abs(dx) > 45) (dx < 0 ? next : prev)();
-        setHeld(false);
+      onPointerDown={(e) => {
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        drag.current = { x: e.clientX, y: e.clientY, id: e.pointerId };
+        dragged.current = false;
+        setHeld(true);
+      }}
+      onPointerMove={(e) => {
+        const d = drag.current;
+        if (!d || d.id !== e.pointerId || dragged.current) return;
+        const dx = e.clientX - d.x;
+        if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(e.clientY - d.y)) {
+          dragged.current = true;
+          (dx < 0 ? next : prev)();
+        }
+      }}
+      onPointerUp={() => { drag.current = null; setHeld(false); }}
+      onPointerCancel={() => { drag.current = null; setHeld(false); }}
+      onWheel={(e) => {
+        if (Math.abs(e.deltaX) < 30 || Math.abs(e.deltaX) < Math.abs(e.deltaY)) return;
+        const now = Date.now();
+        if (now - wheelLock.current < 600) return;
+        wheelLock.current = now;
+        (e.deltaX > 0 ? next : prev)();
       }}
     >
       {/* The centre piece, blown up and faint, behind the stage. */}
@@ -131,7 +156,13 @@ export function CoverFlowCarousel() {
               style={{ transform: p.t, opacity: p.o, zIndex: p.z, filter: p.f }}
               tabIndex={centre ? 0 : -1}
               aria-hidden={centre ? undefined : true}
+              draggable={false}
               onClick={(e) => {
+                if (dragged.current) {
+                  e.preventDefault();
+                  dragged.current = false;
+                  return;
+                }
                 /* A real pointer click on a side card turns the carousel to
                    it; the centre card opens the piece. (A programmatic click
                    has detail 0 and still navigates.) */

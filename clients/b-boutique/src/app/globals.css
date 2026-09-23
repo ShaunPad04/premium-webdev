@@ -7497,3 +7497,8 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 @media (prefers-reduced-motion: reduce) {
   .cf-card, .cf-body, .cf-photo { transition: none; }
 }
+/* Swipe/drag on the coverflow: vertical page scroll still passes through on
+   touch; the cards show a grab cursor and images do not ghost-drag. */
+.cf-stage { touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
+.cf-stage:active { cursor: grabbing; }
+.cf-card img { -webkit-user-drag: none; pointer-events: none; }
