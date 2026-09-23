@@ -2891,7 +2891,7 @@ body {
   font-weight: 400;
   /* The prompt's clamp(82px, 27vw, 128px) is the ceiling here, not the value.
      On its own it resolves to 105.3px at 390, and "B Boutique" in Bodoni Moda
-     at -0.045em tracking inks 4.635x its font-size — 488px of word inside a
+     at -0.045em tracking inked 4.635x its font-size — 488px of word inside a
      354px mask. The mask cropped it to "B Boutic". Desktop shows the name
      whole, so a phone showing two thirds of it reads as a bug, not a bleed.
      The second term is the largest size the word fits at, gutter to gutter,
@@ -2899,7 +2899,10 @@ body {
      on the narrow widths where it would crop. 4.635 is the measured
      ink-per-pixel ratio — the one number to re-measure if the face or the
      tracking ever changes. */
-  font-size: min(clamp(82px, 27vw, 128px), calc((100vw - 36px) / 4.635));
+  /* Re-measured 2026-09-23 for Gloock, which is wider: 4.92x its size
+     (375.8px at 76.4px). At the old Bodoni ratio the phone cropped the mark
+     to "B Boutiqu". 4.95 leaves a pixel or two for the optical indent. */
+  font-size: min(clamp(82px, 27vw, 128px), calc((100vw - 36px) / 4.95));
   line-height: 0.8;
   letter-spacing: -0.013em;
   color: var(--bb-white);
@@ -2937,6 +2940,9 @@ body {
    phone, where "Made by" underneath the copyright is the right order anyway. */
 .ft-made { color: rgba(255, 255, 255, 0.5); }
 @media (min-width: 640px) { .ft-made { margin-left: auto; } }
+/* Inline padding: a taller hit area (24px+, WCAG 2.5.8) with no change to
+   the line. Same trick on the announcement link and the product breadcrumb. */
+.ft-made-link, .announce-link, .pdp-back { padding-block: 7px; }
 .ft-made-link {
   color: rgba(255, 255, 255, 0.78);
   text-decoration: underline;
