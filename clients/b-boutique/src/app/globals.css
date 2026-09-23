@@ -9249,3 +9249,9 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
   .pov-statement > span[aria-hidden]::before { position: static; margin-right: 0.04em; }
 }
 .pov-statement > span[aria-hidden]::before { position: static; margin-right: 0.04em; }
+
+/* Photo frames backed in paper, not ink (2026-09-23). On a column with a
+   fractional width the photograph can land a sub-pixel short of its frame,
+   and a dark backing showed through as a black hairline down one edge of
+   every card in that column. A light backing makes the same gap invisible. */
+.prod-media, .cat-media, .piece-media, .acc-lead-media, .cross-media, .bag-media { background: var(--bg-soft); }
