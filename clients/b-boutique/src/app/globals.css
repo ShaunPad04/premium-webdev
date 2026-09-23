@@ -1307,253 +1307,6 @@ body {
 }
 
 
-/* ── Homeware ─────────────────────────────────────────────────────────────
-   Same cool white as New In. The only thing between them is a hairline: the
-   change of pace comes from the composition, not from another colour band. */
-.hw {
-  view-timeline-name: --hw;
-  view-timeline-axis: block;
-  background: var(--bb-white);
-  color: var(--bb-black-soft);
-  border-top: 1px solid var(--bb-light-border);
-  /* Trimmed from 96/108 on 2026-09-21. This section measured 1.03 screens on
-     the client's display and 2.31 at 768 — the tallest thing on the page
-     except the FAQ, which holds eight questions to this one's single
-     paragraph. */
-  padding-block: 80px 88px;
-  padding-inline: 18px;
-  scroll-margin-top: 96px;
-}
-
-@media (min-width: 768px) { .hw { padding-inline: var(--bb-gutter-editorial); } }
-
-.hw-inner { display: flex; flex-direction: column; gap: 48px; }
-
-@media (min-width: 1024px) {
-  .hw-inner {
-    flex-direction: row;
-    /* Centred, not flex-start. The copy is 375px of type against a 776px
-       media column, so top-aligning dropped the whole 400px difference into
-       one lump under the text. Centred, the same whitespace sits above and
-       below and reads as a margin rather than as a gap. */
-    align-items: center;
-    gap: clamp(48px, 5vw, 96px);
-    /* Capped and centred, and it only bites above about 1520px.
-       At 1440 the content is 1224 wide against a 1400 cap, so that case —
-       which is the tuned one — is untouched. Above it, the media cap would
-       otherwise leave the type and the photographs stranded at opposite
-       gutters with ~600px of dead air between them: measured 246px of pure
-       slack at 1920 before this. This is a section-level cap, not the page
-       container DESIGN.md rules out; the gutters still run full width. */
-    max-width: 1400px;
-    margin-inline: auto;
-  }
-  /* Type takes a third, photographs two thirds — the imagery has to hold more
-     visual area than the words or this reads as a text section with pictures.
-
-     Widened from 32% to 38% on 2026-09-21. This single edit works on the
-     height from both ends: a narrower media column makes .hw-a shorter, and a
-     wider type column makes the text block taller, so the two columns move
-     toward each other instead of only one of them moving. */
-  .hw-copy  { flex: 0 0 38%; min-width: 0; }
-  /* THE CAP. Without it .hw-a is a 3:4 portrait in a column that tracks the
-     viewport, so its height tracks the viewport too — 552px at 1440, 767px
-     at 1920, and no ceiling. Capping the REGION rather than .hw-a itself is
-     deliberate: the three photographs are tuned as fractions of this region
-     (A ~54%, B ~34%, C ~27%), so a narrower region scales all three together,
-     where a max-height on .hw-a alone would break its ratio against B and C
-     and pull the composition apart. */
-  .hw-media {
-    flex: 1 1 auto;
-    min-width: 0;
-    max-width: 700px;
-    /* The cap leaves slack on a wide screen — measured 246px at 1920 — and
-       with the default flex-start that slack lands at the RIGHT edge, so the
-       photographs stop short of the gutter and the whole section reads as
-       having drifted left. margin-left: auto moves it between the columns
-       instead: both are anchored to their own gutter and the extra width
-       becomes air between type and pictures, which is what an editorial
-       spread wants anyway. */
-    margin-left: auto;
-  }
-}
-
-.hw-eyebrow {
-  font-size: 9px;
-  font-weight: 600;
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--bb-black-soft);
-  margin-bottom: 20px;
-}
-
-.hw-h2 {
-  font-family: var(--font-display-face), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(44px, 4vw, 60px);
-  line-height: 0.97;
-  letter-spacing: -0.007em;
-  max-width: 450px;
-  color: var(--bb-black-soft);
-}
-
-.hw-body {
-  margin-top: 24px;
-  max-width: 380px;
-  font-size: 14px;
-  line-height: 1.65;
-  color: var(--bb-grey-dark);
-}
-
-.hw-cta {
-  display: inline-block;
-  /* Hit area: 15px -> 45px. inline-block, so vertical padding DOES enter the
-     line box — the 30px gap above is therefore split into 15px of margin and
-     15px of padding, and the 15px added below is cancelled by an equal
-     negative margin. Occupied space and text position are both unchanged:
-     15 + 45 - 15 = 45, and the first text pixel still sits 30px below the
-     paragraph, exactly as 30 + 15 did. */
-  margin-top: 15px;
-  margin-bottom: -15px;
-  padding-block: 15px;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--bb-black-soft);
-  text-decoration: underline;
-  text-underline-offset: 5px;
-  text-decoration-thickness: 1px;
-}
-/* 200ms: an arrow nudging four pixels over 450ms reads as hesitation. */
-.hw-cta-arrow { display: inline-block; transition: transform 200ms var(--bb-ease); }
-.hw-cta:hover .hw-cta-arrow,
-.hw-cta:focus-visible .hw-cta-arrow { transform: translateX(4px); }
-
-/* Three unequal photographs, offset rather than collaged. Square edges, no
-   radius, no shadow, no frame — the picture is the object. */
-/* 1.3fr/1fr with a 28px gap puts A at ~54% of the image region. B and C are
-   then sized as a fraction of the right column rather than filling it, which
-   is what keeps them at ~34% and ~27% and stops the right side reading as two
-   stacked cards. */
-.hw-media { display: grid; grid-template-columns: 1.3fr 1fr; gap: 28px; align-items: start; }
-.hw-stack { display: grid; gap: 20px; }
-
-.hw-fig { position: relative; overflow: hidden; background: var(--bb-white); margin: 0; }
-.hw-a { aspect-ratio: 3 / 4; }
-.hw-b { aspect-ratio: 4 / 5; width: 82%; }
-/* The detail sits smaller and pulled to the right edge, which is what stops
-   the right-hand column reading as two stacked cards. */
-.hw-c { aspect-ratio: 1 / 1; width: 65%; margin-left: auto; }
-
-@media (min-width: 1024px) {
-  /* B starts lower than A so the tops do not line up — an even pair reads as
-     a template. */
-  .hw-b { margin-top: 52px; }
-}
-
-.hw-par { position: absolute; inset: 0; display: block; }
-
-/* Gentler than New In on purpose: ceramics, glass, stone and metal carry
-   their character in colour, and New In's grayscale(25%) saturate(.82) takes
-   too much of it out of them. Scoped to this section only. */
-.hw-fig img {
-  filter: grayscale(12%) saturate(0.78) brightness(0.98) contrast(1.02);
-  transform: scale(1);
-  transition: filter 780ms var(--bb-ease), transform 800ms var(--bb-ease);
-}
-
-/* Atmospheric, not merchandise. These photographs are not links and the hover
-   deliberately stops short of the full restoration New In uses, so it never
-   suggests something to click. */
-.hw-fig:hover img {
-  filter: grayscale(0%) saturate(0.95) brightness(1) contrast(1);
-  transform: scale(1.015);
-}
-
-@media (min-width: 1024px) {
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      /* Parallax on the inner span, entrance on the outer figure: one element
-         carries one timeline, so the two effects need two elements.
-         The timeline is NAMED on the section rather than view() on the span.
-         view() resolves against the nearest ancestor scroll container, and
-         .hw-fig sets overflow:hidden to contain the scale — which makes it a
-         scrollport. The span fills it exactly and that box never scrolls, so
-         progress sat frozen at 49.99% at every scroll position. Measured it
-         doing precisely that before switching. --hw is declared on .hw, whose
-         scrollport is the document, and all three images share it: they differ
-         in their keyframes, not their timing. */
-      .hw-par {
-        animation-timeline: --hw;
-        animation-range: cover 0% cover 100%;
-        animation-duration: auto;
-        animation-timing-function: linear;
-        animation-fill-mode: both;
-      }
-      .hw-a .hw-par { animation-name: hw-par-a; }
-      .hw-b .hw-par { animation-name: hw-par-b; }
-      .hw-c .hw-par { animation-name: hw-par-c; }
-    }
-  }
-}
-
-@keyframes hw-par-a { from { transform: translateY(0); }     to { transform: translateY(18px); } }
-@keyframes hw-par-b { from { transform: translateY(6px); }   to { transform: translateY(-14px); } }
-@keyframes hw-par-c { from { transform: translateY(-4px); }  to { transform: translateY(22px); } }
-
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* No per-child offsets here, and none needed. These elements are stacked
-       vertically and each carries its own view timeline, so they already
-       arrive in reading order — the copy's four lines across ~120px, the three
-       figures across the height of the section. The ms delays that used to sit
-       here were inert (a scroll timeline ignores animation-delay) and would
-       have double-counted a cascade the layout was already providing. */
-    .hw-copy > * {
-      animation: hw-rise 840ms var(--bb-ease) both;
-      animation-timeline: view();
-      animation-range: entry var(--bb-enter) entry var(--bb-settle);
-    }
-
-    .hw-fig {
-      animation: hw-rise 800ms var(--bb-ease) both;
-      animation-timeline: view();
-      animation-range:
-        entry calc(var(--bb-enter) + var(--bb-step))
-        entry calc(var(--bb-settle) + var(--bb-step));
-    }
-  }
-}
-
-@keyframes hw-rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Mobile keeps the magazine character rather than three identical full-width
-   cards, and drops the parallax: the travel is a larger share of a small
-   viewport and reads as jitter rather than depth. */
-@media (max-width: 1023px) {
-  /* Two across, not three stacked. This block used to be a single column,
-     so all three photographs ran full width one under another — 1837px of
-     images at 768, which is what made this section 2.31 screens tall there.
-     That is the larger of the two faults and it is invisible on a desktop
-     screenshot, which is why it survived.
-
-     A spans the row; B and C sit beside each other beneath it. .hw-stack is
-     display: contents so its two children become grid items of .hw-media
-     rather than a nested single-column stack — it is a plain div carrying no
-     semantics, so nothing leaves the accessibility tree with it. */
-  .hw-media { grid-template-columns: 1fr 1fr; gap: 14px; }
-  .hw-stack { display: contents; }
-  /* LANDSCAPE here, not the 4:5 portrait it was. A full-width portrait is
-     precisely what makes a phone scroll for a screen and a half. */
-  .hw-a { grid-column: 1 / -1; aspect-ratio: 3 / 2; width: 100%; }
-  /* The 72%/60% widths and the margin-left flips existed to break up a
-     vertical run of three. There is no vertical run now, so they go: two
-     equal squares side by side is the composition. */
-  .hw-b, .hw-c { aspect-ratio: 1 / 1; width: 100%; margin: 0; }
-}
-
 @keyframes newin-rise { from { opacity: 0; transform: translateY(52px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes newin-item { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -1801,15 +1554,30 @@ body {
   line-height: 0.93;
   letter-spacing: -0.009em;
   text-transform: uppercase;
-  text-wrap: initial;   /* balance fights the line splitter for control */
+  text-wrap: initial;
   max-width: 780px;
   color: var(--bb-white);
 }
 
-/* The masked reveal, when PremiumMotion splits this into lines. GSAP writes
-   the wrapper; this only has to stop `balance` and any inherited leading from
-   changing the measured line boxes underneath it. */
-.pov-statement .split-line { will-change: transform, opacity; }
+/* Scroll-linked word reveal (PointOfView.tsx). Each word's own view
+   timeline, so a line lights as that line rises through the lower half of
+   the screen, and it reverses as you scroll back: the reading follows the
+   thumb. Dim, not invisible, so the whole sentence is always legible. */
+.pov-w { display: inline-block; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .pov-w {
+      animation: pov-lit linear both;
+      animation-timeline: view();
+      animation-range: cover 8% cover 42%;
+    }
+    /* 0.38, not lower: paper at 38% over the ink measures about 3.5:1,
+       over the 3:1 floor for text this size. At 0.22 the waiting words
+       failed it (axe, serious), and a word nobody can read yet is still a
+       word on the page. */
+    @keyframes pov-lit { from { opacity: 0.38; } to { opacity: 1; } }
+  }
+}
 
 .pov-note { display: flex; gap: 20px; align-items: stretch; }
 
@@ -6516,11 +6284,9 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   .cross-link:hover .cross-media > *,
   .cat-card:hover .cat-img,
   .cats-card:hover .cats-img,
-  .newin-item:hover .newin-media img,
-  .hw-fig:hover img {
+  .newin-item:hover .newin-media img {
     transform: none;
   }
-  .hw-cta:hover .hw-cta-arrow,
   .visit-cta:hover .visit-cta-arrow,
   .cross-link:hover .cross-arrow,
   .newin-viewall:hover .newin-viewall-arrow {
@@ -8041,7 +7807,6 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    so no layout moves. */
 .cps-view > span,
 .cps-strip-link > span,
-.hw-cta,
 .svc-row-link,
 .cf-cta {
   text-decoration: none;
@@ -8050,7 +7815,6 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 }
 .cps-view > span { padding-bottom: 3px; }
 .cps-view { text-decoration: none; }
-.hw-cta { background-position: left calc(100% - 12px); }
 .svc-row-link { min-height: 44px; margin-top: 2px; }
 @keyframes u-draw {
   0% { background-size: 100% 1px; background-position-x: right; }
@@ -8061,7 +7825,6 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .cps-view:hover > span,
   .cps-strip-link:hover > span,
-  .hw-cta:hover,
   .svc-row-link:hover,
   .cf-card.is-centre:hover .cf-cta { animation: u-draw 700ms cubic-bezier(0.65, 0, 0.35, 1); }
 }
@@ -8142,7 +7905,6 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .svc-media img,
-    .hw-fig img,
     .owner-portrait img,
     .cats-img,
     .prod-media img {
@@ -8283,3 +8045,168 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .cps-card-price { grid-area: price; font-size: 14px; letter-spacing: 0.02em; color: var(--bb-black); font-variant-numeric: tabular-nums; }
 .cps-card:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 6px; }
 @media (prefers-reduced-motion: reduce) { .cps-card-media { transition: none; } }
+
+/* Footer links on phones: 24px tall was the WCAG minimum, not a
+   comfortable thumb target. 40px on touch screens, same visual rhythm
+   (the list's own gaps shrink to match). */
+@media (pointer: coarse) {
+  .ft-link { display: inline-flex; align-items: center; min-height: 40px; background-position: left calc(50% + 0.85em); }
+  .ft-nav ul { gap: 0; }
+  .ft-nav li { margin: 0; }
+}
+
+/* ══ Homeware band (2026-09-23) ═════════════════════════════════════════
+   One wide photograph, the words over its dark side. Replaces the three-
+   product collage the client found cluttered. The picture drifts a little
+   slower than the page as it passes (a view timeline, no JavaScript). */
+.hwb {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(520px, 118vw, 640px);
+  padding: clamp(40px, 7vw, 96px) 18px;
+  background: var(--bb-black);
+  color: var(--bb-white);
+}
+@media (min-width: 768px) { .hwb { padding-inline: var(--bb-gutter-editorial); } }
+@media (min-width: 900px) { .hwb { align-items: center; min-height: 0; aspect-ratio: 21 / 9; max-height: 760px; } }
+.hwb-media { position: absolute; inset: 0; z-index: -1; }
+.hwb-media picture { display: block; height: 100%; }
+.hwb-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+@media (min-width: 900px) { .hwb-media img { object-position: right center; } }
+.hwb-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(26, 20, 22, 0.96) 0%, rgba(26, 20, 22, 0.9) 55%, rgba(26, 20, 22, 0.5) 82%, rgba(26, 20, 22, 0.25) 100%);
+}
+@media (min-width: 900px) {
+  .hwb-media::after {
+    background: linear-gradient(to right, rgba(26, 20, 22, 0.9) 0%, rgba(26, 20, 22, 0.72) 32%, rgba(26, 20, 22, 0.2) 60%, rgba(26, 20, 22, 0) 100%);
+  }
+}
+.hwb-copy { max-width: 520px; }
+.hwb-eyebrow {
+  margin: 0 0 18px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  /* Paper, not the rouge: measured over the photograph the rouge fell to
+     1.2:1 on a phone, where the label sits over the lit vases. */
+  color: var(--bb-white-pure);
+}
+.hwb-h2 {
+  margin: 0;
+  font-family: var(--font-display-face), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(38px, 4.6vw, 68px);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  color: var(--bb-white);
+  text-wrap: balance;
+}
+.hwb-h2 em { font-style: italic; font-synthesis: none; }
+.hwb-body { margin: 20px 0 30px; max-width: 44ch; font-size: 15px; line-height: 1.65; color: rgba(255, 255, 255, 0.78); }
+.hwb-cta { margin-top: 0; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hwb-media img {
+      animation: hwb-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    @keyframes hwb-drift { from { transform: scale(1.12) translateY(-4%); } to { transform: scale(1.12) translateY(4%); } }
+  }
+}
+
+/* ══ Statement pieces, the copy panel (2026-09-23) ══════════════════════
+   An index and category on one line, the name, its line, then up to three
+   details on hairlines, then the price where the decision is made: large,
+   in the display face, directly above size and Add to bag. */
+.cps-meta { display: flex; align-items: baseline; gap: 16px; margin: 0 0 18px; }
+.cps-index {
+  font-family: var(--font-display-face), Georgia, serif;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--bb-rouge);
+  font-variant-numeric: lining-nums;
+}
+.cps-of { font-size: 14px; color: var(--bb-grey-dark); letter-spacing: 0.04em; }
+.cps-meta .cps-cat { margin: 0; }
+.cps-desc { border-top: 0; padding-top: 0; margin-top: 16px; }
+.cps-features { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--bb-light-border); }
+.cps-features li {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--bb-light-border);
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: var(--bb-black);
+}
+.cps-features li::before {
+  content: "";
+  flex: none;
+  width: 14px;
+  height: 1px;
+  transform: translateY(-4px);
+  background: var(--bb-rouge);
+}
+.cps-price-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; max-width: 420px; }
+.cps-buy .cps-price {
+  margin: 0;
+  font-family: var(--font-display-face), Georgia, serif;
+  font-size: clamp(30px, 2.6vw, 38px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+.cps-price-note { margin: 0; font-size: 12.5px; color: var(--bb-grey-dark); }
+.cps-buy .atb { margin-top: 20px; }
+/* On a phone the steps still rise in on scroll, one after another. */
+
+/* ══ Motion for touch (2026-09-23) ══════════════════════════════════════
+   The client: "not a lot of animation and design on mobile". Most of the
+   craft above answers a hover, which a phone never sends. The touch
+   equivalents: */
+
+/* 1. The press is the hover. A button fills and its label rolls while the
+      finger is down, so every tap answers visibly. The grey flash iOS
+      paints over tapped links is removed; this replaces it. */
+a, button, label { -webkit-tap-highlight-color: transparent; }
+@media (hover: none), (pointer: coarse) {
+  @media (prefers-reduced-motion: no-preference) {
+    :is(.hero-cta, .pinky-cta, .btn-solid, .visit-cta, .atb-add, .atb-buy, .cx-send, .bk-pay):active:not(:disabled) .roll > span { transform: translateY(-1.35em); transition-duration: 380ms; }
+    .hero-cta:active::before,
+    .visit-cta:active::before { transform: scaleX(1); transform-origin: left center; transition-duration: 380ms; }
+    .hero-cta:active { color: var(--bb-white-pure); }
+    .visit-cta:active { color: var(--bb-white); border-color: var(--bb-black); }
+    .ft .visit-cta:active { color: var(--bb-black); }
+    :is(.pinky-cta, .btn-solid, .atb-add, .cx-send, .bk-pay):active::after { transform: translateX(110%); transition-duration: 600ms; }
+  }
+}
+
+/* 2. "All three": on a mouse, colour spreads from the cursor. On a phone
+      the cards colour themselves in from their centres as the strip rises
+      into the middle of the screen. */
+@supports (animation-timeline: view()) {
+  @media (hover: none) and (prefers-reduced-motion: no-preference) {
+    /* The row scrolls sideways, so a card's own view() would follow that
+       scroll. The strip's vertical position on the page drives it instead. */
+    .cps-strip { view-timeline: --cps-strip block; }
+    .cps-card-colour {
+      transition: none;
+      animation: cps-colour-in linear both;
+      animation-timeline: --cps-strip;
+      animation-range: entry 60% cover 50%;
+    }
+    @keyframes cps-colour-in {
+      from { clip-path: circle(0% at 50% 50%); }
+      to { clip-path: circle(75% at 50% 50%); }
+    }
+  }
+}

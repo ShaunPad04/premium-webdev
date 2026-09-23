@@ -19,10 +19,6 @@ const SmoothScroll = dynamic(
   () => import("./SmoothScroll").then((m) => m.SmoothScroll),
   { ssr: false },
 );
-const PremiumMotion = dynamic(
-  () => import("./PremiumMotion").then((m) => m.PremiumMotion),
-  { ssr: false },
-);
 
 export function MotionLayer() {
   const [ready, setReady] = useState(false);
@@ -58,7 +54,6 @@ export function MotionLayer() {
   return (
     <>
       <SmoothScroll />
-      <PremiumMotion />
     </>
   );
 }

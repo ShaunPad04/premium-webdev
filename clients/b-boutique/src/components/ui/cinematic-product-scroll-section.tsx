@@ -35,7 +35,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { animate, stagger } from "animejs";
 
-import { formatPriceShort, isBuyable, products, type Product } from "@/lib/catalogue";
+import { FREE_DELIVERY_OVER_P, formatPriceShort, isBuyable, products, type Product } from "@/lib/catalogue";
 import { ProductPhoto } from "@/components/ProductPhoto";
 import { AddToBag } from "@/components/AddToBag";
 import { ColourProvider } from "@/components/ColourChoice";
@@ -61,7 +61,7 @@ function Arrow() {
 }
 
 /* ── One piece, coloured in by the scroll ──────────────────────────────── */
-function ProductHero({ product, reversed, reduced }: { product: Product; reversed: boolean; reduced: boolean }) {
+function ProductHero({ product, reversed, reduced, index, total }: { product: Product; reversed: boolean; reduced: boolean; index: number; total: number }) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -111,7 +111,7 @@ function ProductHero({ product, reversed, reduced }: { product: Product; reverse
     };
   }, [reduced]);
 
-  const href = `/shop/${product.slug}`;
+  const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
     <div ref={sectionRef} className="cps-scene">
@@ -135,27 +135,43 @@ function ProductHero({ product, reversed, reduced }: { product: Product; reverse
 
           <div className="cps-copy">
             <div className="cps-copy-inner">
+              {/* Rebuilt 2026-09-23 (client: "unfinished and under detailed",
+                  the price "out of place", no "View the piece"). An index, the
+                  name and its line; up to three details from the piece's own
+                  catalogue entry; then the price where the decision is made,
+                  directly above size and Add to bag. */}
               <div className="cps-step" data-progress="0.15">
-                <p className="label cps-cat">{product.category}</p>
+                <p className="cps-meta">
+                  <span className="cps-index">
+                    {pad(index + 1)}
+                    <span className="cps-of"> / {pad(total)}</span>
+                  </span>
+                  <span className="label cps-cat">{product.category}</span>
+                </p>
                 <h3 className="cps-name">{product.name}</h3>
-                <p className="cps-price">{formatPriceShort(product.priceP)}</p>
-              </div>
-
-              <div className="cps-step" data-progress="0.35">
                 <p className="cps-desc">{product.short}</p>
               </div>
 
+              {product.features.length > 0 ? (
+                <div className="cps-step" data-progress="0.3">
+                  <ul className="cps-features">
+                    {product.features.slice(0, 3).map((f) => (
+                      <li key={f}>{f}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
               {/* The product page's own buy block: colour swatches, size,
-                  Add to bag, Buy now, the same stock and size checks. Asked
-                  for 2026-09-23 ("where is the buy now / add to basket"). */}
-              <div className="cps-step cps-buy" data-progress="0.55">
+                  Add to bag, Buy now, the same stock and size checks. */}
+              <div className="cps-step cps-buy" data-progress="0.5">
+                <div className="cps-price-row">
+                  <p className="cps-price">{formatPriceShort(product.priceP)}</p>
+                  <p className="cps-price-note">Free UK delivery over {formatPriceShort(FREE_DELIVERY_OVER_P)}</p>
+                </div>
                 <ColourProvider colours={product.colourways.map((c) => c.colour)}>
                   <AddToBag product={product} />
                 </ColourProvider>
-                <Link href={href} className="cps-view">
-                  <span>View the piece</span>
-                  <Arrow />
-                </Link>
               </div>
             </div>
           </div>
@@ -248,7 +264,7 @@ export function Component() {
       </div>
 
       {PIECES.map((p, i) => (
-        <ProductHero key={p.slug} product={p} reversed={i % 2 === 1} reduced={reduced} />
+        <ProductHero key={p.slug} product={p} reversed={i % 2 === 1} reduced={reduced} index={i} total={PIECES.length} />
       ))}
 
       {/* The scroll-driven line from /contact, between the last piece and

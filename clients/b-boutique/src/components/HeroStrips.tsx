@@ -16,8 +16,11 @@ const sources = (file: string) => [
   { media: "(min-width: 1024px)", type: "image/avif", srcSet: `/img/hero/${file}-d.avif` },
   { media: "(min-width: 1024px)", type: "image/webp", srcSet: `/img/hero/${file}-d.webp` },
   { media: "(min-width: 1024px)", type: "image/jpeg", srcSet: `/img/hero/${file}-d.jpg` },
-  { type: "image/avif", srcSet: `/img/hero/${file}-m.avif` },
-  { type: "image/webp", srcSet: `/img/hero/${file}-m.webp` },
+  /* The frame is cover-cropped from a 9:16 portrait, so on a phone it is
+     as wide as the screen or 0.56 of the screen's height, whichever is
+     larger; `sizes` says exactly that, and a typical phone takes the 900. */
+  { type: "image/avif", srcSet: `/img/hero/${file}-s.avif 900w, /img/hero/${file}-m.avif 1536w`, sizes: "max(100vw, 56svh)" },
+  { type: "image/webp", srcSet: `/img/hero/${file}-s.webp 900w, /img/hero/${file}-m.webp 1536w`, sizes: "max(100vw, 56svh)" },
 ];
 
 const SLIDES: Slide[] = [

@@ -115,6 +115,12 @@ const robots: Metadata["robots"] = indexable
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
+  /* iOS Safari turns anything that looks like an address, phone number or
+     email into a link of its own and draws a dotted underline under it. It
+     did exactly that to the "18 Sea View Street, Cleethorpes." slide title
+     (client screenshot, 2026-09-23). Every real address and email on the
+     site is already a deliberate link where one is wanted. */
+  formatDetection: { address: false, telephone: false, email: false, date: false },
   title: {
     default: "B Boutique — Womenswear & Homeware, Sea View Street, Cleethorpes",
     template: "%s — B Boutique, Cleethorpes",

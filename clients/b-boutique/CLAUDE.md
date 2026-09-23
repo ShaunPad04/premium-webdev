@@ -472,6 +472,33 @@ Contact Card) were rebuilt in-house, not vendored.
   Home unchanged within noise (median score 80 vs 78; LCP ~5s both — a
   pre-existing gap, not caused here).
 
+## Second pass — 2026-09-23 evening
+
+- **Home LCP.** PageSpeed showed 6.5s. That is Lighthouse's SIMULATED
+  estimate; measured under Slow-4G + 4x CPU in a real browser the LCP (the
+  hero title text, not the photo) paints at ~1.55s, and blocking fonts or
+  JS does not move it. The simulation charges every early request to the
+  LCP, so bytes still matter: phones now get a 900px hero (`-s`, srcset with
+  `sizes="max(100vw, 56svh)"`) instead of the 1536px one, and PremiumMotion
+  (GSAP + SplitText, used only by the philosophy statement) is gone.
+  Lighthouse mobile, n=3 medians, before/after: score 80/82, LCP 5.1/5.0s
+  (within noise), SI 2.2/1.6s, TBT 127/55ms, weight 1839/1182 KB.
+  Remaining lever, not taken: the hero slider imports GSAP eagerly (~200 KB
+  unpacked) though the first frame needs none of it. Deferring it means
+  reworking a component that crashed twice on 2026-09-22; do it as its own
+  tested change.
+- **Philosophy statement** lights word by word on a view timeline (CSS only).
+  The dim state is 0.38 opacity because 0.22 failed 3:1 (axe).
+- **Homeware** on the home page is one 21:9 band (the masthead's ceramics
+  frame) instead of three product photos. Eyebrow is paper: the rouge
+  measured 1.2:1 over the photograph on a phone.
+- **Statement pieces:** no "View the piece"; index, up to three catalogue
+  features, price in the display face directly above Add to bag.
+- **Touch:** press = hover for the CTAs (fill + label roll), no tap flash,
+  "All three" colours in on scroll on phones.
+- **iOS dotted underline** under the address slide was Safari's data
+  detector; `formatDetection` is off for address/telephone/email/date.
+
 ## Performance — and the trap in measuring it
 
 **Measured 2026-09-08. Desktop 100, mobile 96, CLS 0, TBT 10ms, accessibility

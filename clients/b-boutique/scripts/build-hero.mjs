@@ -135,6 +135,15 @@ for (const name of slides) {
     mob.clone().webp({ quality: 78 }).toFile(`public/img/hero/${name}-m.webp`),
     mob.clone().jpeg({ quality: 82, mozjpeg: true }).toFile(`public/img/hero/${name}-m.jpg`),
   ]);
+  /* A phone-sized portrait (2026-09-23). The 1536px portrait was going to
+     every phone; a 412px screen at 1.75x shows ~805 device pixels across
+     the cover crop, so most phones get this 900px one via srcset and only
+     3x screens still ask for 1536. Measured, not assumed: see CLAUDE.md. */
+  const small = sharp(port).resize({ width: 900, withoutEnlargement: true });
+  await Promise.all([
+    small.clone().avif({ quality: 54, effort: 6 }).toFile(`public/img/hero/${name}-s.avif`),
+    small.clone().webp({ quality: 78 }).toFile(`public/img/hero/${name}-s.webp`),
+  ]);
 
   console.log(
     `${name.padEnd(11)} land ${lm.width}x${lm.height} port ${pm.width}x${pm.height}  ->  ` +

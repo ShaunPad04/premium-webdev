@@ -89,7 +89,7 @@ const AUTOPLAY_INTERVAL = 6000;
 const TITLE_DURATION = 0.8;
 const PROGRESS_DURATION = 0.9;
 
-export type SlideSource = { media?: string; type: string; srcSet: string };
+export type SlideSource = { media?: string; type: string; srcSet: string; sizes?: string };
 
 export type Slide = {
   src: string;
@@ -130,7 +130,7 @@ function SlideImage({ slide, first = false }: { slide: Slide; first?: boolean })
   return (
     <picture>
       {slide.sources?.map((s) => (
-        <source key={`${s.media ?? ""}${s.type}`} media={s.media} type={s.type} srcSet={s.srcSet} />
+        <source key={`${s.media ?? ""}${s.type}`} media={s.media} type={s.type} srcSet={s.srcSet} sizes={s.sizes} />
       ))}
       <img
         src={slide.src}
