@@ -901,3 +901,13 @@ visible difference at 2x). After that, n=5: LCP median 5.65s vs 5.34s
 (ranges 5.29-5.94 vs 5.19-5.56), page 1200 vs 1494 KB. A ~0.3s simulated
 gap remains; the Anton file (12 KB) is the other new request on the path.
 Accepted as the cost of the approved design, not hidden.
+
+**Later the same night (Brad):** the header wordmark hides over the home
+hero until the bar turns solid (every other route keeps it); the
+announcement strip fades from the red into black; the band under the hero
+is now `NewArrivalRail` (NEW ARRIVAL in Anton, white on black, red dots,
+decorative and aria-hidden), replacing `StatementRail` (deleted;
+`lib/statements.ts` kept for its history). **Product-photo backdrop swap is
+PAUSED at Brad's request**: a 3-photo pilot (Seedream 4.5 grey backdrop +
+Higgsfield cut-out, original garment pixels composited back, never
+regenerated) exists only in the session scratchpad. Nothing was committed.

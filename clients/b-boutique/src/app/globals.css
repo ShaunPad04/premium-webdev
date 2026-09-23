@@ -8357,3 +8357,34 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 639px) {
   .lm--centre .lm-scrim { background: linear-gradient(to top, rgba(26, 20, 22, 0.55) 0%, transparent 30%, transparent 80%, rgba(26, 20, 22, 0.44) 100%); }
 }
+
+/* The header wordmark stands down over the home hero (Nav: data-hidden). */
+.navbar-mark { transition: opacity 320ms var(--bb-ease), visibility 320ms; }
+.navbar-mark[data-hidden] { opacity: 0; visibility: hidden; }
+@media (prefers-reduced-motion: reduce) { .navbar-mark { transition: none; } }
+
+/* Announcement strip: the red fades down into black (2026-09-23, Brad), so
+   it melts into the dark top of the hero instead of sitting on it as a
+   band. Text stays on the fully-red upper part; both ends clear AA for the
+   ivory text (measured, see commit). No hard line underneath. */
+.announce {
+  background: linear-gradient(to bottom, var(--bb-black) 0%, var(--bb-black) 35%, #1A1416 100%);
+  border-bottom: 0;
+}
+
+/* NEW ARRIVAL marquee (NewArrivalRail): the stmt-* track, in the hero's
+   Anton caps, white on black with a red dot between. The dot is decoration
+   (the band is aria-hidden), so it is the bright red of the reference. */
+.arr-rail { background: #0E0B0C; border: 0; height: 48px; }
+@media (min-width: 640px) { .arr-rail { height: 56px; } }
+.arr-rail .stmt-text {
+  font-family: var(--font-hero), "Arial Narrow", sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #FDFAF3;
+}
+@media (min-width: 640px) { .arr-rail .stmt-text { font-size: 30px; } }
+.arr-rail .stmt-item { gap: clamp(20px, 2.4vw, 34px); padding-inline-end: clamp(20px, 2.4vw, 34px); }
+.arr-dot { display: block; width: 8px; height: 8px; border-radius: 50%; background: #E0201A; flex: none; }
+.arr-rail .stmt-track { animation-duration: 30s; }

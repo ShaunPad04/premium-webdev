@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { PRIMARY } from "@/lib/nav";
@@ -57,6 +58,10 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
   }, []);
 
   const opaque = solid || scrolled;
+  /* Over the home hero the page already says B BOUTIQUE in large type, so
+     the header's own wordmark stands down until the bar turns solid
+     (2026-09-23, Brad). Every other route keeps it. */
+  const markHidden = usePathname() === "/" && !opaque;
 
   return (
     <header
@@ -163,6 +168,9 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
              you are already on the home page. */
           href="/#top"
           aria-label="B Boutique, home"
+          data-hidden={markHidden || undefined}
+          tabIndex={markHidden ? -1 : undefined}
+          aria-hidden={markHidden || undefined}
           /* py-3 for the same reason as the MENU button: a 20px-tall link in
              a 72px items-center row becomes a 44px target and nothing moves. */
           className="navbar-mark display py-3 text-[20px] leading-none tracking-[-0.005em] lg:text-[22px]"

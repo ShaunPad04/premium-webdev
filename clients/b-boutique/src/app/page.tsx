@@ -1,6 +1,6 @@
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
-import { StatementRail } from "@/components/StatementRail";
+import { NewArrivalRail } from "@/components/NewArrivalRail";
 import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import NewsLetter from "@/components/ui/pinky-news-letter";
@@ -31,9 +31,9 @@ export default function Home() {
 
         {/* Hook — what this is */}
         <Hero />
-        {/* A breath — what the shop is, moving slowly. Was eight brand
-            logos until 2026-09-21; see lib/statements.ts for why they went. */}
-        <StatementRail />
+        {/* NEW ARRIVAL marquee (2026-09-23). Replaced the statement rail,
+            which replaced eight brand logos; see lib/statements.ts. */}
+        <NewArrivalRail />
         {/* 01 Editorial interlude — the statement, lit word by word */}
         <PointOfView />
         {/* 02 The rails — the heroic interaction */}
