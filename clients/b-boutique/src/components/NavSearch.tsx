@@ -123,9 +123,16 @@ export function NavSearch() {
         /* py-[17px] is hit area: 10px type is a 10px target, measured
            at 390 where this is a thumb's job. The row is items-center, so
            nothing visible moves. */
-        className="nav-link hidden py-[17px] text-[10px] font-semibold uppercase leading-none tracking-[0.14em] lg:block"
+        className="nav-link navsearch-trigger py-[17px] text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
       >
-        Search
+        {/* The word on a desktop; on a phone, with the wordmark centred
+            between the controls, a magnifier in its place (2026-09-23). The
+            word stays the accessible name at every width. */}
+        <span className="nb-word">Search</span>
+        <svg className="nb-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M16 16l4.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
       </button>
 
       {open ? (

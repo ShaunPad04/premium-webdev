@@ -86,10 +86,18 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
       {!opaque ? (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-[120px]"
+          className="pointer-events-none absolute inset-x-0 top-0 h-[150px]"
           style={{
+            /* Deeper since 2026-09-23. The centred header put the wordmark
+               over the bright middle of the hero and SEARCH / MENU over the
+               lit windows of the new masthead photographs: measured with the
+               text hidden, 1.6-3.4:1 at the old .42/.16. This keeps the top
+               edge of each photograph readable without veiling the frame. */
+            /* The second layer is for the right-hand controls, which sit
+               over the lit side of the masthead photographs on a wide
+               screen (4.2:1 without it at 1280-1920). */
             background:
-              "linear-gradient(to bottom, rgba(26, 20, 22, .42) 0%, rgba(26, 20, 22, .16) 55%, transparent 100%)",
+              "linear-gradient(to bottom, rgba(26, 20, 22, .74) 0%, rgba(26, 20, 22, .6) 45%, rgba(26, 20, 22, .22) 78%, transparent 100%), linear-gradient(to left, rgba(26, 20, 22, .38) 0%, transparent 30%)",
           }}
         />
       ) : null}
@@ -128,7 +136,12 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
         <AnnounceBar />
       </div>
 
-      <div className="relative flex h-[72px] items-center justify-between px-[18px] sm:px-6 lg:px-8">
+      {/* Centred wordmark (2026-09-23, client's reference). One instance of
+          each control, placed per width with `order` in globals.css
+          (.navbar): on a phone Menu and Search sit left and the Bag right;
+          on a desktop the five links sit left and Search, Bag and Menu
+          right. Nothing is rendered twice, so no id or state is duplicated. */}
+      <div className="navbar relative flex h-[72px] items-center px-[18px] sm:px-6 lg:px-8">
         {/* LEFT — the wordmark, small. The giant one lives in the footer. */}
         <Link
           /* next/link rather than <a>, because the href now starts with a
@@ -150,7 +163,7 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
           aria-label="B Boutique, home"
           /* py-3 for the same reason as the MENU button: a 20px-tall link in
              a 72px items-center row becomes a 44px target and nothing moves. */
-          className="display shrink-0 py-3 text-[20px] leading-none tracking-[-0.005em] lg:text-[21px]"
+          className="navbar-mark display py-3 text-[20px] leading-none tracking-[-0.005em] lg:text-[22px]"
         >
           B Boutique
         </Link>
@@ -158,7 +171,7 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
         {/* CENTRE */}
         <nav
           aria-label="Primary"
-          className="pointer-events-auto absolute left-1/2 hidden -translate-x-1/2 lg:block"
+          className="navbar-links pointer-events-auto hidden lg:block"
         >
           {/* 2.8vw, not 3.2. The centre nav gained a sixth item (Contact) when
               the site gained pages, and at exactly 1024 — the width where this
@@ -194,7 +207,7 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
         </nav>
 
         {/* RIGHT */}
-        <div className="flex shrink-0 items-center gap-5 sm:gap-7">
+        <div className="navbar-spacer flex-1" aria-hidden="true">
           {/* Both of these were inert, aria-hidden spans: part of the approved
               composition with nothing behind them, because announcing a
               control that does nothing is worse than not announcing it.
@@ -215,11 +228,10 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
               same `searchProducts` over the same catalogue /shop filters, so
               this is a second SURFACE onto the search, never a second copy of
               it. */}
-          <NavSearch />
-          <BagLink />
-
-          <CornerMenu />
         </div>
+        <div className="navbar-search"><NavSearch /></div>
+        <div className="navbar-bag"><BagLink /></div>
+        <div className="navbar-menu"><CornerMenu /></div>
       </div>
     </header>
   );

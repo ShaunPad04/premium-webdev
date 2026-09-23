@@ -155,7 +155,7 @@ export function CornerMenu() {
            button changes nothing visible — verified pixel-identical. */
         className="group relative z-[60] inline-flex shrink-0 items-center gap-2.5 py-[17px] text-[10px] font-semibold uppercase leading-none tracking-[0.14em] text-bb-white transition-opacity duration-200 hover:opacity-70"
       >
-        <span>{open ? "Close" : "Menu"}</span>
+        <span className="nb-word">{open ? "Close" : "Menu"}</span>
         {/* Two 1px rules, not a hamburger. On open they cross into a close
             mark, which keeps one mark doing both jobs rather than swapping
             glyphs. */}

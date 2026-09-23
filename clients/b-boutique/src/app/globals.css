@@ -1341,23 +1341,25 @@ body {
   color: var(--bb-white);
 }
 
-/* Scroll-linked word reveal (PointOfView.tsx). Each word's own view
-   timeline, so a line lights as that line rises through the lower half of
-   the screen, and it reverses as you scroll back: the reading follows the
-   thumb. Dim, not invisible, so the whole sentence is always legible. */
+/* Scroll-driven fade-in (PointOfView.tsx; client, 2026-09-23: "when you
+   scroll the text appears"). Each word's own view timeline, so the
+   statement appears line by line as it rises into the lower part of the
+   screen: from nothing, lifting a little, to full. It happens with the
+   scroll, not on a timer, so it runs backwards if you scroll back.
+   From opacity 0, not a dim: a dim word is text on the page that fails
+   contrast (0.22 did, measured), whereas an invisible one is not yet there.
+   The statement sits below the first screen on every page load, so it is
+   never caught half-drawn at rest. Static where view timelines are
+   unsupported, and under reduced motion. */
 .pov-w { display: inline-block; }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .pov-w {
-      animation: pov-lit linear both;
+      animation: pov-in linear both;
       animation-timeline: view();
-      animation-range: cover 8% cover 42%;
+      animation-range: entry 15% cover 35%;
     }
-    /* 0.38, not lower: paper at 38% over the ink measures about 3.5:1,
-       over the 3:1 floor for text this size. At 0.22 the waiting words
-       failed it (axe, serious), and a word nobody can read yet is still a
-       word on the page. */
-    @keyframes pov-lit { from { opacity: 0.38; } to { opacity: 1; } }
+    @keyframes pov-in { from { opacity: 0; transform: translateY(0.35em); } to { opacity: 1; transform: none; } }
   }
 }
 
@@ -8037,3 +8039,53 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .svs-item:active .svs-icon { background: var(--bb-black); color: var(--bb-white); border-color: var(--bb-black); }
 .svs-item:focus-visible { outline: 2px solid var(--bb-black); outline-offset: -2px; }
 @media (prefers-reduced-motion: reduce) { .svs-icon, .svs-arrow { transition: none; } }
+
+/* ══ Header, centred wordmark (2026-09-23) ══════════════════════════════
+   After the client's reference (a centred name between quiet controls).
+   The wordmark is centred on the row itself, not between the groups, so it
+   sits on the page's true centre line whatever the groups weigh. The
+   controls are single elements re-ordered per width. */
+.navbar { gap: 22px; }
+.navbar-mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  z-index: 1;
+}
+.navbar-search, .navbar-bag, .navbar-menu { display: flex; align-items: center; }
+.navsearch-trigger { display: inline-flex; align-items: center; gap: 8px; }
+.nb-icon { display: none; }
+
+@media (max-width: 1023px) {
+  .navbar { gap: 4px; }
+  .navbar-menu { order: 1; }
+  .navbar-search { order: 2; }
+  .navbar-spacer { order: 3; }
+  .navbar-bag { order: 4; }
+  /* Icons on a phone. The words stay in the buttons as their names, only
+     visually hidden, so a screen reader still hears "Menu" and "Search". */
+  .nb-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .nb-icon { display: block; }
+  .navsearch-trigger,
+  .navbar-menu > button { min-width: 44px; min-height: 44px; justify-content: center; padding-block: 0; }
+  .navbar-bag > a { min-width: 44px; min-height: 44px; }
+}
+@media (max-width: 359px) { .navbar-mark { font-size: 18px; } .navbar { padding-inline: 8px; } }
+
+@media (min-width: 1024px) {
+  .navbar-links { order: 1; }
+  .navbar-spacer { order: 2; }
+  .navbar-search { order: 3; }
+  .navbar-bag { order: 4; }
+  .navbar-menu { order: 5; }
+  .navbar-links { margin-left: -2px; }
+}

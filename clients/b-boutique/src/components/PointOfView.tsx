@@ -23,7 +23,7 @@ const SECONDARY = philosophy.lines;
  * breaks are wrong at every width except the one they were measured at.
  *
  * An earlier 165vh sticky section lit the statement word by word; it was a
- * lot of viewport for one sentence. The 2026-09-23 reveal keeps the lighting
+ * lot of viewport for one sentence. The 2026-09-23 fade-in keeps the effect
  * the client asked for without the pin: the page scrolls normally. */
 export function PointOfView() {
   return (
@@ -35,9 +35,8 @@ export function PointOfView() {
       <div className="pov-inner">
         <div>
           <p className="pov-eyebrow">Our philosophy</p>
-          {/* Scroll-linked (2026-09-23, client): each word brightens from
-              dim to full as it passes up the screen, on phones and desktops
-              alike. Pure CSS on a view timeline, so it costs no JavaScript
+          {/* Scroll-driven (2026-09-23, client): each word fades in as it
+              rises into view, on phones and desktops alike. Pure CSS on a view timeline, so it costs no JavaScript
               and cannot fight React for the DOM (the SplitText version that
               lived here did both). The heading's name is the plain sentence;
               the word spans are hidden from assistive technology. Where view
