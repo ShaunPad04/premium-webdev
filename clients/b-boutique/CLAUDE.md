@@ -386,8 +386,13 @@ stocking them). Do not reintroduce the word without her confirming stock.
   rail with four garments against dark marble (`assets/about/
   texture-vintage-rail.jpg`, Higgsfield + 2k upscale). Brad: "it doesn't need
   to be an interior of her shop". It shows no shop, no stocked product and no
-  person, and carries alt="" so it is never presented as her room. The shopfront frame is NOT used: its fascia says
-  "Accessories & Homeware". If Accessories comes back, so can that photo.
+  person, and carries alt="" so it is never presented as her room. **Shop photos replaced 2026-09-23** with Brad's new set (shopfront, rails
+  by the window, towards the fitting rooms, the counter), upscaled 2x in
+  Higgsfield. The shopfront IS now used, at his request, edited in
+  Higgsfield: the fascia's SumUp web address now reads bboutiqueclee.com
+  and the outside paintwork is tidied; the window contents are untouched.
+  Its right-hand panel still says "Accessories & Homeware" (asked, not
+  changed).
 - **Home hero is the strip slider** (`components/ui/parallax-strip-slider.tsx`
   via `HeroStrips.tsx`), which replaced `HeroSlideshow`. The first slide's
   title is "For every woman who walks in."; the h1 is sr-only. Changed on the

@@ -94,16 +94,13 @@ const vintage: ShopPhoto = {
 };
 
 export default function AboutPage() {
-  const { walkin, mustard, fitting, window: win, homeware } = shopPhotos;
-  /* One 4:5 frame for every room. `pos` keeps each photograph's subject in
-     it: all three of the mustard wall's prints, the window's
-     mannequins. */
+  const { shopfront, railWindow, back, counter } = shopPhotos;
+  /* One 3:2 frame for every room; `pos` keeps each subject in it. */
   const rooms = [
-    { photo: walkin, pos: "50% 50%" },
-    { photo: mustard, pos: "50% 50%" },
-    { photo: win, pos: "45% 50%" },
-    { photo: fitting, pos: "50% 50%" },
-    { photo: homeware, pos: "50% 50%" },
+    { photo: shopfront, pos: "50% 0%" },
+    { photo: railWindow, pos: "50% 50%" },
+    { photo: back, pos: "50% 50%" },
+    { photo: counter, pos: "50% 50%" },
   ];
 
   return (

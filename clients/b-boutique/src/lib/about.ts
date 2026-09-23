@@ -63,45 +63,37 @@ export type ShopPhoto = {
   caption: string;
 };
 
-export const shopPhotos: Record<"walkin" | "mustard" | "fitting" | "window" | "homeware", ShopPhoto> = {
-  walkin: {
-    name: "walkin",
+export const shopPhotos: Record<"shopfront" | "railWindow" | "back" | "counter", ShopPhoto> = {
+  shopfront: {
+    name: "shopfront",
+    widths: [640, 960, 1024],
+    w: 1024,
+    h: 1024,
+    alt: "The front of B Boutique: white signs reading Ladies Fashion, B Boutique Cleethorpes and Accessories & Homeware over a black-framed window of dressed mannequins.",
+    caption: "Sea View Street",
+  },
+  railWindow: {
+    name: "rail-window",
     widths: [960, 1440, 1920],
-    w: 3240,
+    w: 2976,
     h: 2160,
-    alt: "The counter at B Boutique, with a mustard-yellow column and black marble shelves of homeware beside it.",
+    alt: "Gold rails of womenswear against a black and gold marble wall, beside the shop window and its dressed mannequins.",
+    caption: "The rails by the window",
+  },
+  back: {
+    name: "back",
+    widths: [960, 1440, 1920],
+    w: 2976,
+    h: 2160,
+    alt: "Looking to the back of the shop: gold rails of clothing, a round mirror and round fitting rooms with cream curtains, under a black ceiling with spotlights.",
+    caption: "Towards the fitting rooms",
+  },
+  counter: {
+    name: "counter",
+    widths: [960, 1440, 1920],
+    w: 2960,
+    h: 2160,
+    alt: "The black marble counter beside a mustard-yellow wall and shelves of homeware, with rails and the fitting rooms behind.",
     caption: "The counter",
-  },
-  mustard: {
-    name: "mustard",
-    widths: [960, 1440, 1920],
-    w: 3226,
-    h: 2150,
-    alt: "A mustard-yellow wall in the shop with three illustrated prints and a round gold mirror reflecting the rails.",
-    caption: "The mustard wall",
-  },
-  fitting: {
-    name: "fitting",
-    widths: [960, 1440, 1920],
-    w: 3240,
-    h: 2160,
-    alt: "Two round fitting rooms with cream curtains on gold frames, beside a large round mirror.",
-    caption: "Fitting rooms",
-  },
-  window: {
-    name: "window",
-    widths: [960, 1440, 1920],
-    w: 3240,
-    h: 2160,
-    alt: "The shop window from inside: dressed mannequins and a leopard-print chair, with Sea View Street beyond the glass.",
-    caption: "The window, Sea View Street",
-  },
-  homeware: {
-    name: "homeware",
-    widths: [960, 1440, 1920],
-    w: 3240,
-    h: 2160,
-    alt: "A shelf of homeware on a black and gold marble wall, a stacked lamp, a gold frame, a gold vase and chess-piece ornaments, above rails of clothing.",
-    caption: "Homeware",
   },
 };

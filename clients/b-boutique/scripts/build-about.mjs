@@ -35,19 +35,16 @@ const JOBS = [
   /* The About hero since 2026-09-23: a generated vintage still life (see
      TEXTURE above). 04-rails, the hero before it, stays in assets/ unbuilt. */
   { src: "texture-vintage-rail.jpg", out: "vintage", crop: null, widths: [1280, 1920, 2560] },
-  /* Her shop photographs, 3:2 since 2026-09-23. Measured that day: the
-     3840px files hold only ~960px of real detail (they were enlarged before
-     they reached us), and the old 4:5 crops kept 45% of that width, so the
-     lookbook showed ~430 real pixels stretched over a 560px slot. 3:2 uses
-     nearly the whole frame. The crops still leave out the ring light (left
-     of the fitting-room frame) and the passer-by (right of the mustard wall).
-     The real fix is her ORIGINAL phone files. `photo: true` sharpens lightly
-     and encodes at higher quality, because their detail is scarce. */
-  { src: "02-walkin.jpg", out: "walkin", crop: [300, 0, 3240, 2160], widths: [960, 1440, 1920], photo: true },
-  { src: "05-fitting.jpg", out: "fitting", crop: [600, 0, 3240, 2160], widths: [960, 1440, 1920], photo: true },
-  { src: "06-mustard.jpg", out: "mustard", crop: [460, 0, 3226, 2150], widths: [960, 1440, 1920], photo: true },
-  { src: "07-window.jpg", out: "window", crop: [300, 0, 3240, 2160], widths: [960, 1440, 1920], photo: true },
-  { src: "03-homeware.jpg", out: "homeware", crop: [300, 0, 3240, 2160], widths: [960, 1440, 1920], photo: true },
+  /* Her shop photographs, replaced on 2026-09-23 with a new set Brad sent
+     (uploaded to Higgsfield and upscaled 2x there, faithfully, because the
+     copies that reached us were ~855px wide). The shopfront was edited in
+     Higgsfield at his request: the SumUp web address on the fascia now
+     reads bboutiqueclee.com and the outside paintwork is tidied; nothing
+     inside the window was changed. */
+  { src: "11-shopfront-edited.jpg", out: "shopfront", crop: null, widths: [640, 960, 1024], photo: true },
+  { src: "08-rail-window.jpg", out: "rail-window", crop: null, widths: [960, 1440, 1920], photo: true },
+  { src: "09-back.jpg", out: "back", crop: null, widths: [960, 1440, 1920], photo: true },
+  { src: "10-back-counter.jpg", out: "counter", crop: null, widths: [960, 1440, 1920], photo: true },
   { src: "texture-boucle.png", out: "boucle", crop: null, widths: [640, 960, 1280] },
 ];
 
