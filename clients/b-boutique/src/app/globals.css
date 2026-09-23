@@ -8256,3 +8256,59 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 .cf-buy :is(.atb-swatch-row, .atb-size-row) { justify-content: center; }
 @keyframes cf-buy-in { from { opacity: 0; transform: translateY(6px); } }
 @media (prefers-reduced-motion: reduce) { .cf-buy { animation: none; } }
+
+/* ── The centred hero (lm--centre, 2026-09-23, Brad's reference) ────────
+   One name in the middle of a blurred editorial frame, the button under
+   it, the slide list along the foot. The wash is a soft pool behind the
+   middle rather than a floor gradient, because that is where the type is. */
+.lm--centre .lm-content {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  text-align: center;
+  pointer-events: none;
+}
+.lm--centre .lm-actions { pointer-events: auto; justify-content: center; }
+.lm--centre .lm-nav { position: relative; z-index: 1; }
+.lm--centre .lm-title {
+  font-size: clamp(64px, 12.5vw, 196px);
+  line-height: 0.95;
+  letter-spacing: -0.012em;
+}
+.lm--centre .lm-scrim {
+  background:
+    radial-gradient(ellipse 70% 52% at 50% 50%, rgba(26, 20, 22, 0.58) 0%, rgba(26, 20, 22, 0.4) 45%, rgba(26, 20, 22, 0.12) 80%, transparent 100%),
+    linear-gradient(to top, rgba(26, 20, 22, 0.7) 0%, rgba(26, 20, 22, 0.2) 18%, transparent 34%, transparent 76%, rgba(26, 20, 22, 0.44) 100%);
+}
+/* No list: the logo and one button. The timer is invisible but must stay
+   rendered (display:none would stop its animation, and the autoplay). */
+.lm-timer {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.lm-timer[data-run] { animation-name: lm-fill; animation-timing-function: linear; animation-fill-mode: forwards; }
+/* The pause stays (WCAG 2.2.2: the frames change by themselves) but moves
+   to the corner, out of the composition. */
+.lm--centre .hero-pause {
+  position: absolute;
+  right: max(10px, calc(var(--bb-gutter-editorial) - 14px));
+  bottom: 14px;
+}
+.lm--centre { padding-bottom: 0; }
+/* On a phone the name spans the full width, so the pool has to as well:
+   the desktop ellipse fell off at the edges, where it measured 2.4:1 over a
+   lit strand of hair (blur-4). A soft shadow helps it hold on grain. */
+@media (max-width: 639px) {
+  .lm--centre .lm-scrim {
+    background:
+      radial-gradient(ellipse 120% 34% at 50% 50%, rgba(26, 20, 22, 0.62) 0%, rgba(26, 20, 22, 0.42) 50%, rgba(26, 20, 22, 0.1) 85%, transparent 100%),
+      linear-gradient(to top, rgba(26, 20, 22, 0.5) 0%, transparent 22%, transparent 78%, rgba(26, 20, 22, 0.44) 100%);
+  }
+}
+.lm--centre .lm-title { text-shadow: 0 2px 36px rgba(26, 20, 22, 0.35); }

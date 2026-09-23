@@ -15,13 +15,20 @@ test('stepping through every slide does not crash the page', async ({ page }) =>
   page.on('pageerror', (e) => errors.push(String(e)));
   await page.goto('/', { waitUntil: 'networkidle' });
 
-  /* The Lumina list since 2026-09-23: the slide list along the foot is the
-     control. Each change runs the 1.7s glass transition, so wait past it. */
+  /* The Lumina hero since 2026-09-23, centred, with no slide list: a
+     swipe (a mouse drag works the same) is the manual control. Each change
+     runs the 1.7s glass transition, so wait past it. The title is the same
+     on every slide now, so the photograph is what is compared. */
   const titles: string[] = [];
+  const box = (await page.locator('.lm').boundingBox())!;
+  const y = box.y + box.height * 0.3;
   for (let i = 0; i < 6; i++) {
-    await page.locator('.lm-item').nth((i + 1) % 5).click();
+    await page.mouse.move(box.x + box.width * 0.7, y);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * 0.3, y, { steps: 6 });
+    await page.mouse.up();
     await page.waitForTimeout(2200);
-    titles.push((await page.locator('.lm-title .sr-only').textContent()) ?? '');
+    titles.push((await page.locator('.lm-pic[data-on] img').getAttribute('src')) ?? '');
   }
 
   expect(errors, errors.join('\n')).toEqual([]);

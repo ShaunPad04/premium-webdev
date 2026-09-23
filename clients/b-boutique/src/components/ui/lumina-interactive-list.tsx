@@ -47,7 +47,8 @@ export type LuminaSlide = {
   title: string;
   /** The slide's name in the list along the foot. */
   label: string;
-  description: string;
+  /** Optional: the centred layout shows the title and the button only. */
+  description?: string;
   src: string;
   sources: LuminaSource[];
 };
@@ -233,7 +234,22 @@ export function LuminaTitle({ text }: { text: string }) {
 
 /* ── The component ──────────────────────────────────────────────────────── */
 
-export function LuminaInteractiveList({ slides, children }: { slides: LuminaSlide[]; children?: ReactNode }) {
+export function LuminaInteractiveList({
+  slides,
+  children,
+  layout = "foot",
+  list = true,
+}: {
+  slides: LuminaSlide[];
+  children?: ReactNode;
+  /** "foot": count, title and line at the bottom left (the 21st.dev original).
+      "centre": one title in the middle of the frame (2026-09-23, Brad). */
+  layout?: "foot" | "centre";
+  /** false: no slide list along the foot (2026-09-23, Brad: the logo and one
+      button only). The slides still advance and still swipe; a hidden timer
+      stands in for the list's progress line. */
+  list?: boolean;
+}) {
   const total = slides.length;
   const [current, setCurrent] = useState(0);
   const [caption, setCaption] = useState(0);
@@ -386,7 +402,7 @@ export function LuminaInteractiveList({ slides, children }: { slides: LuminaSlid
   return (
     <div
       ref={root}
-      className="lm"
+      className={layout === "centre" ? "lm lm--centre" : "lm"}
       data-gl={glOn || undefined}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
@@ -427,17 +443,21 @@ export function LuminaInteractiveList({ slides, children }: { slides: LuminaSlid
       <div className="lm-scrim" aria-hidden="true" />
 
       <div className="lm-content">
-        <p className="lm-count" aria-hidden="true">
-          <span>{pad(caption + 1)}</span>
-          <span className="lm-count-rule" />
-          <span className="lm-count-total">{pad(total)}</span>
-        </p>
+        {layout === "foot" ? (
+          <p className="lm-count" aria-hidden="true">
+            <span>{pad(caption + 1)}</span>
+            <span className="lm-count-rule" />
+            <span className="lm-count-total">{pad(total)}</span>
+          </p>
+        ) : null}
         <p key={`t${caption}`} className="lm-title" data-anim={animated || undefined}>
           <LuminaTitle text={slide.title} />
         </p>
-        <p key={`d${caption}`} className="lm-desc" data-anim={animated || undefined}>
-          {slide.description}
-        </p>
+        {slide.description ? (
+          <p key={`d${caption}`} className="lm-desc" data-anim={animated || undefined}>
+            {slide.description}
+          </p>
+        ) : null}
         <div className="lm-actions">
           {children}
           {still || total < 2 ? null : (
@@ -462,7 +482,18 @@ export function LuminaInteractiveList({ slides, children }: { slides: LuminaSlid
         </div>
       </div>
 
-      {total > 1 ? (
+      {total > 1 && !list ? (
+        <span
+          key={`timer-${current}`}
+          className="lm-timer"
+          aria-hidden="true"
+          data-run={!still || undefined}
+          style={{ animationDuration: `${INTERVAL_MS}ms`, animationPlayState: playing ? "running" : "paused" }}
+          onAnimationEnd={next}
+        />
+      ) : null}
+
+      {total > 1 && list ? (
         <nav className="lm-nav" aria-label="Hero photographs">
           <ol>
             {slides.map((s, i) => (
