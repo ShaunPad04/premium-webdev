@@ -32,7 +32,7 @@ export const MENU: MenuItem[] = [
   { n: "02", label: "Womenswear", href: "/clothing" },
   { n: "03", label: "Homeware", href: "/homeware" },
   { n: "04", label: "New Arrivals", href: "/#new-in" },
-  { n: "05", label: "The Boutique", href: "/about" },
+  { n: "05", label: "About", href: "/about" },
   { n: "06", label: "Visit Us", href: "/#visit" },
   { n: "07", label: "Contact", href: "/contact" },
 ];

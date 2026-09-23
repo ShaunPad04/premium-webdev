@@ -26,10 +26,12 @@ import { Warp } from "@paper-design/shaders-react";
 
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
-/* Paper, blush and two roses — all light, all leaning pink rather than
-   yellow, so the band belongs to the same palette as the page around it.
-   Ink type on the darkest of them measures above 9:1. */
-const COLOURS = ["#FAF5F3", "#F4DCE0", "#EBC3CB", "#FBEDEA"];
+/* Paper, stone and champagne. It was paper and three roses until
+   2026-09-23, when the client said the pink was "too much considering the
+   website theme". These are the page's own paper warmed toward the brass of
+   the buy buttons, so the band reads as texture rather than a colour block.
+   Ink type on the darkest (#E6D9CC) measures above 13:1. */
+const COLOURS = ["#FAF5F3", "#F1E9E2", "#E6D9CC", "#F6F0EA"];
 
 export default function NewsLetter() {
   const ref = useRef<HTMLElement>(null);

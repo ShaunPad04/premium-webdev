@@ -3878,7 +3878,7 @@ body {
   isolation: isolate;
   overflow: hidden;
   color: var(--bb-black);
-  background: linear-gradient(135deg, #FAF5F3 0%, #F4DCE0 40%, #EBC3CB 70%, #FBEDEA 100%);
+  background: linear-gradient(135deg, #FAF5F3 0%, #F1E9E2 40%, #E6D9CC 70%, #F6F0EA 100%);
   padding: clamp(96px, 16vh, 180px) 18px;
   text-align: center;
 }
