@@ -16,15 +16,11 @@ const sources = (file: string) => [
   { type: "image/webp", srcSet: `/img/hero/${file}-s.webp 900w, /img/hero/${file}-m.webp 1536w`, sizes: "max(100vw, 56svh)" },
 ];
 
-/* 2026-09-23, Brad: blurred editorial frames (Higgsfield; campaign imagery,
-   not the shop, her stock or anyone real) with the name in the middle. The
-   list along the foot names the frames by mood, which asserts nothing
-   about the business. */
 const SLIDES: LuminaSlide[] = [
-  { file: "blur-1", label: "In motion" },
-  { file: "blur-2", label: "Golden hour" },
-  { file: "blur-3", label: "Soft knit" },
-  { file: "blur-5", label: "Out and about" },
+  /* Brad's MADRID reference: one aerial frame, two horses in a
+     red field (Higgsfield; campaign imagery, no shop, stock or person). One
+     slide, so nothing auto-advances and no pause control is needed. */
+  { file: "horses", label: "B Boutique" },
 ].map(({ file, ...s }) => ({ ...s, title: "B Boutique", src: `/img/hero/${file}-m.jpg`, sources: sources(file) }));
 
 function Cta() {

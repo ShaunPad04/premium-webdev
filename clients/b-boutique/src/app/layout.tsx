@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Anton, Inter, Playfair_Display } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
@@ -38,6 +38,16 @@ const display = Playfair_Display({
   subsets: ["latin"],
   weight: "400",
   style: ["normal", "italic"],
+  display: "swap",
+});
+
+/* The hero name in a condensed heavy grotesque, after Brad's
+   "Madrid" reference. Madrid is a commercial face; Anton is the closest
+   open one, self-hosted by next/font like the others. */
+const hero = Anton({
+  variable: "--font-hero",
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -189,7 +199,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-GB"
-      className={`${display.variable} ${inter.variable} h-full antialiased`}
+      className={`${display.variable} ${inter.variable} ${hero.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bone text-onyx">
         {/* Every forward navigation lands at the top of the new page; back

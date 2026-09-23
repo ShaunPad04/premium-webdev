@@ -51,7 +51,7 @@
 
   /* Warm near-black. True black against a warm paper reads as a hole
      punched in the page rather than as ink on it. */
-  --bb-black:        #6E0A10;   /* PREVIEW deep red (was ink #1A1416) */
+  --bb-black:        #6E0A10;   /* deep red since 2026-09-23 (was ink #1A1416); see CLAUDE.md */
   --bb-black-soft:   #7C1119;
   --bb-black-raised: #8A1A22;
 
@@ -59,11 +59,11 @@
      brief: measured, #FAF5F3 is R250 G245 B243 — a red-to-blue spread of 7
      with a green-to-blue gap of only 2. Cream has a large green-to-blue gap,
      which is what makes it read yellow, bridal and banned. */
-  --bb-white:        #F8F2E7;   /* PREVIEW ivory cream */
+  --bb-white:        #F8F2E7;   /* ivory cream since 2026-09-23 */
   --bb-white-pure:   #FDFAF3;
 
   --bb-grey-light:   #E6DCCB;
-  --bb-grey-mid:     #D8A9AC;   /* PREVIEW: only used on dark grounds; #9A8F8D fails on the red */
+  --bb-grey-mid:     #D8A9AC;   /* dark grounds only; #9A8F8D failed on the red */
   --bb-grey-dark:    #6B5048;
 
   --bb-dark-border:  rgba(255, 255, 255, 0.14);
@@ -97,7 +97,7 @@
   --red:             #8A070B;
   --bb-rouge:        var(--red);
   --bb-rouge-deep:   #6E0509;   /* hover, on light: 11.69:1 on paper */
-  --bb-rouge-lift:   #F2B8BF;   /* PREVIEW: #DE6376 is ~2.5:1 on the red */   /* the dark-ground twin: 5.32:1 on ink */
+  --bb-rouge-lift:   #F2B8BF;   /* the dark-ground twin; #DE6376 was ~2.5:1 on the red */
 
   /* ── legacy semantic names, re-pointed ───────────────────────────
      Twenty components already reference these. Re-pointing them here turned
@@ -2118,7 +2118,7 @@ body {
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: rgba(255, 255, 255, 0.72);   /* PREVIEW: .52 was 4.09:1 on the red */
+  color: rgba(255, 255, 255, 0.72);   /* .52 was 4.09:1 on the red */
   margin-bottom: 14px;
 }
 
@@ -8336,4 +8336,24 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
 @media (min-width: 768px) and (max-height: 700px) {
   .cps-desc { display: none; }
   .cps-features li { padding: 6px 0; }
+}
+
+/* The hero name in Anton caps, MADRID-style (2026-09-23). */
+.lm--centre .lm-title {
+  font-family: var(--font-hero), "Arial Narrow", sans-serif;
+  font-size: clamp(76px, 17vw, 260px);
+  line-height: 0.88;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 30px rgba(26, 20, 22, 0.28);
+}
+.lm--centre .lm-title em { font-style: normal; }
+/* The horses sit at the middle of the frame: the name goes just below
+   them (as in the reference, where they brush the top of the letters),
+   and the middle wash comes off so the red stays vivid. */
+.lm--centre .lm-content { justify-content: flex-start; padding-top: calc(55svh + 28px); }
+.lm--centre .lm-scrim,
+.lm--centre .lm-scrim { background: linear-gradient(to top, rgba(26, 20, 22, 0.55) 0%, transparent 30%, transparent 80%, rgba(26, 20, 22, 0.44) 100%); }
+@media (max-width: 639px) {
+  .lm--centre .lm-scrim { background: linear-gradient(to top, rgba(26, 20, 22, 0.55) 0%, transparent 30%, transparent 80%, rgba(26, 20, 22, 0.44) 100%); }
 }

@@ -41,7 +41,7 @@ import { existsSync } from "node:fs";
 
 await mkdir("public/img/hero", { recursive: true });
 
-const slides = ["blur-1", "blur-2", "blur-3", "blur-5"];
+const slides = ["horses"];
 
 /* ── 2026-09-21, second correction: stop downscaling below the source ──────
  *
@@ -141,8 +141,12 @@ for (const name of slides) {
      3x screens still ask for 1536. Measured, not assumed: see CLAUDE.md. */
   const small = sharp(port).resize({ width: 900, withoutEnlargement: true });
   await Promise.all([
-    small.clone().avif({ quality: 54, effort: 6 }).toFile(`public/img/hero/${name}-s.avif`),
-    small.clone().webp({ quality: 78 }).toFile(`public/img/hero/${name}-s.webp`),
+    /* 46, not 54 (2026-09-23): the MADRID frame is a dense red texture
+       and cost 154 KB at 54, which measured as a later simulated LCP than
+       the frame it replaced. 46 is 101 KB, PSNR 33.4 vs 35.4 dB, and no
+       difference could be seen at 2x zoom. */
+    small.clone().avif({ quality: 46, effort: 6 }).toFile(`public/img/hero/${name}-s.avif`),
+    small.clone().webp({ quality: 70 }).toFile(`public/img/hero/${name}-s.webp`),
   ]);
 
   console.log(

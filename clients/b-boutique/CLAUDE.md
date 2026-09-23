@@ -873,10 +873,31 @@ The ink stays #1A1416. Do not reintroduce purple/plum grounds.
   -> ink outline filling with ink). Gold was dropped: the theme has none. The
   statement pieces on the home page carry the same AddToBag block.
 
-## PREVIEW BRANCH `preview/red-ivory` — 2026-09-23 (not live)
+## LIVE since 2026-09-23 (late): red and ivory cream + the MADRID hero
 
-Brad asked to see red and ivory cream. Token swap only: `--bb-black` ->
-deep red #6E0A10 (text, buttons, bands), paper -> ivory #F8F2E7, greys
-warmed, `--bb-rouge-lift` -> #F2B8BF (#DE6376 was ~2.5:1 on the red).
-Reopens the ink rule AND the old "no cream" rule; merges only if Brad
-approves. Sister preview: `preview/oxblood-rose`.
+Brad approved both previews for production ("put the Madrid hero live with
+the red and ivory"). This SUPERSEDES "the ink stays #1A1416" and the old
+"no cream" rule; the Rouge section above is history.
+
+**Palette.** `--bb-black` is deep red #6E0A10 (text, buttons, dark bands),
+paper is ivory #F8F2E7 (pure #FDFAF3), greys warmed, `--bb-grey-mid`
+#D8A9AC (dark grounds only), `--bb-rouge-lift` #F2B8BF (#DE6376 was ~2.5:1
+on the red). Light-on-dark text alphas under .7 were raised to .72: the red
+is lighter than the old ink and they fell under 4.5:1. Photo scrims stay
+ink (#1A1416 rgba) on purpose: they are shadows over photographs, not UI.
+
+**Hero.** One aerial Higgsfield frame (a white and a black horse in a red
+field; campaign imagery, no shop, stock or person), `assets/hero/horses`
+(+ `-portrait`), and B BOUTIQUE in **Anton** caps. "Madrid" (the reference)
+is a commercial face with no licence here; Anton is the open stand-in,
+self-hosted by next/font (no third-party request, verified). The name sits
+just below the horses; the middle wash is off. One slide: no autoplay and
+no pause control. The blur frames were removed with this change.
+
+**Measured before going live** (Lighthouse mobile, interleaved vs f8394e7):
+the dense red texture cost 154 KB on phones and the simulated LCP came in
+later. The phone file is now AVIF q46 (101 KB; PSNR 33.4 vs 35.4 dB, no
+visible difference at 2x). After that, n=5: LCP median 5.65s vs 5.34s
+(ranges 5.29-5.94 vs 5.19-5.56), page 1200 vs 1494 KB. A ~0.3s simulated
+gap remains; the Anton file (12 KB) is the other new request on the path.
+Accepted as the cost of the approved design, not hidden.
