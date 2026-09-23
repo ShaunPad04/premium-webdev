@@ -5777,63 +5777,70 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   background: var(--bb-white-pure);
   color: var(--bb-black);
   padding: 0 0 96px;
-  /* Built phone-first and then opened on a laptop, where every row ran the
-     full width of the screen and the disabled Sold button became a grey slab
-     most of a metre wide. A stock list is a column whatever it is read on. */
-  max-width: 720px;
+  max-width: 1180px;
   margin-inline: auto;
 }
 
+/* Only the title and search stay pinned: on a phone, pinning the filters
+   too would leave a third of the screen for the rail. */
 .st-top {
   position: sticky;
   top: 0;
   z-index: 5;
   background: var(--bb-white-pure);
   border-bottom: 1px solid var(--bb-light-border);
-  padding: 14px 16px 12px;
+  padding: 12px 16px;
+  display: grid;
+  gap: 10px;
 }
 .st-top-row { display: flex; align-items: center; gap: 12px; }
+@media (min-width: 768px) {
+  .st-top { display: flex; align-items: center; gap: 28px; padding: 14px 24px; }
+  .st-top-row { display: contents; }
+  .st-title { flex: none; }
+  .st-top .st-find { order: 1; flex: 0 1 440px; }
+  .st-top form { order: 2; margin-left: auto; }
+}
 .st-title {
   flex: 1 1 auto;
   margin: 0;
-  font-size: 17px;
-  font-weight: 600;
+  font-family: var(--font-display-face), Georgia, serif;
+  font-size: 26px;
+  font-weight: 400;
   letter-spacing: -0.01em;
 }
 .st-out {
   background: none;
   border: 1px solid var(--bb-light-border);
+  border-radius: 999px;
   color: var(--bb-grey-dark);
   font: inherit;
   font-size: 13px;
   min-height: 44px;
-  padding: 0 14px;
+  padding: 0 18px;
   cursor: pointer;
 }
 .st-out:hover { border-color: var(--bb-black); color: var(--bb-black); }
 
-.st-find { display: block; margin-top: 10px; }
+.st-find {
+  position: relative;
+  display: block;
+  color: var(--bb-grey-dark);
+}
+.st-find svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; }
 .st-find input {
   width: 100%;
   min-height: 48px;
-  padding: 0 14px;
+  padding: 0 16px 0 44px;
   font: inherit;
   font-size: 16px; /* 16px or iOS zooms the page on focus */
   color: var(--bb-black);
   background: var(--bb-white);
   border: 1px solid var(--bb-light-border);
-  border-radius: 0;
+  border-radius: 999px;
   -webkit-appearance: none;
 }
 .st-find input::placeholder { color: var(--bb-grey-dark); }
-
-.st-uncounted {
-  margin: 10px 0 0;
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--bb-grey-dark);
-}
-.st-uncounted b { color: var(--bb-black); font-weight: 600; }
 
 .st-problem {
   margin: 0;
@@ -5844,87 +5851,247 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   line-height: 1.45;
 }
 
-.st-list { list-style: none; margin: 0; padding: 0; }
-
-.st-piece { border-bottom: 1px solid var(--bb-light-border); }
-.st-piece-head {
+.st-todo {
+  margin: 16px 16px 0;
+  padding: 16px;
+  background: var(--bb-white);
+  border: 1px solid var(--bb-light-border);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--bb-grey-dark);
+}
+.st-todo p { margin: 0; }
+.st-todo b { color: var(--bb-black); font-weight: 600; }
+.st-import {
+  display: block;
   width: 100%;
+  min-height: 48px;
+  margin-top: 12px;
+  border: 1px solid var(--bb-black);
+  border-radius: 999px;
+  background: var(--bb-black);
+  color: var(--bb-white);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.st-import:disabled { opacity: 0.6; cursor: progress; }
+@media (min-width: 768px) {
+  .st-todo { margin: 20px 24px 0; display: flex; align-items: center; gap: 24px; }
+  .st-import { width: auto; flex: none; margin-top: 0; padding: 0 22px; }
+}
+
+/* Filters: what she asks of the rail, then where on it. Both rows scroll
+   sideways on a phone rather than wrapping into a wall of buttons. */
+.st-filters { padding: 16px 0 4px; display: grid; gap: 10px; }
+.st-tabs, .st-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 16px;
+  scrollbar-width: none;
+}
+.st-tabs::-webkit-scrollbar, .st-chips::-webkit-scrollbar { display: none; }
+@media (min-width: 768px) { .st-tabs, .st-chips { padding-inline: 24px; flex-wrap: wrap; } }
+.st-tab, .st-chip {
+  flex: none;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  white-space: nowrap;
+}
+.st-tab {
+  background: var(--bb-white);
+  border: 1px solid var(--bb-light-border);
+  color: var(--bb-black);
+  font-weight: 500;
+}
+.st-tab[aria-pressed="true"] { background: var(--bb-black); border-color: var(--bb-black); color: var(--bb-white); }
+.st-tab-n { margin-left: 4px; font-variant-numeric: tabular-nums; opacity: 0.7; }
+.st-chip {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--bb-grey-dark);
+  min-height: 40px;
+  padding: 0 12px;
+  font-size: 13.5px;
+}
+.st-chip[aria-pressed="true"] { border-color: var(--bb-black); color: var(--bb-black); }
+
+/* The rail: two photographs across a phone, four on a laptop. */
+.st-grid {
+  list-style: none;
+  margin: 0;
+  padding: 12px 16px 0;
   display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-areas: "name total" "cat total";
-  gap: 1px 14px;
-  align-items: center;
-  text-align: left;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 12px;
+}
+@media (min-width: 768px) { .st-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 20px; padding: 16px 24px 0; } }
+@media (min-width: 1100px) { .st-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.st-card {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  padding: 0;
   background: none;
   border: 0;
+  text-align: left;
   font: inherit;
-  padding: 15px 16px;
-  min-height: 60px;
-  cursor: pointer;
   color: inherit;
+  cursor: pointer;
 }
-.st-piece-head:hover { background: var(--bb-white); }
-.st-piece-name { grid-area: name; font-size: 16px; font-weight: 600; }
-.st-piece-cat {
-  grid-area: cat;
+.st-card-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--bb-grey-light);
+  margin-bottom: 8px;
+}
+.st-card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 20%;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) { .st-card:hover .st-card-photo img { transform: scale(1.03); } }
+.st-card-name { font-size: 15px; font-weight: 600; line-height: 1.3; }
+.st-card-meta { font-size: 12.5px; color: var(--bb-grey-dark); }
+.st-badge {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 5px 10px;
+  border-radius: 999px;
   font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--bb-grey-dark);
-}
-.st-piece-total {
-  grid-area: total;
-  font-size: 19px;
   font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  color: var(--bb-grey-dark);
+  line-height: 1.2;
+}
+.st-badge--in { background: var(--bb-white-pure); color: var(--bb-black); }
+.st-badge--out { background: var(--bb-black); color: var(--bb-white); }
+.st-badge--count { background: var(--red); color: var(--bb-white); }
+
+.st-reset {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--bb-black);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  min-height: 44px;
 }
 
-.st-vars { list-style: none; margin: 0; padding: 0 0 8px; background: var(--bb-white); }
-.st-var {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 8px 12px;
-  align-items: center;
-  padding: 11px 16px;
-  border-top: 1px solid var(--bb-light-border);
+/* One piece: the whole screen on a phone, a panel down the right on a
+   laptop, so the rail stays in view behind it. */
+.st-sheet {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  background: var(--bb-white-pure);
+  color: var(--bb-black);
+  overscroll-behavior: contain;
 }
-.st-var-id { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
-.st-size { font-size: 16px; font-weight: 600; }
-.st-colour { font-size: 14px; color: var(--bb-grey-dark); }
+.st-sheet::backdrop { background: rgba(26, 20, 22, 0.45); }
+@media (min-width: 768px) {
+  .st-sheet { margin-left: auto; width: 520px; box-shadow: -20px 0 60px rgba(26, 20, 22, 0.18); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .st-sheet[open] { animation: st-in 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes st-in { from { transform: translateY(24px); opacity: 0; } }
+  @media (min-width: 768px) { @keyframes st-in { from { transform: translateX(40px); opacity: 0; } } }
+}
+.st-sheet-in { padding-bottom: 40px; }
+.st-sheet-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 12px 12px 16px;
+  background: var(--bb-white-pure);
+  border-bottom: 1px solid var(--bb-light-border);
+}
+.st-sheet-head img { width: 52px; height: 65px; object-fit: cover; object-position: 50% 20%; background: var(--bb-grey-light); }
+.st-sheet-name { margin: 0; font-family: var(--font-display-face), Georgia, serif; font-size: 22px; font-weight: 400; line-height: 1.15; }
+.st-sheet-cat { margin: 3px 0 0; font-size: 13px; color: var(--bb-grey-dark); }
+.st-close {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 1px solid var(--bb-light-border);
+  border-radius: 999px;
+  color: var(--bb-black);
+  cursor: pointer;
+}
+
+.st-colour-group { padding: 18px 16px 0; }
+.st-colour-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.st-colour-head img { width: 44px; height: 55px; object-fit: cover; object-position: 50% 20%; background: var(--bb-grey-light); }
+.st-colour { font-size: 15px; font-weight: 600; }
 .st-nocolour {
   font-size: 11.5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--bb-grey-dark);
   border: 1px dashed currentColor;
-  padding: 1px 6px;
+  padding: 2px 8px;
 }
-.st-qty {
-  font-size: 20px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  min-width: 1.6ch;
-  text-align: right;
-}
-.st-qty-none { color: var(--bb-grey-dark); }
 
-.st-acts { grid-column: 1 / -1; display: flex; gap: 8px; }
-.st-sold, .st-minor {
-  font: inherit;
+.st-lines { list-style: none; margin: 0; padding: 0; }
+.st-line {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 14px 0;
+  border-top: 1px solid var(--bb-light-border);
+}
+.st-size {
+  min-width: 48px;
+  height: 48px;
+  padding: 0 8px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--bb-black);
+  border-radius: 999px;
   font-size: 15px;
+  font-weight: 600;
+}
+.st-qty { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.st-qty-zero, .st-qty-none { color: var(--bb-grey-dark); font-weight: 500; }
+.st-qty-none { color: var(--red); }
+
+.st-acts, .st-count { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; }
+.st-sold, .st-minor, .st-save, .st-step {
+  font: inherit;
+  font-size: 14.5px;
   font-weight: 600;
   min-height: 46px;
   padding: 0 18px;
-  border-radius: 0;
+  border-radius: 999px;
   cursor: pointer;
   -webkit-appearance: none;
 }
-.st-sold {
-  /* Grows to fill a phone row, then stops. Past this it stops reading as a
-     button and starts reading as a bar, which is what it looked like. */
+.st-sold, .st-save {
   flex: 1 1 auto;
-  max-width: 240px;
+  max-width: 220px;
   background: var(--bb-black);
   color: var(--bb-white);
   border: 1px solid var(--bb-black);
@@ -5935,7 +6102,41 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   border: 1px solid var(--bb-light-border);
   font-weight: 500;
 }
-.st-sold:disabled, .st-minor:disabled { opacity: 0.4; cursor: not-allowed; }
+.st-step {
+  width: 46px;
+  padding: 0;
+  background: var(--bb-white);
+  border: 1px solid var(--bb-light-border);
+  color: var(--bb-black);
+  font-size: 20px;
+  font-weight: 400;
+}
+.st-count input {
+  width: 72px;
+  min-height: 46px;
+  text-align: center;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  border: 1px solid var(--bb-black);
+  border-radius: 12px;
+  background: var(--bb-white-pure);
+  color: var(--bb-black);
+  -moz-appearance: textfield;
+}
+.st-count input::-webkit-inner-spin-button,
+.st-count input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.st-sold:disabled, .st-minor:disabled, .st-save:disabled { opacity: 0.4; cursor: not-allowed; }
+.st-sheet .st-problem { position: sticky; top: 90px; z-index: 1; }
+
+.st button:focus-visible,
+.st input:focus-visible,
+.st-sheet button:focus-visible,
+.st-sheet input:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.st-card:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 4px; }
 
 .st-empty, .st-gate-note { padding: 22px 16px; color: var(--bb-grey-dark); font-size: 14.5px; }
 
@@ -7348,21 +7549,6 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .bk-steps .bk-hide-xs { display: inline; width: auto; height: auto; box-shadow: none; border-radius: 0; font-size: inherit; letter-spacing: inherit; }
 @media (max-width: 379px) { .bk-steps .bk-hide-xs { display: none; } }
 
-/* /stock: the one-off opening-count import. */
-.st-import {
-  display: block;
-  width: 100%;
-  min-height: 48px;
-  margin-top: 12px;
-  border: 1px solid var(--bb-black);
-  border-radius: 999px;
-  background: var(--bb-black);
-  color: var(--bb-white);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.st-import:disabled { opacity: 0.6; cursor: progress; }
 
 /* Visit on phones and tablets (2026-09-23, client): the hours first, then
    the address with the map directly under it and Get directions under that,
@@ -7502,3 +7688,6 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
 .cf-stage { touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
 .cf-stage:active { cursor: grabbing; }
 .cf-card img { -webkit-user-drag: none; pointer-events: none; }
+
+/* /stock thumbnails (2026-09-23): each piece and each colour line shows the
+   garment's own photo, so the one that sold is found by sight. */

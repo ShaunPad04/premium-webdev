@@ -1,14 +1,21 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-/** The list, and the tap that changes it.
+/** The rail, and the tap that changes it.
  *
  *  ── What it is designed around ───────────────────────────────────────────
- *  One hand, standing at a counter, with a customer waiting. That rules the
- *  whole layout: find the piece, tap SOLD, done. Everything else — counting,
- *  returns, receiving — is behind a second tap, because it happens once a
- *  week and selling happens all day.
+ *  One hand, standing at a counter, with a customer waiting. Find the piece
+ *  by its photograph, tap it, tap SOLD ONE on the right size. Everything else
+ *  (returns, counting) sits on the same sheet but is quieter, because it
+ *  happens once a week and selling happens all day.
+ *
+ *  ── Layout (2026-09-23, "it's quite confusing") ──────────────────────────
+ *  It was a text list that expanded in place into rows of three identical
+ *  buttons. Now it is a grid of the shop's own photographs, each with one
+ *  plain status ("3 in the shop", "Sold out", "Needs counting"), filters for
+ *  the three questions she actually asks, and one sheet per piece with its
+ *  lines grouped by colour, each colour shown by its own photograph.
  *
  *  ── Why the count changes before the server answers ──────────────────────
  *  It does not. A count that flickers to the right number and then back
@@ -30,10 +37,16 @@ export type BoardPiece = {
   slug: string;
   name: string;
   category: string;
+  /** Product photo basename (public/img/product/<name>-640.jpg). */
+  photo: string;
+  colourPhotos: Record<string, string>;
   variants: BoardVariant[];
 };
 
 type Busy = { id: string; action: string } | null;
+type Filter = "all" | "count" | "in" | "out";
+
+const img = (name: string) => `/img/product/${name}-640.jpg`;
 
 export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
   const [state, setState] = useState<Record<string, number | null>>(() =>
@@ -44,16 +57,70 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
   const [busy, setBusy] = useState<Busy>(null);
   const [problem, setProblem] = useState<string>("");
   const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<Filter>("all");
+  const [category, setCategory] = useState<string>("");
   const [open, setOpen] = useState<string | null>(null);
+  const [editing, setEditing] = useState<{ id: string; value: string } | null>(null);
+  const [importing, setImporting] = useState(false);
 
-  const shown = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return pieces;
-    return pieces.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q),
-    );
-  }, [pieces, query]);
+  const sheet = useRef<HTMLDialogElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
+
+  /* What each piece amounts to, from the live counts. */
+  const status = (p: BoardPiece) => {
+    const qtys = p.variants.map((v) => state[v.id]);
+    const uncounted = qtys.filter((q) => q === null).length;
+    const total = qtys.reduce<number>((n, q) => n + (q ?? 0), 0);
+    return { uncounted, total };
+  };
+
+  const categories = useMemo(
+    () => [...new Set(pieces.map((p) => p.category))],
+    [pieces],
+  );
+
+  const tally = { all: pieces.length, count: 0, in: 0, out: 0 };
+  for (const p of pieces) {
+    const s = status(p);
+    if (s.uncounted > 0) tally.count++;
+    if (s.total > 0) tally.in++;
+    if (s.uncounted === 0 && s.total === 0) tally.out++;
+  }
+
+  const q = query.trim().toLowerCase();
+  const shown = pieces.filter((p) => {
+    if (category && p.category !== category) return false;
+    if (q && !p.name.toLowerCase().includes(q) && !p.category.toLowerCase().includes(q)) return false;
+    const s = status(p);
+    if (filter === "count") return s.uncounted > 0;
+    if (filter === "in") return s.total > 0;
+    if (filter === "out") return s.uncounted === 0 && s.total === 0;
+    return true;
+  });
+
+  const uncountedLines = Object.values(state).filter((v) => v === null).length;
+  const piece = pieces.find((p) => p.slug === open) ?? null;
+
+  /* The sheet is a native modal dialog: it traps focus, makes the rail
+     behind it inert and closes on Escape by itself. Focus goes back to the
+     card that opened it. */
+  useEffect(() => {
+    const d = sheet.current;
+    if (!d) return;
+    if (piece && !d.open) d.showModal();
+    if (!piece && d.open) d.close();
+  }, [piece]);
+
+  function openPiece(slug: string, from: HTMLElement) {
+    opener.current = from;
+    setEditing(null);
+    setOpen(slug);
+  }
+  function closePiece() {
+    setOpen(null);
+    setEditing(null);
+    opener.current?.focus();
+  }
 
   async function send(id: string, action: string, extra?: Record<string, unknown>) {
     setBusy({ id, action });
@@ -72,6 +139,7 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
 
       if (data.ok && typeof data.qty === "number") {
         setState((s) => ({ ...s, [id]: data.qty as number }));
+        return true;
       } else if (data.code === "would_go_negative") {
         setState((s) => ({ ...s, [id]: data.qty ?? 0 }));
         setProblem("There were none of those left to sell. The count is corrected.");
@@ -88,10 +156,17 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
     } finally {
       setBusy(null);
     }
+    return false;
   }
 
-  const uncounted = Object.values(state).filter((q) => q === null).length;
-  const [importing, setImporting] = useState(false);
+  async function saveCount(id: string, value: string) {
+    const n = Number.parseInt(value.trim(), 10);
+    if (!Number.isInteger(n) || n < 0 || String(n) !== value.trim()) {
+      setProblem("That needs to be a whole number, 0 or more.");
+      return;
+    }
+    if (await send(id, "counted", { qty: n })) setEditing(null);
+  }
 
   /* Loads the opening counts from the master list (lib/opening-stock.ts)
      into every line that has never been counted. Never overwrites a count,
@@ -120,11 +195,34 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
     }
   }
 
+  const problemBar = problem ? (
+    <p className="st-problem" role="alert">
+      {problem}
+    </p>
+  ) : null;
+
+  /* The piece's lines, grouped by colour so each colour is shown once, by
+     its own photograph, with its sizes under it. */
+  const groups = piece
+    ? [...new Set(piece.variants.map((v) => v.colour))].map((colour) => ({
+        colour,
+        photo: piece.colourPhotos[colour] ?? piece.photo,
+        lines: piece.variants.filter((v) => v.colour === colour),
+      }))
+    : [];
+
+  const filters: { key: Filter; label: string }[] = [
+    { key: "all", label: "All" },
+    { key: "in", label: "In the shop" },
+    { key: "out", label: "Sold out" },
+    { key: "count", label: "Needs counting" },
+  ];
+
   return (
     <main id="main" className="st">
       <header className="st-top">
         <div className="st-top-row">
-          <p className="st-title">What&rsquo;s in the shop</p>
+          <h1 className="st-title">Stock</h1>
           <form action="/api/stock" method="post" onSubmit={(e) => {
             e.preventDefault();
             void fetch("/api/stock", {
@@ -136,154 +234,242 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
             <button type="submit" className="st-out">Sign out</button>
           </form>
         </div>
-
         <label className="st-find">
-          {/* Labelled by aria-label rather than a visually-hidden span: this
-              project has no .sr-only utility, and a single aria-label is one
-              fewer element than inventing one for one input. */}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.6" />
+            <path d="M16 16l4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Find a piece"
-            aria-label="Find a piece"
+            placeholder="Find a piece by name"
+            aria-label="Find a piece by name"
             autoComplete="off"
           />
         </label>
+      </header>
 
-        {uncounted > 0 ? (
-          <p className="st-uncounted">
-            {uncounted} {uncounted === 1 ? "line has" : "lines have"} never been
-            counted. Tap a piece and use <b>Count</b> to set the first number.
-            Nothing shows on the website until it has one.
+      {problem && !piece ? problemBar : null}
+
+      {uncountedLines > 0 ? (
+        <section className="st-todo" aria-label="Opening counts">
+          <p>
+            <b>{uncountedLines} {uncountedLines === 1 ? "size has" : "sizes have"} no count yet.</b>{" "}
+            They do not show on the website until they have one. Load the
+            opening counts once, then count anything left by hand.
           </p>
-        ) : null}
-        {uncounted > 0 ? (
           <button type="button" className="st-import" onClick={importOpening} disabled={importing}>
             {importing ? "Loading opening counts…" : "Load opening counts from the master list"}
           </button>
-        ) : null}
-      </header>
-
-      {problem ? (
-        <p className="st-problem" role="alert">
-          {problem}
-        </p>
+        </section>
       ) : null}
 
-      <ul className="st-list">
-        {shown.map((piece) => {
-          const isOpen = open === piece.slug;
-          const total = piece.variants.reduce(
-            (n, v) => n + (state[v.id] ?? 0),
-            0,
-          );
-          const anyCounted = piece.variants.some((v) => state[v.id] !== null);
+      <nav className="st-filters" aria-label="Show">
+        <div className="st-tabs">
+          {filters.map((f) => (
+            <button
+              key={f.key}
+              type="button"
+              className="st-tab"
+              aria-pressed={filter === f.key}
+              onClick={() => setFilter(f.key)}
+            >
+              {f.label} <span className="st-tab-n">{tally[f.key]}</span>
+            </button>
+          ))}
+        </div>
+        <div className="st-chips">
+          <button type="button" className="st-chip" aria-pressed={category === ""} onClick={() => setCategory("")}>
+            Every category
+          </button>
+          {categories.map((c) => (
+            <button key={c} type="button" className="st-chip" aria-pressed={category === c} onClick={() => setCategory(c)}>
+              {c}
+            </button>
+          ))}
+        </div>
+      </nav>
 
+      <ul className="st-grid">
+        {shown.map((p) => {
+          const s = status(p);
+          const tone = s.uncounted > 0 ? "count" : s.total === 0 ? "out" : "in";
+          const label =
+            tone === "count"
+              ? "Needs counting"
+              : tone === "out"
+                ? "Sold out"
+                : `${s.total} in the shop`;
           return (
-            <li key={piece.slug} className="st-piece">
+            <li key={p.slug}>
               <button
                 type="button"
-                className="st-piece-head"
-                aria-expanded={isOpen}
-                onClick={() => setOpen(isOpen ? null : piece.slug)}
+                className="st-card"
+                aria-label={`${p.name}, ${label}`}
+                onClick={(e) => openPiece(p.slug, e.currentTarget)}
               >
-                <span className="st-piece-name">{piece.name}</span>
-                <span className="st-piece-cat">{piece.category}</span>
-                <span className="st-piece-total">
-                  {anyCounted ? total : "—"}
+                <span className="st-card-photo">
+                  {/* Decorative: the name under it says what it is. */}
+                  <img src={img(p.photo)} alt="" loading="lazy" decoding="async" width={320} height={400} />
+                  <span className={`st-badge st-badge--${tone}`}>{label}</span>
+                </span>
+                <span className="st-card-name">{p.name}</span>
+                <span className="st-card-meta">
+                  {p.category} · {p.variants.length} {p.variants.length === 1 ? "size" : "sizes"}
                 </span>
               </button>
-
-              {isOpen ? (
-                <ul className="st-vars">
-                  {piece.variants.map((v) => {
-                    const qty = state[v.id];
-                    const working = busy?.id === v.id;
-                    return (
-                      <li key={v.id} className="st-var">
-                        <div className="st-var-id">
-                          <span className="st-size">{v.size}</span>
-                          {v.colour ? (
-                            <span className="st-colour">{v.colour}</span>
-                          ) : (
-                            /* Not a placeholder to fill in later: it is the
-                               honest state until the shop says what colour
-                               the piece is, and it is visible so it gets
-                               chased rather than forgotten. */
-                            <span
-                              className="st-nocolour"
-                              title="Nobody has confirmed what colour this piece is"
-                            >
-                              colour not set
-                            </span>
-                          )}
-                        </div>
-
-                        <span
-                          className={qty === null ? "st-qty st-qty-none" : "st-qty"}
-                          aria-label={
-                            qty === null
-                              ? "never counted"
-                              : `${qty} in the shop`
-                          }
-                        >
-                          {qty === null ? "—" : qty}
-                        </span>
-
-                        <div className="st-acts">
-                          <button
-                            type="button"
-                            className="st-sold"
-                            disabled={working || qty === null || qty === 0}
-                            onClick={() => void send(v.id, "sold-in-shop")}
-                          >
-                            {working && busy?.action === "sold-in-shop"
-                              ? "…"
-                              : "Sold"}
-                          </button>
-                          <button
-                            type="button"
-                            className="st-minor"
-                            disabled={working}
-                            onClick={() => void send(v.id, "returned")}
-                          >
-                            Back
-                          </button>
-                          <button
-                            type="button"
-                            className="st-minor"
-                            disabled={working}
-                            onClick={() => {
-                              const answer = window.prompt(
-                                `How many ${piece.name} in ${v.size}${v.colour ? ` (${v.colour})` : ""} are actually in the shop?`,
-                                String(qty ?? 0),
-                              );
-                              if (answer === null) return;
-                              const n = Number.parseInt(answer.trim(), 10);
-                              if (!Number.isInteger(n) || n < 0) {
-                                setProblem("That needs to be a whole number, 0 or more.");
-                                return;
-                              }
-                              void send(v.id, "counted", { qty: n });
-                            }}
-                          >
-                            Count
-                          </button>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : null}
             </li>
           );
         })}
       </ul>
 
       {shown.length === 0 ? (
-        <p className="st-empty">Nothing matches &ldquo;{query}&rdquo;.</p>
+        <p className="st-empty">
+          Nothing here{q ? <> matches &ldquo;{query}&rdquo;</> : null}.{" "}
+          <button
+            type="button"
+            className="st-reset"
+            onClick={() => { setQuery(""); setFilter("all"); setCategory(""); }}
+          >
+            Show everything
+          </button>
+        </p>
       ) : null}
+
+      <dialog
+        ref={sheet}
+        className="st-sheet"
+        aria-labelledby="st-sheet-name"
+        onClose={() => { if (open) closePiece(); }}
+        onClick={(e) => { if (e.target === e.currentTarget) closePiece(); }}
+      >
+        {piece ? (
+          <div className="st-sheet-in">
+            <div className="st-sheet-head">
+              <img src={img(piece.photo)} alt="" width={64} height={80} />
+              <div>
+                <h2 id="st-sheet-name" className="st-sheet-name">{piece.name}</h2>
+                <p className="st-sheet-cat">
+                  {piece.category} · {status(piece).total} in the shop
+                </p>
+              </div>
+              <button type="button" className="st-close" onClick={closePiece} aria-label="Close">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+
+            {problemBar}
+
+            {groups.map((g) => (
+              <section key={g.colour || "none"} className="st-colour-group" aria-label={g.colour || "Colour not set"}>
+                <div className="st-colour-head">
+                  <img src={img(g.photo)} alt="" loading="lazy" width={44} height={55} />
+                  {g.colour ? (
+                    <span className="st-colour">{g.colour}</span>
+                  ) : (
+                    /* Not a placeholder to fill in later: it is the honest
+                       state until the shop says what colour the piece is,
+                       and it is visible so it gets chased. */
+                    <span className="st-nocolour" title="Nobody has confirmed what colour this piece is">
+                      Colour not set
+                    </span>
+                  )}
+                </div>
+
+                <ul className="st-lines">
+                  {g.lines.map((v) => {
+                    const qty = state[v.id];
+                    const working = busy?.id === v.id;
+                    const edit = editing?.id === v.id ? editing : null;
+                    const what = `${v.size}${v.colour ? `, ${v.colour}` : ""}`;
+                    return (
+                      <li key={v.id} className="st-line">
+                        <span className="st-size">{v.size}</span>
+                        <span className={qty === null ? "st-qty st-qty-none" : qty === 0 ? "st-qty st-qty-zero" : "st-qty"}>
+                          {qty === null ? "Not counted" : qty === 0 ? "None left" : `${qty} in`}
+                        </span>
+
+                        {edit ? (
+                          <form
+                            className="st-count"
+                            onSubmit={(e) => { e.preventDefault(); void saveCount(v.id, edit.value); }}
+                          >
+                            <button
+                              type="button"
+                              className="st-step"
+                              aria-label="One fewer"
+                              onClick={() => setEditing({ id: v.id, value: String(Math.max(0, (Number.parseInt(edit.value, 10) || 0) - 1)) })}
+                            >
+                              &minus;
+                            </button>
+                            <input
+                              type="number"
+                              inputMode="numeric"
+                              min={0}
+                              step={1}
+                              value={edit.value}
+                              onChange={(e) => setEditing({ id: v.id, value: e.target.value })}
+                              aria-label={`How many ${what} are in the shop`}
+                              autoFocus
+                            />
+                            <button
+                              type="button"
+                              className="st-step"
+                              aria-label="One more"
+                              onClick={() => setEditing({ id: v.id, value: String((Number.parseInt(edit.value, 10) || 0) + 1) })}
+                            >
+                              +
+                            </button>
+                            <button type="submit" className="st-save" disabled={working}>
+                              {working ? "Saving…" : "Save"}
+                            </button>
+                            <button type="button" className="st-minor" onClick={() => setEditing(null)}>
+                              Cancel
+                            </button>
+                          </form>
+                        ) : (
+                          <div className="st-acts">
+                            <button
+                              type="button"
+                              className="st-sold"
+                              disabled={working || qty === null || qty === 0}
+                              onClick={() => void send(v.id, "sold-in-shop")}
+                              aria-label={`Sold one ${what}`}
+                            >
+                              {working && busy?.action === "sold-in-shop" ? "Saving…" : "Sold one"}
+                            </button>
+                            <button
+                              type="button"
+                              className="st-minor"
+                              disabled={working}
+                              onClick={() => void send(v.id, "returned")}
+                              aria-label={`One ${what} came back`}
+                            >
+                              Returned
+                            </button>
+                            <button
+                              type="button"
+                              className="st-minor"
+                              disabled={working}
+                              onClick={() => setEditing({ id: v.id, value: String(qty ?? 0) })}
+                              aria-label={`Set the count for ${what}`}
+                            >
+                              Set count
+                            </button>
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ))}
+          </div>
+        ) : null}
+      </dialog>
     </main>
   );
 }

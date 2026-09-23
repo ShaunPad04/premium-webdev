@@ -61,6 +61,10 @@ export default async function StockPage() {
       slug: product.slug,
       name: product.name,
       category: product.category,
+      photo: product.photo,
+      /* Each colourway's own photograph, so every line shows the actual
+         garment (2026-09-23: easier to find the piece that sold). */
+      colourPhotos: Object.fromEntries(product.colourways.map((c) => [c.colour, c.image])),
       variants: [],
     });
   }
