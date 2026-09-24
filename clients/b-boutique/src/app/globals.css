@@ -10013,43 +10013,6 @@ body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
   @view-transition { navigation: none; }
 }
 
-/* ── Step inside (2026-09-24) ─────────────────────────────────────────────
- * See home/StepInside.tsx. Sticky stacked cards: each photograph sticks
- * under the header and the next slides up over it; the covered one sinks
- * back by --sink (0-1, written on scroll). */
-.si { background: #FFFFFF; padding: clamp(72px, 9vw, 140px) 0 clamp(72px, 8vw, 120px); }
-.si-intro { text-align: center; padding: 0 18px; margin-bottom: clamp(36px, 5vw, 64px); }
-.si-eyebrow { color: var(--accent); }
-h2.si-h { margin: 14px 0 0; font-size: clamp(34px, 4.6vw, 64px); line-height: 1.05; color: var(--bb-black); }
-h2.si-h em { font-style: italic; }
-.si-list { list-style: none; margin: 0 auto; padding: 0 clamp(12px, 4vw, 60px); max-width: 1760px; display: grid; gap: clamp(28px, 5vh, 56px); }
-.si-card { --sink: 0; }
-.si-list[data-stack] .si-card { position: sticky; top: calc(var(--header-h) + clamp(12px, 3vh, 32px)); }
-.si-frame {
-  position: relative; overflow: hidden; border-radius: clamp(6px, 0.8vw, 14px);
-  height: min(76svh, 820px); background: #1A1718;
-  transform-origin: 50% 0%;
-  scale: calc(1 - var(--sink) * 0.08);
-  box-shadow: 0 -18px 50px -30px rgba(14, 11, 12, 0.45);
-}
-.si-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 72%; scale: calc(1.08 - var(--sink) * 0.08); }
-.si-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(14, 11, 12, 0.62) 0%, rgba(14, 11, 12, 0) 42%), rgba(14, 11, 12, calc(var(--sink) * 0.45)); pointer-events: none; }
-.si-cap { position: absolute; left: clamp(20px, 3vw, 44px); bottom: clamp(20px, 3vw, 40px); margin: 0; display: flex; align-items: baseline; gap: 16px; color: #fff; }
-.si-num { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; opacity: 0.85; }
-.si-text { font-family: var(--font-display), Georgia, serif; font-size: clamp(26px, 3.2vw, 46px); line-height: 1.05; text-shadow: 0 1px 24px rgba(14, 11, 12, 0.35); }
-.si-ctas { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 16px 28px; margin-top: clamp(40px, 6vw, 72px); padding: 0 18px; }
-.si-link { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bb-black); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 3px; }
-@media (max-width: 767px) {
-  .si-frame { height: 68svh; }
-  .si-cap { flex-direction: column; gap: 6px; }
-  .si-ctas { flex-direction: column; align-items: stretch; }
-  .si-cta { justify-content: center; }
-  .si-link { align-self: center; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .si-frame, .si-img { scale: 1; }
-}
-
 /* ── The page rises over the hero (2026-09-24, Brad) ──────────────────────
  * Reference: fuel.framer.website. The hero stays put (sticky) and the rest
  * of the page comes up over it on a slanted top edge, low on the left and
@@ -10262,3 +10225,41 @@ h3.why-title { margin: 8px 0 6px; font-family: var(--font-display), Georgia, ser
 .vx-frame { opacity: 0; transition: opacity 500ms var(--bb-ease); }
 .vx-frame[data-loaded] { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .vx-frame { transition: none; } }
+
+/* ── Step inside: CollectionSurfer (2026-09-24) ───────────────────────────
+ * components/ui/collection-surfer.tsx. A dark section a few screens tall
+ * with a sticky stage; the rail of cards travels back through 3D space as
+ * the section scrolls. Step vector and card size are custom properties so a
+ * phone gets a tighter run with the same code. */
+.si-surf { background: #0E0B0C; color: #FFFFFF; }
+.cs {
+  --cs-sx: 240px; --cs-sy: -84px; --cs-sz: -288px; --cs-w: 300px; --cs-h: 400px;
+  position: relative; height: calc(100svh + var(--cs-n, 10) * 24svh);
+}
+@media (max-width: 767px) {
+  .cs { --cs-sx: 150px; --cs-sy: -56px; --cs-sz: -190px; --cs-w: 200px; --cs-h: 266px; height: calc(100svh + var(--cs-n, 10) * 20svh); }
+}
+.cs-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.cs-head { position: absolute; z-index: 5; top: calc(var(--header-h) + clamp(20px, 3vw, 44px)); left: clamp(18px, 4vw, 64px); pointer-events: none; }
+.cs-eyebrow { margin: 0 0 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255, 255, 255, 0.7); }
+h2.cs-title { margin: 0; font-size: clamp(2.4rem, 6vw, 5.5rem); line-height: 0.92; color: #FFFFFF; }
+h2.cs-title em { font-style: italic; }
+.cs-count { font-family: var(--font-body); font-size: 0.28em; vertical-align: top; position: relative; top: 0.5em; margin-left: 10px; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, 0.7); }
+.cs-hint { position: absolute; z-index: 5; right: clamp(18px, 3vw, 44px); bottom: clamp(18px, 3vw, 40px); margin: 0; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.7); }
+.cs-scene { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; perspective: 2000px; perspective-origin: 10% 10%; }
+.cs-rail { position: relative; width: 0; height: 0; margin: 0; padding: 0; list-style: none; transform-style: preserve-3d; }
+.cs-card { position: absolute; left: calc(var(--cs-w) / -2); top: calc(var(--cs-h) / -2); width: var(--cs-w); height: var(--cs-h); transform-style: preserve-3d; }
+.cs-card-link { position: relative; display: block; width: 100%; height: 100%; color: #FFFFFF; text-decoration: none; background: #1A1718; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7); }
+.cs-card-link:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 4px; }
+.cs-media { position: absolute; inset: 0; overflow: hidden; filter: brightness(0.82); transition: filter 300ms var(--bb-ease); }
+.cs-card-link:hover .cs-media, .cs-card-link:focus-visible .cs-media { filter: brightness(1); }
+.cs-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cs-num { position: absolute; top: -22px; left: 0; font-size: 11px; letter-spacing: 0.1em; font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, 0.6); }
+.cs-label { position: absolute; left: 0; right: 0; bottom: 0; padding: 40px 14px 12px; display: flex; flex-direction: column; gap: 3px; background: linear-gradient(to top, rgba(14, 11, 12, 0.78), rgba(14, 11, 12, 0)); }
+.cs-cat { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.78); }
+.cs-name { font-size: 14px; line-height: 1.25; }
+/* Reduced motion: the same links in a plain row. */
+.cs--still { height: auto; padding: calc(var(--header-h) + 40px) 0 72px; }
+.cs--still .cs-head { position: static; padding: 0 clamp(18px, 4vw, 64px); margin-bottom: 32px; }
+.cs-still-row { display: flex; gap: 16px; overflow-x: auto; margin: 0; padding: 24px clamp(18px, 4vw, 64px) 8px; list-style: none; }
+.cs-still-row > li { flex: 0 0 var(--cs-w); height: var(--cs-h); }

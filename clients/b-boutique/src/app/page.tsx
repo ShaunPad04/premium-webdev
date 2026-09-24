@@ -53,9 +53,11 @@ export default function Home() {
         <PointOfView />
         <NewArrivalRail />
         <HorizontalRails />
-        <CoverFlowCarousel />
         <StepInside />
         <UpClose />
+        {/* New In after Step inside, with Up close between the two so
+            the two 3D product runs are never back to back (2026-09-24). */}
+        <CoverFlowCarousel />
         <OwnerCard />
         <WhyUs />
         {/* Renders nothing until lib/reviews.ts holds her real Google reviews. */}
