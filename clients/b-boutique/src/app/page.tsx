@@ -5,6 +5,7 @@ import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import { CoverFlowCarousel } from "@/components/ui/3-d-coverflow-carousel";
 import { WhyUs } from "@/components/home/WhyUs";
+import { ShopTheLook } from "@/components/home/ShopTheLook";
 import { UpClose } from "@/components/home/UpClose";
 import { OwnerCard } from "@/components/OwnerCard";
 import { Reviews } from "@/components/home/Reviews";
@@ -49,6 +50,7 @@ export default function Home() {
         <PointOfView />
         <NewArrivalRail />
         <HorizontalRails />
+        <ShopTheLook />
         <UpClose />
         {/* New In after Up close (2026-09-24, Brad). Step inside was removed
             the same day at his request. */}
