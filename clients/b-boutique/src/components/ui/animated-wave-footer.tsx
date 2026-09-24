@@ -64,7 +64,7 @@ export default function AnimatedWaveFooter() {
                 </svg>
               </a>
               <a href={directionsHref} target="_blank" rel="noopener noreferrer" className="visit-cta ft-cta-dir">
-                <span className="roll"><span>Get directions</span></span> <span aria-hidden="true">&#8599;</span>
+                <span className="roll"><span>Get directions</span></span> <span aria-hidden="true">&#8599;&#xFE0E;</span>
               </a>
             </div>
           </div>

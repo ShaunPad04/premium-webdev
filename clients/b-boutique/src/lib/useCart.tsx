@@ -179,11 +179,14 @@ export function useCart() {
     const at = snapshot.findIndex((l) => same({ slug, size, colour }, l));
     if (at === -1) {
       write([...snapshot, { slug, size, colour, qty: Math.min(n, MAX_QTY) }]);
-      return;
+    } else {
+      const next = [...snapshot];
+      next[at] = { ...next[at], qty: Math.min(next[at].qty + n, MAX_QTY) };
+      write(next);
     }
-    const next = [...snapshot];
-    next[at] = { ...next[at], qty: Math.min(next[at].qty + n, MAX_QTY) };
-    write(next);
+    /* Tells the "Added to bag" toast (AddedToast.tsx). Every add goes
+       through here, so the product page and quick-add both show it. */
+    window.dispatchEvent(new CustomEvent("bb:added", { detail: { slug, size, colour, n } }));
   }, []);
 
   const setQty = useCallback(

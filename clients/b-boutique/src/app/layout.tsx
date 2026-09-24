@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { MagneticButtons } from "@/components/MagneticButtons";
 import { NavMotion } from "@/components/NavMotion";
 import { PageTransition } from "@/components/PageTransition";
+import { AddedToast } from "@/components/AddedToast";
 import { Bodoni_Moda, DM_Sans } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
@@ -225,6 +226,7 @@ export default function RootLayout({
         <NavMotion />
         <MagneticButtons />
         <PageTransition>{children}</PageTransition>
+        <AddedToast />
       </body>
     </html>
   );

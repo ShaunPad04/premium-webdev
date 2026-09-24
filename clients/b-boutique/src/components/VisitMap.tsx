@@ -89,7 +89,7 @@ export function VisitMap({
           <p className="vx-card-addr">{street}, {town}</p>
         </div>
         <a href={directionsHref} target="_blank" rel="noopener noreferrer" className="vx-card-link">
-          Open in maps <span aria-hidden="true">&#8599;</span>
+          Open in maps <span aria-hidden="true">&#8599;&#xFE0E;</span>
         </a>
       </div>
     </div>

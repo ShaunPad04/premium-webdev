@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, type PanInfo } from "motion/react";
 
 /* VerticalImageStack, from 21st.dev, adapted for B Boutique (2026-09-24).
@@ -33,10 +33,25 @@ const STYLE = (diff: number) =>
   : diff === 2 ? { y: 260, scale: 0.7, opacity: 0.25, rotateX: -15, zIndex: 3 }
   : { y: diff > 0 ? 380 : -380, scale: 0.6, opacity: 0, rotateX: diff > 0 ? -20 : 20, zIndex: 0 };
 
+/* Drag is for a mouse only (2026-09-24, Brad: on a phone the stack
+   sometimes moved "by itself"). On touch, a swipe that began on a card was
+   taken as a card drag, and its end called goTo, which smooth-scrolled the
+   page to the next card without the reader scrolling. Touch now only
+   scrolls the page; the page's scroll alone turns the cards. */
+const FINE = "(hover: hover) and (pointer: fine)";
+const subFine = (cb: () => void) => {
+  const m = window.matchMedia(FINE);
+  m.addEventListener("change", cb);
+  return () => m.removeEventListener("change", cb);
+};
+const useFinePointer = () =>
+  useSyncExternalStore(subFine, () => window.matchMedia(FINE).matches, () => false);
+
 export function VerticalImageStack({ items, children }: { items: StackItem[]; children?: React.ReactNode }) {
   const track = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const [current, setCurrent] = useState(0);
+  const fine = useFinePointer();
   const n = items.length;
 
   const { scrollYProgress } = useScroll({ target: track, offset: ["start start", "end end"] });
@@ -105,7 +120,7 @@ export function VerticalImageStack({ items, children }: { items: StackItem[]; ch
                 initial={false}
                 animate={{ y: s.y, scale: s.scale, opacity: s.opacity, rotateX: s.rotateX }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                drag={diff === 0 ? "y" : false}
+                drag={fine && diff === 0 ? "y" : false}
                 dragConstraints={{ top: 0, bottom: 0 }}
                 dragElastic={0.2}
                 onDragEnd={onDragEnd}

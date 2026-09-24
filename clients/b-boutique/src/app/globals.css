@@ -9930,60 +9930,26 @@ h2.bk-summary-h { font-size: 22px; margin-bottom: 20px; }
   .bk-line.is-leaving, .bk-dock, .bag-empty-media img { transition: none; }
 }
 
-/* The page fades into the footer instead of meeting it at a hard edge
-   (2026-09-24, Brad). The fade is the top of the footer itself, with a
-   spacer of the same height, so nothing above is dimmed. It starts from
-   the colour the page ends on: white on every route except /faq, whose
-   last section is #F7F7F5 (sampled on all 15 routes).
-
-   Second pass, same day (Brad: "it has lines"). The first ramp had five
-   straight segments, so the slope changed abruptly at each stop and the
-   eye read every change as a line; over ~180px an 8-bit ramp also steps
-   visibly. Now: a longer fade, 24 stops on a cosine ease-in-out (the
-   slope never jumps), mixed in OKLab so the grey steps are perceptually
-   even, and a faint noise dither over the fade only, blended with
-   overlay so it vanishes on the white and on the black and just breaks up
-   the 8-bit steps in the middle. */
+/* The footer as a rounded panel (2026-09-24, third pass). Brad on the
+   grained gradient: "looks very cheap". Fashion sites don't fade into the
+   footer; COS, Toteme and the current Framer fashion templates end the
+   page cleanly and let the footer arrive as its own black panel with large
+   rounded top corners, sitting on the page's own colour. That is this. The
+   page colour behind the corners follows the last section (white, or the
+   FAQ's #F7F7F5). No scroll-linked entrance on its content: on a short
+   page (the bag) the footer can never scroll far enough to finish one, and
+   the text was left half faded (axe, contrast). */
 .wf {
-  --ft-fade: clamp(160px, 18vw, 300px);
   --ft-from: #FFFFFF;
+  --ft-r: clamp(24px, 3.2vw, 48px);
   border-top: 0;
-  background: linear-gradient(to bottom,
-    var(--ft-from) 0,
-    color-mix(in oklab, var(--bb-black) 0.4%, var(--ft-from)) calc(var(--ft-fade) * 0.0417),
-    color-mix(in oklab, var(--bb-black) 1.7%, var(--ft-from)) calc(var(--ft-fade) * 0.0833),
-    color-mix(in oklab, var(--bb-black) 3.8%, var(--ft-from)) calc(var(--ft-fade) * 0.1250),
-    color-mix(in oklab, var(--bb-black) 6.7%, var(--ft-from)) calc(var(--ft-fade) * 0.1667),
-    color-mix(in oklab, var(--bb-black) 10.3%, var(--ft-from)) calc(var(--ft-fade) * 0.2083),
-    color-mix(in oklab, var(--bb-black) 14.6%, var(--ft-from)) calc(var(--ft-fade) * 0.2500),
-    color-mix(in oklab, var(--bb-black) 19.6%, var(--ft-from)) calc(var(--ft-fade) * 0.2917),
-    color-mix(in oklab, var(--bb-black) 25.0%, var(--ft-from)) calc(var(--ft-fade) * 0.3333),
-    color-mix(in oklab, var(--bb-black) 30.9%, var(--ft-from)) calc(var(--ft-fade) * 0.3750),
-    color-mix(in oklab, var(--bb-black) 37.1%, var(--ft-from)) calc(var(--ft-fade) * 0.4167),
-    color-mix(in oklab, var(--bb-black) 43.5%, var(--ft-from)) calc(var(--ft-fade) * 0.4583),
-    color-mix(in oklab, var(--bb-black) 50.0%, var(--ft-from)) calc(var(--ft-fade) * 0.5000),
-    color-mix(in oklab, var(--bb-black) 56.5%, var(--ft-from)) calc(var(--ft-fade) * 0.5417),
-    color-mix(in oklab, var(--bb-black) 62.9%, var(--ft-from)) calc(var(--ft-fade) * 0.5833),
-    color-mix(in oklab, var(--bb-black) 69.1%, var(--ft-from)) calc(var(--ft-fade) * 0.6250),
-    color-mix(in oklab, var(--bb-black) 75.0%, var(--ft-from)) calc(var(--ft-fade) * 0.6667),
-    color-mix(in oklab, var(--bb-black) 80.4%, var(--ft-from)) calc(var(--ft-fade) * 0.7083),
-    color-mix(in oklab, var(--bb-black) 85.4%, var(--ft-from)) calc(var(--ft-fade) * 0.7500),
-    color-mix(in oklab, var(--bb-black) 89.7%, var(--ft-from)) calc(var(--ft-fade) * 0.7917),
-    color-mix(in oklab, var(--bb-black) 93.3%, var(--ft-from)) calc(var(--ft-fade) * 0.8333),
-    color-mix(in oklab, var(--bb-black) 96.2%, var(--ft-from)) calc(var(--ft-fade) * 0.8750),
-    color-mix(in oklab, var(--bb-black) 98.3%, var(--ft-from)) calc(var(--ft-fade) * 0.9167),
-    color-mix(in oklab, var(--bb-black) 99.6%, var(--ft-from)) calc(var(--ft-fade) * 0.9583),
-    var(--bb-black) var(--ft-fade));
+  background: var(--bb-black);
+  border-radius: var(--ft-r) var(--ft-r) 0 0;
+  box-shadow: 0 0 0 100vmax var(--ft-from);
+  clip-path: inset(0 -100vmax -100vmax -100vmax);
+  margin-top: 0;
 }
 body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
-.wf::before {
-  content: ""; display: block; height: var(--ft-fade);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 160px 160px;
-  mix-blend-mode: overlay;
-  opacity: 0.22;
-  pointer-events: none;
-}
 
 /* ── Page transitions (2026-09-24, Brad) ──────────────────────────────────
  * See PageTransition.tsx. The old page leaves in 200ms and the new one rises
@@ -10349,3 +10315,51 @@ h2.ucs-h em { font-style: italic; }
 .bk-cards { flex-wrap: wrap; }
 .bk-cc--wallet { grid-auto-flow: column; gap: 2px; color: var(--bb-black); }
 .bk-cc--wallet span[aria-hidden] { font: 600 11px/1 system-ui, sans-serif; }
+
+/* Swipe rows stop at their ends (2026-09-24, Brad: the category row could
+   be dragged far past the first card on a phone, leaving white). No
+   rubber-band past either end, and the category row moves one card per
+   swipe instead of flinging several. */
+.cats-rail, .ucg-row, .bag-empty-picks, .vis-still-row, .spx-row, .catbar-list {
+  overscroll-behavior-x: none;
+}
+.cats-card { scroll-snap-stop: always; }
+.vis-slot { touch-action: pan-y; }
+@media (hover: none) { .vis-slot { cursor: auto; } }
+/* Tap targets at least 24px tall on a phone (2026-09-24 sweep). */
+.vx-card-link, .bag-empty-all, .bag-empty-new-all { display: inline-block; padding-block: 6px; }
+.vis-dot::before { inset: -10px -16px; }
+
+/* ── Added to bag toast (2026-09-24) ──────────────────────────────────────
+ * AddedToast.tsx. Under the header on the right on a desktop; along the
+ * bottom of the screen on a phone, above the thumb. */
+.atx {
+  position: fixed; z-index: 70; right: 24px; top: calc(var(--header-h) + 16px);
+  width: min(380px, calc(100vw - 32px));
+  display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: start;
+  padding: 14px; border-radius: 10px; background: #FFFFFF; color: var(--bb-black);
+  box-shadow: 0 18px 50px -12px rgba(14, 11, 12, 0.35), 0 0 0 1px rgba(14, 11, 12, 0.06);
+  animation: atx-in 460ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (max-width: 767px) {
+  .atx { right: 16px; left: 16px; width: auto; top: auto; bottom: max(16px, env(safe-area-inset-bottom)); animation-name: atx-up; }
+}
+@keyframes atx-in { from { opacity: 0; translate: 0 -12px; scale: 0.98; } }
+@keyframes atx-up { from { opacity: 0; translate: 0 24px; } }
+.atx-media { position: relative; display: block; width: 64px; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 6px; background: #F2EFEA; }
+.atx-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.atx-h { display: flex; align-items: center; gap: 6px; margin: 0 0 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #1F8A4C; }
+.atx-name { margin: 0; font-size: 15px; line-height: 1.3; }
+.atx-detail { margin: 2px 0 0; font-size: 13px; color: rgba(14, 11, 12, 0.7); }
+.atx-actions { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 12px; }
+.atx-view { display: inline-flex; align-items: center; min-height: 36px; padding: 0 16px; border-radius: 999px; background: var(--bb-black); color: #FFFFFF; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; }
+.atx-keep { min-height: 36px; padding: 0; border: 0; background: none; font-size: 13px; color: var(--bb-black); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.atx-close { display: grid; place-items: center; width: 32px; height: 32px; margin: -6px -6px 0 0; border: 0; border-radius: 999px; background: transparent; color: rgba(14, 11, 12, 0.7); cursor: pointer; }
+.atx-close:hover { background: rgba(14, 11, 12, 0.06); }
+.atx :focus-visible { outline: 2px solid var(--bb-black); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .atx { animation: none; } }
+/* Toast: bottom-right on a desktop too, clear of the header and bag icon;
+   the two actions stay on one line on a phone. */
+.atx { top: auto; bottom: 24px; animation-name: atx-up; }
+.atx-actions { flex-wrap: nowrap; gap: 14px; }
+.atx-keep { font-size: 12px; white-space: nowrap; }
