@@ -15,8 +15,11 @@ import { useEffect, useRef, useState } from "react";
  * cannot tell us it failed. A no-cors fetch of the same embed URL can (an ad
  * blocker or offline network rejects it). It is asked only as the section
  * nears the screen, which is when the lazy iframe would load anyway, so
- * /privacy stays true. Until the answer is in, and if it is no, her
- * shopfront photograph fills the panel; the card is on it either way.
+ * /privacy stays true. While the answer is pending the panel is plain
+ * map-grey, and the map fades in once the frame has loaded; her shopfront
+ * photograph appears ONLY if the answer is no (2026-09-24, Brad: on refresh
+ * the photo flashed for a second before the map replaced it). The card is
+ * on the panel in every state.
  *
  * The iframe is a picture of a map: pointer-events none, out of the tab
  * order and hidden from assistive tech, so it cannot trap the wheel halfway
@@ -36,6 +39,7 @@ export function VisitMap({
   directionsHref: string;
 }) {
   const [mapOk, setMapOk] = useState<boolean | null>(null);
+  const [loaded, setLoaded] = useState(false);
   const panel = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = panel.current;
@@ -60,18 +64,21 @@ export function VisitMap({
 
   return (
     <div className="vx-panel" ref={panel} data-map={mapOk === true ? "on" : undefined}>
-      <picture className="vx-photo">
-        <source type="image/avif" srcSet="/img/about/shopfront-640.avif 640w, /img/about/shopfront-960.avif 960w, /img/about/shopfront-1024.avif 1024w" sizes="(min-width: 1024px) 55vw, 100vw" />
-        <source type="image/webp" srcSet="/img/about/shopfront-640.webp 640w, /img/about/shopfront-960.webp 960w, /img/about/shopfront-1024.webp 1024w" sizes="(min-width: 1024px) 55vw, 100vw" />
-        <img src="/img/about/shopfront-960.jpg" alt="" loading="lazy" decoding="async" />
-      </picture>
+      {mapOk === false ? (
+        <picture className="vx-photo">
+          <source type="image/avif" srcSet="/img/about/shopfront-640.avif 640w, /img/about/shopfront-960.avif 960w, /img/about/shopfront-1024.avif 1024w" sizes="(min-width: 1024px) 55vw, 100vw" />
+          <source type="image/webp" srcSet="/img/about/shopfront-640.webp 640w, /img/about/shopfront-960.webp 960w, /img/about/shopfront-1024.webp 1024w" sizes="(min-width: 1024px) 55vw, 100vw" />
+          <img src="/img/about/shopfront-960.jpg" alt="" loading="lazy" decoding="async" />
+        </picture>
+      ) : null}
       {mapOk ? (
         <iframe
           title={`Map showing ${street}, ${town}`}
           src={embedSrc}
-          loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           className="vx-frame"
+          data-loaded={loaded ? "" : undefined}
+          onLoad={() => setLoaded(true)}
           tabIndex={-1}
           aria-hidden="true"
         />

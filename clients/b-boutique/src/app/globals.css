@@ -10255,3 +10255,8 @@ h3.why-title { margin: 8px 0 6px; font-family: var(--font-display), Georgia, ser
   .vx-card { left: 12px; right: 12px; max-width: none; }
   .vx-card-name { font-size: 17px; }
 }
+/* The map fades in when its frame has loaded; until then the panel is the
+   plain map-grey ground (the photo is only for a blocked map). */
+.vx-frame { opacity: 0; transition: opacity 500ms var(--bb-ease); }
+.vx-frame[data-loaded] { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .vx-frame { transition: none; } }
