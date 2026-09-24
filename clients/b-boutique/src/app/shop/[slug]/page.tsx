@@ -211,7 +211,7 @@ export default async function ProductPage({
                   a garment the description is what somebody actually reads;
                   composition and postage are what they check. */}
               <div className="pdp-folds">
-                <details className="pdp-fold" open>
+                <details className="pdp-fold pdp-fold--initial" open>
                   <summary className="pdp-fold-head">
                     Product description
                     <span aria-hidden="true" className="pdp-fold-mark" />

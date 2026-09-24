@@ -9467,3 +9467,75 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
     @media (max-width: 767px) { .uc-el--0 { --uc-s: 1.45; } }
   }
 }
+
+/* ── Product page: breathing room and soft folds (2026-09-24, Brad: "clumped
+   together", the photo "extremely tight to the page", the drop-downs "come
+   down so fast"). ───────────────────────────────────────────────────────── */
+
+/* Desktop: the photograph sits inside a margin instead of against the
+   window edge, the two columns get a real gutter, and the whole page is
+   held to a comfortable width on very wide screens. */
+@media (min-width: 1024px) {
+  .pdp {
+    gap: clamp(48px, 5vw, 104px);
+    padding-inline: max(clamp(32px, 4vw, 72px), calc((100vw - 1520px) / 2));
+    padding-bottom: clamp(56px, 6vw, 96px);
+  }
+  .pdp-media {
+    width: min(50%, calc((100svh - var(--header-h) - 64px) * 0.8055));
+    top: calc(var(--header-h) + 32px);
+    margin-top: 16px;
+    border-radius: 6px;
+  }
+  .pdp-body { padding-inline: 0; }
+  .pdp-inner { max-width: 500px; }
+}
+
+/* Vertical rhythm in the details column: each group gets its own space. */
+.pdp-cat { margin-bottom: 20px; }
+h1.pdp-name { margin-bottom: 18px; }
+.pdp-lede { margin-top: 20px; margin-bottom: 36px; }
+.atb > * + * { margin-top: 0; }
+.atb-sizes { margin-bottom: 28px; }
+.atb-qty { margin-bottom: 28px; }
+.atb .atb-buy { margin-top: 12px; }
+.pdp-perks { margin-top: 44px; gap: 24px; padding-top: 32px; border-top: 1px solid rgba(14, 11, 12, 0.1); }
+.pdp-folds { margin-top: 44px; }
+.pdp-fold-head { padding-block: 24px; }
+
+/* The folds open softly: the panel's height eases open (Chrome and Edge,
+   via ::details-content) and the text inside fades up, line by line, a
+   beat behind it. Elsewhere the panel opens at once and the text still
+   fades. Nothing moves under reduced motion. */
+.pdp-fold { interpolate-size: allow-keywords; }
+.pdp-fold::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition: block-size 560ms cubic-bezier(0.22, 1, 0.36, 1), content-visibility 560ms allow-discrete;
+}
+.pdp-fold[open]::details-content { block-size: auto; }
+.pdp-fold-mark::before, .pdp-fold-mark::after { transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1); }
+.pdp-fold[open] .pdp-fold-body > *,
+.pdp-fold[open] .pdp-feat > li {
+  animation: pdp-fold-in 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.pdp-fold[open] .pdp-fold-body > :nth-child(2) { animation-delay: 70ms; }
+.pdp-fold[open] .pdp-fold-body > :nth-child(3) { animation-delay: 140ms; }
+.pdp-fold[open] .pdp-feat > li:nth-child(1) { animation-delay: 110ms; }
+.pdp-fold[open] .pdp-feat > li:nth-child(2) { animation-delay: 160ms; }
+.pdp-fold[open] .pdp-feat > li:nth-child(3) { animation-delay: 210ms; }
+.pdp-fold[open] .pdp-feat > li:nth-child(n + 4) { animation-delay: 260ms; }
+@keyframes pdp-fold-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .pdp-fold::details-content { transition: none; }
+  .pdp-fold-mark::before, .pdp-fold-mark::after { transition: none; }
+  .pdp-fold[open] .pdp-fold-body > *, .pdp-fold[open] .pdp-feat > li { animation: none; }
+}
+/* Air above the photograph too: at scroll 0 the header is 106px with the
+   announcement strip, so the frame started 3px under it. */
+@media (min-width: 1024px) { .pdp { padding-top: calc(var(--header-h) + 34px + 28px); } }
+/* The fold that is open on arrival has nothing to reveal, so its text does
+   not fade in on page load (it also kept the contrast audit from sampling
+   the text mid-fade). The height still eases when it is closed and opened. */
+.pdp-fold--initial[open] .pdp-fold-body > *,
+.pdp-fold--initial[open] .pdp-feat > li { animation: none; }
