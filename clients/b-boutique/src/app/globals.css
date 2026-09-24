@@ -9539,3 +9539,51 @@ h1.pdp-name { margin-bottom: 18px; }
    the text mid-fade). The height still eases when it is closed and opened. */
 .pdp-fold--initial[open] .pdp-fold-body > *,
 .pdp-fold--initial[open] .pdp-feat > li { animation: none; }
+
+/* No red here (2026-09-24, Brad). Footer social buttons keep their lift
+   on hover but take no colour; the bag's pay button is the site's black,
+   like Add to bag; the secure-payment line gets a green dot and the other
+   two lines neutral ones. Green #1F8A4C measures 4.5:1+ on white, though
+   as a 6px dot it is decoration, not text. */
+.wf-social-btn:hover { background: transparent; border-color: rgba(255, 255, 255, 0.72); }
+.bk-pay { background: #0E0B0C; border-color: #0E0B0C; color: #FFFFFF; }
+@media (hover: hover) { .bk-pay:hover:not(:disabled) { background: #0E0B0C; color: #FFFFFF; } }
+.bk-trust li::before { background: rgba(14, 11, 12, 0.35); }
+.bk-trust li:first-child::before { background: #1F8A4C; }
+
+/* Up close: the words on the image (2026-09-24, Brad). They sit bottom-left
+   over the opening close-up on a soft shadow, and fade out over the first
+   third of the zoom. Where the zoom does not run they stay, over the
+   collage, on the same shadow. */
+.uc { padding-top: 0; }
+.uc-head {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  max-width: none; margin: 0;
+  padding: 120px 18px clamp(40px, 7vh, 88px);
+  background: linear-gradient(to top, rgba(14, 11, 12, 0.78), rgba(14, 11, 12, 0.42) 55%, rgba(14, 11, 12, 0));
+  pointer-events: none;
+}
+@media (min-width: 768px) { .uc-head { padding-inline: 48px; } }
+.uc-head .uc-h { color: #FFFFFF; }
+.uc-head .uc-p { color: rgba(255, 255, 255, 0.92); max-width: 48ch; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .uc-head { animation: uc-head-out linear both; animation-timeline: --uc; animation-range: contain 8% contain 34%; }
+  }
+}
+@keyframes uc-head-out { to { opacity: 0; transform: translateY(-24px); } }
+/* Phones: the opening close-up fills the whole screen (a taller crop of
+   the same 4K frame) so the words sit on it, then it settles to the centre
+   of the collage. The ring moves out a little to make room. */
+@media (max-width: 767px) {
+  .uc-el--0 .uc-frame { width: 60vw; height: 34svh; aspect-ratio: auto; }
+  .uc-el--1 .uc-frame { width: 44vw; height: 16vh; transform: translate(-22vw, -32vh); }
+  .uc-el--2 .uc-frame { width: 36vw; height: 18vh; transform: translate(26vw, -31vh); }
+  .uc-el--3 .uc-frame { width: 34vw; height: 18vh; transform: translate(30vw, 32vh); }
+  .uc-el--4 .uc-frame { width: 36vw; height: 20vh; transform: translate(-24vw, 33vh); }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (max-width: 767px) {
+    .uc-el--0 { --uc-s: 3; }
+  }
+}

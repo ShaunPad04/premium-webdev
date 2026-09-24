@@ -25,34 +25,38 @@ const FRAMES = [
   { src: "velour", piece: "Velour Lounge Set", fabric: "velour with a short plush pile" },
 ];
 
-/* The centre frame opens full-screen, so it also has a 3000px step. */
+/* The centre frame opens full-screen and slightly wider (it starts at
+   ~120% of the window), so it has steps up to 4200px from a 6048px 4K
+   source (2026-09-24, Brad: the first one was soft). */
 const set = (src: string, i: number, ext: string) =>
-  [1000, 2000, ...(i === 0 ? [3000] : [])].map((w) => `/img/fabric/${src}-${w}.${ext} ${w}w`).join(", ");
+  (i === 0 ? [1000, 2000, 3000, 4200] : [1000, 2000]).map((w) => `/img/fabric/${src}-${w}.${ext} ${w}w`).join(", ");
 
 export function UpClose() {
   return (
     <section className="uc" aria-labelledby="uc-h">
-      <div className="uc-head">
-        <h2 id="uc-h" className="uc-h">Up close</h2>
-        <p className="uc-p">
-          Soft curly boucle, a knitted-in jacquard yoke, velvet with metallic
-          embroidery. Carefully selected pieces that are stylish, affordable
-          and made to be touched, so come in and feel them.
-        </p>
-      </div>
       <div className="uc-track">
         <div className="uc-sticky">
           {FRAMES.map((f, i) => (
             <div key={f.src} className={`uc-el uc-el--${i}`}>
               <figure className="uc-frame">
                 <picture>
-                  <source type="image/avif" srcSet={set(f.src, i, "avif")} sizes={i === 0 ? "100vw" : "40vw"} />
-                  <source type="image/webp" srcSet={set(f.src, i, "webp")} sizes={i === 0 ? "100vw" : "40vw"} />
+                  <source type="image/avif" srcSet={set(f.src, i, "avif")} sizes={i === 0 ? "(max-width: 767px) 180vw, 120vw" : "40vw"} />
+                  <source type="image/webp" srcSet={set(f.src, i, "webp")} sizes={i === 0 ? "(max-width: 767px) 180vw, 120vw" : "40vw"} />
                   <img src={`/img/fabric/${f.src}-1000.jpg`} alt={`Close-up of the ${f.piece}: ${f.fabric}`} loading="lazy" decoding="async" className="uc-img" />
                 </picture>
               </figure>
             </div>
           ))}
+          {/* The words sit ON the opening close-up (2026-09-24, Brad) and
+              fade as the collage opens out. */}
+          <div className="uc-head">
+            <h2 id="uc-h" className="uc-h">Up close</h2>
+            <p className="uc-p">
+              Soft curly boucle, a knitted-in jacquard yoke, velvet with metallic
+              embroidery. Carefully selected pieces that are stylish, affordable
+              and made to be touched, so come in and feel them.
+            </p>
+          </div>
         </div>
       </div>
     </section>
