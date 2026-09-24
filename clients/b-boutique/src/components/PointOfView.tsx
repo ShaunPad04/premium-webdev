@@ -1,4 +1,5 @@
 import { philosophy } from "@/lib/about";
+import TextRevealScroll from "@/components/TextRevealScroll";
 
 /* One definition of the approved sentence and its annotation, imported here
    and by the About page. They used to be two copies of the same signed-off
@@ -7,11 +8,8 @@ const SECONDARY = philosophy.lines;
 
 /* Our philosophy.
  *
- * A server component. It renders the finished sentence as plain HTML; the
- * scroll-linked word reveal is CSS alone (see .pov-w), so no JavaScript is
- * required to read it, there is nothing to hydrate and no chance of a
- * server/client mismatch. With reduced motion, or in a browser without view
- * timelines, the statement is simply there.
+ * A server component; the one client piece is the TextRevealScroll inside
+ * the heading, which lights the sentence word by word on scroll.
  *
  * The copy is sentence case in the markup and uppercased in CSS. A screen
  * reader given literal caps can fall back to spelling words out; the visual
@@ -35,21 +33,19 @@ export function PointOfView() {
       <div className="pov-inner">
         <div>
           <p className="pov-eyebrow">Our philosophy</p>
-          {/* Scroll-driven (2026-09-23, client): each word fades in as it
-              rises into view, on phones and desktops alike. Pure CSS on a view timeline, so it costs no JavaScript
-              and cannot fight React for the DOM (the SplitText version that
-              lived here did both). The heading's name is the plain sentence;
-              the word spans are hidden from assistive technology. Where view
-              timelines are not supported, or motion is reduced, the words
-              are simply at full strength. */}
+          {/* Word-by-word reveal on scroll (TextRevealScroll, Brad,
+              2026-09-24; it replaced the CSS .pov-w view timeline). Only the
+              words are wrapped: the quote marks are ::before/::after on the
+              outer span and stay put. dimOpacity 0, not 0.15: a word waiting
+              at 15% is pale grey on white and fails contrast (axe, serious,
+              all three widths); an invisible one is not yet on the page.
+              The heading's name is the plain sentence; reduced motion shows
+              the whole sentence at once. */}
           <h2 id="pov-heading" className="pov-statement" aria-label={philosophy.statement}>
             <span aria-hidden="true">
-              {philosophy.statement.split(/\s+/).map((w, i, all) => (
-                <span key={i}>
-                  <span className="pov-w">{w}</span>
-                  {i < all.length - 1 ? " " : null}
-                </span>
-              ))}
+              <TextRevealScroll as="span" by="words" dimOpacity={0}>
+                {philosophy.statement}
+              </TextRevealScroll>
             </span>
           </h2>
         </div>
