@@ -59,6 +59,7 @@ export default function TextRevealScroll({
         const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
         if (reduce) {
             segs.forEach((s) => (s.style.opacity = "1"))
+            root.setAttribute("data-done", "")
             return
         }
 
@@ -78,6 +79,9 @@ export default function TextRevealScroll({
             for (let i = 0; i < n; i++) {
                 segs[i].style.opacity = String(lit - i >= 0.5 ? 1 : dimOpacity)
             }
+            // Lets a caller finish the line with the text (the closing quote
+            // mark on the philosophy statement waits for this).
+            root.toggleAttribute("data-done", lit - (n - 1) >= 0.5)
         }
         const onScroll = () => {
             if (!frame) frame = requestAnimationFrame(update)

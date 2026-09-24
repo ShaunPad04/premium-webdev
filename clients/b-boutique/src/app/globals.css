@@ -1283,12 +1283,17 @@ body {
       view-timeline-name: --cats-rail;
       view-timeline-axis: block;
     }
+    /* 2026-09-24, Brad: "the page comes up rather than staying static".
+       The old 24px entrance finished before most people noticed it. Now
+       each card rises from well below its place and is uncovered from the
+       bottom edge as it comes, tied to the scroll for the whole approach,
+       so the row visibly lifts into place while the reader scrolls. Cards
+       further along start lower and settle later, a wave left to right.
+       Opacity is never touched, so nothing sits at low contrast. */
     .cats-card {
-      animation: cats-in 800ms var(--bb-ease) both;
+      animation: cats-in linear both;
       animation-timeline: --cats-rail;
-      animation-range:
-        entry calc(var(--bb-enter)  + var(--n, 0) * var(--bb-step))
-        entry calc(var(--bb-settle) + var(--n, 0) * var(--bb-step));
+      animation-range: entry 0% cover calc(38% + var(--n, 0) * 3%);
     }
     .cats-card:nth-child(2) { --n: 1; }
     .cats-card:nth-child(3) { --n: 2; }
@@ -1298,9 +1303,13 @@ body {
 }
 
 @keyframes cats-in {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    translate: 0 calc(var(--cats-rise, 140px) + var(--n, 0) * var(--cats-rise-step, 36px));
+    clip-path: inset(0 0 22% 0);
+  }
+  to { translate: 0 0; clip-path: inset(0 0 0 0); }
 }
+@media (max-width: 1023px) { .cats { --cats-rise: 90px; --cats-rise-step: 22px; } }
 
 /* ── Our philosophy ───────────────────────────────────────────────────────
    Controlled, not cinematic: a block with real padding rather than a 100vh
@@ -9331,7 +9340,13 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
   font-family: var(--font-display);
   font-style: italic;
   margin-left: 0.04em;
+  /* Arrives with the last word, not before it (2026-09-24): while the
+     sentence was still revealing, the closing mark hung on its own after a
+     blank gap. TextRevealScroll sets data-done when every word is lit. */
+  opacity: 0;
+  transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
+.pov-statement > span[aria-hidden]:has([data-done])::after { opacity: 1; }
 @media (max-width: 640px) {
   .pov-statement > span[aria-hidden]::before { position: static; margin-right: 0.04em; }
 }
@@ -10013,3 +10028,96 @@ body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
 }
+
+/* ── Step inside (2026-09-24) ─────────────────────────────────────────────
+ * See home/StepInside.tsx. Sticky stacked cards: each photograph sticks
+ * under the header and the next slides up over it; the covered one sinks
+ * back by --sink (0-1, written on scroll). */
+.si { background: #FFFFFF; padding: clamp(72px, 9vw, 140px) 0 clamp(72px, 8vw, 120px); }
+.si-intro { text-align: center; padding: 0 18px; margin-bottom: clamp(36px, 5vw, 64px); }
+.si-eyebrow { color: var(--accent); }
+h2.si-h { margin: 14px 0 0; font-size: clamp(34px, 4.6vw, 64px); line-height: 1.05; color: var(--bb-black); }
+h2.si-h em { font-style: italic; }
+.si-list { list-style: none; margin: 0 auto; padding: 0 clamp(12px, 4vw, 60px); max-width: 1760px; display: grid; gap: clamp(28px, 5vh, 56px); }
+.si-card { --sink: 0; }
+.si-list[data-stack] .si-card { position: sticky; top: calc(var(--header-h) + clamp(12px, 3vh, 32px)); }
+.si-frame {
+  position: relative; overflow: hidden; border-radius: clamp(6px, 0.8vw, 14px);
+  height: min(76svh, 820px); background: #1A1718;
+  transform-origin: 50% 0%;
+  scale: calc(1 - var(--sink) * 0.08);
+  box-shadow: 0 -18px 50px -30px rgba(14, 11, 12, 0.45);
+}
+.si-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 72%; scale: calc(1.08 - var(--sink) * 0.08); }
+.si-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(14, 11, 12, 0.62) 0%, rgba(14, 11, 12, 0) 42%), rgba(14, 11, 12, calc(var(--sink) * 0.45)); pointer-events: none; }
+.si-cap { position: absolute; left: clamp(20px, 3vw, 44px); bottom: clamp(20px, 3vw, 40px); margin: 0; display: flex; align-items: baseline; gap: 16px; color: #fff; }
+.si-num { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; opacity: 0.85; }
+.si-text { font-family: var(--font-display), Georgia, serif; font-size: clamp(26px, 3.2vw, 46px); line-height: 1.05; text-shadow: 0 1px 24px rgba(14, 11, 12, 0.35); }
+.si-ctas { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 16px 28px; margin-top: clamp(40px, 6vw, 72px); padding: 0 18px; }
+.si-link { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bb-black); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 3px; }
+@media (max-width: 767px) {
+  .si-frame { height: 68svh; }
+  .si-cap { flex-direction: column; gap: 6px; }
+  .si-ctas { flex-direction: column; align-items: stretch; }
+  .si-cta { justify-content: center; }
+  .si-link { align-self: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .si-frame, .si-img { scale: 1; }
+}
+
+/* ── The page rises over the hero (2026-09-24, Brad) ──────────────────────
+ * Reference: fuel.framer.website. The hero stays put (sticky) and the rest
+ * of the page comes up over it. Its top edge starts as a slant, low on the
+ * left and high on the right, and levels out as it rises, while the hero
+ * behind it darkens. All of it is a CSS scroll timeline on the rising panel
+ * (named, and scoped to <main> so the hero can read it too): no script, and
+ * nothing runs when the browser lacks scroll timelines or the reader asked
+ * for less motion, in which case the page simply scrolls as it did. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .home-rise { timeline-scope: --rise; }
+    .home-rise > .hero { position: sticky; top: 0; z-index: 0; }
+    .home-rise > .rise {
+      --slant: clamp(70px, 9vw, 170px);
+      position: relative;
+      z-index: 1;
+      view-timeline: --rise block;
+    }
+    /* The slanted edge: a wedge sitting on top of the panel, the panel's
+       own colour (the marquee's ink), flattened to nothing as it rises. */
+    .home-rise > .rise::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 100%;
+      height: var(--slant);
+      background: var(--bb-black);
+      clip-path: polygon(0 100%, 100% 0, 100% 100.5%, 0 100.5%);
+      pointer-events: none;
+      animation: rise-level linear both;
+      animation-timeline: --rise;
+      animation-range: entry 0% entry 100%;
+    }
+    /* The hero dims behind the panel as it is covered. An overlay rather
+       than a filter: a filter over the WebGL hero would repaint it every
+       frame on a phone. */
+    .home-rise > .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      background: #0E0B0C;
+      opacity: 0;
+      pointer-events: none;
+      animation: rise-dim linear both;
+      animation-timeline: --rise;
+      animation-range: entry 0% entry 100%;
+    }
+  }
+}
+@keyframes rise-level {
+  to { clip-path: polygon(0 100%, 100% 100%, 100% 100.5%, 0 100.5%); }
+}
+@keyframes rise-dim { to { opacity: 0.6; } }
