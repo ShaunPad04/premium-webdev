@@ -71,9 +71,12 @@ export default function TextRevealScroll({
             const endY = (vh * end) / 100
             const p = clamp((startY - top) / Math.max(1, startY - endY))
             const lit = p * n
+            // Each word is either waiting or lit, never parked half-way:
+            // a word left at 30% when the scroll stops is low-contrast text
+            // at rest (axe, serious). The fade between the two is the
+            // transition below, so it still reads as a soft reveal.
             for (let i = 0; i < n; i++) {
-                const local = clamp(lit - i)
-                segs[i].style.opacity = String(dimOpacity + (1 - dimOpacity) * local)
+                segs[i].style.opacity = String(lit - i >= 0.5 ? 1 : dimOpacity)
             }
         }
         const onScroll = () => {
@@ -81,16 +84,20 @@ export default function TextRevealScroll({
         }
 
         update()
+        // No transition on the first paint, so a page opening with the text
+        // already lit does not fade it in (or get caught mid-fade).
+        const arm = requestAnimationFrame(() => segs.forEach((s) => (s.style.transition = "opacity .35s cubic-bezier(.22,1,.36,1)")))
         window.addEventListener("scroll", onScroll, { passive: true })
         window.addEventListener("resize", onScroll)
         return () => {
             window.removeEventListener("scroll", onScroll)
             window.removeEventListener("resize", onScroll)
             if (frame) cancelAnimationFrame(frame)
+            cancelAnimationFrame(arm)
         }
     }, [content, by, start, end, dimOpacity])
 
-    const segStyle: React.CSSProperties = { opacity: dimOpacity, transition: "opacity .08s linear" }
+    const segStyle: React.CSSProperties = { opacity: dimOpacity }
 
     const Tag = as as React.ElementType
     return (
