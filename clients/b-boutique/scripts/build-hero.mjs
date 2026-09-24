@@ -104,7 +104,7 @@ for (const name of slides) {
   const mob = sharp(port).resize({ width: MOBILE_W, withoutEnlargement: true });
 
   const [da, dw, dj, ma, mw, mj] = await Promise.all([
-    desk.clone().avif({ quality: 62, effort: 6 }).toFile(`public/img/hero/${name}-d.avif`),
+    desk.clone().avif({ quality: 68, effort: 6 }).toFile(`public/img/hero/${name}-d.avif`),
     desk.clone().webp({ quality: 78 }).toFile(`public/img/hero/${name}-d.webp`),
     desk.clone().jpeg({ quality: 82, mozjpeg: true }).toFile(`public/img/hero/${name}-d.jpg`),
     /* 54 for the phone, not 62, and it was measured both ways.
@@ -131,7 +131,7 @@ for (const name of slides) {
      *
      * The desktop file stays at 62: it is 100-150 KB already, it is not
      * what the mobile LCP waits on, and there is nothing to buy there. */
-    mob.clone().avif({ quality: 54, effort: 6 }).toFile(`public/img/hero/${name}-m.avif`),
+    mob.clone().avif({ quality: 56, effort: 6 }).toFile(`public/img/hero/${name}-m.avif`),
     mob.clone().webp({ quality: 78 }).toFile(`public/img/hero/${name}-m.webp`),
     mob.clone().jpeg({ quality: 82, mozjpeg: true }).toFile(`public/img/hero/${name}-m.jpg`),
   ]);
@@ -145,8 +145,8 @@ for (const name of slides) {
        and cost 154 KB at 54, which measured as a later simulated LCP than
        the frame it replaced. 46 is 101 KB, PSNR 33.4 vs 35.4 dB, and no
        difference could be seen at 2x zoom. */
-    small.clone().avif({ quality: 46, effort: 6 }).toFile(`public/img/hero/${name}-s.avif`),
-    small.clone().webp({ quality: 70 }).toFile(`public/img/hero/${name}-s.webp`),
+    small.clone().avif({ quality: 52, effort: 6 }).toFile(`public/img/hero/${name}-s.avif`),
+    small.clone().webp({ quality: 74 }).toFile(`public/img/hero/${name}-s.webp`),
   ]);
 
   /* A 1200 phone step (2026-09-23): with a 4K source the 1536 phone file
@@ -155,8 +155,23 @@ for (const name of slides) {
   {
     const mid = sharp(port).resize({ width: 1200, withoutEnlargement: true });
     await Promise.all([
-      mid.clone().avif({ quality: 46, effort: 6 }).toFile(`public/img/hero/${name}-s1200.avif`),
-      mid.clone().webp({ quality: 70 }).toFile(`public/img/hero/${name}-s1200.webp`),
+      mid.clone().avif({ quality: 52, effort: 6 }).toFile(`public/img/hero/${name}-s1200.avif`),
+      mid.clone().webp({ quality: 74 }).toFile(`public/img/hero/${name}-s1200.webp`),
+    ]);
+  }
+
+  /* An 1800 phone step and higher quality everywhere (2026-09-24, Brad:
+     "it looks blurry"). A 3x phone shows ~1425 device px across the cover
+     crop and was being sent the 1200 file at AVIF q46, stretched ~19%.
+     The sharpness came back from the new native 2880x5120 source, not from
+     encoder quality: q46 and q62 of the new frame were indistinguishable at
+     1:1, and q62 cost +0.8s simulated LCP (Lighthouse mobile, n=3). The
+     phone steps sit at q52 as a small margin over that. */
+  {
+    const big = sharp(port).resize({ width: 1800, withoutEnlargement: true });
+    await Promise.all([
+      big.clone().avif({ quality: 56, effort: 6 }).toFile(`public/img/hero/${name}-s1800.avif`),
+      big.clone().webp({ quality: 76 }).toFile(`public/img/hero/${name}-s1800.webp`),
     ]);
   }
 
@@ -168,8 +183,8 @@ for (const name of slides) {
   for (const w of [1920, 2560]) {
     const step = sharp(land).resize({ width: w, withoutEnlargement: true });
     await Promise.all([
-      step.clone().avif({ quality: 56, effort: 6 }).toFile(`public/img/hero/${name}-d${w}.avif`),
-      step.clone().webp({ quality: 74 }).toFile(`public/img/hero/${name}-d${w}.webp`),
+      step.clone().avif({ quality: 64, effort: 6 }).toFile(`public/img/hero/${name}-d${w}.avif`),
+      step.clone().webp({ quality: 80 }).toFile(`public/img/hero/${name}-d${w}.webp`),
     ]);
   }
 
