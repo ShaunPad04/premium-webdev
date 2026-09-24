@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { products } from "@/lib/catalogue";
@@ -39,8 +40,17 @@ export function CategoryBento() {
         {sorted.map((t, i) => (
           <li key={t.slug} className={`bento-t bento-t--${i}`}>
             <Link href={t.href} className="bento-link">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={t.image} alt={t.alt} loading="lazy" decoding="async" className="bento-img" />
+              {/* next/image, so each tile gets a file its own size. Raw <img>
+                  here sent the full 700 KB originals and measurably slowed
+                  the phone's first paint (2026-09-24). */}
+              <Image
+                src={t.image}
+                alt={t.alt}
+                fill
+                sizes={i === 0 ? "(min-width: 900px) 50vw, 100vw" : "(min-width: 900px) 25vw, 50vw"}
+                quality={70}
+                className="bento-img"
+              />
               <span className="bento-scrim" aria-hidden="true" />
               <span className="bento-t-body">
                 <span className="bento-name">{t.name}</span>

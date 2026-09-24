@@ -256,6 +256,7 @@ export function LuminaInteractiveList({
   transition?: "glass" | "fade";
 }) {
   const total = slides.length;
+  const sameTitle = slides.every((s) => s.title === slides[0].title);
   const [current, setCurrent] = useState(0);
   const [caption, setCaption] = useState(0);
   const [animated, setAnimated] = useState(false);
@@ -459,7 +460,11 @@ export function LuminaInteractiveList({
         <p key={`t${caption}`} className="lm-title" data-anim={animated || undefined}>
           {/* One slide: no change animation, so no per-letter spans either
               (they made a single letter the page's largest paint). */}
-          {total > 1 ? <LuminaTitle text={slide.title} /> : slide.title}
+          {/* Split into rising letters only when the title actually changes
+                between slides. With one shared title (the home hero since
+                2026-09-24) the letter rise only delayed the page's largest
+                paint, which Lighthouse measured as the last letter. */}
+            {total > 1 && !sameTitle ? <LuminaTitle text={slide.title} /> : slide.title}
         </p>
         {slide.description ? (
           <p key={`d${caption}`} className="lm-desc" data-anim={animated || undefined}>

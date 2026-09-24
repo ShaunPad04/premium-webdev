@@ -84,6 +84,7 @@ export function OwnerCard() {
                   alt={`${fullName}, ${owner.role.toLowerCase()} of ${shop.name}`}
                   width={487}
                   height={649}
+                  loading="lazy"
                   decoding="async"
                   className="owner-img"
                 />

@@ -22,12 +22,16 @@ const SLIDES: LuminaSlide[] = [
   /* Brad's MADRID reference: one aerial frame, two horses in a
      red field (Higgsfield; campaign imagery, no shop, stock or person). One
      slide, so nothing auto-advances and no pause control is needed. */
-  { file: "horses", label: "B Boutique" },
   /* 2026-09-24, Brad: more frames, a smooth slideshow. Higgsfield campaign
      imagery with a dark, empty centre so the name sits in it rather than on
      top of something: ivory silk, a boutique corner, crimson ribbon with
      pearls, and a promenade at dusk. No shop, stock or real person shown. */
+  /* Silk opens, the horses follow (2026-09-24). Measured, mobile, n=5:
+     horses first 81 [81-84], LCP 5.11s; silk first 89 [86-92], LCP 3.69s.
+     The largest paint is the title text, which waits behind the first
+     frame's bytes: 224 KB for the horses at 1200w, 37 KB for the silk. */
   { file: "silk", label: "Silk" },
+  { file: "horses", label: "B Boutique" },
   { file: "rail", label: "The rail" },
   { file: "ribbon", label: "Ribbon" },
   { file: "shore", label: "The shore" },
