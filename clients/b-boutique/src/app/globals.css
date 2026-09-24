@@ -10068,9 +10068,8 @@ h2.si-h em { font-style: italic; }
 
 /* ── The page rises over the hero (2026-09-24, Brad) ──────────────────────
  * Reference: fuel.framer.website. The hero stays put (sticky) and the rest
- * of the page comes up over it. Its top edge starts as a slant, low on the
- * left and high on the right, and levels out as it rises, while the hero
- * behind it darkens. All of it is a CSS scroll timeline on the rising panel
+ * of the page comes up over it on a slanted top edge, low on the left and
+ * high on the right, while the hero behind it darkens. All of it is a CSS scroll timeline on the rising panel
  * (named, and scoped to <main> so the hero can read it too): no script, and
  * nothing runs when the browser lacks scroll timelines or the reader asked
  * for less motion, in which case the page simply scrolls as it did. */
@@ -10084,21 +10083,24 @@ h2.si-h em { font-style: italic; }
       z-index: 1;
       view-timeline: --rise block;
     }
-    /* The slanted edge: a wedge sitting on top of the panel, the panel's
-       own colour (the marquee's ink), flattened to nothing as it rises. */
+    /* The slanted edge (2026-09-24, second pass, Brad: "it's already there
+       pre-scroll"). The wedge used to sit ABOVE the panel, so on load it
+       already cut into the bottom of the hero. It now sits INSIDE the
+       panel's own top, in a transparent band the hero shows through: at
+       rest the panel's top edge is the bottom of the screen and nothing is
+       visible; the slant appears only once the panel starts to rise, and
+       scrolls away with it, as on the reference. */
+    .home-rise > .rise { padding-top: var(--slant); }
     .home-rise > .rise::before {
       content: "";
       position: absolute;
       left: 0;
       right: 0;
-      bottom: 100%;
-      height: var(--slant);
+      top: 0;
+      height: calc(var(--slant) + 1px);
       background: var(--bb-black);
-      clip-path: polygon(0 100%, 100% 0, 100% 100.5%, 0 100.5%);
+      clip-path: polygon(0 100%, 100% 0, 100% 100%, 0 100%);
       pointer-events: none;
-      animation: rise-level linear both;
-      animation-timeline: --rise;
-      animation-range: entry 0% entry 100%;
     }
     /* The hero dims behind the panel as it is covered. An overlay rather
        than a filter: a filter over the WebGL hero would repaint it every
@@ -10116,8 +10118,5 @@ h2.si-h em { font-style: italic; }
       animation-range: entry 0% entry 100%;
     }
   }
-}
-@keyframes rise-level {
-  to { clip-path: polygon(0 100%, 100% 100%, 100% 100.5%, 0 100.5%); }
 }
 @keyframes rise-dim { to { opacity: 0.6; } }
