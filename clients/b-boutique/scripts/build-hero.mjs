@@ -41,7 +41,7 @@ import { existsSync } from "node:fs";
 
 await mkdir("public/img/hero", { recursive: true });
 
-const slides = ["horses"];
+const slides = ["horses", "silk", "rail", "ribbon", "shore"];
 
 /* ── 2026-09-21, second correction: stop downscaling below the source ──────
  *
@@ -85,8 +85,11 @@ const MOBILE_W = 1536;
 const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
 
 for (const name of slides) {
-  const land = `assets/hero/${name}.png`;
-  const port = `assets/hero/${name}-portrait.png`;
+  /* PNG or a quality-95 JPEG: the 2026-09-24 frames are 5120px Seedream
+     renders, ~15 MB each as PNG, and are kept as JPEG to spare the repo. */
+  const src = (base) => (existsSync(`${base}.png`) ? `${base}.png` : `${base}.jpg`);
+  const land = src(`assets/hero/${name}`);
+  const port = src(`assets/hero/${name}-portrait`);
 
   /* Loud, not silent. The regression this replaces happened because the
      script quietly did something reasonable-looking with a missing file. */

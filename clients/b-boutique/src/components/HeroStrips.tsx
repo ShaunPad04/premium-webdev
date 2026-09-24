@@ -23,6 +23,14 @@ const SLIDES: LuminaSlide[] = [
      red field (Higgsfield; campaign imagery, no shop, stock or person). One
      slide, so nothing auto-advances and no pause control is needed. */
   { file: "horses", label: "B Boutique" },
+  /* 2026-09-24, Brad: more frames, a smooth slideshow. Higgsfield campaign
+     imagery with a dark, empty centre so the name sits in it rather than on
+     top of something: ivory silk, a boutique corner, crimson ribbon with
+     pearls, and a promenade at dusk. No shop, stock or real person shown. */
+  { file: "silk", label: "Silk" },
+  { file: "rail", label: "The rail" },
+  { file: "ribbon", label: "Ribbon" },
+  { file: "shore", label: "The shore" },
 ].map(({ file, ...s }) => ({ ...s, title: "B Boutique", src: `/img/hero/${file}-m.jpg`, sources: sources(file) }));
 
 function Cta() {
@@ -38,7 +46,7 @@ function Cta() {
 
 export function HeroStrips() {
   return (
-    <LuminaInteractiveList slides={SLIDES} layout="centre" list={false}>
+    <LuminaInteractiveList slides={SLIDES} layout="centre" list={false} transition="fade">
       <Cta />
     </LuminaInteractiveList>
   );

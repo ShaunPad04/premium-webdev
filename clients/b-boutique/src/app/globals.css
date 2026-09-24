@@ -9361,3 +9361,13 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
 @media (prefers-reduced-motion: reduce) {
   .navbar-mark > .nm-word, .navbar-mark > .nm-b { transition: none; }
 }
+
+/* Hero slideshow, fade mode (2026-09-24, Brad: "a smooth slideshow").
+   A long cross-fade, and each frame settles from a slight zoom while it is
+   on screen. The settle is on the <picture> so it composes with the
+   scroll drift on the <img>. Transform and opacity only. */
+.lm[data-fade] .lm-pic { transition: opacity 1600ms cubic-bezier(0.45, 0, 0.2, 1); }
+@media (prefers-reduced-motion: no-preference) {
+  .lm[data-fade] .lm-pic[data-on] { animation: lm-settle 9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+@keyframes lm-settle { from { transform: scale(1.07); } to { transform: scale(1); } }

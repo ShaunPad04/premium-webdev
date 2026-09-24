@@ -239,6 +239,7 @@ export function LuminaInteractiveList({
   children,
   layout = "foot",
   list = true,
+  transition = "glass",
 }: {
   slides: LuminaSlide[];
   children?: ReactNode;
@@ -249,6 +250,10 @@ export function LuminaInteractiveList({
       button only). The slides still advance and still swipe; a hidden timer
       stands in for the list's progress line. */
   list?: boolean;
+  /** "glass": the WebGL bubble. "fade": a long cross-fade with a slow
+      settle on each frame, no WebGL at all (2026-09-24, Brad: "a smooth
+      slideshow"). */
+  transition?: "glass" | "fade";
 }) {
   const total = slides.length;
   const [current, setCurrent] = useState(0);
@@ -302,7 +307,7 @@ export function LuminaInteractiveList({
 
   /* WebGL, once settled, and never under reduced motion. */
   useEffect(() => {
-    if (!warm || still || !canvas.current) return;
+    if (!warm || still || transition === "fade" || !canvas.current) return;
     const g = createGlass(canvas.current);
     if (!g) {
       glFailed.current = true;
@@ -318,7 +323,7 @@ export function LuminaInteractiveList({
       glass.current = null;
       tex.clear();
     };
-  }, [warm, still]);
+  }, [warm, still, transition]);
 
   const textureFor = useCallback(async (i: number) => {
     const g = glass.current;
@@ -404,6 +409,7 @@ export function LuminaInteractiveList({
       ref={root}
       className={layout === "centre" ? "lm lm--centre" : "lm"}
       data-gl={glOn || undefined}
+      data-fade={transition === "fade" || undefined}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
       onPointerCancel={() => (swipe.current = null)}
