@@ -9400,3 +9400,70 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
 .pdp-perks svg { margin-top: 1px; }
 .pdp-perk-t { margin: 0 0 4px; font: 600 13px/1.3 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
 .pdp-perk-d { margin: 0; font-size: 15px; line-height: 1.55; }
+/* Up close: the fabric zoom-out (2026-09-24, Brad). Static collage by
+   default; the zoom only where scroll timelines exist and motion is on. */
+.uc { background: var(--inverse-bg); color: var(--inverse-ink); padding-top: clamp(64px, 9vw, 128px); }
+.uc-head { padding: 0 18px clamp(32px, 5vw, 64px); max-width: 1440px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+@media (min-width: 768px) { .uc-head { padding-inline: 48px; } }
+.uc-h { margin: 0; font-size: clamp(3rem, 10vw, 8.5rem); line-height: 0.9; color: inherit; }
+.uc-p { margin: 0; max-width: 46ch; font-size: clamp(1rem, 1.4vw, 1.2rem); line-height: 1.6; color: rgba(255, 255, 255, 0.86); }
+.uc-sticky { position: relative; height: 100svh; overflow: hidden; }
+.uc-el { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.uc-frame { margin: 0; position: relative; overflow: hidden; background: #1a1617; }
+.uc-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* The centre frame is the 21:9 close-up; the others sit around it. */
+.uc-el--0 .uc-frame { width: 44vw; aspect-ratio: 21 / 9; }
+.uc-el--1 .uc-frame { width: 28vw; height: 30vh; transform: translate(4vw, -33vh); }
+.uc-el--2 .uc-frame { width: 20vw; height: 42vh; transform: translate(-34vw, -12vh); }
+.uc-el--3 .uc-frame { width: 22vw; height: 26vh; transform: translate(35vw, 0); }
+.uc-el--4 .uc-frame { width: 18vw; height: 28vh; transform: translate(4vw, 31vh); }
+.uc-el--5 .uc-frame { width: 26vw; height: 24vh; transform: translate(-24vw, 30vh); }
+.uc-el--6 .uc-frame { width: 20vw; height: 30vh; transform: translate(33vw, -30vh); }
+@media (max-width: 767px) {
+  .uc-el--0 .uc-frame { width: 72vw; }
+  .uc-el--1 .uc-frame { width: 44vw; height: 22vh; transform: translate(10vw, -32vh); }
+  .uc-el--2 .uc-frame { width: 30vw; height: 26vh; transform: translate(-36vw, -16vh); }
+  .uc-el--3 .uc-frame { width: 30vw; height: 20vh; transform: translate(38vw, 14vh); }
+  .uc-el--4 .uc-frame { width: 34vw; height: 22vh; transform: translate(4vw, 32vh); }
+  .uc-el--5 .uc-frame { width: 34vw; height: 18vh; transform: translate(-32vw, 20vh); }
+  .uc-el--6 .uc-frame { width: 28vw; height: 20vh; transform: translate(38vw, -18vh); }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .uc-track { height: 280vh; view-timeline-name: --uc; }
+    @media (max-width: 767px) { .uc-track { height: 200vh; } }
+    .uc-sticky { position: sticky; top: 0; }
+    .uc-el { animation: uc-zoom linear both; animation-timeline: --uc; animation-range: contain 0% contain 85%; }
+    .uc-el--0 { --uc-s: 2.4; }
+    .uc-el--1 { --uc-s: 4; }
+    .uc-el--2 { --uc-s: 4.5; }
+    .uc-el--3 { --uc-s: 5; }
+    .uc-el--4 { --uc-s: 5.5; }
+    .uc-el--5 { --uc-s: 6; }
+    .uc-el--6 { --uc-s: 6.5; }
+    @media (max-width: 767px) { .uc-el--0 { --uc-s: 1.45; } }
+  }
+}
+@keyframes uc-zoom { from { transform: scale(var(--uc-s, 1)); } to { transform: none; } }
+/* Up close, tuned after screenshots: the first frame fills a desktop
+   screen, the ring arrives sooner, and phones show five frames laid out so
+   none overlap. */
+@media (max-width: 767px) {
+  .uc-el--5, .uc-el--6 { display: none; }
+  .uc-el--1 .uc-frame { width: 44vw; height: 20vh; transform: translate(-22vw, -30vh); }
+  .uc-el--2 .uc-frame { width: 36vw; height: 24vh; transform: translate(26vw, -28vh); }
+  .uc-el--3 .uc-frame { width: 34vw; height: 20vh; transform: translate(30vw, 22vh); }
+  .uc-el--4 .uc-frame { width: 36vw; height: 24vh; transform: translate(-24vw, 26vh); }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .uc-el--0 { --uc-s: 2.7; }
+    .uc-el--1 { --uc-s: 3; }
+    .uc-el--2 { --uc-s: 3.3; }
+    .uc-el--3 { --uc-s: 3.6; }
+    .uc-el--4 { --uc-s: 3.9; }
+    .uc-el--5 { --uc-s: 4.2; }
+    .uc-el--6 { --uc-s: 4.5; }
+    @media (max-width: 767px) { .uc-el--0 { --uc-s: 1.45; } }
+  }
+}

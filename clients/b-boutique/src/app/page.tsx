@@ -7,6 +7,7 @@ import CinematicProducts from "@/components/ui/cinematic-product-scroll-section"
 import { SafeBoundary } from "@/components/SafeBoundary";
 import { CoverFlowCarousel } from "@/components/ui/3-d-coverflow-carousel";
 import { Homeware } from "@/components/Homeware";
+import { UpClose } from "@/components/home/UpClose";
 import { OwnerCard } from "@/components/OwnerCard";
 import { Service } from "@/components/Service";
 import { Faq } from "@/components/Faq";
@@ -44,6 +45,9 @@ export default function Home() {
           <CinematicProducts />
         </SafeBoundary>
         {/* 04 A second world — homeware */}
+        {/* The cloth, up close: a 21:9 macro that zooms out to a collage
+            on scroll (2026-09-24, Brad). */}
+        <UpClose />
         <Homeware />
         {/* The person. This is the slot the six invented customer quotes
             occupied until 2026-09-21 — the client has three real reviews,
