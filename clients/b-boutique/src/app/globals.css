@@ -9742,3 +9742,81 @@ h1.pdp-name { margin-bottom: 18px; }
 .rv-summary .rv-stars { color: var(--ink, #0E0B0C); }
 .rv-summary-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .rv-list { max-width: 1040px; margin-inline: auto; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+
+/* ── Bag / checkout pass (2026-09-24, Brad) ───────────────────────────────
+   One big heading ("Your bag"); the two section headings drop to labels.
+   The site-wide h2 scale (up to 56px) outranked the bag's own sizes. */
+h2.bk-card-h { font-size: clamp(22px, 1.8vw, 26px); }
+h2.bk-summary-h { font-size: 22px; margin-bottom: 20px; }
+
+/* The sale saving, and each line's usual price. */
+.bk-saving dt { color: var(--bb-grey-dark); }
+.bk-saving dd { color: #1F8A4C !important; font-weight: 600; }
+.bk-was { margin-left: 8px; font-size: 0.92em; color: var(--ink-muted); text-decoration-thickness: 1px; }
+
+/* Numbers roll to their new value: keyed spans re-mount, so each change
+   plays once. Opacity + transform only. */
+.bk-roll { display: inline-block; animation: bk-roll 380ms cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes bk-roll { from { opacity: 0; transform: translateY(0.5em); } to { opacity: 1; transform: none; } }
+
+/* Reassurance straight under the button: no rule between them. */
+.bk-trust { margin-top: 14px; padding-top: 0; border-top: 0; }
+
+/* Pay: while the redirect is under way the button locks and says so. */
+.bk-pay[aria-busy] { cursor: progress; }
+.bk-pay:disabled { opacity: 1; }
+.bk-spin { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid currentColor; border-right-color: transparent; animation: bk-spin 700ms linear infinite; flex: none; }
+@keyframes bk-spin { to { transform: rotate(360deg); } }
+
+/* Removing a piece: slide away, then the list closes up. */
+.bk-line { overflow: hidden; }
+.bk-line.is-leaving {
+  opacity: 0;
+  transform: translateX(-16px);
+  height: 0 !important;
+  padding-block: 0;
+  border-bottom-color: transparent;
+  transition: opacity 200ms var(--bb-ease), transform 200ms var(--bb-ease), height 320ms 120ms cubic-bezier(0.22, 1, 0.36, 1), padding 320ms 120ms cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms;
+}
+
+/* The free-delivery bar fills smoothly; the tick pops once when it's won. */
+.fd[data-qualified] .fd-goal { animation: fd-pop 420ms cubic-bezier(0.34, 1.4, 0.64, 1); }
+@keyframes fd-pop { from { transform: scale(0.6); } to { transform: scale(1); } }
+
+/* The phone checkout bar. */
+.bk-dock { display: none; }
+@media (max-width: 767px) {
+  .bk-dock {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: #FFFFFF;
+    box-shadow: 0 -1px 0 rgba(14, 11, 12, 0.1), 0 -10px 30px rgba(14, 11, 12, 0.08);
+    transform: translateY(110%);
+    transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .bk-dock[data-show] { transform: none; }
+  .bk-dock-total { display: flex; flex-direction: column; line-height: 1.15; }
+  .bk-dock-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bb-grey-dark); }
+  .bk-dock-sum { font-family: var(--font-display-face), Georgia, serif; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .bk-dock-pay { flex: 1; margin: 0 !important; min-height: 48px; }
+  .bag-page { padding-bottom: 96px; }
+}
+
+/* The empty bag. */
+.bag-empty { max-width: 760px; }
+.bag-empty-h { margin: clamp(28px, 4vw, 44px) 0 10px; font-family: var(--font-display-face), Georgia, serif; font-size: clamp(28px, 3vw, 40px); line-height: 1.1; color: var(--bb-black); }
+.bag-empty-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; margin-top: 24px; }
+.bag-empty .bag-empty-cta { margin-top: 0; }
+.bag-empty-all { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: inherit; border-bottom: 1px solid currentColor; padding-bottom: 3px; text-decoration: none; }
+.bag-empty-picks { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.bag-empty-pick { display: flex; flex-direction: column; gap: 10px; color: inherit; text-decoration: none; }
+.bag-empty-media { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; background: #F2EFEA; }
+.bag-empty-media img { transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1); }
+.bag-empty-pick:hover .bag-empty-media img { transform: scale(1.04); }
+.bag-empty-name { font-size: 13px; line-height: 1.35; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bk-roll, .fd[data-qualified] .fd-goal, .bk-spin { animation: none; }
+  .bk-line.is-leaving, .bk-dock, .bag-empty-media img { transition: none; }
+}

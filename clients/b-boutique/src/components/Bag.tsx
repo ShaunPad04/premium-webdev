@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import {
@@ -9,7 +9,9 @@ import {
   formatPrice,
   formatPriceShort,
   productBySlug,
+  wasPriceP,
 } from "@/lib/catalogue";
+import { newIn } from "@/lib/shop";
 import { FreeDelivery } from "@/components/FreeDelivery";
 import { ProductPhoto } from "@/components/ProductPhoto";
 import {
@@ -68,16 +70,45 @@ export function Bag() {
   const keyOf = (l: { slug: string; size: string; colour: string }) =>
     `${l.slug}|${l.size}|${l.colour}`;
 
+  /* Removing a piece (2026-09-24, Brad): the row slides away, then the
+     list closes up over it, instead of everything below jumping. Height is
+     measured and pinned first so it can ease to zero; reduced motion skips
+     straight to the removal. */
   function removeLine(line: { slug: string; size: string; colour: string }) {
     const key = keyOf(line);
     if (timers.current[key]) return;
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const row = document.querySelector<HTMLElement>(`[data-line="${CSS.escape(key)}"]`);
+    if (row && !reduce) row.style.height = `${row.offsetHeight}px`;
     setLeaving((v) => [...v, key]);
     timers.current[key] = setTimeout(() => {
       delete timers.current[key];
       setLeaving((v) => v.filter((k) => k !== key));
       remove(line.slug, line.size, line.colour);
-    }, 220);
+    }, reduce ? 0 : 420);
   }
+
+  /* On a phone the pay button sits a long way down, under the delivery
+     form. A bar pinned to the bottom carries the total and the same button
+     whenever the real one is out of view (CSS shows it under 768px only). */
+  const payRef = useRef<HTMLButtonElement>(null);
+  const [payVisible, setPayVisible] = useState(true);
+  useEffect(() => {
+    const el = payRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setPayVisible(e.isIntersecting), { threshold: 0.2 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [count]);
+
+  /* What the sale takes off this bag (lib/catalogue.ts SALE): her usual
+     price less the price charged, per piece. Zero once the sale ends. */
+  const savingsP = lines.reduce((sum, l) => {
+    const p = productBySlug(l.slug);
+    if (!p || p.demo) return sum;
+    const was = wasPriceP(p.priceP);
+    return was === null ? sum : sum + (was - p.priceP) * l.qty;
+  }, 0);
 
   /* The pieces in THIS bag that cannot be bought yet.
    *
@@ -104,13 +135,34 @@ export function Bag() {
       ? null
       : `${unpriced.join(" and ")} ${unpriced.length === 1 ? "does" : "do"} not have a confirmed price yet, so ${unpriced.length === 1 ? "it cannot" : "they cannot"} be bought. Remove ${unpriced.length === 1 ? "it" : "them"} to check out.`;
 
+  /* The empty bag (2026-09-24, Brad): not a dead end. A line, the way
+     back, and three real pieces from New In to start from. */
   if (count === 0) {
+    const picks = newIn.filter((n) => n.priced).slice(0, 3);
     return (
       <div className="bag-empty">
-        <p className="page-body">Your bag is empty.</p>
-        <Link href="/shop" className="btn-solid bag-empty-cta">
-          <span className="roll"><span>Go to the shop</span></span> <span aria-hidden="true">&rarr;</span>
-        </Link>
+        <p className="bag-empty-h">Nothing in here yet.</p>
+        <p className="page-body">Every piece is chosen by hand, and most are one of one.</p>
+        <div className="bag-empty-ctas">
+          <Link href="/#new-in" className="btn-solid bag-empty-cta">
+            <span className="roll"><span>See what&rsquo;s new</span></span> <span aria-hidden="true">&rarr;</span>
+          </Link>
+          <Link href="/shop" className="bag-empty-all">Shop everything</Link>
+        </div>
+        {picks.length ? (
+          <ul className="bag-empty-picks">
+            {picks.map((n) => (
+              <li key={n.slug}>
+                <Link href={`/shop/${n.slug}`} className="bag-empty-pick">
+                  <span className="bag-empty-media">
+                    <ProductPhoto photo={n.photo} alt="" sizes="(min-width: 768px) 220px, 30vw" className="absolute inset-0 h-full w-full object-cover" square={n.category === "Homeware"} />
+                  </span>
+                  <span className="bag-empty-name">{n.name}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
     );
   }
@@ -223,6 +275,7 @@ export function Bag() {
                      two colours is two lines. */
                   <li
                     key={`${line.slug}-${line.size}-${line.colour}`}
+                    data-line={keyOf(line)}
                     className={`bk-line${leaving.includes(keyOf(line)) ? " is-leaving" : ""}`}
                   >
                     <Link href={`/shop/${p.slug}`} className="bk-media" aria-label={p.name}>
@@ -258,7 +311,12 @@ export function Bag() {
                       {/* "Price to confirm", the same words the grid and
                           product page use, for a piece whose price was
                           withdrawn after it went in the bag. */}
-                      <p className="bk-each">{p.demo ? "Price to confirm" : `${formatPrice(p.priceP)} each`}</p>
+                      <p className="bk-each">
+                        {p.demo ? "Price to confirm" : `${formatPrice(p.priceP)} each`}
+                        {!p.demo && wasPriceP(p.priceP) !== null ? (
+                          <s className="bk-was"><span className="sr-only">, usually </span>{formatPrice(wasPriceP(p.priceP)!)}</s>
+                        ) : null}
+                      </p>
                     </div>
 
                     <div className="bk-controls">
@@ -275,7 +333,7 @@ export function Bag() {
                         >
                           <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
                         </button>
-                        <output aria-live="polite">{line.qty}</output>
+                        <output aria-live="polite"><span key={line.qty} className="bk-roll">{line.qty}</span></output>
                         <button
                           type="button"
                           aria-label={`One more, ${label}`}
@@ -297,7 +355,7 @@ export function Bag() {
                           <span className="sr-only">No price yet</span>
                         </>
                       ) : (
-                        formatPrice(p.priceP * line.qty)
+                        <span key={line.qty} className="bk-roll">{formatPrice(p.priceP * line.qty)}</span>
                       )}
                     </p>
                   </li>
@@ -335,15 +393,21 @@ export function Bag() {
           <dl className="bk-totals">
             <div>
               <dt>Subtotal ({count} {count === 1 ? "item" : "items"})</dt>
-              <dd>{formatPrice(subtotalP)}</dd>
+              <dd><span key={subtotalP} className="bk-roll">{formatPrice(subtotalP)}</span></dd>
             </div>
             <div>
               <dt>Delivery</dt>
-              <dd>{deliveryP === 0 ? "Free" : formatPrice(deliveryP)}</dd>
+              <dd><span key={deliveryP} className="bk-roll">{deliveryP === 0 ? "Free" : formatPrice(deliveryP)}</span></dd>
             </div>
+            {savingsP > 0 ? (
+              <div className="bk-saving">
+                <dt>Sale saving</dt>
+                <dd><span key={savingsP} className="bk-roll">&minus;{formatPrice(savingsP)}</span></dd>
+              </div>
+            ) : null}
             <div className="bk-grand">
               <dt>Total</dt>
-              <dd>{formatPrice(totalP)}</dd>
+              <dd><span key={totalP} className="bk-roll">{formatPrice(totalP)}</span></dd>
             </div>
           </dl>
 
@@ -360,12 +424,16 @@ export function Bag() {
               somebody does next, so above the button. */}
           <FreeDelivery subtotalP={subtotalP} />
 
-          <button type="button" className="bk-pay" onClick={checkout} disabled={busy}>
-            <svg width="13" height="15" viewBox="0 0 11 13" fill="none" aria-hidden="true">
-              <rect x="0.75" y="5.75" width="9.5" height="6.5" rx="1" stroke="currentColor" strokeWidth="1.2" />
-              <path d="M2.75 5.75V3.9a2.75 2.75 0 0 1 5.5 0v1.85" stroke="currentColor" strokeWidth="1.2" />
-            </svg>
-            <span className="roll"><span>{busy ? "Starting secure checkout…" : "Continue to secure payment"}</span></span>
+          <button ref={payRef} type="button" className="bk-pay" onClick={checkout} disabled={busy} aria-busy={busy || undefined}>
+            {busy ? (
+              <span className="bk-spin" aria-hidden="true" />
+            ) : (
+              <svg width="13" height="15" viewBox="0 0 11 13" fill="none" aria-hidden="true">
+                <rect x="0.75" y="5.75" width="9.5" height="6.5" rx="1" stroke="currentColor" strokeWidth="1.2" />
+                <path d="M2.75 5.75V3.9a2.75 2.75 0 0 1 5.5 0v1.85" stroke="currentColor" strokeWidth="1.2" />
+              </svg>
+            )}
+            <span className="roll"><span>{busy ? "Taking you to SumUp…" : "Continue to secure payment"}</span></span>
           </button>
 
           <div className="bk-alert-live" role="status" aria-live="polite">
@@ -400,6 +468,19 @@ export function Bag() {
             terms.
           </p>
         </aside>
+      </div>
+
+      {/* The phone checkout bar. aria-hidden and out of the tab order while
+          the real button is on screen, so it is never a second stop. */}
+      <div className="bk-dock" data-show={payVisible ? undefined : ""} aria-hidden={payVisible || undefined}>
+        <div className="bk-dock-total">
+          <span className="bk-dock-label">Total</span>
+          <span key={totalP} className="bk-roll bk-dock-sum">{formatPrice(totalP)}</span>
+        </div>
+        <button type="button" className="bk-pay bk-dock-pay" onClick={checkout} disabled={busy} tabIndex={payVisible ? -1 : 0}>
+          {busy ? <span className="bk-spin" aria-hidden="true" /> : null}
+          <span>{busy ? "Taking you to SumUp…" : "Secure checkout"}</span>
+        </button>
       </div>
     </div>
   );
