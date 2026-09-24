@@ -9820,3 +9820,24 @@ h2.bk-summary-h { font-size: 22px; margin-bottom: 20px; }
   .bk-roll, .fd[data-qualified] .fd-goal, .bk-spin { animation: none; }
   .bk-line.is-leaving, .bk-dock, .bag-empty-media img { transition: none; }
 }
+
+/* The page fades into the footer instead of meeting it at a hard edge
+   (2026-09-24, Brad). The fade is the top of the footer itself, with a
+   spacer of the same height, so nothing above is dimmed. It starts from
+   the colour the page ends on: white on every route except /faq, whose
+   last section is #F7F7F5 (sampled on all 15 routes). Eased stops so the
+   ramp does not band. */
+.wf {
+  --ft-fade: clamp(96px, 11vw, 180px);
+  --ft-from: #FFFFFF;
+  border-top: 0;
+  background: linear-gradient(to bottom,
+    var(--ft-from) 0,
+    color-mix(in srgb, var(--bb-black) 8%, var(--ft-from)) calc(var(--ft-fade) * 0.2),
+    color-mix(in srgb, var(--bb-black) 28%, var(--ft-from)) calc(var(--ft-fade) * 0.4),
+    color-mix(in srgb, var(--bb-black) 58%, var(--ft-from)) calc(var(--ft-fade) * 0.6),
+    color-mix(in srgb, var(--bb-black) 86%, var(--ft-from)) calc(var(--ft-fade) * 0.8),
+    var(--bb-black) var(--ft-fade));
+}
+body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
+.wf::before { content: ""; display: block; height: var(--ft-fade); }
