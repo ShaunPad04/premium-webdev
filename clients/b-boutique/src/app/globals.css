@@ -9499,7 +9499,10 @@ h1.pdp-name { margin-bottom: 18px; }
 .atb-sizes { margin-bottom: 28px; }
 .atb-qty { margin-bottom: 28px; }
 .atb .atb-buy { margin-top: 12px; }
-.pdp-perks { margin-top: 44px; gap: 24px; padding-top: 32px; border-top: 1px solid rgba(14, 11, 12, 0.1); }
+/* The service lines sit under the folds (2026-09-24): the last fold's hairline
+   already closes the group above, so no second rule of their own. */
+.pdp-perks { margin-top: 40px; gap: 24px; }
+@media (max-width: 640px) { .pdp-perks { margin-top: 32px; gap: 20px; } }
 .pdp-folds { margin-top: 44px; }
 .pdp-fold-head { padding-block: 24px; }
 
