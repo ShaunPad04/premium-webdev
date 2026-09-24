@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { PRIMARY } from "@/lib/nav";
 import { AnnounceBar } from "./AnnounceBar";
 import { BagLink } from "./BagLink";
+import { BMark } from "./BMark";
 import { CornerMenu } from "./CornerMenu";
 import { FlipText } from "./FlipText";
 import { NavSearch } from "./NavSearch";
@@ -175,9 +176,14 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
           aria-hidden={markHidden || undefined}
           /* py-3 for the same reason as the MENU button: a 20px-tall link in
              a 72px items-center row becomes a 44px target and nothing moves. */
+          data-mono={scrolled || undefined}
           className="navbar-mark display py-3 text-[20px] leading-none tracking-[-0.005em] lg:text-[22px]"
         >
-          B Boutique
+          {/* The words at the top of the page; once scrolled, the B monogram
+              (2026-09-24, Brad). Both stay in the DOM and crossfade; the
+              link's aria-label is the name either way. */}
+          <span className="nm-word">B Boutique</span>
+          <BMark className="nm-b" />
         </Link>
 
         {/* CENTRE */}

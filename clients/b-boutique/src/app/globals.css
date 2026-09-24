@@ -9349,3 +9349,15 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
 .navsearch-panel:has(.navsearch-chips--rest) { display: none; }
 .pathband-svg .tp-ribbon-edge { stroke: var(--inverse-bg); }
 @media (min-width: 1024px) and (max-width: 1279px) { .sdock-form { width: 240px; } }
+
+/* Header monogram (2026-09-24). The wordmark and the B share one grid cell
+   and crossfade on scroll; transform and opacity only. */
+.navbar-mark { display: grid; place-items: center; }
+.navbar-mark > .nm-word, .navbar-mark > .nm-b { grid-area: 1 / 1; transition: opacity 420ms var(--bb-ease), transform 520ms var(--bb-ease); }
+.navbar-mark > .nm-b { width: auto; height: 38px; opacity: 0; transform: scale(0.86); }
+.navbar-mark[data-mono] > .nm-word { opacity: 0; transform: translateY(-6px); }
+.navbar-mark[data-mono] > .nm-b { opacity: 1; transform: scale(1); }
+@media (max-width: 1023px) { .navbar-mark > .nm-b { height: 34px; } }
+@media (prefers-reduced-motion: reduce) {
+  .navbar-mark > .nm-word, .navbar-mark > .nm-b { transition: none; }
+}
