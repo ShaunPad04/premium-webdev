@@ -39,11 +39,15 @@ export function PointOfView() {
               outer span and stay put. dimOpacity 0, not 0.15: a word waiting
               at 15% is pale grey on white and fails contrast (axe, serious,
               all three widths); an invisible one is not yet on the page.
+              Second pass, same day (Brad: the sentence should be there
+              before scrolling, faint, and brighten): dimOpacity 0.45, the
+              lowest level that passes 3:1 for this size of text (3.13:1 on
+              white), and each word brightens continuously from there.
               The heading's name is the plain sentence; reduced motion shows
               the whole sentence at once. */}
           <h2 id="pov-heading" className="pov-statement" aria-label={philosophy.statement}>
             <span aria-hidden="true">
-              <TextRevealScroll as="span" by="words" dimOpacity={0}>
+              <TextRevealScroll as="span" by="words" dimOpacity={0.45}>
                 {philosophy.statement}
               </TextRevealScroll>
             </span>

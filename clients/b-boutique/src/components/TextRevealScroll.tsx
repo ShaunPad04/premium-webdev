@@ -72,12 +72,14 @@ export default function TextRevealScroll({
             const endY = (vh * end) / 100
             const p = clamp((startY - top) / Math.max(1, startY - endY))
             const lit = p * n
-            // Each word is either waiting or lit, never parked half-way:
-            // a word left at 30% when the scroll stops is low-contrast text
-            // at rest (axe, serious). The fade between the two is the
-            // transition below, so it still reads as a soft reveal.
+            // Each word brightens continuously from dimOpacity to 1 as the
+            // scroll passes it. Safe for contrast only because the caller's
+            // dimOpacity is itself a passing level (the philosophy line uses
+            // 0.45 = 3.13:1 for large text); every in-between state is
+            // higher than that. A caller passing a lower dim value must go
+            // back to snapping between the two states.
             for (let i = 0; i < n; i++) {
-                segs[i].style.opacity = String(lit - i >= 0.5 ? 1 : dimOpacity)
+                segs[i].style.opacity = (dimOpacity + (1 - dimOpacity) * clamp(lit - i)).toFixed(3)
             }
             // Lets a caller finish the line with the text (the closing quote
             // mark on the philosophy statement waits for this).
@@ -90,7 +92,7 @@ export default function TextRevealScroll({
         update()
         // No transition on the first paint, so a page opening with the text
         // already lit does not fade it in (or get caught mid-fade).
-        const arm = requestAnimationFrame(() => segs.forEach((s) => (s.style.transition = "opacity .35s cubic-bezier(.22,1,.36,1)")))
+        const arm = requestAnimationFrame(() => segs.forEach((s) => (s.style.transition = "opacity .15s linear")))
         window.addEventListener("scroll", onScroll, { passive: true })
         window.addEventListener("resize", onScroll)
         return () => {

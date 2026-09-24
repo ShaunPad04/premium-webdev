@@ -4,7 +4,6 @@ import { NewArrivalRail } from "@/components/NewArrivalRail";
 import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import { CoverFlowCarousel } from "@/components/ui/3-d-coverflow-carousel";
-import { StepInside } from "@/components/home/StepInside";
 import { WhyUs } from "@/components/home/WhyUs";
 import { UpClose } from "@/components/home/UpClose";
 import { OwnerCard } from "@/components/OwnerCard";
@@ -23,9 +22,6 @@ import { MotionLayer } from "@/components/MotionLayer";
  *   Quote         the shop's point of view
  *   Categories    where to go
  *   New In        what has just come in, each card links to its page
- *   Step inside   her photographs of the shop, stacked on scroll (it
- *                 replaced the statement pieces on 2026-09-24: a second row
- *                 of the same garments straight after New In)
  *   Up close      the cloth
  *   Hayley        who runs it
  *   Reviews       her three Google reviews, static (hidden until supplied)
@@ -53,10 +49,9 @@ export default function Home() {
         <PointOfView />
         <NewArrivalRail />
         <HorizontalRails />
-        <StepInside />
         <UpClose />
-        {/* New In after Step inside, with Up close between the two so
-            the two 3D product runs are never back to back (2026-09-24). */}
+        {/* New In after Up close (2026-09-24, Brad). Step inside was removed
+            the same day at his request. */}
         <CoverFlowCarousel />
         <OwnerCard />
         <WhyUs />
