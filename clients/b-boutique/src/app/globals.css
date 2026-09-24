@@ -10226,3 +10226,24 @@ h3.why-title { margin: 8px 0 6px; font-family: var(--font-display), Georgia, ser
 .vx-frame[data-loaded] { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .vx-frame { transition: none; } }
 
+
+/* The philosophy line in the site's sans (2026-09-24, Brad: "change the
+   font of this"), after the statement on his reference, fuel.framer.website:
+   a large grotesk, tight tracking, sentence case. DM Sans is already loaded
+   for body copy, so this costs no extra font. The quote marks stay in the
+   display serif, the opening one red, as the one flourish on the line. */
+.pov h2.pov-statement:not(.sr-only) {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: clamp(38px, 4.6vw, 72px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-transform: none;
+}
+
+/* Category photographs edge to edge on a desktop (2026-09-24, Brad: white
+   showing at the sides looked unfinished). The row now meets both edges of
+   the window; the 2px joins between cards stay. */
+@media (min-width: 1024px) {
+  .cats-rail { width: 100%; margin-inline: 0; }
+}
