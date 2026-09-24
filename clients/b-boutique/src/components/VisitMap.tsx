@@ -46,6 +46,35 @@ export function VisitMap({
   title: string;
 }) {
   const [open, setOpen] = useState(false);
+  /* Can this browser reach Google Maps at all? (2026-09-24, homepage
+     critique.) A blocked frame still fires `load` and paints the browser's
+     own broken-page tile, so the iframe cannot tell us. A no-cors fetch of
+     the same embed URL can: an ad blocker or offline network rejects it.
+     Asked only as the section nears the screen, which is when the lazy
+     iframe used to load anyway, so /privacy stays true. Until the answer
+     is in, and if it is no, her shopfront photograph fills the panel. */
+  const [mapOk, setMapOk] = useState<boolean | null>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = panel.current;
+    if (!el) return;
+    let done = false;
+    const probe = () => {
+      if (done) return;
+      done = true;
+      const ctl = new AbortController();
+      const t = window.setTimeout(() => ctl.abort(), 6000);
+      fetch(embedSrc, { mode: "no-cors", signal: ctl.signal })
+        .then(() => setMapOk(true))
+        .catch(() => setMapOk(false))
+        .finally(() => window.clearTimeout(t));
+    };
+    const io = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) { probe(); io.disconnect(); }
+    }, { rootMargin: "600px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [embedSrc]);
   /* No map on the page until it is asked for (2026-09-23). The panel used
      to hold a lazy Google iframe as a preview, which (1) reached Google as
      soon as a visitor scrolled near it, contradicting /privacy ("nothing
@@ -113,7 +142,12 @@ export function VisitMap({
 
   return (
     <>
-      <div className="vm-panel">
+      <div className="vm-panel" ref={panel} data-map={mapOk === true ? "on" : undefined}>
+        <picture className="vm-photo">
+          <source type="image/avif" srcSet="/img/about/shopfront-640.avif 640w, /img/about/shopfront-960.avif 960w, /img/about/shopfront-1024.avif 1024w" sizes="(min-width: 1024px) 45vw, 92vw" />
+          <source type="image/webp" srcSet="/img/about/shopfront-640.webp 640w, /img/about/shopfront-960.webp 960w, /img/about/shopfront-1024.webp 1024w" sizes="(min-width: 1024px) 45vw, 92vw" />
+          <img src="/img/about/shopfront-960.jpg" alt="" loading="lazy" decoding="async" />
+        </picture>
         {/* ── The address used to be printed here, over the map ───────────
             It was the fallback for a blocked embed, which is a real case —
             consent tools and ad blockers stop Google Maps for a large share
@@ -158,15 +192,16 @@ export function VisitMap({
             opens the interactive one. /privacy says exactly this. Her
             address is always set in real text beside this panel, so a
             visitor whose blocker stops Google still has it. */}
-        <iframe
-          title={`Map showing ${street}, ${town}`}
-          src={embedSrc}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          className="vm-preview"
-          tabIndex={-1}
-          aria-hidden="true"
-        />
+        {mapOk ? (
+          <iframe
+            title={`Map showing ${street}, ${town}`}
+            src={embedSrc}
+            referrerPolicy="no-referrer-when-downgrade"
+            className="vm-preview"
+            tabIndex={-1}
+            aria-hidden="true"
+          />
+        ) : null}
         <span className="vm-preview-scrim" aria-hidden="true" />
 
         <button

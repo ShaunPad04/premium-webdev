@@ -122,7 +122,7 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
     items: [
       { n: "", label: "About us", href: "/about" },
       { n: "", label: "The Rails", href: "/#rails" },
-      { n: "", label: "Questions", href: "/#faq" },
+      { n: "", label: "Questions", href: "/faq" },
       { n: "", label: "Visit Us", href: "/#visit" },
       { n: "", label: "Contact", href: "/contact" },
     ],

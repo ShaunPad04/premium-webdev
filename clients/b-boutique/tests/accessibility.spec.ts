@@ -15,6 +15,7 @@ const ROUTES = [
   '/homeware',
   '/about',
   '/contact',
+  '/faq',
   '/shop',
   '/shop/fair-isle-jumper',
   /* One whose price is still a placeholder: it renders a different control

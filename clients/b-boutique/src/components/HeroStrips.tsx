@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { openingPhrase, shop } from "@/lib/shop";
+
 import { LuminaInteractiveList, LuminaTitle, type LuminaSlide } from "@/components/ui/lumina-interactive-list";
 
 /* The home hero's slides (2026-09-23: the Lumina interactive list, Brad's
@@ -25,6 +27,20 @@ const SLIDES: LuminaSlide[] = [
   { file: "horses", label: "B Boutique" },
 ].map(({ file, ...s }) => ({ ...s, title: "B Boutique", src: `/img/hero/${file}-m.jpg`, sources: sources(file) }));
 
+/* Is it open, and where is it: the two questions a phone visitor arrives
+   with, answered on the first screen (2026-09-24, homepage critique). They
+   used to appear first some thirteen screens down. Both halves derive from
+   shop.ts, so this line cannot disagree with the Visit section. It sits at
+   the foot of the frame, not in the centre: the client asked on 2026-09-22
+   for the middle to be the name and one button, nothing else. */
+function Where() {
+  return (
+    <p className="hero-open">
+      Open {openingPhrase()} <span aria-hidden="true">·</span> {shop.street}, {shop.town}
+    </p>
+  );
+}
+
 function Cta() {
   return (
     <Link href="/shop" className="hero-cta">
@@ -38,9 +54,12 @@ function Cta() {
 
 export function HeroStrips() {
   return (
+    <>
     <LuminaInteractiveList slides={SLIDES} layout="centre" list={false}>
       <Cta />
     </LuminaInteractiveList>
+    <Where />
+    </>
   );
 }
 
@@ -67,6 +86,7 @@ export function HeroStill() {
           <Cta />
         </div>
       </div>
+      <Where />
     </div>
   );
 }

@@ -19,6 +19,10 @@ import { VisitMap } from "./VisitMap";
  * the table below says the same thing without ever being wrong. OpenBadge and
  * openState were deleted in the release cleanup — reinstate them together, and
  * timezone-aware, if the badge is ever wanted back. */
+const sameEveryDay = hours.every(
+  (d) => d.hours && hours[0].hours && d.hours.open === hours[0].hours.open && d.hours.close === hours[0].hours.close,
+);
+
 export function Visit() {
   return (
     <section id="visit" aria-labelledby="visit-heading" className="visit">
@@ -57,7 +61,13 @@ export function Visit() {
           <div className="visit-hours">
             <h3 className="visit-hours-label">Opening hours</h3>
             <dl className="visit-hours-list">
-              {hours.map((d) => (
+              {/* Seven identical rows collapse to one (2026-09-24, homepage
+                  critique): "10:00 - 16:00" printed seven times reads as a
+                  rota. Any day that differs brings the full table back. */}
+              {(sameEveryDay
+                ? [{ day: "Every day", hours: hours[0].hours }]
+                : hours
+              ).map((d) => (
                 <div key={d.day} className="visit-hours-row">
                   <dt>{d.day}</dt>
                   <dd className={d.hours ? "" : "is-closed"}>
