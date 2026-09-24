@@ -9594,16 +9594,21 @@ h1.pdp-name { margin-bottom: 18px; }
   }
 }
 
-/* Sale prices (components/Price.tsx, 2026-09-24). Her usual price keeps the
-   colour of the price it sits beside and is told apart by the strike, not by
-   fading it: a lighter grey at 13px fails contrast. The sale price takes the
-   accent, which is what red is for in this theme. */
+/* Sale prices (components/Price.tsx, 2026-09-24). The price paid stays in
+   the ink of the price style it sits in; her usual price follows it, smaller,
+   muted and finely struck. Brad: the first version (a same-size strike then a
+   red price) looked cheap, which is what a red sale price does: it is the
+   discount-store signal. #555 is 7.4:1 on white, so muted is not faint. */
+.price-now { color: inherit; font-weight: inherit; }
 .price-was {
-  margin-right: 0.3em;
+  margin-left: 0.45em;
+  font-size: 0.82em;
+  font-weight: 400;
+  color: var(--ink-muted);
   text-decoration-line: line-through;
   text-decoration-thickness: 1px;
-  font-weight: 400;
+  text-decoration-color: currentColor;
+  letter-spacing: 0.01em;
 }
-.price-now { color: var(--accent); font-weight: 500; }
 
 .cps-head .cps-price { margin-top: 12px; font-size: clamp(17px, 1.3vw, 20px); font-weight: 400; }
