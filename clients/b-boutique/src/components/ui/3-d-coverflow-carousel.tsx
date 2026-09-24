@@ -36,12 +36,13 @@
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 
-import { formatPriceShort, isBuyable, productBySlug } from "@/lib/catalogue";
+import { isBuyable, productBySlug } from "@/lib/catalogue";
 import { newIn } from "@/lib/shop";
 import { ProductPhoto } from "@/components/ProductPhoto";
 import { AddToBag } from "@/components/AddToBag";
 import { ColourProvider } from "@/components/ColourChoice";
 import { RevealText } from "@/components/RevealText";
+import { Price } from "@/components/Price";
 
 /* Where each card sits, by its distance from the centre. Offsets are in
    units of the card width (--cw), so the layout holds at any screen size. */
@@ -183,7 +184,7 @@ export function CoverFlowCarousel() {
               <span className="cf-body">
                 <span className="cf-cat">{piece.category}</span>
                 <span className="cf-name">{piece.name}</span>
-                <span className="cf-price">{piece.priced ? formatPriceShort(piece.priceP) : "Price to confirm"}</span>
+                <span className="cf-price">{piece.priced ? <Price priceP={piece.priceP} /> : "Price to confirm"}</span>
               </span>
             </Link>
           );

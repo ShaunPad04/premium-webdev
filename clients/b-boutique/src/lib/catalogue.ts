@@ -220,6 +220,23 @@ export function formatPriceShort(priceP: number): string {
     : gbp.format(priceP / 100);
 }
 
+/** The sale. Relayed by Brad from the client, 2026-09-24: her usual price on
+ *  every piece is £10 more than the price listed here, and she has taken £10
+ *  off as a sale. So the listed `priceP` is what a customer pays (bag,
+ *  checkout and JSON-LD are untouched) and `wasPriceP` is her usual price,
+ *  shown struck through beside it.
+ *
+ *  A "was" price is only honest while it is still her usual price. UK
+ *  pricing guidance (CMA / Trading Standards, under the DMCC Act 2024) treats
+ *  a reduction that never ends as a misleading reference price, so this is a
+ *  sale with an end, not a permanent state: set `active` to false when it
+ *  finishes and every compare price disappears at once. */
+export const SALE = { active: true, offP: 1000 } as const;
+
+export function wasPriceP(priceP: number): number | null {
+  return SALE.active && priceP > 0 ? priceP + SALE.offP : null;
+}
+
 /** Delivery. CONFIRMED BY THE CLIENT 2026-09-20.
  *
  *  £4.35 on any order, free at £120 and above. Her figures, in her words, and

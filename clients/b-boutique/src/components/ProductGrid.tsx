@@ -2,9 +2,10 @@ import { ViewTransition } from "react";
 import Link from "next/link";
 
 import type { Product } from "@/lib/catalogue";
-import { canQuickAdd, formatPriceShort, isBuyable } from "@/lib/catalogue";
+import { canQuickAdd, isBuyable } from "@/lib/catalogue";
 import { ProductPhoto } from "./ProductPhoto";
 import { QuickAdd } from "./QuickAdd";
+import { Price } from "@/components/Price";
 
 /* The shop's product grid.
  *
@@ -136,7 +137,7 @@ export function ProductGrid({
                     project has been careful about from the start: a displayed
                     price is what a customer is entitled to pay. */}
                 {isBuyable(p) ? (
-                  <span className="prod-price">{formatPriceShort(p.priceP)}</span>
+                  <span className="prod-price"><Price priceP={p.priceP} /></span>
                 ) : (
                   <span className="prod-price prod-price--pending">
                     Price to confirm

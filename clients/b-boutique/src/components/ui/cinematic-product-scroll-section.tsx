@@ -41,6 +41,7 @@ import { AddToBag } from "@/components/AddToBag";
 import { ColourProvider } from "@/components/ColourChoice";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { RevealText } from "@/components/RevealText";
+import { Price } from "@/components/Price";
 
 /* The most expensive garments that can actually be bought. Homeware is left
    out: this is a clothing upsell, and a vase in a scroll about fit and size
@@ -155,7 +156,7 @@ function ProductHero({ product, reversed, reduced, index, total }: { product: Pr
                 </p>
                 <div className="cps-head">
                   <h3 className="cps-name">{product.name}</h3>
-                  <p className="cps-price">{formatPriceShort(product.priceP)}</p>
+                  <p className="cps-price"><Price priceP={product.priceP} /></p>
                 </div>
                 <p className="cps-desc">{product.short}</p>
               </div>
@@ -229,7 +230,7 @@ function MiniCard({ product }: { product: Product }) {
       <div className="cps-card-body">
         <span className="cps-card-cat">{product.category}</span>
         <span className="cps-card-name">{product.name}</span>
-        <span className="cps-card-price">{formatPriceShort(product.priceP)}</span>
+        <span className="cps-card-price"><Price priceP={product.priceP} /></span>
       </div>
     </Link>
   );

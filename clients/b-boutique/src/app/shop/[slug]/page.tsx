@@ -22,6 +22,7 @@ import {
 import { openingPhrase, owner, shop } from "@/lib/shop";
 import { productSchema } from "@/lib/product-schema";
 import { jsonLd } from "@/lib/site";
+import { Price } from "@/components/Price";
 
 /* Prerender every product. There are thirteen of them and they change when
    the code changes, so there is nothing to gain from rendering them on
@@ -98,7 +99,7 @@ export default async function ProductPage({
               {/* Same rule as the grid: a placeholder is not a price, and
                   this is the page where somebody decides to spend money. */}
               {isBuyable(product) ? (
-                <p className="pdp-price">{formatPriceShort(product.priceP)}</p>
+                <p className="pdp-price"><Price priceP={product.priceP} /></p>
               ) : (
                 <p className="pdp-price pdp-price--pending">Price to confirm</p>
               )}

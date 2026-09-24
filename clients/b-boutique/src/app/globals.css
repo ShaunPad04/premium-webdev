@@ -9590,3 +9590,15 @@ h1.pdp-name { margin-bottom: 18px; }
     .uc-el--0 { --uc-s: 3; }
   }
 }
+
+/* Sale prices (components/Price.tsx, 2026-09-24). Her usual price keeps the
+   colour of the price it sits beside and is told apart by the strike, not by
+   fading it: a lighter grey at 13px fails contrast. The sale price takes the
+   accent, which is what red is for in this theme. */
+.price-was {
+  margin-right: 0.3em;
+  text-decoration-line: line-through;
+  text-decoration-thickness: 1px;
+  font-weight: 400;
+}
+.price-now { color: var(--accent); font-weight: 500; }

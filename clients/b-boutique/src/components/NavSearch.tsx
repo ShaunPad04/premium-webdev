@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
-import { formatPriceShort, products } from "@/lib/catalogue";
+import { products } from "@/lib/catalogue";
 import { liveSuggestions, searchProducts } from "@/lib/search";
 import { shop } from "@/lib/shop";
 import { ProductPhoto } from "./ProductPhoto";
 import { ExpandingSearchDock } from "./ui/expanding-search-dock-shadcnui";
+import { Price } from "@/components/Price";
 
 /* Search, in the header, without leaving the page.
  *
@@ -153,7 +154,7 @@ export function NavSearch() {
                         <span className="navsearch-hit-body">
                           <span className="navsearch-hit-name">{p.name}</span>
                           <span className="navsearch-hit-meta">
-                            {p.category} · {formatPriceShort(p.priceP)}
+                            {p.category} · <Price priceP={p.priceP} />
                           </span>
                         </span>
                       </Link>
