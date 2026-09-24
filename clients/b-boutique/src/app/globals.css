@@ -10316,13 +10316,11 @@ h2.ucs-h em { font-style: italic; }
 .bk-cc--wallet { grid-auto-flow: column; gap: 2px; color: var(--bb-black); }
 .bk-cc--wallet span[aria-hidden] { font: 600 11px/1 system-ui, sans-serif; }
 
-/* Swipe rows stop at their ends (2026-09-24, Brad: the category row could
-   be dragged far past the first card on a phone, leaving white). No
-   rubber-band past either end, and the category row moves one card per
-   swipe instead of flinging several. */
-.cats-rail, .ucg-row, .bag-empty-picks, .vis-still-row, .spx-row, .catbar-list {
-  overscroll-behavior-x: none;
-}
+/* Swipe rows (2026-09-24). overscroll-behavior-x: none was tried here to
+   stop the category row bouncing past its ends, and REMOVED the same day:
+   on iOS Safari it also trapped the page's vertical scroll whenever a swipe
+   began on the row (Brad: "I'm trying to scroll and it's glitching"). The
+   native edge bounce stays; the row snaps one card per swipe. */
 .cats-card { scroll-snap-stop: always; }
 .vis-slot { touch-action: pan-y; }
 @media (hover: none) { .vis-slot { cursor: auto; } }
