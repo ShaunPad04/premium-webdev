@@ -35,8 +35,9 @@ export function AboutStory() {
         <RevealText as="blockquote" id="as-q" className="as-q">
           {QUOTE}
         </RevealText>
-        <p className="as-sign" aria-label={`${owner.firstName} ${owner.lastName}`}>
-          <span aria-hidden="true">{owner.firstName}</span>
+        <p className="as-sign">
+          <span>{owner.firstName}</span>
+          <span className="sr-only"> {owner.lastName}</span>
           <svg className="as-sign-line" viewBox="0 0 220 18" aria-hidden="true">
             <path d="M2 12 C 60 2, 120 18, 218 6" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
           </svg>
