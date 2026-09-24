@@ -77,8 +77,10 @@ export function VisitMap({
         />
       ) : null}
       <div className="vx-card">
-        <p className="vx-card-name">{name}</p>
-        <p className="vx-card-addr">{street}, {town}</p>
+        <div>
+          <p className="vx-card-name">{name}</p>
+          <p className="vx-card-addr">{street}, {town}</p>
+        </div>
         <a href={directionsHref} target="_blank" rel="noopener noreferrer" className="vx-card-link">
           Open in maps <span aria-hidden="true">&#8599;</span>
         </a>

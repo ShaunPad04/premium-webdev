@@ -10232,3 +10232,26 @@ h3.why-title { margin: 8px 0 6px; font-family: var(--font-display), Georgia, ser
   to { clip-path: inset(0 0 0 0); }
 }
 @media (prefers-reduced-motion: reduce) { .why-img { transition: none; } }
+
+/* Visit, second pass to Brad's mock (2026-09-24): rows are label left, value
+   right; the buttons follow the rows instead of sinking to the foot of the
+   column, and are the compact size; the map card is a wide white bar with
+   the name and street on the left and "Open in maps" on the right. */
+.vx-row { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; padding: 18px 0; }
+.vx-row dd { text-align: right; font-size: 14px; }
+.vx-row-link { text-decoration: none; border-bottom: 1px solid rgba(14, 11, 12, 0.3); }
+.vx-row-link:hover { border-bottom-color: var(--bb-black); }
+.vx-now { font-size: 13px; }
+@media (min-width: 1024px) { .vx-ctas { margin-top: 32px; padding-top: 0; } .vx-info { justify-content: center; } }
+.vx-btn { min-height: 48px; padding: 0 26px; font-size: 11px; }
+.vx-card {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  border-radius: 2px; padding: 14px 18px;
+}
+@media (min-width: 1024px) { .vx-card { min-width: min(58%, 460px); } }
+.vx-card-addr { margin: 3px 0 0; font-size: 12px; }
+.vx-card-link { white-space: nowrap; font-size: 11px; }
+@media (max-width: 767px) {
+  .vx-card { left: 12px; right: 12px; max-width: none; }
+  .vx-card-name { font-size: 17px; }
+}

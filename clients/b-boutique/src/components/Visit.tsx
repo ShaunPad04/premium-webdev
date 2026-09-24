@@ -1,4 +1,4 @@
-import { shop, phoneDisplay, openingSummary } from "@/lib/shop";
+import { shop, openingSummary } from "@/lib/shop";
 import { directionsHref, mapEmbedSrc } from "@/lib/nav";
 import { OpenNow } from "./OpenNow";
 import { VisitMap } from "./VisitMap";
@@ -10,14 +10,13 @@ import { VisitMap } from "./VisitMap";
  * Every value derives from shop.ts, so the address, hours, directions link
  * and JSON-LD cannot disagree.
  *
- * ── Rows that are only shown when there is something true to show ───────
- * Phone and "Call the shop" read shop.phone, which is empty: the client
- * asked for phone numbers to come off the site (see shop.ts). Put a number
- * back there and both appear. Parking is not shown at all: no parking
- * detail has been confirmed, and "a two-minute walk to the car park" is a
- * checkable claim about a real street. CLIENT INPUT REQUIRED if wanted. */
+ * ── Email, not phone; no parking row ─────────────────────────────────────
+ * Email row and "Email the shop" (Brad, 2026-09-24: "change the phone
+ * number to email"); the site carries no phone number at the client's
+ * request. Parking is not shown: no parking detail has been confirmed, and
+ * "two minutes to the car park" is a checkable claim about a real street.
+ * CLIENT INPUT REQUIRED if wanted. */
 export function Visit() {
-  const tel = shop.phone ? `tel:${shop.phone.replace(/\s+/g, "")}` : "";
   const hoursLine = openingSummary().replace(/\.$/, "").replace(/^Every day, /, "");
   const everyDay = openingSummary().startsWith("Every day");
 
@@ -39,10 +38,10 @@ export function Visit() {
               <dt>Opening hours</dt>
               <dd>{everyDay ? `Every day, ${hoursLine}` : openingSummary()}</dd>
             </div>
-            {shop.phone ? (
+            {shop.email ? (
               <div className="vx-row">
-                <dt>Phone</dt>
-                <dd><a href={tel} className="vx-row-link">{phoneDisplay}</a></dd>
+                <dt>Email</dt>
+                <dd><a href={`mailto:${shop.email}`} className="vx-row-link">{shop.email}</a></dd>
               </div>
             ) : null}
           </dl>
@@ -51,8 +50,8 @@ export function Visit() {
             <a href={directionsHref} target="_blank" rel="noopener noreferrer" className="vx-btn vx-btn--solid">
               Get directions <span aria-hidden="true">&rarr;</span>
             </a>
-            {shop.phone ? (
-              <a href={tel} className="vx-btn vx-btn--line">Call the shop</a>
+            {shop.email ? (
+              <a href={`mailto:${shop.email}`} className="vx-btn vx-btn--line">Email the shop</a>
             ) : null}
           </div>
         </div>
