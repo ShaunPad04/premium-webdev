@@ -5,6 +5,7 @@ import { JustIn } from "@/components/home/JustIn";
 import { TheEdit } from "@/components/home/TheEdit";
 import { CategoryBento } from "@/components/home/CategoryBento";
 import { MeetHayley } from "@/components/home/MeetHayley";
+import { UpClose } from "@/components/home/UpClose";
 import { InstaGrid } from "@/components/home/InstaGrid";
 import { Reviews } from "@/components/home/Reviews";
 import { Newsletter } from "@/components/home/Newsletter";
@@ -20,6 +21,7 @@ import { MotionLayer } from "@/components/MotionLayer";
  *   3 Just in       six pieces, a row
  *   4 The Edit      three styled looks (drafts, previews only)
  *   5 Categories    2x2 and one wide homeware tile
+ *   - Up close      the fabric, zooming out on scroll (previews only)
  *   6 Meet Hayley   portrait, quote, the shop floor moving
  *   7 Instagram, the list, one Visit block
  *
@@ -38,6 +40,8 @@ export default function Home() {
         <JustIn />
         <TheEdit />
         <CategoryBento />
+        {/* The cloth, up close: a 21:9 macro that zooms out to a collage. */}
+        <UpClose />
         <MeetHayley />
         {/* Renders nothing until lib/reviews.ts has real reviews. */}
         <Reviews />
