@@ -98,13 +98,15 @@ export function ProductGrid({
                   className="prod-photo prod-photo--alt absolute inset-0 h-full w-full object-cover"
                 />
               ) : null}
-              <CardBadges slug={p.slug} isNew={NEW.has(p.slug)} />
               {canQuickAdd(p) ? <QuickAdd product={p} /> : null}
           </span>
         );
 
         return (
           <li key={p.slug} className="prod" style={{ "--i": i } as React.CSSProperties}>
+            {/* Outside the media box, whose entrance fades its opacity:
+                text inside it failed contrast mid-fade. */}
+            <CardBadges slug={p.slug} isNew={NEW.has(p.slug)} />
             {/* The other half of this pair is `.pdp-media` in ProductGallery.
                 React matches them by name across the navigation and morphs the
                 photograph from its place in the grid into its place on the

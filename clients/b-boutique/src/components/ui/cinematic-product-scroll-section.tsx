@@ -32,13 +32,12 @@
  */
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { animate, stagger } from "animejs";
 
-import { FREE_DELIVERY_OVER_P, formatPriceShort, isBuyable, products, type Product } from "@/lib/catalogue";
+import { formatPriceShort, isBuyable, products, type Product } from "@/lib/catalogue";
 import { ProductPhoto } from "@/components/ProductPhoto";
-import { AddToBag } from "@/components/AddToBag";
-import { ColourProvider } from "@/components/ColourChoice";
+
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { RevealText } from "@/components/RevealText";
 
@@ -111,8 +110,7 @@ function ProductHero({ product, reversed, reduced, index, total }: { product: Pr
 
   const pad = (n: number) => String(n).padStart(2, "0");
   /* The colourway picked below drives the photograph (2026-09-23, Brad). */
-  const [ci, setCi] = useState(0);
-  const photo = product.colourways[ci]?.image ?? product.photo;
+  const photo = product.photo;
 
   return (
     <div ref={sectionRef} className="cps-scene">
@@ -177,20 +175,14 @@ function ProductHero({ product, reversed, reduced, index, total }: { product: Pr
 
               {/* The product page's own buy block: colour swatches, size,
                   Add to bag, Buy now, the same stock and size checks. */}
-              <div className="cps-step cps-buy" data-progress="0.5">
-                <ColourProvider colours={product.colourways.map((c) => c.colour)} onChange={setCi}>
-                  <AddToBag product={product} />
-                </ColourProvider>
-                <ul className="cps-reassure">
-                  <li>
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                      <path d="M1.5 4.5h9v7.5h-9zM10.5 7.5h3.2l2.8 2.8V12h-6z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
-                      <circle cx="4.5" cy="13.2" r="1.4" stroke="currentColor" strokeWidth="1.2" />
-                      <circle cx="13" cy="13.2" r="1.4" stroke="currentColor" strokeWidth="1.2" />
-                    </svg>
-                    Free UK delivery over {formatPriceShort(FREE_DELIVERY_OVER_P)}
-                  </li>
-                </ul>
+              {/* Editorial, not a till (2026-09-24, Brad): the large image
+                  does the selling and one link goes to the piece, where the
+                  size, colour and bag are. */}
+              <div className="cps-step" data-progress="0.5">
+                <Link href={`/shop/${product.slug}`} className="visit-cta cps-shop">
+                  <span className="roll"><span>Shop the piece</span></span>
+                  <span aria-hidden="true">&rarr;</span>
+                </Link>
               </div>
             </div>
           </div>

@@ -92,6 +92,9 @@ export function ProductGallery({ product }: { product: Product }) {
         <div
           ref={track}
           className="pg-track"
+          tabIndex={0}
+          role="region"
+          aria-label={`Photographs of ${product.name}. Swipe, or use the arrow keys.`}
           onScroll={(e) => {
             const t = e.currentTarget;
             const i = Math.round(t.scrollLeft / Math.max(1, t.clientWidth));

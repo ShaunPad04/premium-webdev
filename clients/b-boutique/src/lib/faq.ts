@@ -1,5 +1,6 @@
 import { sizeSummary } from "./stocklist";
 import { openingSummary, shop } from "./shop";
+import { DELIVERY_P, FREE_DELIVERY_OVER_P, formatPriceShort } from "./catalogue";
 
 /** Questions for the homepage FAQ.
  *
@@ -84,6 +85,12 @@ export const faq: FaqItem[] = [
     /* Confirmed as written — she answered "Yes, that is right" with no
        correction. */
     a: "Yes, in any amount, and they can be used against anything in the shop. They are bought and redeemed in person.",
+  },
+  {
+    q: "How much is delivery?",
+    /* Added 2026-09-24. The client's confirmed terms (2026-09-20), read from
+       lib/catalogue.ts, the same figures the bag and checkout charge. */
+    a: `${formatPriceShort(DELIVERY_P)} by Royal Mail, next working day, and free on orders over ${formatPriceShort(FREE_DELIVERY_OVER_P)}. UK only for now.`,
   },
   {
     q: "Can I return or exchange something?",

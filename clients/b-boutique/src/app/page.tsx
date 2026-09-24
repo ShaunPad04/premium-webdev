@@ -2,7 +2,11 @@ import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { NewArrivalRail } from "@/components/NewArrivalRail";
 import { PointOfView } from "@/components/PointOfView";
-import { HorizontalRails } from "@/components/HorizontalRails";
+import { CategoryBento } from "@/components/home/CategoryBento";
+import { ShopMarquee } from "@/components/home/ShopMarquee";
+import { InstaGrid } from "@/components/home/InstaGrid";
+import { Reviews } from "@/components/home/Reviews";
+import { Newsletter } from "@/components/home/Newsletter";
 import CinematicProducts from "@/components/ui/cinematic-product-scroll-section";
 import { SafeBoundary } from "@/components/SafeBoundary";
 import { CoverFlowCarousel } from "@/components/ui/3-d-coverflow-carousel";
@@ -36,7 +40,8 @@ export default function Home() {
         {/* 01 Editorial interlude — the statement, lit word by word */}
         <PointOfView />
         {/* 02 The rails — the heroic interaction */}
-        <HorizontalRails />
+        {/* Bento, not five equal columns (2026-09-24). */}
+        <CategoryBento />
         {/* 03 Proof — actual stock, moving weekly */}
         <CoverFlowCarousel />
 
@@ -44,6 +49,8 @@ export default function Home() {
           <CinematicProducts />
         </SafeBoundary>
         {/* 04 A second world — homeware */}
+        {/* Her shop, moving: real photographs only. */}
+        <ShopMarquee />
         <Homeware />
         {/* The person. This is the slot the six invented customer quotes
             occupied until 2026-09-21 — the client has three real reviews,
@@ -56,11 +63,15 @@ export default function Home() {
         {/* How buying from the shop works — hours, delivery, returns. It
             follows the owner card deliberately: who she is, then how it
             works. Every line derives from confirmed data. See Service.tsx. */}
+        {/* Renders nothing until lib/reviews.ts has real reviews. */}
+        <Reviews />
+        <InstaGrid />
         <Service />
         {/* 05 The practical questions, once they are interested */}
         <Faq />
         {/* "Something different, regularly" band removed 2026-09-23 (Brad). */}
 
+        <Newsletter />
         <Visit />
       </main>
       <Footer />

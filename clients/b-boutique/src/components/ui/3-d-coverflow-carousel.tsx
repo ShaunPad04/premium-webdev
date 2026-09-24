@@ -36,11 +36,9 @@
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 
-import { formatPriceShort, isBuyable, productBySlug } from "@/lib/catalogue";
+import { formatPriceShort } from "@/lib/catalogue";
 import { newIn } from "@/lib/shop";
 import { ProductPhoto } from "@/components/ProductPhoto";
-import { AddToBag } from "@/components/AddToBag";
-import { ColourProvider } from "@/components/ColourChoice";
 import { RevealText } from "@/components/RevealText";
 
 /* Where each card sits, by its distance from the centre. Offsets are in
@@ -67,10 +65,8 @@ export function CoverFlowCarousel() {
   const items = newIn;
   const total = items.length;
   const [current, setCurrent] = useState(0);
-  /* The colourway picked in the buy block, for the centre card's photo
-     (2026-09-23, Brad: choosing Beige should show the beige one). Keyed by
-     slug so turning the carousel falls back to each piece's first photo. */
-  const [pick, setPick] = useState<{ slug: string; i: number } | null>(null);
+  /* A clean carousel since 2026-09-24 (Brad): no buy block under it; the
+     centre card opens the piece. */
   /* Drag and swipe (2026-09-23, client: "you should be able to just swipe
      this on both mobile and desktop"). Pointer events cover a finger and a
      mouse alike; a horizontal trackpad swipe arrives as wheel deltaX. A drag
@@ -85,7 +81,6 @@ export function CoverFlowCarousel() {
 
   if (total === 0) return null;
   const now = items[current];
-  const product = productBySlug(now.slug);
 
   return (
     <section
@@ -141,11 +136,7 @@ export function CoverFlowCarousel() {
           const offset = (i - current + total) % total;
           const p = place(offset, total);
           const centre = offset === 0;
-          const chosen =
-            centre && pick?.slug === piece.slug
-              ? productBySlug(piece.slug)?.colourways[pick.i]?.image
-              : undefined;
-          const photo = chosen ?? piece.photo;
+          const photo = piece.photo;
           return (
             <Link
               key={piece.slug}
@@ -195,16 +186,6 @@ export function CoverFlowCarousel() {
         {`Piece ${current + 1} of ${total}: ${now.name}`}
       </p>
 
-      {product && isBuyable(product) ? (
-        <div className="cf-buy" key={now.slug}>
-          <ColourProvider
-            colours={product.colourways.map((c) => c.colour)}
-            onChange={(i) => setPick({ slug: now.slug, i })}
-          >
-            <AddToBag product={product} compact />
-          </ColourProvider>
-        </div>
-      ) : null}
     </section>
   );
 }

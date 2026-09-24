@@ -8,15 +8,21 @@
  * It says one thing over and over, so it is decorative: the whole band is
  * hidden from assistive technology rather than announcing "new arrival"
  * sixteen times. New In, directly below the fold, carries the real list. */
-const REPEAT = 8;
+/* 2026-09-24, Brad: three words now, NEW ARRIVAL · ONE OF ONE ·
+   CLEETHORPES. "One of one" stands on the shop's own FAQ ("most pieces
+   here are one of one"). */
+const WORDS = ["New arrival", "One of one", "Cleethorpes"];
+const REPEAT = 4;
 
 export function NewArrivalRail() {
-  const items = Array.from({ length: REPEAT }, (_, i) => (
-    <span key={i} className="stmt-item">
-      <span className="stmt-text">New arrival</span>
-      <span className="arr-dot" />
-    </span>
-  ));
+  const items = Array.from({ length: REPEAT }).flatMap((_, i) =>
+    WORDS.map((w) => (
+      <span key={`${i}-${w}`} className="stmt-item">
+        <span className="stmt-text">{w}</span>
+        <span className="arr-dot" />
+      </span>
+    )),
+  );
 
   return (
     <div className="stmt-rail arr-rail" aria-hidden="true">
