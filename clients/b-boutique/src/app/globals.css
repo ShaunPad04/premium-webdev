@@ -9555,8 +9555,8 @@ h1.pdp-name { margin-bottom: 18px; }
 .wf-social-btn:hover { background: transparent; border-color: rgba(255, 255, 255, 0.72); }
 .bk-pay { background: #0E0B0C; border-color: #0E0B0C; color: #FFFFFF; }
 @media (hover: hover) { .bk-pay:hover:not(:disabled) { background: #0E0B0C; color: #FFFFFF; } }
-.bk-trust li::before { background: rgba(14, 11, 12, 0.35); }
-.bk-trust li:first-child::before { background: #1F8A4C; }
+/* All three reassurance lines take the green dot (Brad, 2026-09-24). */
+.bk-trust li::before { background: #1F8A4C; }
 
 /* Up close: the words on the image (2026-09-24, Brad). They sit bottom-left
    over the opening close-up on a soft shadow, and fade out over the first
