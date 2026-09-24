@@ -176,13 +176,11 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
           aria-hidden={markHidden || undefined}
           /* py-3 for the same reason as the MENU button: a 20px-tall link in
              a 72px items-center row becomes a 44px target and nothing moves. */
-          data-mono={scrolled || undefined}
           className="navbar-mark display py-3 text-[20px] leading-none tracking-[-0.005em] lg:text-[22px]"
         >
-          {/* The words at the top of the page; once scrolled, the B monogram
-              (2026-09-24, Brad). Both stay in the DOM and crossfade; the
-              link's aria-label is the name either way. */}
-          <span className="nm-word">B Boutique</span>
+          {/* The B monogram only, on every page and at every scroll
+              position (2026-09-24, Brad: the text wordmark should never
+              show). The link's aria-label carries the name. */}
           <BMark className="nm-b" />
         </Link>
 

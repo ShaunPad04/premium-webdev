@@ -9361,3 +9361,24 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
 @media (prefers-reduced-motion: reduce) {
   .navbar-mark > .nm-word, .navbar-mark > .nm-b { transition: none; }
 }
+
+/* Header: the B monogram only, never the words (2026-09-24, Brad). */
+.navbar-mark > .nm-b { opacity: 1; transform: none; transition: none; }
+
+/* Marquee type upright (2026-09-24, Brad was unsure of the italic). Bodoni
+   italic is drawn for lowercase; set in capitals it leans and crowds. Upright
+   Bodoni capitals with open tracking match the hero title instead. */
+.arr-rail .stmt-text {
+  font-style: normal;
+  font-size: 20px;
+  letter-spacing: 0.12em;
+}
+@media (min-width: 640px) { .arr-rail .stmt-text { font-size: 24px; } }
+
+/* Delivery line: the long wording from 640px up, a short one on phones so
+   the price is never cut off (2026-09-24, Brad). */
+.announce-short { display: none; }
+@media (max-width: 639px) {
+  .announce-long { display: none; }
+  .announce-short { display: inline; }
+}
