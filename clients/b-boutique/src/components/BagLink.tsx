@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { useCart } from "@/lib/useCart";
+import { openCart } from "./CartDrawer";
 
 /* The bag in the header — a drawn bag, not the word.
  *
@@ -28,6 +29,13 @@ export function BagLink() {
   return (
     <Link
       href="/bag"
+      onClick={(e) => {
+        /* The drawer where JavaScript runs; /bag itself for a modified
+           click or no script at all. */
+        if (e.metaKey || e.ctrlKey || e.shiftKey || window.location.pathname === "/bag") return;
+        e.preventDefault();
+        openCart();
+      }}
       className="nav-link relative -m-3 inline-flex items-center justify-center p-3"
       aria-label={`Bag, ${count} ${count === 1 ? "item" : "items"}`}
     >

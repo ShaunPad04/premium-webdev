@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import type { Product } from "@/lib/catalogue";
+import { openCart } from "./CartDrawer";
 import { useCart } from "@/lib/useCart";
 import { shop } from "@/lib/shop";
 import { colourIsKnown, coloursFor, variantId } from "@/lib/variants";
@@ -261,6 +262,7 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
           onClick={() => {
             if (!addChosen()) return;
             setAdded((prev) => ({ size: size!, colour: colour ?? "", n: (prev?.n ?? 0) + 1 }));
+            openCart();
           }}
         >
           <span className="roll"><span>{chosenOut ? "Sold out" : "Add to bag"}</span></span>
@@ -289,13 +291,6 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
 
       {/* True as stated: payment is taken on SumUp's hosted checkout over
           HTTPS (lib/sumup.ts), never on a form on this site. */}
-      {compact ? null : <p className="atb-secure">
-        <svg width="11" height="13" viewBox="0 0 11 13" fill="none" aria-hidden="true">
-          <rect x="0.75" y="5.75" width="9.5" height="6.5" rx="1" stroke="currentColor" strokeWidth="1.2" />
-          <path d="M2.75 5.75V3.9a2.75 2.75 0 0 1 5.5 0v1.85" stroke="currentColor" strokeWidth="1.2" />
-        </svg>
-        Secure checkout
-      </p>}
 
       {/* A polite live region that exists before the add, so it is announced
           when it fills. It names the size and the colour, because "added to

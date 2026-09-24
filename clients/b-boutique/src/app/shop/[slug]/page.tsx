@@ -192,6 +192,8 @@ export default async function ProductPage({
                 <span aria-hidden="true"> &middot; </span>
                 {formatPriceShort(DELIVERY_P)} otherwise, Royal Mail next
                 working day
+                <span aria-hidden="true"> &middot; </span>
+                Secure checkout
               </p>
 
               {/* ── The detail, folded ──────────────────────────────────────
