@@ -7,6 +7,7 @@ import { CoverFlowCarousel } from "@/components/ui/3-d-coverflow-carousel";
 import { StatementPieces } from "@/components/home/StatementPieces";
 import { UpClose } from "@/components/home/UpClose";
 import { OwnerCard } from "@/components/OwnerCard";
+import { Reviews } from "@/components/home/Reviews";
 import { Visit } from "@/components/Visit";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
@@ -20,10 +21,11 @@ import { MotionLayer } from "@/components/MotionLayer";
  *   Marquee       decorative, aria-hidden
  *   Quote         the shop's point of view
  *   Categories    where to go
- *   New In        what has just come in, buyable in place
+ *   New In        what has just come in, each card links to its page
  *   Statement     three pieces, each shown once, linking to its page
  *   Up close      the cloth
  *   Hayley        who runs it
+ *   Reviews       her three Google reviews, static (hidden until supplied)
  *   Visit         the address, hours and map
  *
  * Taken off the home page, not deleted: the Homeware band (the category row
@@ -45,6 +47,8 @@ export default function Home() {
         <StatementPieces />
         <UpClose />
         <OwnerCard />
+        {/* Renders nothing until lib/reviews.ts holds her real Google reviews. */}
+        <Reviews />
         <Visit />
       </main>
       <Footer />
