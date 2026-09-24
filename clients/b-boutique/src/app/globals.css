@@ -9433,8 +9433,8 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
 }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .uc-track { height: 200vh; view-timeline-name: --uc; } /* was 280vh; 2026-09-24, homepage length */
-    @media (max-width: 767px) { .uc-track { height: 160vh; } }
+    .uc-track { height: 160vh; view-timeline-name: --uc; } /* was 280vh; 2026-09-24, homepage length (Brad) */
+    @media (max-width: 767px) { .uc-track { height: 140vh; } }
     .uc-sticky { position: sticky; top: 0; }
     .uc-el { animation: uc-zoom linear both; animation-timeline: --uc; animation-range: contain 0% contain 85%; }
     .uc-el--0 { --uc-s: 2.4; }
