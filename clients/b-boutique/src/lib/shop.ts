@@ -46,6 +46,10 @@ export const shop = {
      rather than left to contradict this file. */
   phone: "" as string,
   email: "bboutiquecleethorpes@gmail.com" as string,
+  /** Parking, in the client's words via Brad (2026-09-24): "two minutes
+   *  away max". No car park is named because none was; add the name here
+   *  if she gives one. */
+  parking: "Within a two-minute walk",
   street: "18 Sea View Street",
   town: "Cleethorpes",
 

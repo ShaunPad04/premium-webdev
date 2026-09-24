@@ -2,10 +2,10 @@
  * (assets/about/11-shopfront-edited.jpg), with a dot on each piece that is
  * in the stock list.
  *
- * CLIENT INPUT REQUIRED: the matches below were made by eye from the window
- * photograph against the stock list's names and product photos. Each is a
- * claim that the piece in the window IS that product, so Hayley must
- * confirm all four before this goes live; delete any she does not.
+ * The four matches below were made by eye from the window photograph
+ * against the stock list, and CONFIRMED correct by Brad for the client on
+ * 2026-09-24. If the window is re-dressed, this photograph and these dots
+ * go out of date together: replace both, or remove the section.
  * x / y are the dot's position as a percentage of the cropped photograph. */
 export const look = {
   image: "window",

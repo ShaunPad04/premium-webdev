@@ -466,6 +466,20 @@ export function Bag() {
             <li>14 days to change your mind.</li>
           </ul>
 
+          {/* The cards SumUp's online checkout takes in the UK (checked
+              2026-09-24): Visa, Mastercard and American Express. Apple Pay
+              and Google Pay are left off: SumUp only offers them once the
+              merchant profile is verified for wallets, which is not
+              confirmed for this account. */}
+          <ul className="bk-cards" aria-label="Cards accepted">
+            <li className="bk-cc bk-cc--visa"><span aria-hidden="true">VISA</span><span className="sr-only">Visa</span></li>
+            <li className="bk-cc bk-cc--mc">
+              <svg viewBox="0 0 32 20" width="30" height="19" aria-hidden="true"><circle cx="12" cy="10" r="8" fill="#EB001B" /><circle cx="20" cy="10" r="8" fill="#F79E1B" /><path d="M16 3.1a8 8 0 0 1 0 13.8 8 8 0 0 1 0-13.8Z" fill="#FF5F00" /></svg>
+              <span className="sr-only">Mastercard</span>
+            </li>
+            <li className="bk-cc bk-cc--amex"><span aria-hidden="true">AMEX</span><span className="sr-only">American Express</span></li>
+          </ul>
+
           {/* Delivery and returns are linked from the last screen before
               payment, not discovered afterwards. */}
           <p className="bag-legal">

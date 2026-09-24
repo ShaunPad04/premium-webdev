@@ -10,11 +10,12 @@ import { formatPriceShort, FREE_DELIVERY_OVER_P } from "@/lib/catalogue";
  * lib/policies.ts. Nothing here is a new claim.
  *
  * The photographs are GENERATED mood images (Higgsfield, scripts: none;
- * sources in assets/why): a hand at a rail, a cardigan on a hook, a gift
- * box, a folded jumper. None of them is her shop or her stock, and none is
- * captioned as if it were; they are decorative (alt=""), and the words
- * carry the meaning. The gift box in particular must not be read as how
- * orders are packed unless Hayley confirms it (CLIENT INPUT). */
+ * sources in assets/why): a hand at a rail, a cardigan on a hook, a jumper
+ * in tissue in a plain paper mailer, a folded jumper. None of them is her
+ * shop or her stock, and none is captioned as if it were; they are
+ * decorative (alt=""), and the words carry the meaning. The delivery image
+ * was a black gift box until 2026-09-24, when Brad confirmed orders do not
+ * come in one; it is now plain postal packaging. */
 const POINTS = [
   { img: "hand", title: "Chosen by hand", text: "Every piece on the rails is chosen by hand, one at a time." },
   { img: "one", title: "Mostly one of one", text: "Most pieces here are one of one, so yours won't be on everyone else." },

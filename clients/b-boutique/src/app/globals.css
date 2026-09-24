@@ -10338,3 +10338,11 @@ h2.ucs-h em { font-style: italic; }
 @media (max-width: 1023px) {
   .vis-stack { overflow: hidden; margin-top: 16px; border-radius: 4px; }
 }
+
+/* Accepted cards under the pay button (2026-09-24). Small, bordered, quiet:
+   reassurance, not decoration. */
+.bk-cards { list-style: none; display: flex; gap: 8px; margin: 14px 0 0; padding: 0; }
+.bk-cc { display: grid; place-items: center; width: 46px; height: 30px; border: 1px solid rgba(14, 11, 12, 0.14); border-radius: 5px; background: #FFFFFF; }
+.bk-cc--visa span[aria-hidden] { font: italic 800 13px/1 system-ui, sans-serif; letter-spacing: 0.02em; color: #1A1F71; }
+.bk-cc--amex { background: #1F72CD; border-color: #1F72CD; }
+.bk-cc--amex span[aria-hidden] { font: 800 10px/1 system-ui, sans-serif; letter-spacing: 0.04em; color: #FFFFFF; }

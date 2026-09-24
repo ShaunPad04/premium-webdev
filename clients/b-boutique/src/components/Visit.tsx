@@ -10,12 +10,10 @@ import { VisitMap } from "./VisitMap";
  * Every value derives from shop.ts, so the address, hours, directions link
  * and JSON-LD cannot disagree.
  *
- * ── Email, not phone; no parking row ─────────────────────────────────────
+ * ── Email, not phone ──────────────────────────────────────────────────────
  * Email row and "Email the shop" (Brad, 2026-09-24: "change the phone
  * number to email"); the site carries no phone number at the client's
- * request. Parking is not shown: no parking detail has been confirmed, and
- * "two minutes to the car park" is a checkable claim about a real street.
- * CLIENT INPUT REQUIRED if wanted. */
+ * request. Parking (shop.parking) confirmed via Brad on 2026-09-24. */
 export function Visit() {
   const hoursLine = openingSummary().replace(/\.$/, "").replace(/^Every day, /, "");
   const everyDay = openingSummary().startsWith("Every day");
@@ -44,6 +42,10 @@ export function Visit() {
                 <dd><a href={`mailto:${shop.email}`} className="vx-row-link">{shop.email}</a></dd>
               </div>
             ) : null}
+            <div className="vx-row">
+              <dt>Parking</dt>
+              <dd>{shop.parking}</dd>
+            </div>
           </dl>
 
           <div className="vx-ctas">
