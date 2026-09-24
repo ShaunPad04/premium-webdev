@@ -9788,3 +9788,10 @@ h3.as-ch { margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
 .as-pick-name { font-size: 15px; }
 .as-pick-price { font-size: 13px; color: var(--ink-muted); }
 .ccard-tile:has(.ccard-dm) { grid-template-areas: "icon label" "icon value" "dm dm"; } .ccard-dm { grid-area: dm; justify-self: start; }
+/* Phones: small bento tiles keep the name on one line and drop the arrow
+   (the whole tile is the link). */
+@media (max-width: 899px) {
+  .bento-t:not(.bento-t--0) .bento-name { font-size: 1.35rem; }
+  .bento-t:not(.bento-t--0) .bento-arrow { display: none; }
+  .bento-t:not(.bento-t--0) .bento-t-body { left: 12px; right: 12px; bottom: 12px; }
+}
