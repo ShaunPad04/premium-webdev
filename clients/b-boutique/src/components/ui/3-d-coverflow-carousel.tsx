@@ -118,8 +118,17 @@ export function CoverFlowCarousel() {
       }}
     >
       {/* The centre piece, blown up and faint, behind the stage. */}
+      {/* Every backdrop stays mounted and they cross-fade (2026-09-24, Brad:
+          "a white flash" on swipe). It used to remount one image per slide,
+          so each swipe dropped the old picture and showed white until the
+          new one loaded. Same `sizes` as the cards, so these are the files
+          the cards have already fetched, not a second download. */}
       <div className="cf-ambient" aria-hidden="true">
-        <ProductPhoto key={now.slug} photo={now.photo} sizes="40vw" className="cf-ambient-img" />
+        {items.map((piece) => (
+          <span key={piece.slug} className="cf-ambient-layer" data-on={piece.slug === now.slug ? "" : undefined}>
+            <ProductPhoto photo={piece.photo} sizes="(min-width: 768px) 330px, 62vw" className="cf-ambient-img" />
+          </span>
+        ))}
       </div>
 
       <div className="cf-head">

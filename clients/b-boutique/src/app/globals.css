@@ -10399,3 +10399,13 @@ h2.ucs-h em { font-style: italic; }
 .label, .visit-eyebrow, .cs-eyebrow, .pov-eyebrow, .owner-eyebrow {
   font-family: var(--font-body), system-ui, sans-serif;
 }
+
+/* New In backdrop layers cross-fade instead of remounting (see the
+   coverflow component). */
+.cf-ambient-layer { position: absolute; inset: 0; opacity: 0; transition: opacity 700ms var(--bb-ease); }
+.cf-ambient-layer[data-on] { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .cf-ambient-layer { transition: none; } }
+
+/* Category photos sit still (2026-09-24, Brad: "make the images stay
+   there rather than having to scroll for them to go in position"). */
+.cats-card { animation: none !important; translate: none; clip-path: none; }
