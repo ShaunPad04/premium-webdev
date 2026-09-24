@@ -9,7 +9,13 @@ import { AddToBag } from "@/components/AddToBag";
 import { ColourProvider } from "@/components/ColourChoice";
 import { ProductGallery } from "@/components/ProductGallery";
 import { ProductGrid } from "@/components/ProductGrid";
-import { Visit } from "@/components/Visit";
+import { PdpActions } from "@/components/pdp/PdpActions";
+import { SizeGuide } from "@/components/pdp/SizeGuide";
+import { Reserve } from "@/components/pdp/Reserve";
+import { StickyBuy } from "@/components/pdp/StickyBuy";
+import { RecentlyViewed } from "@/components/pdp/RecentlyViewed";
+import { styleWith } from "@/lib/pairs";
+import { newIn } from "@/lib/shop";
 import {
   DELIVERY_P,
   FREE_DELIVERY_OVER_P,
@@ -19,7 +25,7 @@ import {
   products,
   relatedTo,
 } from "@/lib/catalogue";
-import { shop } from "@/lib/shop";
+import { openingPhrase, shop } from "@/lib/shop";
 import { productSchema } from "@/lib/product-schema";
 import { jsonLd } from "@/lib/site";
 
@@ -57,6 +63,17 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const related = relatedTo(product);
+  const homeware = product.category === "Homeware";
+  const pairs = styleWith(product);
+  const pairSlugs = new Set(pairs.map((p) => p.slug));
+  const also = related.filter((p) => !pairSlugs.has(p.slug));
+  const minis = products.map((p) => ({
+    slug: p.slug,
+    name: p.name,
+    photo: p.photo,
+    price: isBuyable(p) ? formatPriceShort(p.priceP) : "Price to confirm",
+    square: p.category === "Homeware",
+  }));
 
   return (
     <>
@@ -103,6 +120,12 @@ export default async function ProductPage({
                 <p className="pdp-price pdp-price--pending">Price to confirm</p>
               )}
 
+              <PdpActions
+                slug={product.slug}
+                name={product.name}
+                isNew={newIn.some((n) => n.slug === product.slug)}
+              />
+
               {/* Per PIECE, not per page: this one names the piece in front
                   of you rather than the state of the catalogue. */}
               {product.demo ? (
@@ -137,7 +160,20 @@ export default async function ProductPage({
                   transaction is withheld, because the one number needed to
                   make it honest is missing. */}
               {isBuyable(product) ? (
-                <AddToBag product={product} />
+                <>
+                  <AddToBag product={product} />
+                  <div className="pdp-helpers">
+                    {homeware ? null : (
+                      <SizeGuide
+                        name={product.name}
+                        sizes={product.sizes}
+                        sizeNote={product.sizeNote}
+                        fitsLike={product.fitsLike}
+                      />
+                    )}
+                    <Reserve name={product.name} sizes={homeware ? [] : product.sizes} />
+                  </div>
+                </>
               ) : (
                 <p className="pdp-note">
                   This one is in the shop but not yet priced online. Email{" "}
@@ -220,8 +256,20 @@ export default async function ProductPage({
                               the Textile Products (Labelling and Fibre
                               Composition) Regulations. Flag off, prints under
                               "Fabric". */}
-                          <dt>{product.fabricPublished ? "Composition" : "Fabric"}</dt>
+                          <dt>{homeware ? "Material" : product.fabricPublished ? "Composition" : "Fabric"}</dt>
                           <dd>{product.fabric}</dd>
+                        </>
+                      ) : null}
+                      {product.weight ? (
+                        <>
+                          <dt>Weight</dt>
+                          <dd>{product.weight}</dd>
+                        </>
+                      ) : null}
+                      {homeware && product.dimensions ? (
+                        <>
+                          <dt>Dimensions</dt>
+                          <dd>{product.dimensions}</dd>
                         </>
                       ) : null}
                       {product.care ? (
@@ -230,11 +278,15 @@ export default async function ProductPage({
                           <dd>{product.care}</dd>
                         </>
                       ) : null}
-                      <dt>Size</dt>
-                      <dd>
-                        {product.sizes.join(" · ")}
-                        {product.sizeNote ? ` — ${product.sizeNote}` : ""}
-                      </dd>
+                      {homeware ? null : (
+                        <>
+                          <dt>Size</dt>
+                          <dd>
+                            {product.sizes.join(" · ")}
+                            {product.sizeNote ? ` — ${product.sizeNote}` : ""}
+                          </dd>
+                        </>
+                      )}
                       <dt>Colours</dt>
                       {/* Supplier's own colour names off supplier's own
                           reference codes, never read off the photograph. */}
@@ -271,16 +323,29 @@ export default async function ProductPage({
                 </details>
               </div>
 
-              <p className="pdp-note">
-                If you would rather see it in person before deciding, it is on
-                the rail at 18 Sea View Street.
+              {/* One line and a link, not the address, hours and map again
+                  (2026-09-24, Brad): those live in Visit and the footer. */}
+              <p className="pdp-visit">
+                On the rail at {shop.street}, {shop.town}, open {openingPhrase()}.{" "}
+                <Link href="/#visit" className="pdp-ask">Visit the shop</Link>
               </p>
             </div>
           </div>
         </section>
         </ColourProvider>
 
-        {related.length > 0 ? (
+        {pairs.length > 0 ? (
+          <section aria-labelledby="pdp-style" className="also also--style">
+            <div className="also-inner">
+              <h2 id="pdp-style" className="also-h2">
+                {homeware ? "Pairs well with" : "Style it with"}
+              </h2>
+              <ProductGrid items={pairs} morph={false} />
+            </div>
+          </section>
+        ) : null}
+
+        {also.length > 0 ? (
           <section aria-labelledby="pdp-also" className="also">
             <div className="also-inner">
               <h2 id="pdp-also" className="also-h2">
@@ -297,12 +362,16 @@ export default async function ProductPage({
                   just left forms a second view-transition pair and flies
                   across the screen alongside the one they actually clicked —
                   measured on /shop → /shop/fair-isle-jumper. See ProductGrid. */}
-              <ProductGrid items={related} morph={false} />
+              <ProductGrid items={also} morph={false} />
             </div>
           </section>
         ) : null}
 
-        <Visit />
+        <RecentlyViewed current={product.slug} all={minis} />
+
+        {isBuyable(product) ? (
+          <StickyBuy name={product.name} price={formatPriceShort(product.priceP)} />
+        ) : null}
       </main>
       <Footer />
     </>

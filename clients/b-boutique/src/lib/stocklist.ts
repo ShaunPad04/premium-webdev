@@ -89,6 +89,10 @@ export type StockColourway = {
   priceConfirmed: boolean;
   /** Basename in /img/product, without extension. */
   image: string;
+  /** More photographs of this colourway (back, detail, styled), basenames
+   *  in /img/product. Empty until they are taken; the gallery shows a
+   *  "more to follow" slot meanwhile (2026-09-24). */
+  extra?: readonly string[];
 };
 
 export type StockPiece = {
@@ -108,6 +112,13 @@ export type StockPiece = {
   sizes: readonly string[];
   /** "fits up to 14", "2 of each" — the qualifier, kept apart from the run. */
   sizeNote: string;
+  /** "10–12": how the piece fits in UK sizes. Only from Hayley; empty until
+   *  she gives it (2026-09-24). Shown in the size guide when set. */
+  fitsLike?: string;
+  /** Fabric weight, e.g. "280 gsm". Only from the supplier's spec. */
+  weight?: string;
+  /** Homeware: "H 24 cm · Ø 12 cm". Only from the maker or a tape measure. */
+  dimensions?: string;
   supplier: string;
   supplierCode: string;
   colourways: readonly StockColourway[];

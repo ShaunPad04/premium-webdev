@@ -1,97 +1,179 @@
 "use client";
 
-import { ViewTransition } from "react";
+import { ViewTransition, useEffect, useRef, useState } from "react";
 
 import type { Product } from "@/lib/catalogue";
 import { useColour } from "./ColourChoice";
 import { ProductPhoto } from "./ProductPhoto";
 
-/* The colourway gallery.
+/* The product gallery (2026-09-24, Brad: 4 to 6 images, thumbnails, zoom,
+ * swipe on a phone).
  *
- * ── Why this is the biggest thing missing from the product page ─────────
- * Every piece in the shop has between one and three colourways, and the
- * client's stock dashboard supplied a SEPARATE PHOTOGRAPH OF EACH ONE — 54
- * photographs across 32 pieces. Until now the page showed the first and the
- * other 22 sat unused in public/img/product. A customer looking at the Long
- * Trench could read the word "Camel" in a list and had no way to see it.
+ * The slides are the chosen colourway's photographs: its main image plus any
+ * `extra` shots in lib/stocklist.ts. Most pieces have one photograph so far,
+ * so a single, clearly labelled "more photographs to follow" slot stands in
+ * where the others will go; it is never dressed up as a real image.
  *
- * On a clothing site that is not a nicety. Colour is the single thing people
- * most want to look at before buying, and a list of colour NAMES with one
- * picture is the layout of a shop that does not have the pictures. This one
- * does.
+ * - Phone: a horizontal scroll-snap track, so a swipe is the browser's own
+ *   gesture, momentum and all. Dots show where you are.
+ * - Desktop: thumbnails beside the photograph; hovering the photograph zooms
+ *   it 2x toward the pointer (transform only).
+ * - Anywhere: the expand button opens the photograph full screen at its full
+ *   resolution in a native <dialog>, which pans by scrolling or dragging.
  *
- * ── Why a client component, in a codebase that avoids them ──────────────
- * Swapping the main image on click is state, and there are only two honest
- * ways to do it without JavaScript: a link per colour that reloads the page,
- * or the CSS radio-and-sibling-selector trick. The reload is worse UX than
- * the thing it is saving; the CSS trick needs every image in the DOM anyway
- * and produces markup nobody can read six months later.
- *
- * So: one small client component, and the cost is contained deliberately.
- * Every colourway image is rendered — they are `loading="lazy"` except the
- * first, so a piece with three colours does not fetch three photographs
- * before the customer has asked for one — and the SERVER still renders the
- * whole page around it. Nothing else on the route becomes client.
- *
- * ── The swatches are NOT here any more ──────────────────────────────────
- * They were, for a few hours, laid over the photograph. That gave the page
- * two controls for one decision — swatches that moved the picture and a
- * Colour radio group beside the size that decided what went in the bag —
- * which could disagree: camel on screen, burgundy in the bag.
- *
- * The client asked for the selector to sit "near the sizing like an ecommerce
- * store", which is the same fix from the other side. AddToBag owns the
- * control; this component is its output. The state is shared through
- * ColourChoice.tsx.
- */
+ * Colour stays the one control: ColourChoice picks the colourway, this shows
+ * it. The first slide keeps the view-transition name, so the card-to-page
+ * morph still lands on it. */
+
 export function ProductGallery({ product }: { product: Product }) {
-  /* Shared with the buy panel. The swatch row that used to live over this
-     photograph is gone: the Colour control beside the size is the one
-     control, and this is its output. See ColourChoice.tsx. */
   const { index: active } = useColour();
   const square = product.category === "Homeware";
+  const way = product.colourways[active];
+  const shots = [way.image, ...(way.extra ?? [])];
+  const needMore = shots.length < 4;
+
+  const track = useRef<HTMLDivElement>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [slide, setSlide] = useState(0);
+  const [zoom, setZoom] = useState<{ x: number; y: number } | null>(null);
+
+  /* A new colour starts at its first photograph. */
+  useEffect(() => {
+    track.current?.scrollTo({ left: 0 });
+    setSlide(0);
+  }, [active]);
+
+  const go = (i: number) => {
+    const t = track.current;
+    if (!t) return;
+    t.scrollTo({ left: i * t.clientWidth, behavior: "smooth" });
+    setSlide(i);
+  };
+
+  const count = shots.length + (needMore ? 1 : 0);
+  const alt = `${product.name} in ${way.colour}`;
 
   return (
-    /* The incoming half of the grid → product morph. Same name as the card's
-       `.prod-media` in ProductGrid; React pairs them across the navigation.
-       See that file for why `default="none"`. */
-    <ViewTransition name={`product-${product.slug}`} share="morph" default="none">
-    <div className="pdp-media" data-square={square ? "" : undefined}>
-      {/* All colourways stay mounted and are switched with opacity rather
-          than swapped in the DOM. Remounting an <img> on every click refetches
-          nothing on a warm cache but DOES re-decode, which shows as a flash of
-          empty frame on a slower machine — the one moment the customer is
-          concentrating on the picture. */}
-      {product.colourways.map((c, i) => (
-        <div
-          key={c.sku}
-          className="pdp-frame"
-          data-active={i === active ? "" : undefined}
-          aria-hidden={i === active ? undefined : "true"}
-        >
-          <ProductPhoto
-            photo={c.image}
-            square={square}
-            /* Names the piece and the colour, and stops. The colour is the
-               supplier's own name off the supplier's own reference code, so
-               it is a fact rather than a reading of the picture. Nothing about
-               the cut, the length or the fit — those would be claims sourced
-               from a generated image. */
-            alt={`${product.name} in ${c.colour}`}
-            sizes="(min-width: 1024px) 52vw, 100vw"
-            priority={i === 0}
-            className="absolute inset-0 h-full w-full"
-          />
-        </div>
-      ))}
+    <div className="pg" data-square={square ? "" : undefined}>
+      {count > 1 ? (
+        <ol className="pg-thumbs" aria-label="Photographs">
+          {shots.map((s, i) => (
+            <li key={s}>
+              <button
+                type="button"
+                className="pg-thumb"
+                aria-current={slide === i ? "true" : undefined}
+                aria-label={`Photograph ${i + 1} of ${shots.length}`}
+                onClick={() => go(i)}
+              >
+                <ProductPhoto photo={s} square={square} sizes="80px" className="absolute inset-0 h-full w-full object-cover" />
+              </button>
+            </li>
+          ))}
+          {needMore ? (
+            <li>
+              <button
+                type="button"
+                className="pg-thumb pg-thumb--soon"
+                aria-current={slide === shots.length ? "true" : undefined}
+                onClick={() => go(shots.length)}
+              >
+                <span>More soon</span>
+              </button>
+            </li>
+          ) : null}
+        </ol>
+      ) : null}
 
-      {/* The colour of the frame on screen, in words, for everyone. On a
-          single-colourway piece this is the only place the colour is stated
-          at all, which is why it renders either way. */}
-      <p className="pdp-colour-now" aria-live="polite">
-        {product.colourways[active].colour}
-      </p>
+      <div className="pg-main">
+        <div
+          ref={track}
+          className="pg-track"
+          onScroll={(e) => {
+            const t = e.currentTarget;
+            const i = Math.round(t.scrollLeft / Math.max(1, t.clientWidth));
+            if (i !== slide) setSlide(i);
+          }}
+        >
+          {shots.map((s, i) => {
+            const img = (
+              <div
+                className="pg-slide"
+                data-zoom={zoom && slide === i ? "" : undefined}
+                style={zoom && slide === i ? ({ "--zx": `${zoom.x}%`, "--zy": `${zoom.y}%` } as React.CSSProperties) : undefined}
+                onPointerMove={(e) => {
+                  if (e.pointerType !== "mouse") return;
+                  const r = e.currentTarget.getBoundingClientRect();
+                  setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
+                }}
+                onPointerLeave={() => setZoom(null)}
+              >
+                <ProductPhoto
+                  photo={s}
+                  square={square}
+                  alt={i === 0 ? alt : `${alt}, photograph ${i + 1}`}
+                  sizes="(min-width: 1024px) 46vw, 100vw"
+                  priority={i === 0}
+                  className="pg-img absolute inset-0 h-full w-full"
+                />
+              </div>
+            );
+            return i === 0 ? (
+              <ViewTransition key={s} name={`product-${product.slug}`} share="morph" default="none">
+                {img}
+              </ViewTransition>
+            ) : (
+              <div key={s} className="contents">{img}</div>
+            );
+          })}
+          {needMore ? (
+            <div className="pg-slide pg-soon" role="note">
+              <p className="pg-soon-h">More photographs to follow</p>
+              <p className="pg-soon-p">
+                Back, detail and styled shots of this piece are on their way. Until then it is on the rail in the shop.
+              </p>
+            </div>
+          ) : null}
+        </div>
+
+        <button type="button" className="pg-expand" onClick={() => dialog.current?.showModal()}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          </svg>
+          <span className="sr-only">View photograph full screen</span>
+        </button>
+
+        {count > 1 ? (
+          <div className="pg-dots" aria-hidden="true">
+            {Array.from({ length: count }, (_, i) => (
+              <span key={i} data-on={slide === i ? "" : undefined} />
+            ))}
+          </div>
+        ) : null}
+
+        <p className="pdp-colour-now" aria-live="polite">{way.colour}</p>
+      </div>
+
+      <dialog
+        ref={dialog}
+        className="pg-full"
+        aria-label={`${alt}, full screen`}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) e.currentTarget.close();
+        }}
+      >
+        <div className="pg-full-scroll">
+          {/* The full-resolution file, so zooming shows real detail. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`/img/product/${shots[Math.min(slide, shots.length - 1)]}-1280.webp`} alt={alt} className="pg-full-img" />
+        </div>
+        <button type="button" className="pg-full-close" onClick={() => dialog.current?.close()}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+          <span className="sr-only">Close</span>
+        </button>
+      </dialog>
     </div>
-    </ViewTransition>
   );
 }

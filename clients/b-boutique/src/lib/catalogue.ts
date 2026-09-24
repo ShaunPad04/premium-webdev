@@ -69,6 +69,9 @@ export type Product = {
   /** "fits up to 14", "2 of each" — the qualifier on the run, kept separate
    *  so it can be shown as a note rather than mistaken for a size. */
   sizeNote: string;
+  fitsLike?: string;
+  weight?: string;
+  dimensions?: string;
   supplier: string;
   colourways: StockPiece["colourways"];
 };
@@ -121,6 +124,9 @@ export const products: Product[] = stocklist.map((piece) => ({
   fabricPublished: piece.fabricPublished,
   care: piece.care,
   sizeNote: piece.sizeNote,
+  fitsLike: piece.fitsLike,
+  weight: piece.weight,
+  dimensions: piece.dimensions,
   supplier: piece.supplier,
   colourways: piece.colourways,
 }));
