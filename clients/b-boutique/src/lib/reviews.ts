@@ -1,16 +1,10 @@
 /* Customer reviews for the home page (2026-09-24, Brad: "even though there's
  * only three on Google ... just a static one").
  *
- * EMPTY ON PURPOSE. The shop has three real Google reviews, but their words
- * are not in this project yet: Google shows them only to a signed-in
- * browser, and a review is the one kind of copy that must never be written
- * for someone. Add each exactly as it appears on Google: the words, the name
- * as Google shows it, and the star rating she was given. The section renders
- * nothing until this list has an entry, so nothing is ever shown in place of
- * a real review.
- *
- * CLIENT INPUT REQUIRED: the three Google reviews (text, reviewer name as
- * shown, stars). No aggregate rating is marked up in JSON-LD from these:
+ * Only reviews copied from Google, exactly as they appear: the words, the
+ * name as Google shows it, and the stars. A review is the one kind of copy
+ * that must never be written for someone. The section renders nothing if
+ * this list is empty. No aggregate rating is marked up in JSON-LD from these:
  * three self-selected reviews on the shop's own site is not what that
  * schema is for, and Google treats it as self-serving. */
 export type Review = {
@@ -21,4 +15,30 @@ export type Review = {
   source: "Google";
 };
 
-export const reviews: Review[] = [];
+/* Copied from her Google Business listing on 2026-09-24 (a screenshot
+   Brad sent of https://share.google/dtmJLWZtTxzgd5CqA), word for word,
+   spelling included: a correction would put words in a customer's mouth.
+   The third review, Sean T. (5 stars), has no text, so it is counted in
+   the summary below but has no card. */
+export const reviews: Review[] = [
+  {
+    quote: "Lovely selection of ladies clothing. Friendly and helpful. Great new premises on Seaview St. Cleethorpes",
+    name: "Jacqueline Beatson",
+    stars: 5,
+    source: "Google",
+  },
+  {
+    quote: "Nice affordable clothing for my mothers birthday, lovely staff absolute pleasure to be around would definetely recommend to everyone!",
+    name: "Shaun J",
+    stars: 5,
+    source: "Google",
+  },
+];
+
+/* What Google shows at the top of the listing, as of 2026-09-24. Update it
+   by hand when the listing changes; it is displayed, never marked up. */
+export const googleSummary = {
+  rating: "5.0",
+  count: 3,
+  href: "https://share.google/dtmJLWZtTxzgd5CqA",
+} as const;

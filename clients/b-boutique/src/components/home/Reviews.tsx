@@ -1,4 +1,4 @@
-import { reviews, type Review } from "@/lib/reviews";
+import { googleSummary, reviews, type Review } from "@/lib/reviews";
 
 /* Reviews, static (2026-09-24, Brad). Three is a small number, so no
  * marquee and no carousel: the cards sit still, side by side on a desktop
@@ -24,6 +24,14 @@ export function Reviews({ items = reviews }: { items?: Review[] }) {
       <div className="rv-inner">
         <p className="label rv-eyebrow">Reviews</p>
         <h2 id="rv-h" className="rv-h">In their <em>words</em>.</h2>
+        <p className="rv-summary">
+          <Stars n={5} />
+          <span>{googleSummary.rating} on Google</span>
+          <span aria-hidden="true">·</span>
+          <a href={googleSummary.href} target="_blank" rel="noopener noreferrer" className="rv-summary-link">
+            {googleSummary.count} reviews
+          </a>
+        </p>
         <ul className="rv-list">
           {items.map((r) => (
             <li key={r.name + r.quote.slice(0, 20)} className="rv-card">

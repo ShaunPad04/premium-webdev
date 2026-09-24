@@ -9738,3 +9738,7 @@ h1.pdp-name { margin-bottom: 18px; }
 .rv-by { margin-top: auto; display: flex; flex-direction: column; gap: 4px; }
 .rv-name { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
 .rv-src { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); }
+.rv-summary { margin: 18px 0 0; display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 13px; letter-spacing: 0.04em; }
+.rv-summary .rv-stars { color: var(--ink, #0E0B0C); }
+.rv-summary-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.rv-list { max-width: 1040px; margin-inline: auto; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
