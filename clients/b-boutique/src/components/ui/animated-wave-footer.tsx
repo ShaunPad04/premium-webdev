@@ -3,6 +3,7 @@ import { footerNav, socials, directionsHref } from "@/lib/nav";
 import { shop, addressLines, openingPhrase } from "@/lib/shop";
 import { SocialMark } from "../SocialMark";
 import { BackToTop } from "../BackToTop";
+import { BMark } from "../BMark";
 
 /* The 21st.dev "Animated Wave Footer", adapted (2026-09-23, Brad).
  *
@@ -52,6 +53,10 @@ export default function AnimatedWaveFooter() {
       <div className="wf-inner">
         <div className="wf-grid">
           <div className="wf-col wf-lead">
+            {/* The monogram in the footer (2026-09-24, Brad). */}
+            <Link href="/#top" className="wf-mark" aria-label="B Boutique, home">
+              <BMark className="wf-mark-svg" />
+            </Link>
             <p className="wf-eyebrow">{shop.street}, {shop.town}</p>
             <h2 className="wf-h">
               Come and see it <em>on the rail.</em>

@@ -80,6 +80,12 @@ const slides = ["horses", "silk", "rail", "ribbon", "shore"];
  *
  * The caps below are a ceiling, not a target. `withoutEnlargement` means a
  * source smaller than the cap is used at its own size and never stretched. */
+/* 2026-09-24, Brad: "not 4K, slightly blurry". Measured at 1920 against
+   the source: the horses at AVIF q56 4:2:0 were PSNR 31.1 dB, the red field
+   smeared by chroma subsampling; q74 4:4:4 is 37.0 dB. Qualities below were
+   raised and chroma kept full on every step. Desktop files grow (horses
+   1920: 359 -> ~700 KB); the phone's first frame is the silk, so the phone
+   LCP path is not the one paying. */
 const DESKTOP_W = 3840;
 const MOBILE_W = 1536;
 const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
@@ -107,8 +113,8 @@ for (const name of slides) {
   const mob = sharp(port).resize({ width: MOBILE_W, withoutEnlargement: true });
 
   const [da, dw, dj, ma, mw, mj] = await Promise.all([
-    desk.clone().avif({ quality: 62, effort: 6 }).toFile(`public/img/hero/${name}-d.avif`),
-    desk.clone().webp({ quality: 78 }).toFile(`public/img/hero/${name}-d.webp`),
+    desk.clone().avif({ quality: 74, effort: 6, chromaSubsampling: "4:4:4" }).toFile(`public/img/hero/${name}-d.avif`),
+    desk.clone().webp({ quality: 86, smartSubsample: true }).toFile(`public/img/hero/${name}-d.webp`),
     desk.clone().jpeg({ quality: 82, mozjpeg: true }).toFile(`public/img/hero/${name}-d.jpg`),
     /* 54 for the phone, not 62, and it was measured both ways.
      *
@@ -134,7 +140,7 @@ for (const name of slides) {
      *
      * The desktop file stays at 62: it is 100-150 KB already, it is not
      * what the mobile LCP waits on, and there is nothing to buy there. */
-    mob.clone().avif({ quality: 54, effort: 6 }).toFile(`public/img/hero/${name}-m.avif`),
+    mob.clone().avif({ quality: 62, effort: 6, chromaSubsampling: "4:4:4" }).toFile(`public/img/hero/${name}-m.avif`),
     mob.clone().webp({ quality: 78 }).toFile(`public/img/hero/${name}-m.webp`),
     mob.clone().jpeg({ quality: 82, mozjpeg: true }).toFile(`public/img/hero/${name}-m.jpg`),
   ]);
@@ -148,7 +154,7 @@ for (const name of slides) {
        and cost 154 KB at 54, which measured as a later simulated LCP than
        the frame it replaced. 46 is 101 KB, PSNR 33.4 vs 35.4 dB, and no
        difference could be seen at 2x zoom. */
-    small.clone().avif({ quality: 46, effort: 6 }).toFile(`public/img/hero/${name}-s.avif`),
+    small.clone().avif({ quality: 58, effort: 6, chromaSubsampling: "4:4:4" }).toFile(`public/img/hero/${name}-s.avif`),
     small.clone().webp({ quality: 70 }).toFile(`public/img/hero/${name}-s.webp`),
   ]);
 
@@ -158,7 +164,7 @@ for (const name of slides) {
   {
     const mid = sharp(port).resize({ width: 1200, withoutEnlargement: true });
     await Promise.all([
-      mid.clone().avif({ quality: 46, effort: 6 }).toFile(`public/img/hero/${name}-s1200.avif`),
+      mid.clone().avif({ quality: 58, effort: 6, chromaSubsampling: "4:4:4" }).toFile(`public/img/hero/${name}-s1200.avif`),
       mid.clone().webp({ quality: 70 }).toFile(`public/img/hero/${name}-s1200.webp`),
     ]);
   }
@@ -171,8 +177,8 @@ for (const name of slides) {
   for (const w of [1920, 2560]) {
     const step = sharp(land).resize({ width: w, withoutEnlargement: true });
     await Promise.all([
-      step.clone().avif({ quality: 56, effort: 6 }).toFile(`public/img/hero/${name}-d${w}.avif`),
-      step.clone().webp({ quality: 74 }).toFile(`public/img/hero/${name}-d${w}.webp`),
+      step.clone().avif({ quality: 74, effort: 6, chromaSubsampling: "4:4:4" }).toFile(`public/img/hero/${name}-d${w}.avif`),
+      step.clone().webp({ quality: 86, smartSubsample: true }).toFile(`public/img/hero/${name}-d${w}.webp`),
     ]);
   }
 

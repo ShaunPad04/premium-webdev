@@ -9803,3 +9803,18 @@ h3.as-ch { margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
   transition: opacity 360ms cubic-bezier(0.22, 1, 0.36, 1) 170ms, transform 480ms cubic-bezier(0.22, 1, 0.36, 1) 170ms;
 }
 @media (prefers-reduced-motion: reduce) { .navbar-mark > .nm-word, .navbar-mark > .nm-b { transition: none !important; } }
+/* Header: the monogram only (2026-09-24). */
+.navbar-mark > .nm-b { opacity: 1; transform: none; transition: none; }
+/* Footer monogram. */
+.wf-mark { display: inline-flex; color: #FFFFFF; margin-bottom: 28px; transition: transform 300ms var(--bb-ease); }
+.wf-mark:hover { transform: translateY(-2px); }
+.wf-mark:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; }
+.wf-mark-svg { height: 64px; width: auto; }
+@media (max-width: 1023px) { .wf-mark-svg { height: 52px; } }
+/* Hero settle shortened (2026-09-24): a frame held at 101-107% for nine
+   seconds is resampled, and resampling softens a 4K photograph. It now
+   lands at 100% within the cross-fade, so the frame sits pixel-sharp. */
+@media (prefers-reduced-motion: no-preference) {
+  .lm[data-fade] .lm-pic[data-on] { animation-duration: 2.2s; }
+}
+@keyframes lm-settle { from { transform: scale(1.04); } to { transform: none; } }
