@@ -10365,3 +10365,39 @@ h2.ucs-h em { font-style: italic; }
 .atx-keep { font-size: 12px; white-space: nowrap; }
 /* Opening quote mark in ink, not red (2026-09-24, Brad). */
 .pov-statement > span[aria-hidden]::before { color: inherit; }
+
+/* ── Type system, one pair (2026-09-24, Brad chose option C) ──────────────
+ * Two families, two jobs, and nothing else (option C, Bodoni Moda + Hanken
+ * Grotesk; Instrument was tried first the same day):
+ *   Bodoni Moda (--font-display): large headings, the hero name, the
+ *     footer wordmark, product and section titles. Sentence case, never
+ *     capitals, one weight (400) with its italic for emphasis.
+ *   Hanken Grotesk (--font-body): everything else, including every small
+ *     label, navigation, the announcement strip and the marquee, which are
+ *     the only places capitals appear, always tracked.
+ * This block comes last on purpose: it overrides the capitals-in-serif
+ * rules left from the Anton and Bodoni eras rather than editing each. */
+:is(h1, h2, .display):not(.sr-only) {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: -0.005em;
+  line-height: 1.04;
+}
+.lm-title, .lm--centre .lm-title, .navbar-mark, .fw-mark {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: -0.015em;
+}
+.announce-item, .navbar .nav-link, .navbar .nb-word, .nav-menu-link,
+.arr-rail .stmt-text, .stmt-text {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.arr-rail .stmt-text { letter-spacing: 0.16em; font-size: clamp(15px, 1.6vw, 22px); }
+/* Small labels: one style everywhere. */
+.label, .visit-eyebrow, .cs-eyebrow, .pov-eyebrow, .owner-eyebrow {
+  font-family: var(--font-body), system-ui, sans-serif;
+}

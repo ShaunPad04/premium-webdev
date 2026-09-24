@@ -3,7 +3,7 @@ import { MagneticButtons } from "@/components/MagneticButtons";
 import { NavMotion } from "@/components/NavMotion";
 import { PageTransition } from "@/components/PageTransition";
 import { AddedToast } from "@/components/AddedToast";
-import { Bodoni_Moda, DM_Sans } from "next/font/google";
+import { Bodoni_Moda, Hanken_Grotesk } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
@@ -28,11 +28,14 @@ import "./globals.css";
  * on every boutique site. That still holds, and this is not it: the display
  * face is Bodoni, which is a far sharper, higher-contrast letter than
  * Playfair. Inter is doing the quiet half of the job, not the loud one. */
-/* One pair everywhere. Display: Bodoni Moda, the fashion-magazine Didone,
- * since late 2026-09-23 (Brad: Anton read "manly" for a women's boutique;
- * keep it professional and boutique-like). Body: DM Sans 400/500/600. Both
- * self-hosted by next/font at build time, so the page requests nothing from
- * Google on load (/privacy says so). */
+/* One pair everywhere (2026-09-24, Brad: "too many fonts... two, max
+ * three; feminine but modern, not generic"; of three rendered options he
+ * chose C). Display: Bodoni Moda, the fashion-magazine Didone, for large
+ * headings and product names ONLY, in sentence case, never in capitals.
+ * Everything else (navigation, labels, body, buttons, prices, marquee):
+ * Hanken Grotesk, a clean contemporary grotesk that replaces DM Sans.
+ * Self-hosted by next/font at build time; nothing is requested from Google
+ * on load (/privacy says so). */
 const display = Bodoni_Moda({
   variable: "--font-display",
   subsets: ["latin"],
@@ -41,7 +44,7 @@ const display = Bodoni_Moda({
   display: "swap",
 });
 
-const body = DM_Sans({
+const body = Hanken_Grotesk({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
