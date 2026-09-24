@@ -1,89 +1,69 @@
-import { shop, hours, formatHour, phoneDisplay } from "@/lib/shop";
+import { shop, phoneDisplay, openingSummary } from "@/lib/shop";
 import { directionsHref, mapEmbedSrc } from "@/lib/nav";
+import { OpenNow } from "./OpenNow";
 import { VisitMap } from "./VisitMap";
 
-/* The conversion point. Not a basket — a postcode.
+/* Visit B Boutique, redesigned 2026-09-24 (Brad's spec): the product page's
+ * centred container, a 5/7 grid, details left and map right at the same
+ * height; on a phone the map first at 4:3, details under it.
  *
- * Every value here derives from shop.ts: the address, the coordinates behind
- * the map, the directions link and the hours table. There is no second copy
- * of any of it, so a change there changes this and the JSON-LD together.
+ * Every value derives from shop.ts, so the address, hours, directions link
+ * and JSON-LD cannot disagree.
  *
- * ── Two things deliberately absent ────────────────────────────────────────
- * The parking sentence is gone. "On-street parking at the top, and the Market
- * Place car park is a two-minute walk" is a checkable local claim that nobody
- * has confirmed, and the address confirmation does not cover it. It is not
- * softened or hedged here — it is simply not asserted.
- *
- * The live "open now" badge is gone too. openState() read the VISITOR's clock,
- * not the shop's, so the badge told anyone outside UK time the wrong thing;
- * the table below says the same thing without ever being wrong. OpenBadge and
- * openState were deleted in the release cleanup — reinstate them together, and
- * timezone-aware, if the badge is ever wanted back. */
+ * ── Rows that are only shown when there is something true to show ───────
+ * Phone and "Call the shop" read shop.phone, which is empty: the client
+ * asked for phone numbers to come off the site (see shop.ts). Put a number
+ * back there and both appear. Parking is not shown at all: no parking
+ * detail has been confirmed, and "a two-minute walk to the car park" is a
+ * checkable claim about a real street. CLIENT INPUT REQUIRED if wanted. */
 export function Visit() {
-  return (
-    <section id="visit" aria-labelledby="visit-heading" className="visit">
-      <div className="visit-inner">
-        <div className="visit-info">
-          <p className="visit-eyebrow">Visit B Boutique</p>
+  const tel = shop.phone ? `tel:${shop.phone.replace(/\s+/g, "")}` : "";
+  const hoursLine = openingSummary().replace(/\.$/, "").replace(/^Every day, /, "");
+  const everyDay = openingSummary().startsWith("Every day");
 
+  return (
+    <section id="visit" aria-labelledby="visit-heading" className="vx">
+      <div className="vx-inner">
+        <div className="vx-info">
+          <p className="visit-eyebrow">Visit B Boutique</p>
           <h2 id="visit-heading" className="visit-address">
             <span>{shop.street}</span>
             <span>{shop.town}</span>
             <span>{shop.postcode}</span>
           </h2>
 
-          <a
-            href={directionsHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="visit-cta"
-          >
-            <span className="roll"><span>Get directions</span></span> <span className="visit-cta-arrow" aria-hidden="true">&rarr;</span>
-          </a>
+          <OpenNow />
 
-          {/* The phone number, now that there is one. Client-confirmed
-              2026-09-06; before that this block did not exist, because the
-              only honest thing to print was nothing. `tel:` with the spaces
-              stripped so a phone dials it, the readable form on screen. */}
-          {shop.phone ? (
-            <p className="visit-phone">
-              <span className="visit-phone-label">Call the shop</span>
-              <a href={`tel:${shop.phone.replace(/\s+/g, "")}`} className="visit-phone-link">
-                {phoneDisplay}
-              </a>
-            </p>
-          ) : null}
+          <dl className="vx-rows">
+            <div className="vx-row">
+              <dt>Opening hours</dt>
+              <dd>{everyDay ? `Every day, ${hoursLine}` : openingSummary()}</dd>
+            </div>
+            {shop.phone ? (
+              <div className="vx-row">
+                <dt>Phone</dt>
+                <dd><a href={tel} className="vx-row-link">{phoneDisplay}</a></dd>
+              </div>
+            ) : null}
+          </dl>
 
-          <div className="visit-hours">
-            <h3 className="visit-hours-label">Opening hours</h3>
-            <dl className="visit-hours-list">
-              {/* Every day, Monday to Sunday (Brad, 2026-09-24: "Every day"
-                  on one row looked generic; he wants each day listed). */}
-              {hours.map((d) => (
-                <div key={d.day} className="visit-hours-row">
-                  <dt>{d.day}</dt>
-                  <dd className={d.hours ? "" : "is-closed"}>
-                    {d.hours
-                      /* Hyphen, matching openingSummary — the Visit table and
-                         the one-line summary must not punctuate the same fact
-                         two different ways on the same page. */
-                      ? `${formatHour(d.hours.open)} - ${formatHour(d.hours.close)}`
-                      : "Closed"}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+          <div className="vx-ctas">
+            <a href={directionsHref} target="_blank" rel="noopener noreferrer" className="vx-btn vx-btn--solid">
+              Get directions <span aria-hidden="true">&rarr;</span>
+            </a>
+            {shop.phone ? (
+              <a href={tel} className="vx-btn vx-btn--line">Call the shop</a>
+            ) : null}
           </div>
         </div>
 
-        <div className="visit-map">
+        <div className="vx-map">
           <VisitMap
+            name={shop.name}
             street={shop.street}
             town={shop.town}
-            postcode={shop.postcode}
             embedSrc={mapEmbedSrc}
             directionsHref={directionsHref}
-            title={`Map showing ${shop.name}, ${shop.street}, ${shop.town} ${shop.postcode}`}
           />
         </div>
       </div>

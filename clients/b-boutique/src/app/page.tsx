@@ -5,6 +5,7 @@ import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import { CoverFlowCarousel } from "@/components/ui/3-d-coverflow-carousel";
 import { StepInside } from "@/components/home/StepInside";
+import { WhyUs } from "@/components/home/WhyUs";
 import { UpClose } from "@/components/home/UpClose";
 import { OwnerCard } from "@/components/OwnerCard";
 import { Reviews } from "@/components/home/Reviews";
@@ -53,6 +54,7 @@ export default function Home() {
         <StepInside />
         <UpClose />
         <OwnerCard />
+        <WhyUs />
         {/* Renders nothing until lib/reviews.ts holds her real Google reviews. */}
         <Reviews />
         <Visit />

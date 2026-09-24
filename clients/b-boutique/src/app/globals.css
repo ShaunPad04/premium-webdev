@@ -7441,22 +7441,6 @@ html:has(.pdp-viewer[open]) { overflow: hidden; }
 @media (max-width: 379px) { .bk-steps .bk-hide-xs { display: none; } }
 
 
-/* Visit on phones and tablets (2026-09-23, client): the hours first, then
-   the address with the map directly under it and Get directions under that,
-   so the three things about finding the shop sit together. The info column
-   dissolves (display: contents) so its children and the map share one
-   ordered stack; the desktop two-column layout is untouched. */
-@media (max-width: 1023px) {
-  .visit-inner { gap: 0; }
-  .visit-info { display: contents; }
-  .visit-eyebrow { order: 1; }
-  .visit-hours { order: 2; margin-top: 8px; margin-bottom: 44px; }
-  .visit-address { order: 3; }
-  .visit-map { order: 4; margin-top: 24px; }
-  .visit-cta { order: 5; align-self: flex-start; margin-top: 16px; }
-  .visit-phone { order: 6; }
-}
-
 /* ── New arrivals: 3D coverflow (components/ui/3-d-coverflow-carousel.tsx) ─ */
 .cf {
   position: relative;
@@ -10145,3 +10129,106 @@ h2.si-h em { font-style: italic; }
 @media (max-width: 767px) {
   .uc-head { background: radial-gradient(ellipse 95% 42% at 50% 50%, rgba(14, 11, 12, 0.74), rgba(14, 11, 12, 0.42) 62%, rgba(14, 11, 12, 0) 100%); }
 }
+
+/* ── Visit B Boutique, redesigned (2026-09-24, Brad) ─────────────────────
+ * Visit.tsx / VisitMap.tsx / OpenNow.tsx. The product page's container
+ * (content to 1520px, the same side padding), a 5/7 grid with both columns
+ * the same height; on a phone the map first at 4:3 and the details below. */
+.vx { background: #FFFFFF; color: var(--bb-black); padding-block: clamp(64px, 8vw, 112px); }
+.vx-inner {
+  display: grid; gap: 32px;
+  padding-inline: 18px;
+  max-width: calc(1520px + 2 * clamp(32px, 4vw, 72px)); margin: 0 auto;
+}
+@media (min-width: 768px) { .vx-inner { padding-inline: clamp(32px, 4vw, 72px); } }
+@media (min-width: 1024px) {
+  .vx-inner { grid-template-columns: 5fr 7fr; gap: clamp(40px, 4.5vw, 88px); align-items: stretch; }
+}
+.vx-info { display: flex; flex-direction: column; }
+.vx .visit-address { margin-bottom: 0; }
+.vx-now { display: flex; align-items: center; gap: 8px; min-height: 22px; margin: 18px 0 0; font-size: 14px; color: rgba(14, 11, 12, 0.72); }
+.vx-now-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(14, 11, 12, 0.35); flex: none; }
+.vx-now[data-open] .vx-now-dot { background: #1F8A4C; box-shadow: 0 0 0 4px rgba(31, 138, 76, 0.14); }
+.vx-now-state { font-weight: 600; color: var(--bb-black); }
+.vx-rows { margin: 28px 0 0; }
+.vx-row { display: grid; grid-template-columns: minmax(120px, 38%) 1fr; gap: 16px; padding: 16px 0; border-top: 1px solid rgba(14, 11, 12, 0.12); font-size: 15px; }
+.vx-row:last-child { border-bottom: 1px solid rgba(14, 11, 12, 0.12); }
+.vx-row dt { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(14, 11, 12, 0.72); padding-top: 2px; }
+.vx-row dd { margin: 0; color: var(--bb-black); font-variant-numeric: tabular-nums; }
+.vx-row-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.vx-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+@media (min-width: 1024px) { .vx-ctas { margin-top: auto; padding-top: 32px; } }
+.vx-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 52px; padding: 0 28px; border-radius: 999px; border: 1px solid var(--bb-black);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none;
+  transition: background-color 200ms var(--bb-ease), color 200ms var(--bb-ease);
+}
+.vx-btn--solid { background: var(--bb-black); color: #FFFFFF; }
+.vx-btn--solid:hover { background: #2A2526; }
+.vx-btn--line { background: transparent; color: var(--bb-black); }
+.vx-btn--line:hover { background: var(--bb-black); color: #FFFFFF; }
+.vx-btn:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
+
+.vx-map { min-width: 0; }
+.vx-panel { position: relative; overflow: hidden; border-radius: 6px; background: #E9E7E4; aspect-ratio: 4 / 3; }
+@media (min-width: 1024px) { .vx-panel { aspect-ratio: auto; height: 100%; min-height: 520px; } }
+.vx-photo, .vx-photo img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.vx-photo img { object-fit: cover; object-position: center 40%; }
+.vx-panel[data-map] .vx-photo { display: none; }
+.vx-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(1); pointer-events: none; }
+.vx-card {
+  position: absolute; left: 12px; bottom: 12px; z-index: 2;
+  max-width: calc(100% - 32px); padding: 16px 20px; border-radius: 6px;
+  background: #FFFFFF; box-shadow: 0 6px 24px rgba(14, 11, 12, 0.14);
+}
+@media (min-width: 1024px) { .vx-card { left: 24px; bottom: 24px; } }
+.vx-card-name { margin: 0; font-family: var(--font-display), Georgia, serif; font-size: 20px; line-height: 1.1; }
+.vx-card-addr { margin: 4px 0 10px; font-size: 13px; color: rgba(14, 11, 12, 0.72); }
+.vx-card-link { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bb-black); text-decoration: underline; text-underline-offset: 3px; }
+.vx-card-link:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
+
+@media (max-width: 1023px) {
+  .vx-map { order: -1; }
+  .vx-ctas { flex-direction: column; }
+  .vx-btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .vx-btn { transition: none; } }
+@media (max-width: 767px) {
+  .vx-card { padding: 12px 16px; }
+  .vx-card-name { font-size: 18px; }
+  .vx-card-addr { margin-bottom: 8px; }
+}
+
+/* ── Why B Boutique (2026-09-24) ──────────────────────────────────────────
+ * home/WhyUs.tsx. Four reasons across on a desktop, two by two on a phone
+ * (not another swipe row). Each photograph is uncovered from its bottom
+ * edge as the row arrives, left to right, on the same scroll-linked idea as
+ * the category row. */
+.why { background: #F7F7F5; color: var(--bb-black); padding-block: clamp(72px, 8vw, 120px); }
+.why-inner { max-width: calc(1520px + 2 * clamp(32px, 4vw, 72px)); margin: 0 auto; padding-inline: 18px; }
+@media (min-width: 768px) { .why-inner { padding-inline: clamp(32px, 4vw, 72px); } }
+.why-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px 32px; margin-bottom: clamp(32px, 4vw, 56px); }
+.why-eyebrow { color: var(--accent); width: 100%; }
+h2.why-h { margin: 0; font-size: clamp(34px, 4.4vw, 64px); line-height: 1.02; }
+h2.why-h em { font-style: italic; }
+.why-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 14px; }
+@media (min-width: 1024px) { .why-list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(20px, 2vw, 32px); } }
+.why-item { display: flex; flex-direction: column; }
+.why-media { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 4px; background: #E9E5DF; margin-bottom: 18px; }
+.why-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 900ms cubic-bezier(0.16, 1, 0.3, 1); }
+.why-item:hover .why-img { scale: 1.04; }
+.why-num { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; color: rgba(14, 11, 12, 0.6); }
+h3.why-title { margin: 8px 0 6px; font-family: var(--font-display), Georgia, serif; font-size: clamp(20px, 1.7vw, 26px); line-height: 1.15; font-weight: 400; text-transform: none; letter-spacing: 0; }
+.why-text { margin: 0; font-size: 14px; line-height: 1.55; color: rgba(14, 11, 12, 0.72); max-width: 32ch; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .why-list { view-timeline-name: --why; view-timeline-axis: block; }
+    .why-media { animation: why-open linear both; animation-timeline: --why; animation-range: entry calc(5% + var(--n, 0) * 6%) cover calc(35% + var(--n, 0) * 5%); }
+  }
+}
+@keyframes why-open {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@media (prefers-reduced-motion: reduce) { .why-img { transition: none; } }
