@@ -14,6 +14,7 @@ import {
 import { newIn } from "@/lib/shop";
 import { FreeDelivery } from "@/components/FreeDelivery";
 import { ProductPhoto } from "@/components/ProductPhoto";
+import { Price } from "@/components/Price";
 import {
   DeliveryDetails,
   EMPTY_DETAILS,
@@ -150,18 +151,26 @@ export function Bag() {
           <Link href="/shop" className="bag-empty-all">Shop everything</Link>
         </div>
         {picks.length ? (
-          <ul className="bag-empty-picks">
-            {picks.map((n) => (
-              <li key={n.slug}>
-                <Link href={`/shop/${n.slug}`} className="bag-empty-pick">
-                  <span className="bag-empty-media">
-                    <ProductPhoto photo={n.photo} alt="" sizes="(min-width: 768px) 220px, 30vw" className="absolute inset-0 h-full w-full object-cover" square={n.category === "Homeware"} />
-                  </span>
-                  <span className="bag-empty-name">{n.name}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <section className="bag-empty-new" aria-labelledby="bag-empty-new-h">
+            <div className="bag-empty-new-head">
+              <h2 id="bag-empty-new-h" className="bag-empty-new-h">Just in</h2>
+              <Link href="/#new-in" className="bag-empty-new-all">View all</Link>
+            </div>
+            <ul className="bag-empty-picks">
+              {picks.map((n) => (
+                <li key={n.slug}>
+                  <Link href={`/shop/${n.slug}`} className="bag-empty-pick">
+                    <span className="bag-empty-media">
+                      <ProductPhoto photo={n.photo} alt="" sizes="(min-width: 768px) 240px, 62vw" className="absolute inset-0 h-full w-full object-cover" square={n.category === "Homeware"} />
+                    </span>
+                    <span className="bag-empty-meta">{n.category}</span>
+                    <span className="bag-empty-name">{n.name}</span>
+                    <span className="bag-empty-price"><Price priceP={n.priceP} /></span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
         ) : null}
       </div>
     );

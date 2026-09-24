@@ -9804,17 +9804,43 @@ h2.bk-summary-h { font-size: 22px; margin-bottom: 20px; }
 }
 
 /* The empty bag. */
-.bag-empty { max-width: 760px; }
-.bag-empty-h { margin: clamp(28px, 4vw, 44px) 0 10px; font-family: var(--font-display-face), Georgia, serif; font-size: clamp(28px, 3vw, 40px); line-height: 1.1; color: var(--bb-black); }
-.bag-empty-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; margin-top: 24px; }
+/* The empty bag, laid out (2026-09-24, Brad: "unorganised and clumped up").
+   Two tiers with air between them: the message and its two ways out, then a
+   labelled "Just in" shelf with a hairline, each piece carrying its
+   category, name and price so the cards read as a shop window, not three
+   loose thumbnails. On a phone the buttons stack full width and the shelf
+   becomes a swipe row with the next piece peeking in. */
+.bag-empty { max-width: 820px; }
+.bag-empty-h { margin: clamp(28px, 4vw, 44px) 0 10px; font-family: var(--font-display-face), Georgia, serif; font-size: clamp(30px, 3vw, 40px); line-height: 1.1; color: var(--bb-black); }
+.bag-empty > .page-body { margin: 0; max-width: 42ch; }
+.bag-empty-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; margin-top: 28px; }
 .bag-empty .bag-empty-cta { margin-top: 0; }
 .bag-empty-all { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: inherit; border-bottom: 1px solid currentColor; padding-bottom: 3px; text-decoration: none; }
-.bag-empty-picks { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.bag-empty-pick { display: flex; flex-direction: column; gap: 10px; color: inherit; text-decoration: none; }
-.bag-empty-media { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; background: #F2EFEA; }
+.bag-empty-new { margin-top: clamp(48px, 7vw, 72px); padding-top: 20px; border-top: 1px solid var(--line, #0E0B0C1F); }
+.bag-empty-new-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.bag-empty h2.bag-empty-new-h { margin: 0; font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; line-height: 1.2; color: var(--bb-black); }
+.bag-empty-new-all { font-size: 13px; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.bag-empty-picks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 28px); }
+.bag-empty-pick { display: flex; flex-direction: column; color: inherit; text-decoration: none; }
+.bag-empty-media { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; background: #F2EFEA; margin-bottom: 14px; }
 .bag-empty-media img { transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1); }
 .bag-empty-pick:hover .bag-empty-media img { transform: scale(1.04); }
-.bag-empty-name { font-size: 13px; line-height: 1.35; }
+.bag-empty-meta { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #555555; margin-bottom: 6px; }
+.bag-empty-name { font-size: 15px; line-height: 1.35; color: var(--bb-black); }
+.bag-empty-price { margin-top: 6px; font-size: 14px; }
+.bag-empty-pick:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+@media (max-width: 767px) {
+  .bag-empty-ctas { flex-direction: column; align-items: stretch; gap: 18px; }
+  .bag-empty .bag-empty-cta { justify-content: center; width: 100%; }
+  .bag-empty-all { align-self: center; }
+  .bag-empty-picks {
+    display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
+    margin: 0 -16px; padding: 0 16px 6px; scroll-padding-inline: 16px;
+    scrollbar-width: none; contain: paint;
+  }
+  .bag-empty-picks::-webkit-scrollbar { display: none; }
+  .bag-empty-picks > li { flex: 0 0 62%; scroll-snap-align: start; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .bk-roll, .fd[data-qualified] .fd-goal, .bk-spin { animation: none; }
@@ -9825,19 +9851,53 @@ h2.bk-summary-h { font-size: 22px; margin-bottom: 20px; }
    (2026-09-24, Brad). The fade is the top of the footer itself, with a
    spacer of the same height, so nothing above is dimmed. It starts from
    the colour the page ends on: white on every route except /faq, whose
-   last section is #F7F7F5 (sampled on all 15 routes). Eased stops so the
-   ramp does not band. */
+   last section is #F7F7F5 (sampled on all 15 routes).
+
+   Second pass, same day (Brad: "it has lines"). The first ramp had five
+   straight segments, so the slope changed abruptly at each stop and the
+   eye read every change as a line; over ~180px an 8-bit ramp also steps
+   visibly. Now: a longer fade, 24 stops on a cosine ease-in-out (the
+   slope never jumps), mixed in OKLab so the grey steps are perceptually
+   even, and a faint noise dither over the fade only, blended with
+   overlay so it vanishes on the white and on the black and just breaks up
+   the 8-bit steps in the middle. */
 .wf {
-  --ft-fade: clamp(96px, 11vw, 180px);
+  --ft-fade: clamp(160px, 18vw, 300px);
   --ft-from: #FFFFFF;
   border-top: 0;
   background: linear-gradient(to bottom,
     var(--ft-from) 0,
-    color-mix(in srgb, var(--bb-black) 8%, var(--ft-from)) calc(var(--ft-fade) * 0.2),
-    color-mix(in srgb, var(--bb-black) 28%, var(--ft-from)) calc(var(--ft-fade) * 0.4),
-    color-mix(in srgb, var(--bb-black) 58%, var(--ft-from)) calc(var(--ft-fade) * 0.6),
-    color-mix(in srgb, var(--bb-black) 86%, var(--ft-from)) calc(var(--ft-fade) * 0.8),
+    color-mix(in oklab, var(--bb-black) 0.4%, var(--ft-from)) calc(var(--ft-fade) * 0.0417),
+    color-mix(in oklab, var(--bb-black) 1.7%, var(--ft-from)) calc(var(--ft-fade) * 0.0833),
+    color-mix(in oklab, var(--bb-black) 3.8%, var(--ft-from)) calc(var(--ft-fade) * 0.1250),
+    color-mix(in oklab, var(--bb-black) 6.7%, var(--ft-from)) calc(var(--ft-fade) * 0.1667),
+    color-mix(in oklab, var(--bb-black) 10.3%, var(--ft-from)) calc(var(--ft-fade) * 0.2083),
+    color-mix(in oklab, var(--bb-black) 14.6%, var(--ft-from)) calc(var(--ft-fade) * 0.2500),
+    color-mix(in oklab, var(--bb-black) 19.6%, var(--ft-from)) calc(var(--ft-fade) * 0.2917),
+    color-mix(in oklab, var(--bb-black) 25.0%, var(--ft-from)) calc(var(--ft-fade) * 0.3333),
+    color-mix(in oklab, var(--bb-black) 30.9%, var(--ft-from)) calc(var(--ft-fade) * 0.3750),
+    color-mix(in oklab, var(--bb-black) 37.1%, var(--ft-from)) calc(var(--ft-fade) * 0.4167),
+    color-mix(in oklab, var(--bb-black) 43.5%, var(--ft-from)) calc(var(--ft-fade) * 0.4583),
+    color-mix(in oklab, var(--bb-black) 50.0%, var(--ft-from)) calc(var(--ft-fade) * 0.5000),
+    color-mix(in oklab, var(--bb-black) 56.5%, var(--ft-from)) calc(var(--ft-fade) * 0.5417),
+    color-mix(in oklab, var(--bb-black) 62.9%, var(--ft-from)) calc(var(--ft-fade) * 0.5833),
+    color-mix(in oklab, var(--bb-black) 69.1%, var(--ft-from)) calc(var(--ft-fade) * 0.6250),
+    color-mix(in oklab, var(--bb-black) 75.0%, var(--ft-from)) calc(var(--ft-fade) * 0.6667),
+    color-mix(in oklab, var(--bb-black) 80.4%, var(--ft-from)) calc(var(--ft-fade) * 0.7083),
+    color-mix(in oklab, var(--bb-black) 85.4%, var(--ft-from)) calc(var(--ft-fade) * 0.7500),
+    color-mix(in oklab, var(--bb-black) 89.7%, var(--ft-from)) calc(var(--ft-fade) * 0.7917),
+    color-mix(in oklab, var(--bb-black) 93.3%, var(--ft-from)) calc(var(--ft-fade) * 0.8333),
+    color-mix(in oklab, var(--bb-black) 96.2%, var(--ft-from)) calc(var(--ft-fade) * 0.8750),
+    color-mix(in oklab, var(--bb-black) 98.3%, var(--ft-from)) calc(var(--ft-fade) * 0.9167),
+    color-mix(in oklab, var(--bb-black) 99.6%, var(--ft-from)) calc(var(--ft-fade) * 0.9583),
     var(--bb-black) var(--ft-fade));
 }
 body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
-.wf::before { content: ""; display: block; height: var(--ft-fade); }
+.wf::before {
+  content: ""; display: block; height: var(--ft-fade);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mix-blend-mode: overlay;
+  opacity: 0.22;
+  pointer-events: none;
+}
