@@ -4709,24 +4709,108 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
    its size, so nothing about the layout changes. */
 .pdp-media[data-square] .pdp-frame img { object-fit: contain; }
 
-/* Every colourway is mounted; only one is shown. Opacity rather than display
-   so the switch is compositor-only and never re-decodes the image — a
-   remounted <img> flashes an empty frame on a slower machine, at the one
-   moment the customer is concentrating on the picture. */
+/* Every colourway is mounted; only one is shown, and a change of colour is
+   a WIPE, not a cross-fade (2026-09-24, Brad: elite galleries; the reveal
+   is MotionSites' clip-path rise with an expo ease). The incoming frame
+   rises into view from the bottom edge over the outgoing one while its
+   photograph settles from 1.06 to 1. The outgoing frame stays whole
+   underneath until the wipe has covered it, then drops out; that is the
+   0s-with-delay transition on the inactive state. Compositor-only
+   (clip-path, opacity, scale) and never re-decodes the image. */
+.pdp-media { --pdp-wipe: 760ms; --pdp-expo: cubic-bezier(0.16, 1, 0.3, 1); }
 .pdp-frame {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
   opacity: 0;
-  transition: opacity 320ms var(--bb-ease);
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 0s linear var(--pdp-wipe), opacity 0s linear var(--pdp-wipe);
+}
+.pdp-frame[data-active] {
+  z-index: 2;
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path var(--pdp-wipe) var(--pdp-expo);
+}
+.pdp-frame img { transition: scale 1100ms var(--pdp-expo), opacity 300ms var(--bb-ease); }
+.pdp-frame:not([data-active]) img { scale: 1.06; }
+
+/* Mouse zoom: the frame magnifies under the cursor. The origin follows the
+   pointer (--zx/--zy, written by ProductGallery without a render). */
+.pdp-media { --zx: 50%; --zy: 50%; }
+.pdp-zoom { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 260ms var(--bb-ease); }
+.pdp-zoom picture, .pdp-zoom-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.pdp-media[data-square] .pdp-zoom-img { object-fit: contain; }
+@media (hover: hover) and (pointer: fine) {
+  .pdp-media { cursor: zoom-in; }
+  .pdp-media[data-zoom] .pdp-frame[data-active] img {
+    scale: 1.9;
+    transform-origin: var(--zx) var(--zy);
+    transition: scale 520ms var(--pdp-expo);
+  }
+  .pdp-media[data-zoom] .pdp-frame[data-active] .pdp-zoom[data-ready] { opacity: 1; }
+  .pdp-media[data-zoom] .pdp-colour-now,
+  .pdp-media[data-zoom] .pdp-open-badge { opacity: 0; }
 }
 
-.pdp-frame[data-active] { opacity: 1; }
+/* The whole photograph is the button that opens the viewer; its visible
+   sign is a small plate bottom-left, opposite the colour name. */
+.pdp-open { position: absolute; inset: 0; z-index: 3; margin: 0; padding: 0; border: 0; background: transparent; cursor: inherit; }
+.pdp-open:focus-visible { outline: 2px solid var(--bb-black); outline-offset: -6px; }
+.pdp-open-badge {
+  position: absolute; left: clamp(16px, 2.4vw, 28px); bottom: clamp(16px, 2.4vw, 28px);
+  display: grid; place-items: center; width: 40px; height: 40px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86); color: var(--bb-black);
+  box-shadow: 0 1px 2px rgba(14, 11, 12, 0.12);
+  transition: opacity 200ms var(--bb-ease), scale 300ms var(--pdp-expo);
+}
+.pdp-open:hover .pdp-open-badge { scale: 1.08; }
+.pdp-colour-now { z-index: 4; transition: opacity 200ms var(--bb-ease); pointer-events: none; }
+
+/* The full-screen viewer. A native modal dialog: the browser moves focus in,
+   makes the page behind inert, closes on Escape and restores focus. */
+.pdp-viewer {
+  position: fixed; inset: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none;
+  margin: 0; padding: 0; border: 0; background: #F4F2EE; color: var(--bb-black); overflow: hidden;
+}
+.pdp-viewer::backdrop { background: rgba(14, 11, 12, 0.5); }
+.pdp-viewer[open] { animation: pdpv-in 520ms var(--pdp-expo) both; }
+.pdp-viewer[open]::backdrop { animation: pdpv-fade 400ms var(--bb-ease) both; }
+@keyframes pdpv-in { from { opacity: 0; scale: 0.97; } }
+@keyframes pdpv-fade { from { opacity: 0; } }
+.pdp-viewer-pane { position: absolute; inset: 0; overflow: hidden; cursor: zoom-in; overscroll-behavior: contain; touch-action: manipulation; }
+.pdp-viewer-pane picture { display: contents; }
+/* Fitted: the whole photograph, centred, letterboxed on the paper colour. */
+.pdp-viewer-img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; user-select: none; }
+/* Zoomed: about 2.5x on a phone, the file's native 1856px on a desktop,
+   and the pane scrolls so a finger or wheel can pan. */
+.pdp-viewer-pane[data-zoomed] { overflow: auto; cursor: zoom-out; touch-action: pan-x pan-y; }
+.pdp-viewer-pane[data-zoomed] .pdp-viewer-img { position: static; width: 250vw; height: auto; max-width: none; object-fit: initial; }
+@media (min-width: 768px) {
+  .pdp-viewer-pane[data-zoomed] .pdp-viewer-img { width: max(100vw, 1856px); }
+}
+.pdp-viewer-close {
+  position: absolute; top: max(16px, env(safe-area-inset-top)); right: 16px; z-index: 2;
+  display: grid; place-items: center; width: 48px; height: 48px; border-radius: 999px;
+  border: 0; background: var(--bb-black); color: #fff; cursor: pointer;
+}
+.pdp-viewer-close:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
+.pdp-viewer-hint {
+  position: absolute; left: 50%; bottom: max(20px, env(safe-area-inset-bottom)); translate: -50% 0; z-index: 2; margin: 0;
+  padding: 8px 14px; border-radius: 999px; background: rgba(14, 11, 12, 0.72); color: #fff;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; pointer-events: none;
+}
+html:has(.pdp-viewer[open]) { overflow: hidden; }
+.pvh-mouse { display: none; }
+@media (hover: hover) and (pointer: fine) { .pvh-touch { display: none; } .pvh-mouse { display: inline; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .pdp-frame { transition: none; }
+  .pdp-frame, .pdp-frame[data-active], .pdp-frame img, .pdp-zoom, .pdp-open-badge { transition: none; }
+  .pdp-frame:not([data-active]) img { scale: 1; }
+  .pdp-viewer[open], .pdp-viewer[open]::backdrop { animation: none; }
 }
 
 /* The swatches sit ON the photograph, bottom-left, because the alternative is
@@ -9900,4 +9984,32 @@ body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
   mix-blend-mode: overlay;
   opacity: 0.22;
   pointer-events: none;
+}
+
+/* ── Page transitions (2026-09-24, Brad) ──────────────────────────────────
+ * See PageTransition.tsx. The old page leaves in 200ms and the new one rises
+ * in over 640ms on an expo ease, starting 120ms in, so the two never compete.
+ * Phones travel two thirds of the distance (MotionSites' rule): a 390px
+ * screen reads the same lift as larger. */
+.page-vt { display: flex; flex-direction: column; flex: 1 0 auto; min-height: 100%; }
+:root { --vt-rise: 22px; }
+@media (max-width: 767px) { :root { --vt-rise: 14px; } }
+::view-transition-old(.page-out) { animation: vt-page-out 200ms cubic-bezier(0.4, 0, 1, 1) both; }
+::view-transition-new(.page-in) { animation: vt-page-in 640ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both; }
+@keyframes vt-page-out { to { opacity: 0; translate: 0 calc(var(--vt-rise) * -0.4); filter: blur(2px); } }
+@keyframes vt-page-in { from { opacity: 0; translate: 0 var(--vt-rise); } }
+/* The header is the fixed point: no fade, no slide, above the pages. */
+::view-transition-group(site-header) { animation: none; z-index: 100; }
+::view-transition-old(site-header) { display: none; }
+::view-transition-new(site-header) { animation: none; }
+/* Most of the site's own links are plain <a> (the header, the menu), so a
+   change of page is a full document load and React never sees it. The
+   browser's cross-document view transition gives those the same handover:
+   the old page's snapshot leaves, the new one rises, the header stays.
+   Chrome/Edge 126+, Safari 18.2+; elsewhere the page simply loads. */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: vt-page-out 200ms cubic-bezier(0.4, 0, 1, 1) both; }
+::view-transition-new(root) { animation: vt-page-in 640ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both; }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
 }

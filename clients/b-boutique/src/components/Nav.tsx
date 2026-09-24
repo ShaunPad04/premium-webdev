@@ -75,6 +75,8 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
         /* The scrollbar's width while the menu locks the page; see
            CornerMenu. 0 the rest of the time. */
         right: "var(--lock-gap, 0px)",
+        /* Held still during page transitions; see PageTransition.tsx. */
+        viewTransitionName: "site-header",
         /* SOLID ink, the same token as the announcement strip above it —
            at the client's request, 2026-09-22. It was rgba(14, 11, 12,.90)
            with a 14px blur: the right colour at 90%, so the warm pink page
