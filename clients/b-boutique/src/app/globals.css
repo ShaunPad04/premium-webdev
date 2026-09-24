@@ -9795,3 +9795,11 @@ h3.as-ch { margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
   .bento-t:not(.bento-t--0) .bento-arrow { display: none; }
   .bento-t:not(.bento-t--0) .bento-t-body { left: 12px; right: 12px; bottom: 12px; }
 }
+/* Header mark swap, sequenced rather than cross-faded (2026-09-24): the
+   outgoing one leaves fast, the incoming one waits for it, so the word and
+   the B are never on screen together. */
+.navbar-mark > .nm-word, .navbar-mark > .nm-b { transition: opacity 160ms ease, transform 160ms ease; transition-delay: 0ms; }
+.navbar-mark:not([data-mono]) > .nm-word, .navbar-mark[data-mono] > .nm-b {
+  transition: opacity 360ms cubic-bezier(0.22, 1, 0.36, 1) 170ms, transform 480ms cubic-bezier(0.22, 1, 0.36, 1) 170ms;
+}
+@media (prefers-reduced-motion: reduce) { .navbar-mark > .nm-word, .navbar-mark > .nm-b { transition: none !important; } }

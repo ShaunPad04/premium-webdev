@@ -53,7 +53,11 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
   useEffect(() => {
     /* 64px, not the hero's full height: the bar has to be readable the moment
        the photograph starts sliding out from under it, not a screen later. */
-    const onScroll = () => setScrolled(window.scrollY > 64);
+    /* Hysteresis (2026-09-24, Brad: "it kind of glitches" on scroll). One
+       threshold at 64px flipped the wordmark and the B back and forth while
+       the page hovered near it; now it turns at 96 and turns back at 32. */
+    const onScroll = () =>
+      setScrolled((was) => (was ? window.scrollY > 32 : window.scrollY > 96));
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
