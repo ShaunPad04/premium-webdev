@@ -907,10 +907,18 @@ hero until the bar turns solid (every other route keeps it); the
 announcement strip fades from the red into black; the band under the hero
 is now `NewArrivalRail` (NEW ARRIVAL in Anton, white on black, red dots,
 decorative and aria-hidden), replacing `StatementRail` (deleted;
-`lib/statements.ts` kept for its history). **Product-photo backdrop swap is
-PAUSED at Brad's request**: a 3-photo pilot (Seedream 4.5 grey backdrop +
-Higgsfield cut-out, original garment pixels composited back, never
-regenerated) exists only in the session scratchpad. Nothing was committed.
+`lib/statements.ts` kept for its history). **Product-photo backdrop: DONE 2026-09-24 (Brad).** All 66 photos
+sit on ONE fixed backdrop (warm grey wall #CBC6C0-#D3CEC8, one soft diagonal
+light, pale floor). Her original photos were cut out (rembg birefnet,
+locally) and composited on a plate drawn in code, so the wall, light and
+position are pixel-identical in every photo and **no garment pixel is
+regenerated**. Regenerating with Seedream was tried first and rejected: it
+redrew garments (a checkerboard for the bomber's small check) and moved the
+light every time. Figures are scaled to one head/feet line and centred;
+shadows are built from each figure's own feet. Homeware: object cut out,
+stood on one drawn plinth on a square version of the same set. The
+scripts (plate, compose, homeware) lived in the session scratchpad and are
+not in the repo; `assets/product/*.webp` are the finished sources.
 
 **Hero is 4K since 2026-09-23 (late).** Re-rendered in Seedream 4.5 from the
 old frame (same composition; a pristine white and a glossy jet-black horse,
