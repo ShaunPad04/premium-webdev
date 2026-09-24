@@ -10120,3 +10120,28 @@ h2.si-h em { font-style: italic; }
   }
 }
 @keyframes rise-dim { to { opacity: 0.6; } }
+
+/* Up close words, centred (2026-09-24, Brad: "should this not be in the
+   middle of the picture, so it stands out"). Centred on the close-up over
+   a soft oval of shade rather than a bottom band, so the heading reads as
+   the title of the picture and the paragraph sits on the darkest part of it
+   instead of on the busiest part of the knit. Still fades out as the
+   collage opens. */
+.uc-head {
+  top: 0; bottom: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  padding: 0 24px;
+  background: radial-gradient(ellipse 62% 48% at 50% 50%, rgba(14, 11, 12, 0.66), rgba(14, 11, 12, 0.34) 60%, rgba(14, 11, 12, 0) 100%);
+}
+.uc-head .uc-p { max-width: 42ch; margin-inline: auto; text-shadow: 0 1px 18px rgba(14, 11, 12, 0.5); }
+.uc-head .uc-h { text-shadow: 0 2px 30px rgba(14, 11, 12, 0.35); }
+
+/* Marquee separators: quiet white dots, not red (2026-09-24). Twenty red
+   dots a screen made the accent the loudest thing in the band; the red is
+   kept for the few things that should catch the eye. */
+.arr-dot { width: 6px; height: 6px; background: rgba(255, 255, 255, 0.45); }
+.uc-head h2.uc-h { font-size: clamp(3.25rem, 7vw, 6.5rem); line-height: 0.95; }
+@media (max-width: 767px) {
+  .uc-head { background: radial-gradient(ellipse 95% 42% at 50% 50%, rgba(14, 11, 12, 0.74), rgba(14, 11, 12, 0.42) 62%, rgba(14, 11, 12, 0) 100%); }
+}
