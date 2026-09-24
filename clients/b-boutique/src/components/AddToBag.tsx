@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import type { Product } from "@/lib/catalogue";
 import { openCart } from "./CartDrawer";
-import { useCart } from "@/lib/useCart";
+import { MAX_QTY, useCart } from "@/lib/useCart";
 import { shop } from "@/lib/shop";
 import { colourIsKnown, coloursFor, variantId } from "@/lib/variants";
 import { useColour } from "./ColourChoice";
@@ -87,8 +87,11 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
   /* `n` counts the adds. It is the element's key, so adding the same size
      twice replays the confirmation instead of quietly rewriting text that is
      already on screen — which looks identical to nothing having happened. */
-  const [added, setAdded] = useState<{ size: string; colour: string; n: number } | null>(null);
+  const [added, setAdded] = useState<{ size: string; colour: string; n: number; qty: number } | null>(null);
   const [stock, setStock] = useState<Availability>({});
+  /* Quantity (2026-09-24, Brad). 1 to the bag's own cap; the checkout still
+     reserves against counted stock, so this cannot oversell a piece. */
+  const [qty, setQty] = useState(1);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -140,7 +143,7 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
       setError("Please choose a size first.");
       return false;
     }
-    add(product.slug, size, colour ?? "");
+    add(product.slug, size, colour ?? "", compact ? 1 : qty);
     return true;
   };
 
@@ -255,13 +258,28 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
           {restockable ? "." : " to ask what else has come in."}
         </p>
       ) : (
+        <>
+        {compact ? null : (
+          <div className="atb-qty">
+            <span className="cf-label" id={`${uid}-qty`}>Quantity</span>
+            <div className="atb-qty-box" role="group" aria-labelledby={`${uid}-qty`}>
+              <button type="button" className="atb-qty-btn" aria-label="One fewer" disabled={qty <= 1} onClick={() => setQty((q) => Math.max(1, q - 1))}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
+              </button>
+              <output className="atb-qty-n" aria-live="polite">{qty}</output>
+              <button type="button" className="atb-qty-btn" aria-label="One more" disabled={qty >= MAX_QTY} onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M7 2v10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
+              </button>
+            </div>
+          </div>
+        )}
         <button
           type="button"
           className="cf-submit atb-add"
           disabled={chosenOut}
           onClick={() => {
             if (!addChosen()) return;
-            setAdded((prev) => ({ size: size!, colour: colour ?? "", n: (prev?.n ?? 0) + 1 }));
+            setAdded((prev) => ({ size: size!, colour: colour ?? "", n: (prev?.n ?? 0) + 1, qty }));
             openCart();
           }}
         >
@@ -272,6 +290,7 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
             </span>
           )}
         </button>
+        </>
       )}
 
       {/* Buy now: the same add, then straight to the bag, where delivery
@@ -298,7 +317,7 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
       <div className="atb-status" role="status" aria-live="polite">
         {added ? (
           <p className="atb-added" key={added.n}>
-            Added
+            Added{!compact && added.qty > 1 ? ` ${added.qty}` : ""}
             {singleSize ? "" : `, size ${added.size}`}
             {added.colour ? `, ${added.colour}` : ""}.{" "}
             <Link href="/bag" className="atb-added-link">

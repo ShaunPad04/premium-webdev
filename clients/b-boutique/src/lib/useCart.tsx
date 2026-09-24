@@ -74,7 +74,7 @@ const KEY = "bb-bag-v1";
    says exists and fails closed if the database errors. That gate has been
    right since 2026-09-20 and has simply had nothing to check against, because
    the stock table is empty. scripts/import-stock.mjs fills it. */
-const MAX_QTY = 6;
+export const MAX_QTY = 6;
 
 /** One shared reference for "nothing in the bag", on the server and before
  *  the first read. A fresh [] each time would change identity every render. */
@@ -174,14 +174,15 @@ const getServerSnapshot = () => EMPTY;
 export function useCart() {
   const lines = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  const add = useCallback((slug: string, size: string, colour: string) => {
+  /* `n` from the product page's quantity stepper (2026-09-24); 1 elsewhere. */
+  const add = useCallback((slug: string, size: string, colour: string, n = 1) => {
     const at = snapshot.findIndex((l) => same({ slug, size, colour }, l));
     if (at === -1) {
-      write([...snapshot, { slug, size, colour, qty: 1 }]);
+      write([...snapshot, { slug, size, colour, qty: Math.min(n, MAX_QTY) }]);
       return;
     }
     const next = [...snapshot];
-    next[at] = { ...next[at], qty: Math.min(next[at].qty + 1, MAX_QTY) };
+    next[at] = { ...next[at], qty: Math.min(next[at].qty + n, MAX_QTY) };
     write(next);
   }, []);
 

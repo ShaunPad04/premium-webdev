@@ -10073,3 +10073,15 @@ h1, h2, h3, .display { font-synthesis: none; }
     @media (max-width: 767px) { .uc-el--0 { --uc-s: 1.45; } }
   }
 }
+/* Product page: quantity stepper and service lines (2026-09-24, Brad). */
+.atb-qty { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.atb-qty-box { display: inline-flex; align-items: center; align-self: flex-start; border: 1px solid var(--ink, #0E0B0C); border-radius: 4px; }
+.atb-qty-btn { display: grid; place-items: center; width: 48px; height: 46px; background: none; border: 0; color: inherit; cursor: pointer; }
+.atb-qty-btn:disabled { opacity: 0.35; cursor: default; }
+.atb-qty-btn:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
+.atb-qty-n { min-width: 28px; text-align: center; font: 500 15px/1 var(--font-body); }
+.pdp-perks { list-style: none; margin: 28px 0 8px; padding: 0; display: flex; flex-direction: column; gap: 20px; }
+.pdp-perks li { display: grid; grid-template-columns: 24px 1fr; gap: 12px; align-items: start; }
+.pdp-perks svg { margin-top: 1px; }
+.pdp-perk-t { margin: 0 0 4px; font: 600 13px/1.3 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+.pdp-perk-d { margin: 0; font-size: 15px; line-height: 1.55; }
