@@ -9672,6 +9672,10 @@ h1.pdp-name { margin-bottom: 18px; }
     scrollbar-width: none;
   }
   .spx-row::-webkit-scrollbar { display: none; }
+  /* Without paint containment a phone widened the whole page to the swipe
+     row's content (390 -> 637px layout), zoomed out, and pushed the centred
+     announcement off the screen (Brad, 2026-09-24). Measured: fixed. */
+  .spx-row { contain: paint; }
   .spx-item { flex: 0 0 78%; scroll-snap-align: start; }
 }
 @media (prefers-reduced-motion: reduce) { .spx-img, .spx-arrow { transition: none; } }
