@@ -84,6 +84,10 @@ export function OwnerCard() {
                   alt={`${fullName}, ${owner.role.toLowerCase()} of ${shop.name}`}
                   width={487}
                   height={649}
+                  /* Lazy: she is seven sections down. Eager, this 83KB
+                     portrait went out alongside the hero and delayed the
+                     hero title (the page's LCP) on a phone. */
+                  loading="lazy"
                   decoding="async"
                   className="owner-img"
                 />

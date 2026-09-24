@@ -432,7 +432,11 @@ export function LuminaInteractiveList({
                 alt=""
                 draggable={false}
                 decoding="async"
-                fetchPriority={i === 0 ? "high" : "low"}
+                /* "auto", not "high" (2026-09-24): the phone LCP is the
+                   hero title, not this photo, and a high-priority 223KB
+                   image delayed the title in simulated mobile LCP
+                   (median 4.9s -> 4.4s, n=3). Desktop LCP unchanged at 1.1s. */
+                fetchPriority={i === 0 ? "auto" : "low"}
                 loading={i === 0 ? undefined : "lazy"}
               />
             </picture>
