@@ -9393,9 +9393,10 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
 
 /* Product page: quantity stepper and service lines (2026-09-24, Brad). */
 .atb-qty { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
-.atb-qty-box { display: inline-flex; align-items: center; align-self: flex-start; border: 1px solid var(--ink, #0E0B0C); border-radius: 4px; }
+.atb-qty-box { display: inline-flex; align-items: center; align-self: flex-start; border: 1px solid var(--ink, #0E0B0C); border-radius: 999px; padding-inline: 4px; } /* a pill, like Add to bag (Brad, 2026-09-24) */
 .atb-qty-btn { display: grid; place-items: center; width: 48px; height: 46px; background: none; border: 0; color: inherit; cursor: pointer; }
 .atb-qty-btn:disabled { opacity: 0.35; cursor: default; }
+.atb-qty-btn { border-radius: 999px; }
 .atb-qty-btn:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
 .atb-qty-n { min-width: 28px; text-align: center; font: 500 15px/1 var(--font-body); }
 .pdp-perks { list-style: none; margin: 28px 0 8px; padding: 0; display: flex; flex-direction: column; gap: 20px; }

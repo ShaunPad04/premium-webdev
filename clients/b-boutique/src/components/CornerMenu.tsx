@@ -433,7 +433,9 @@ export function CornerMenu() {
                                The underline goes with the icon: a glyph and
                                an underlined word together read as two
                                controls, and the whole row is one link. */
-                            className="inline-flex min-h-[44px] items-center gap-2 text-[0.6875rem] uppercase tracking-[0.12em] text-bone/85 transition-colors hover:text-bone"
+                            /* A small lift on hover (2026-09-24, Brad);
+                               none under reduced motion. */
+                            className="inline-flex min-h-[44px] items-center gap-2 text-[0.6875rem] uppercase tracking-[0.12em] text-bone/85 transition-[color,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:text-bone focus-visible:-translate-y-[3px] motion-reduce:transition-colors motion-reduce:hover:translate-y-0 motion-reduce:focus-visible:translate-y-0"
                           >
                             <SocialMark name={sn.name} />
                             <span>{sn.name}</span>

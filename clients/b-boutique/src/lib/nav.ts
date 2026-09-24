@@ -34,7 +34,8 @@ export const MENU: MenuItem[] = [
   { n: "04", label: "New Arrivals", href: "/#new-in" },
   { n: "05", label: "About", href: "/about" },
   { n: "06", label: "Visit Us", href: "/#visit" },
-  { n: "07", label: "Contact", href: "/contact" },
+  { n: "07", label: "FAQ", href: "/faq" },
+  { n: "08", label: "Contact", href: "/contact" },
 ];
 
 /** Social accounts.
@@ -185,6 +186,9 @@ export const PRIMARY = [
      client's instruction: the shop does not stock them. /accessories now
      redirects to /shop (next.config.ts) so no old link lands on a 404. */
   { label: "About", href: "/about" },
+  /* FAQ in the header (2026-09-24, Brad): the questions moved off the home
+     page to /faq the same day. */
+  { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
 ] as const;
 

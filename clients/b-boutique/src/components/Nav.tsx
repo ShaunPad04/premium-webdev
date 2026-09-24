@@ -203,8 +203,12 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
 
               Narrowed again to 2.4vw when SHOP became a seventh item. Measured
               at 1024 after: the nav's right edge is checked against the Menu
-              button below rather than assumed. */}
-          <ul className="flex items-center" style={{ gap: "clamp(18px, 2.4vw, 44px)" }}>
+              button below rather than assumed.
+
+              FAQ joined on 2026-09-24 and at 1024 CONTACT then touched the
+              centred B. The gap now shrinks faster at the narrow end:
+              ~19px at 1024, ~27px at 1280, ~33px at 1440. */}
+          <ul className="flex items-center" style={{ gap: "clamp(14px, calc(3.4vw - 16px), 44px)" }}>
             {PRIMARY.map((item) =>
               "menu" in item && item.menu ? (
                 <NavMenuItem key={item.label} item={item} />
