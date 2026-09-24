@@ -9818,6 +9818,8 @@ h3.as-ch { margin: 0 0 10px; font-family: var(--font-display); font-weight: 400;
   .lm[data-fade] .lm-pic[data-on] { animation-duration: 2.2s; }
 }
 @keyframes lm-settle { from { transform: scale(1.04); } to { transform: none; } }
+/* Header: the B monogram only, never the words (2026-09-24, Brad). */
+.navbar-mark > .nm-b { opacity: 1; transform: none; transition: none; }
 
 /* Marquee type upright (2026-09-24, Brad was unsure of the italic). Bodoni
    italic is drawn for lowercase; set in capitals it leans and crowds. Upright
@@ -9989,6 +9991,14 @@ h1, h2, h3, .display { font-synthesis: none; }
   .mh .smq-item:nth-child(even) { width: 130px; }
   .ig { padding-block: 56px; }
   .vc { padding-block: 48px; }
+}
+
+/* Delivery line: the long wording from 640px up, a short one on phones so
+   the price is never cut off (2026-09-24, Brad). */
+.announce-short { display: none; }
+@media (max-width: 639px) {
+  .announce-long { display: none; }
+  .announce-short { display: inline; }
 }
 
 /* FAQ panel number: fades in on change, never moves (2026-09-24). */

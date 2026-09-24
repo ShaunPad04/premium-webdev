@@ -39,7 +39,11 @@ export function AnnounceBar() {
       <ul className="announce-list">
         <li className="announce-item">
           <Link href="/delivery" className="announce-link">
-            Complimentary UK delivery on orders over{" "}
+            {/* Shorter on phones (2026-09-24, Brad: the £120 was cut off at
+                390px). One of the two spans is display:none per breakpoint,
+                so it is never read twice. */}
+            <span className="announce-long">Complimentary UK delivery on orders over </span>
+            <span className="announce-short">Free UK delivery over </span>
             {formatPriceShort(FREE_DELIVERY_OVER_P)}
           </Link>
         </li>
