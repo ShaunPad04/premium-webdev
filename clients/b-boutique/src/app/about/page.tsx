@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
-import { Visit } from "@/components/Visit";
 import { InsideRooms } from "@/components/InsideRooms";
 import { principles, shopPhotos, type ShopPhoto } from "@/lib/about";
 import { owner, shop } from "@/lib/shop";
@@ -222,7 +221,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <Visit />
       </main>
       <Footer />
     </>

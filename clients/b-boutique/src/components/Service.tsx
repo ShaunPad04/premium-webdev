@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { DELIVERY_P, FREE_DELIVERY_OVER_P, formatPriceShort } from "@/lib/catalogue";
-import { openingPhrase, shop } from "@/lib/shop";
 
 /* In the shop, or sent to you: a slim strip (rebuilt 2026-09-23).
  *
@@ -37,7 +36,9 @@ const ITEMS = [
     href: "/#visit",
     icon: "M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z",
     title: "Visit the shop",
-    line: `${shop.street}, open ${openingPhrase()}`,
+    /* Not the address and hours again: those are in Visit, a scroll below,
+       and the footer (2026-09-24, Brad). */
+    line: "Directions and opening hours",
   },
 ];
 

@@ -5,7 +5,6 @@ import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { ShopSearch } from "@/components/ShopSearch";
-import { Visit } from "@/components/Visit";
 import { pendingPriceNotice, products } from "@/lib/catalogue";
 import { RevealText } from "@/components/RevealText";
 
@@ -54,7 +53,6 @@ export default function ShopPage() {
           </div>
         </section>
 
-        <Visit />
       </main>
       <Footer />
     </>

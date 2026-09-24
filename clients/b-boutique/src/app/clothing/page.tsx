@@ -6,7 +6,6 @@ import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { CategoryBar } from "@/components/CategoryBar";
 import { ProductGrid } from "@/components/ProductGrid";
-import { Visit } from "@/components/Visit";
 import { pendingPriceNotice } from "@/lib/catalogue";
 import { clothingProducts } from "@/lib/pages";
 import { RevealText } from "@/components/RevealText";
@@ -85,7 +84,6 @@ export default function ClothingPage() {
           </div>
         </section>
 
-        <Visit />
       </main>
       <Footer />
     </>

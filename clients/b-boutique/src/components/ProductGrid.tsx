@@ -5,6 +5,10 @@ import type { Product } from "@/lib/catalogue";
 import { canQuickAdd, formatPriceShort, isBuyable } from "@/lib/catalogue";
 import { ProductPhoto } from "./ProductPhoto";
 import { QuickAdd } from "./QuickAdd";
+import { CardBadges } from "./CardBadges";
+import { newIn } from "@/lib/shop";
+
+const NEW = new Set(newIn.map((n) => n.slug));
 
 /* The shop's product grid.
  *
@@ -94,6 +98,7 @@ export function ProductGrid({
                   className="prod-photo prod-photo--alt absolute inset-0 h-full w-full object-cover"
                 />
               ) : null}
+              <CardBadges slug={p.slug} isNew={NEW.has(p.slug)} />
               {canQuickAdd(p) ? <QuickAdd product={p} /> : null}
           </span>
         );
@@ -136,7 +141,12 @@ export function ProductGrid({
                     project has been careful about from the start: a displayed
                     price is what a customer is entitled to pay. */}
                 {isBuyable(p) ? (
-                  <span className="prod-price">{formatPriceShort(p.priceP)}</span>
+                  <span className="prod-price">
+                    {formatPriceShort(p.priceP)}
+                    {p.category !== "Homeware" && p.sizes.length > 0 ? (
+                      <span className="prod-sizes">{p.sizes.join(" · ")}</span>
+                    ) : null}
+                  </span>
                 ) : (
                   <span className="prod-price prod-price--pending">
                     Price to confirm

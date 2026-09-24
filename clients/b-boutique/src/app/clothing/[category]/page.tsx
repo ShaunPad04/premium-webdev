@@ -8,7 +8,6 @@ import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { CategoryBar } from "@/components/CategoryBar";
 import { ProductGrid } from "@/components/ProductGrid";
-import { Visit } from "@/components/Visit";
 import { pendingPriceNotice, productsIn } from "@/lib/catalogue";
 import { clothingCards, RETIRED_CATEGORIES } from "@/lib/pages";
 import { shop } from "@/lib/shop";
@@ -145,7 +144,6 @@ export default async function CategoryPage({
           </div>
         </section>
 
-        <Visit />
       </main>
       <Footer />
     </>

@@ -34,13 +34,16 @@ export function ProductGallery({ product }: { product: Product }) {
 
   const track = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
-  const [slide, setSlide] = useState(0);
+  /* The slide index belongs to one colourway: a new colour reads as slide 0
+     without an effect resetting state. */
+  const [pos, setPos] = useState({ way: active, slide: 0 });
+  const slide = pos.way === active ? pos.slide : 0;
+  const setSlide = (i: number) => setPos({ way: active, slide: i });
   const [zoom, setZoom] = useState<{ x: number; y: number } | null>(null);
 
   /* A new colour starts at its first photograph. */
   useEffect(() => {
     track.current?.scrollTo({ left: 0 });
-    setSlide(0);
   }, [active]);
 
   const go = (i: number) => {

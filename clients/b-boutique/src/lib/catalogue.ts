@@ -159,7 +159,9 @@ export function isBuyable(p: Product): boolean {
  *  component, and every export of a "use client" module is a client
  *  reference — a server-rendered grid calling it would fail at the boundary. */
 export function canQuickAdd(p: Product): boolean {
-  return p.sizes.length === 1 && p.colourways.length === 1 && isBuyable(p);
+  /* Every buyable piece since 2026-09-24: multi-size pieces offer their
+     sizes in the card, and the colour is the one in the card's photograph. */
+  return isBuyable(p);
 }
 
 /** The notice the shop shows while any price is still a placeholder.

@@ -7,6 +7,8 @@ import type { Product } from "@/lib/catalogue";
 import { liveSuggestions, searchProducts } from "@/lib/search";
 import { shop } from "@/lib/shop";
 import { ProductGrid } from "./ProductGrid";
+import { ShopEditorial } from "./ShopEditorial";
+import { ShopFilters, applyFilters, NO_FILTERS, type Filters } from "./ShopFilters";
 
 /* The shop's search field and the grid it filters.
  *
@@ -55,7 +57,9 @@ export function ShopSearch({ items }: { items: Product[] }) {
     if (q) setQuery(q);
   }, []);
 
-  const results = useMemo(() => searchProducts(items, query), [items, query]);
+  const [filters, setFilters] = useState<Filters>(NO_FILTERS);
+  const found = useMemo(() => searchProducts(items, query), [items, query]);
+  const results = useMemo(() => applyFilters(found, filters), [found, filters]);
 
   const searching = query.trim().length > 0;
   const count = results.length;
@@ -257,12 +261,22 @@ export function ShopSearch({ items }: { items: Product[] }) {
         </p>
       </form>
 
+      <ShopFilters items={items} value={filters} onChange={setFilters} count={count} />
+
       {count > 0 ? (
         /* The key restarts the grid's entrance animation when the result set
            changes, so filtered pieces arrive rather than silently swapping
            underneath the reader. Without it React reuses the cards and the
            grid appears to have always held these four. */
-        <ProductGrid key={query} items={results} />
+        <div key={`${query}|${JSON.stringify(filters)}`}>
+          {/* Twelve to a run (three rows of four), then an editorial break (2026-09-24). */}
+          {Array.from({ length: Math.ceil(results.length / 12) }, (_, k) => (
+            <div key={k}>
+              {k > 0 ? <ShopEditorial n={k - 1} /> : null}
+              <ProductGrid items={results.slice(k * 12, k * 12 + 12)} />
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="find-empty">
           <p className="find-empty-lede">

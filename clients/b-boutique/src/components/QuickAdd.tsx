@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { Product } from "@/lib/catalogue";
 import { useCart } from "@/lib/useCart";
 import { variantId } from "@/lib/variants";
+import { openCart } from "./CartDrawer";
 
 /* Add to bag from the grid, for the pieces where that is an honest offer.
  *
@@ -43,11 +44,14 @@ type State = "idle" | "checking" | "added" | "out" | "failed";
 export function QuickAdd({ product }: { product: Product }) {
   const { add } = useCart();
   const [state, setState] = useState<State>("idle");
+  const [chosen, setChosen] = useState(product.sizes[0]);
 
-  const size = product.sizes[0];
+  /* The colour is the one in the card's photograph, the first colourway, so
+     what goes in the bag is what was on screen (2026-09-24: quick add now
+     offers every size, not only one-size pieces). */
   const colour = product.colourways[0].colour;
 
-  async function onClick() {
+  async function onClick(size: string = chosen) {
     setState("checking");
     try {
       const r = await fetch(
@@ -69,6 +73,7 @@ export function QuickAdd({ product }: { product: Product }) {
     }
     add(product.slug, size, colour);
     setState("added");
+    openCart();
   }
 
   if (state === "out") {
@@ -79,11 +84,37 @@ export function QuickAdd({ product }: { product: Product }) {
     );
   }
 
+  if (product.sizes.length > 1) {
+    return (
+      <div className="qa qa--sizes" role="group" aria-label={`Quick add ${product.name}${colour ? `, ${colour}` : ""}`} onPointerDown={(e) => e.stopPropagation()}>
+        <span className="qa-k">{state === "added" ? "Added" : state === "checking" ? "Checking…" : "Quick add"}</span>
+        <span className="qa-sizes">
+          {product.sizes.map((s) => (
+            <button
+              key={s}
+              type="button"
+              className="qa-size"
+              disabled={state === "checking"}
+              onClick={(e) => {
+                e.preventDefault();
+                setChosen(s);
+                void onClick(s);
+              }}
+              aria-label={`Add size ${s} to bag`}
+            >
+              {s}
+            </button>
+          ))}
+        </span>
+      </div>
+    );
+  }
+
   return (
     <button
       type="button"
       className="qa"
-      onClick={onClick}
+      onClick={() => onClick()}
       disabled={state === "checking"}
       /* Names the piece, because out of context "Add to bag" is the label on
          all twelve of these buttons and a screen reader reading the grid

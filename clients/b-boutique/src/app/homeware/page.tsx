@@ -6,7 +6,6 @@ import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { ProductGrid } from "@/components/ProductGrid";
-import { Visit } from "@/components/Visit";
 import { productsIn } from "@/lib/catalogue";
 import { categories, shop } from "@/lib/shop";
 import { RevealText } from "@/components/RevealText";
@@ -87,7 +86,6 @@ export default function HomewarePage() {
           </div>
         </section>
 
-        <Visit />
       </main>
       <Footer />
     </>
