@@ -47,8 +47,11 @@ export default function Home() {
       <main id="main" className="flex-1 home-rise">
         <Hero />
         <div className="rise">
-        <NewArrivalRail />
+        {/* The quote first, then the marquee (2026-09-24, Brad): the panel
+            that rises over the hero now arrives white, like the reference,
+            with the black New Arrival band below the quote. */}
         <PointOfView />
+        <NewArrivalRail />
         <HorizontalRails />
         <CoverFlowCarousel />
         <StepInside />

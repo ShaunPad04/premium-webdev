@@ -10082,7 +10082,9 @@ h2.si-h em { font-style: italic; }
       right: 0;
       top: 0;
       height: calc(var(--slant) + 1px);
-      background: var(--bb-black);
+      /* White: the panel's first section is the philosophy quote, on white
+         (2026-09-24, Brad: the edge should rise white, like the reference). */
+      background: #FFFFFF;
       clip-path: polygon(0 100%, 100% 0, 100% 100%, 0 100%);
       pointer-events: none;
     }
