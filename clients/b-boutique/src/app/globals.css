@@ -9382,3 +9382,8 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
   .announce-long { display: none; }
   .announce-short { display: inline; }
 }
+
+/* FAQ panel number: fades in on change, never moves (2026-09-24). */
+.fqx-panel-n { animation: fqx-n-in 420ms ease both; }
+@keyframes fqx-n-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .fqx-panel-n { animation: none; } }
