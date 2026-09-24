@@ -7,6 +7,7 @@ import { InsideRooms } from "@/components/InsideRooms";
 import { principles, shopPhotos, type ShopPhoto } from "@/lib/about";
 import { owner, shop } from "@/lib/shop";
 import { RevealText } from "@/components/RevealText";
+import { AboutStory } from "@/components/AboutStory";
 
 export const metadata: Metadata = {
   title: "About us",
@@ -154,6 +155,8 @@ export default function AboutPage() {
         </section>
 
         {/* 3 ── Inside the shop: a lookbook, index held beside it. */}
+        <AboutStory />
+
         <section aria-labelledby="ab-inside" className="ab-inside">
           <InsideRooms
             rooms={rooms.map((r, i) => ({ id: `room-${i + 1}`, n: String(i + 1).padStart(2, "0"), caption: r.photo.caption }))}

@@ -9753,3 +9753,38 @@ h2.sf-banner-h { margin: 0; color: #FFFFFF; font-size: clamp(2rem, 4vw, 3.2rem);
 .cps-shop { color: var(--ink); margin-top: 8px; }
 @media (min-width: 900px) { .bento-t--4, .bento-t--all { grid-column: span 2; } }
 .pg-thumb--soon { opacity: 1; color: var(--ink-muted); }
+
+/* ── Drafts, About story, Contact DM (2026-09-24) ───────────────────── */
+.draft-flag {
+  display: inline-block; margin: 8px 0 0; padding: 4px 10px;
+  font: 600 11px/1.4 var(--font-body); letter-spacing: 0.06em;
+  color: #7A4A00; background: #FFF4D6; border: 1px dashed #C9962B; border-radius: 6px;
+}
+.ccard-dm { display: inline-flex; margin-top: 6px; font-size: 13px; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; padding-block: 6px; }
+
+.as-quote { max-width: 1100px; margin: 0 auto; padding: clamp(80px, 11vw, 150px) 18px; text-align: center; }
+.as-k { margin: 0 0 22px; }
+.as-q { margin: 0 auto; max-width: 24ch; font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: clamp(2rem, 4.4vw, 3.9rem); line-height: 1.12; color: var(--ink); text-wrap: balance; }
+.as-sign { position: relative; display: inline-flex; flex-direction: column; align-items: center; margin: 34px 0 0; font-family: var(--font-display); font-style: italic; font-size: clamp(2.2rem, 4vw, 3rem); color: var(--ink); }
+.as-sign-line { width: 180px; height: 16px; margin-top: -4px; color: var(--accent); }
+.as-choose, .as-picks { max-width: 1320px; margin: 0 auto; padding: clamp(64px, 8vw, 110px) 18px; border-top: 1px solid var(--line); }
+@media (min-width: 768px) { .as-choose, .as-picks { padding-inline: 48px; } }
+.as-choose-head { margin-bottom: clamp(28px, 4vw, 48px); }
+.as-h { margin: 0; }
+.as-h em { font-style: italic; }
+.as-choose-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 32px; }
+@media (min-width: 900px) { .as-choose-list { grid-template-columns: repeat(3, 1fr); gap: 48px; } }
+.as-choose-item { position: relative; padding-top: 18px; border-top: 1px solid var(--ink); }
+.as-n { font: 500 11px/1 var(--font-body); letter-spacing: 0.12em; color: var(--ink-muted); }
+.as-ck { margin: 14px 0 6px; font: 600 11px/1 var(--font-body); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+h3.as-ch { margin: 0 0 10px; font-family: var(--font-display); font-weight: 400; font-size: 1.7rem; line-height: 1.15; }
+.as-cp { margin: 0; font-size: 15.5px; line-height: 1.7; color: var(--ink-muted); max-width: 42ch; }
+.as-picks-row { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; grid-template-columns: 1fr; }
+@media (min-width: 700px) { .as-picks-row { grid-template-columns: repeat(3, 1fr); } }
+.as-pick { display: flex; flex-direction: column; gap: 8px; color: var(--ink); text-decoration: none; }
+.as-pick-media { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--bg-soft); }
+.as-pick-media img { transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1); }
+.as-pick:hover .as-pick-media img { transform: scale(1.05); }
+.as-pick-name { font-size: 15px; }
+.as-pick-price { font-size: 13px; color: var(--ink-muted); }
+.ccard-tile:has(.ccard-dm) { grid-template-areas: "icon label" "icon value" "dm dm"; } .ccard-dm { grid-area: dm; justify-self: start; }

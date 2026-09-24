@@ -66,7 +66,9 @@ function validate(values: { name: string; email: string; message: string }): Err
   return errors;
 }
 
-export function ContactForm() {
+/* `replyNote`: the reply-time line, a DRAFT for Hayley to confirm; the
+   contact page passes it only outside production (lib/drafts.ts). */
+export function ContactForm({ replyNote }: { replyNote?: string } = {}) {
   const uid = useId();
   const [values, setValues] = useState({ name: "", email: "", message: "", company: "" });
   const [topic, setTopic] = useState<string>("");
@@ -235,7 +237,10 @@ export function ContactForm() {
       </div>
 
       <div className="cx-foot">
-        <p className="cx-note">We reply by email.</p>
+        <p className="cx-note">
+          We reply by email.
+          {replyNote ? <> {replyNote} <span className="draft-flag">Draft: Hayley to confirm</span></> : null}
+        </p>
         <button type="submit" className="cx-send" disabled={sending}>
           <span className="roll"><span>{sending ? "Sending…" : "Send message"}</span></span>
           {sending ? null : (

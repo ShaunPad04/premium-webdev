@@ -4,6 +4,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
+import { showDrafts } from "@/lib/drafts";
 import { ContactForm } from "@/components/ContactForm";
 import { PathBand } from "@/components/PathBand";
 import { Visit } from "@/components/Visit";
@@ -106,6 +107,12 @@ export default function ContactPage() {
                       <a className="ccard-tile-value" href={instagram.href} target="_blank" rel="noopener noreferrer">
                         @bboutique<wbr />cleethorpes
                       </a>
+                      {/* Instagram's own direct-message link (2026-09-24,
+                          Brad: WhatsApp/Instagram). No phone number: the
+                          client asked for numbers to stay off the site. */}
+                      <a className="ccard-dm" href="https://ig.me/m/bboutiquecleethorpes" target="_blank" rel="noopener noreferrer">
+                        Message us on Instagram <span aria-hidden="true">&#8599;</span>
+                      </a>
                     </li>
                   ) : null}
                   <li className="ccard-tile">
@@ -125,7 +132,7 @@ export default function ContactPage() {
               </div>
 
               <div className="ccard-form">
-                <ContactForm />
+                <ContactForm replyNote={showDrafts ? "We usually reply the same day." : undefined} />
               </div>
             </div>
           </div>

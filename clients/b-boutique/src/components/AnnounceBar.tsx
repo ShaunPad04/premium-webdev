@@ -43,8 +43,13 @@ export function AnnounceBar() {
             {formatPriceShort(FREE_DELIVERY_OVER_P)}
           </Link>
         </li>
-        <li className="announce-item">Limited pieces, rarely restocked</li>
-        <li className="announce-item">New pieces arriving regularly</li>
+        {/* 2026-09-24, Brad: stop saying what the page says again. "Rarely
+            restocked" and "new pieces regularly" are now the marquee's and
+            the newsletter's lines; these two are facts said nowhere else in
+            this strip's position. 14 days is the confirmed returns window
+            (lib/policies.ts); reserving is the product page's new option. */}
+        <li className="announce-item">Returns within 14 days</li>
+        <li className="announce-item">Reserve a piece to try on in the shop</li>
       </ul>
     </aside>
   );
