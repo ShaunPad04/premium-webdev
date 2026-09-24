@@ -95,6 +95,12 @@ export function FaqIndex({
 
           <div className="fqx-aside">
             <div id={panelId} className="fqx-panel" aria-live="polite">
+              {/* The big number sits OUTSIDE the animated answer (2026-09-24,
+                  Brad: it "glitches and falls"). Inside it, the number was
+                  positioned against the answer while its slide-in transform
+                  ran, then jumped to the panel's corner when the transform
+                  ended. Out here it has one anchor and only fades. */}
+              <span key={sel} className="fqx-panel-n" aria-hidden="true" data-n={pad(sel)} />
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={sel}
@@ -103,7 +109,6 @@ export function FaqIndex({
                   exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10 }}
                   transition={{ duration: reduce ? 0.01 : 0.38, ease: EASE }}
                 >
-                  <span className="fqx-panel-n" aria-hidden="true" data-n={pad(sel)} />
                   <p className="fqx-panel-q">{current.question}</p>
                   <p className="fqx-panel-a">{current.answer}</p>
                 </motion.div>

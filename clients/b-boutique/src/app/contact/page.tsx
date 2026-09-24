@@ -8,6 +8,7 @@ import { showDrafts } from "@/lib/drafts";
 import { ContactForm } from "@/components/ContactForm";
 import { PathBand } from "@/components/PathBand";
 import { Visit } from "@/components/Visit";
+import { Faq } from "@/components/Faq";
 import { addressLines, openingPhrase, shop } from "@/lib/shop";
 import { socials } from "@/lib/nav";
 import { RevealText } from "@/components/RevealText";
@@ -139,6 +140,10 @@ export default function ContactPage() {
         </section>
 
         <PathBand />
+
+        {/* The FAQ moved here from the home page in the 2026-09-24 editorial
+            rebuild; the footer's "Questions" link follows it. */}
+        <Faq />
 
         <Visit />
       </main>

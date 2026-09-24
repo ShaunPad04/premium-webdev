@@ -4,9 +4,9 @@ import Link from "next/link";
 import { products } from "@/lib/catalogue";
 import { featured } from "@/lib/shop";
 
-/* Categories as a bento grid (2026-09-24, Brad), replacing the five equal
- * columns. One large tile, the rest arranged around it, and a "Shop all"
- * tile to close the set. Counts come from the catalogue at build time, so a
+/* Shop by category (2026-09-24, Brad's editorial rebuild): four clothing
+ * tiles in a 2x2 and one wide homeware tile under them. It replaced the
+ * bento with its "Shop all" tile. Counts come from the catalogue at build time, so a
  * tile never promises a rail that is empty. Images and alt text are the
  * featured set's own (lib/shop.ts). Hover: the photograph settles in and the
  * arrow moves; transform only. */
@@ -31,14 +31,11 @@ export function CategoryBento() {
   return (
     <section className="bento" aria-labelledby="bento-h">
       <div className="bento-head">
-        <p className="bento-eyebrow">Shop by category</p>
-        <h2 id="bento-h" className="bento-h">
-          Find your <em>rail.</em>
-        </h2>
+        <h2 id="bento-h" className="bento-h">Shop by category</h2>
       </div>
       <ul className="bento-grid">
-        {sorted.map((t, i) => (
-          <li key={t.slug} className={`bento-t bento-t--${i}`}>
+        {sorted.map((t) => (
+          <li key={t.slug} className={`bento-t${t.slug === "homeware" ? " bento-t--wide" : ""}`}>
             <Link href={t.href} className="bento-link">
               {/* next/image, so each tile gets a file its own size. Raw <img>
                   here sent the full 700 KB originals and measurably slowed
@@ -47,7 +44,7 @@ export function CategoryBento() {
                 src={t.image}
                 alt={t.alt}
                 fill
-                sizes={i === 0 ? "(min-width: 900px) 50vw, 100vw" : "(min-width: 900px) 25vw, 50vw"}
+                sizes={t.slug === "homeware" ? "100vw" : "50vw"}
                 quality={70}
                 className="bento-img"
               />
@@ -62,14 +59,7 @@ export function CategoryBento() {
             </Link>
           </li>
         ))}
-        <li className="bento-t bento-t--all">
-          <Link href="/shop" className="bento-link bento-link--all">
-            <span className="bento-all-k">Everything in</span>
-            <span className="bento-all-h">Shop all <span aria-hidden="true">&rarr;</span></span>
-            <span className="bento-n">{products.length} pieces</span>
-          </Link>
-        </li>
-      </ul>
+</ul>
     </section>
   );
 }

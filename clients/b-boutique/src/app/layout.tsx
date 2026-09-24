@@ -2,41 +2,24 @@ import type { Metadata } from "next";
 import { CartDrawer } from "@/components/CartDrawer";
 import { MagneticButtons } from "@/components/MagneticButtons";
 import { NavMotion } from "@/components/NavMotion";
-import { Bodoni_Moda, DM_Sans } from "next/font/google";
+import { Anton, DM_Sans } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
 import { SITE_ORIGIN, jsonLd } from "@/lib/site";
 import "./globals.css";
 
-/* Two faces, and only two.
- *
- * Bodoni Moda carries the whole editorial voice — the wordmark, the
- * manifesto, section headings, category names, the address, the giant footer
- * wordmark. It is the approved face and it does not change. Weight stays at
- * 400: a faked bold Bodoni loses the thick/thin stress that is the entire
- * reason for choosing it.
- *
- * Inter takes every piece of UI: navigation, labels, buttons, prices, FAQ,
- * numbers, microcopy. It replaces the three faces that used to split that
- * job between them — Jost for body, Archivo for the corner menu, JetBrains
- * Mono for labels and numbers. Three UI faces was one more idea than the
- * page needed, and it cost three font downloads to say the same thing.
- *
- * The old comment here argued against Playfair + Inter as the default pairing
- * on every boutique site. That still holds, and this is not it: the display
- * face is Bodoni, which is a far sharper, higher-contrast letter than
- * Playfair. Inter is doing the quiet half of the job, not the loud one. */
-/* One pair everywhere. Display: Bodoni Moda, the fashion-magazine Didone,
- * since late 2026-09-23 (Brad: Anton read "manly" for a women's boutique;
- * keep it professional and boutique-like). Body: DM Sans 400/500/600. Both
- * self-hosted by next/font at build time, so the page requests nothing from
- * Google on load (/privacy says so). */
-const display = Bodoni_Moda({
+/* One pair everywhere. Display: Anton, since 2026-09-24 (Brad chose it
+ * for the editorial homepage rebuild, site-wide so pages don't clash; it
+ * replaces Bodoni Moda). Anton has one weight and no italic, so emphasis
+ * inside a heading is upright (font-synthesis: none in globals.css), never
+ * a faked slant. Body: DM Sans 400/500/600. Both self-hosted by next/font
+ * at build time, so the page requests nothing from Google on load
+ * (/privacy says so). */
+const display = Anton({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500"],
-  style: ["normal", "italic"],
+  weight: "400",
   display: "swap",
 });
 

@@ -1,37 +1,27 @@
 import { expect, test } from '@playwright/test';
 
-/* The home hero must survive changing slides.
- *
- * Added 2026-09-22 after the live site showed Next's "This page couldn't
- * load" screen: SplitText rewrote the title's children, React later tried to
- * remove the originals, and the page crashed on the SECOND slide change. The
- * first change passed, so a test that clicks once would not catch it. This
- * steps a full lap and one more. */
-test.skip(({ viewport }) => (viewport?.width ?? 0) < 1200, 'desktop; the phone path was checked by hand');
-test.setTimeout(60_000);
-
-test('stepping through every slide does not crash the page', async ({ page }) => {
+/* The home hero (2026-09-24 editorial rebuild): one photograph, one line,
+ * one button. The slideshow this file used to step through is gone, so it
+ * now checks what the hero promises instead: the page loads without a
+ * runtime error or Next's "This page couldn't load" screen, the photograph
+ * actually decodes, the one h1 is the hero line and names the shop, and the
+ * button goes to the shop. */
+test('the home hero renders its photograph, heading and button', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   await page.goto('/', { waitUntil: 'networkidle' });
 
-  /* Five frames since 2026-09-24 (a slideshow again): swipe a full lap
-     and one more, which is the sequence that crashed it in September. */
-  const box = (await page.locator('.lm').boundingBox())!;
-  const y = box.y + box.height * 0.3;
-  const titles: string[] = [];
-  for (let i = 0; i < 6; i++) {
-    await page.mouse.move(box.x + box.width * 0.7, y);
-    await page.mouse.down();
-    await page.mouse.move(box.x + box.width * 0.3, y, { steps: 6 });
-    await page.mouse.up();
-    await page.waitForTimeout(1900);
-    titles.push((await page.locator('.lm-pic[data-on] img').getAttribute('src')) ?? '');
-  }
+  const img = page.locator('.hh-img');
+  await expect(img).toBeVisible();
+  expect(await img.evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
+
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('h1')).toContainText(/for every woman who walks in/i);
+  await expect(page.locator('h1')).toContainText(/b boutique/i);
+
+  const cta = page.locator('.hh').getByRole('link', { name: /shop new in/i });
+  await expect(cta).toHaveAttribute('href', '/shop');
 
   expect(errors, errors.join('\n')).toEqual([]);
   await expect(page.getByText(/couldn.t load/)).toHaveCount(0);
-  // It really moved through the frames.
-  expect(new Set(titles).size).toBeGreaterThan(1);
-  await expect(page.locator('.lm-title')).toContainText(/b boutique/i);
 });

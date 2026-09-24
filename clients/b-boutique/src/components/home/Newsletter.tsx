@@ -19,9 +19,8 @@ export function Newsletter() {
     <section className="nl" aria-labelledby={`${id}-h`}>
       <div className="nl-in">
         <div className="nl-copy">
-          <p className="nl-eyebrow">The list</p>
           <h2 id={`${id}-h`} className="nl-h">
-            Be first to see <em>new arrivals.</em>
+            First to see new pieces before they hit the rail
           </h2>
           <p className="nl-p">
             Most pieces are one of one, so when something new comes in it rarely stays long. Leave your email and we will tell you when it lands.

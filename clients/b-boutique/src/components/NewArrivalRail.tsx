@@ -11,7 +11,9 @@
 /* 2026-09-24, Brad: three words now, NEW ARRIVAL · ONE OF ONE ·
    CLEETHORPES. "One of one" stands on the shop's own FAQ ("most pieces
    here are one of one"). */
-const WORDS = ["New arrival", "One of one", "Cleethorpes"];
+/* 2026-09-24, Brad's rebuild: NEW IN · ONE OF ONE · SEA VIEW STREET,
+   CLEETHORPES, and it pauses under the pointer (globals.css). */
+const WORDS = ["New in", "One of one", "Sea View Street, Cleethorpes"];
 const REPEAT = 4;
 
 export function NewArrivalRail() {

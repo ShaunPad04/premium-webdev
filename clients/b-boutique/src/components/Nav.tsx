@@ -68,7 +68,9 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
      the header's own wordmark stands down until the bar turns solid
      (2026-09-23, Brad). Every other route keeps it. */
   const pathname = usePathname();
-  const markHidden = pathname === "/" && !opaque;
+  /* The home hero no longer prints the name (2026-09-24 rebuild), so the
+     B is the only brand mark there and stays visible on every route. */
+  const markHidden = false;
 
   return (
     <header

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { footerNav, socials, directionsHref } from "@/lib/nav";
-import { shop, addressLines, openingPhrase } from "@/lib/shop";
+import { shop, addressLines } from "@/lib/shop";
+import { DELIVERY_P, FREE_DELIVERY_OVER_P, formatPriceShort } from "@/lib/catalogue";
 import { SocialMark } from "../SocialMark";
 import { BackToTop } from "../BackToTop";
 import { BMark } from "../BMark";
@@ -57,11 +58,22 @@ export default function AnimatedWaveFooter() {
             <Link href="/#top" className="wf-mark" aria-label="B Boutique, home">
               <BMark className="wf-mark-svg" />
             </Link>
-            <p className="wf-eyebrow">{shop.street}, {shop.town}</p>
             <h2 className="wf-h">
               Come and see it <em>on the rail.</em>
             </h2>
-            <p className="wf-hours">Open {openingPhrase()}.</p>
+            {/* Delivery and returns, moved here from the home page's three
+                service cards (2026-09-24, Brad). The hours are no longer
+                repeated here; the home page's Visit block carries them. */}
+            <ul className="wf-service">
+              <li>
+                <Link href="/delivery" className="wf-link">
+                  UK delivery {formatPriceShort(DELIVERY_P)}, free over {formatPriceShort(FREE_DELIVERY_OVER_P)}
+                </Link>
+              </li>
+              <li>
+                <Link href="/returns" className="wf-link">Returns: send it back, or bring it into the shop</Link>
+              </li>
+            </ul>
             <div className="wf-acts">
               <Link href="/shop" className="hero-cta ft-cta-shop">
                 <span className="roll"><span>Shop the rails</span></span>
