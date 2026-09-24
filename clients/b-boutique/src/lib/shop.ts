@@ -46,10 +46,14 @@ export const shop = {
      rather than left to contradict this file. */
   phone: "" as string,
   email: "bboutiquecleethorpes@gmail.com" as string,
-  /** Parking, in the client's words via Brad (2026-09-24): "two minutes
-   *  away max". No car park is named because none was; add the name here
-   *  if she gives one. */
-  parking: "Within a two-minute walk",
+  /** Parking (Brad for the client, 2026-09-24): Wardall Street car park,
+   *  "two minutes away max". The link is Google Maps walking directions
+   *  from the car park to the shop. */
+  parking: {
+    name: "Wardall Street car park",
+    note: "2 min walk",
+    href: "https://www.google.com/maps/dir/?api=1&origin=Wardall+Street+Car+Park,+Wardall+St,+Cleethorpes+DN35+8HA&destination=B+Boutique,+18+Sea+View+St,+Cleethorpes+DN35+8EZ&travelmode=walking",
+  },
   street: "18 Sea View Street",
   town: "Cleethorpes",
 

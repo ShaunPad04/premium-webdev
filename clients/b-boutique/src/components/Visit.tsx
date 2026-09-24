@@ -44,7 +44,12 @@ export function Visit() {
             ) : null}
             <div className="vx-row">
               <dt>Parking</dt>
-              <dd>{shop.parking}</dd>
+              <dd>
+                <a href={shop.parking.href} target="_blank" rel="noopener noreferrer" className="vx-row-link">
+                  {shop.parking.name}
+                </a>
+                , {shop.parking.note}
+              </dd>
             </div>
           </dl>
 

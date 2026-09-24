@@ -467,10 +467,9 @@ export function Bag() {
           </ul>
 
           {/* The cards SumUp's online checkout takes in the UK (checked
-              2026-09-24): Visa, Mastercard and American Express. Apple Pay
-              and Google Pay are left off: SumUp only offers them once the
-              merchant profile is verified for wallets, which is not
-              confirmed for this account. */}
+              2026-09-24): Visa, Mastercard and American Express; plus Apple
+              Pay and Google Pay, which Brad confirmed work on this account
+              (SumUp enables wallets only once the profile is verified). */}
           <ul className="bk-cards" aria-label="Cards accepted">
             <li className="bk-cc bk-cc--visa"><span aria-hidden="true">VISA</span><span className="sr-only">Visa</span></li>
             <li className="bk-cc bk-cc--mc">
@@ -478,6 +477,14 @@ export function Bag() {
               <span className="sr-only">Mastercard</span>
             </li>
             <li className="bk-cc bk-cc--amex"><span aria-hidden="true">AMEX</span><span className="sr-only">American Express</span></li>
+            <li className="bk-cc bk-cc--wallet">
+              <svg viewBox="0 0 17 20" width="11" height="13" aria-hidden="true"><path fill="currentColor" d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9s-2-.9-3.4-.9C3.6 4.8 2 5.8 1.1 7.3c-1.8 3.2-.5 7.9 1.3 10.5.9 1.3 1.9 2.7 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.4.8 2.2-1.3 3.1-2.6c1-1.5 1.4-2.9 1.4-3-.1 0-2.7-1-2.7-4.2ZM11.6 3c.7-.9 1.2-2 1-3.2-1 .1-2.2.7-3 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.3-.6 3-1.4Z" /></svg>
+              <span aria-hidden="true">Pay</span><span className="sr-only">Apple Pay</span>
+            </li>
+            <li className="bk-cc bk-cc--wallet">
+              <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.7-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8Z" /><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1C3.3 21.3 7.3 24 12 24Z" /><path fill="#FBBC05" d="M5.3 14.3c-.2-.7-.4-1.5-.4-2.3s.1-1.6.4-2.3V6.6h-4C.5 8.2 0 10 0 12s.5 3.8 1.3 5.4l4-3.1Z" /><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C18 1.2 15.2 0 12 0 7.3 0 3.3 2.7 1.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9Z" /></svg>
+              <span aria-hidden="true">Pay</span><span className="sr-only">Google Pay</span>
+            </li>
           </ul>
 
           {/* Delivery and returns are linked from the last screen before

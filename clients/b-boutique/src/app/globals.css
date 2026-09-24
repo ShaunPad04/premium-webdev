@@ -10346,3 +10346,6 @@ h2.ucs-h em { font-style: italic; }
 .bk-cc--visa span[aria-hidden] { font: italic 800 13px/1 system-ui, sans-serif; letter-spacing: 0.02em; color: #1A1F71; }
 .bk-cc--amex { background: #1F72CD; border-color: #1F72CD; }
 .bk-cc--amex span[aria-hidden] { font: 800 10px/1 system-ui, sans-serif; letter-spacing: 0.04em; color: #FFFFFF; }
+.bk-cards { flex-wrap: wrap; }
+.bk-cc--wallet { grid-auto-flow: column; gap: 2px; color: var(--bb-black); }
+.bk-cc--wallet span[aria-hidden] { font: 600 11px/1 system-ui, sans-serif; }
