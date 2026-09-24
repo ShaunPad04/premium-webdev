@@ -10363,3 +10363,5 @@ h2.ucs-h em { font-style: italic; }
 .atx { top: auto; bottom: 24px; animation-name: atx-up; }
 .atx-actions { flex-wrap: nowrap; gap: 14px; }
 .atx-keep { font-size: 12px; white-space: nowrap; }
+/* Opening quote mark in ink, not red (2026-09-24, Brad). */
+.pov-statement > span[aria-hidden]::before { color: inherit; }
