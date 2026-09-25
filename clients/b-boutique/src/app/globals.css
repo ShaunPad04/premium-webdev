@@ -10720,3 +10720,8 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 }
 .rv-rating-only { margin: 0; font-size: 15px; line-height: 1.6; color: #555555; }
 @media (min-width: 1024px) { .rv-list { max-width: 1240px; grid-template-columns: repeat(3, 1fr); } }
+
+/* Product photographs are cut out onto a flat warm grey (Brad, 25 Sep,
+   after Radian). Every frame behind them shows the same grey, so a photo
+   still loading reads as the same card, not a different colour. */
+.prod-media, .cat-media, .piece-media, .acc-lead-media, .cross-media, .bag-media, .pdp-media { background: #F2F1EF; }
