@@ -22,7 +22,19 @@ const nextConfig: NextConfig = {
      (307), not permanent: if she starts stocking them the page comes back,
      and a cached 308 would keep sending browsers away from it. */
   async redirects() {
-    return [{ source: "/accessories", destination: "/shop", permanent: false }];
+    return [
+      { source: "/accessories", destination: "/shop", permanent: false },
+      /* The vercel.app address serves the same site as the real domain. The
+         canonical tag already names bboutiqueclee.com; this makes it the only
+         address a browser or crawler ends up on. Preview deployments have
+         their own hostnames and are untouched. */
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "b-boutique.vercel.app" }],
+        destination: "https://bboutiqueclee.com/:path*",
+        permanent: true,
+      },
+    ];
   },
 };
 

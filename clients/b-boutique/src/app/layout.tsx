@@ -130,6 +130,11 @@ export const metadata: Metadata = {
     template: "%s — B Boutique, Cleethorpes",
   },
   description,
+  /* Google Search Console's HTML-tag ownership check. The token is Search
+     Console's, pasted into Vercel; with nothing set, no tag is emitted. */
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
   keywords: [
     "boutique Cleethorpes",
     "womens clothing Cleethorpes",
