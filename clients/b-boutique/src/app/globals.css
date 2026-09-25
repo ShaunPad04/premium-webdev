@@ -10409,3 +10409,33 @@ h2.ucs-h em { font-style: italic; }
 /* Category photos sit still (2026-09-24, Brad: "make the images stay
    there rather than having to scroll for them to go in position"). */
 .cats-card { animation: none !important; translate: none; clip-path: none; }
+
+/* Square product photographs (homeware) get a square frame (2026-09-25,
+   Brad: "a massive white gap" above the tomato vase on a phone). The frame
+   was always the clothing's 4:5, so a square vase letterboxed with bands
+   of backdrop above and below. */
+.pdp-media[data-square] { aspect-ratio: 1 / 1; }
+@media (min-width: 1024px) {
+  .pdp-media[data-square] { aspect-ratio: 1 / 1; width: min(50%, calc(100svh - var(--header-h) - 64px)); }
+}
+.pdp-media[data-square] .pdp-frame img { object-fit: cover; }
+
+/* Page change without a white gap (2026-09-25, Brad: clicking About showed
+   one page, then another). The old page used to fade out completely before
+   the new one began, leaving a frame of bare white between them. Now the
+   old page holds still underneath and the new one dissolves in over it. */
+::view-transition-old(root), ::view-transition-old(.page-out) {
+  /* Held fully opaque underneath: fading both halves at once let the white
+     canvas show through the middle of the dissolve. */
+  animation: none;
+  opacity: 1;
+}
+::view-transition-new(root), ::view-transition-new(.page-in) {
+  animation: vt-dissolve-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes vt-dissolve-in { from { opacity: 0; } }
+
+/* The About heading area is the dark of its own photograph while the
+   photograph loads, so the title sits on the right ground from the first
+   frame and the photo simply appears (it was a flat grey panel). */
+.ab-hero { background: #1E1815; }
