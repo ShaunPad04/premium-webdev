@@ -13,6 +13,7 @@ import { Reviews } from "@/components/home/Reviews";
 import { Visit } from "@/components/Visit";
 import { Footer } from "@/components/Footer";
 import { SocialStrip } from "@/components/SocialStrip";
+import { ShortFaq } from "@/components/ShortFaq";
 import { MotionLayer } from "@/components/MotionLayer";
 
 /* Every other page names its own canonical; the home page did not. */
@@ -68,6 +69,7 @@ export default function Home() {
         </div>
       </main>
       <SocialStrip />
+      <ShortFaq />
       <Footer />
     </>
   );

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { SocialStrip } from "@/components/SocialStrip";
+import { ShortFaq } from "@/components/ShortFaq";
 import { MotionLayer } from "@/components/MotionLayer";
 import { AddToBag } from "@/components/AddToBag";
 import { ColourProvider } from "@/components/ColourChoice";
@@ -328,6 +329,7 @@ export default async function ProductPage({
         <Visit />
       </main>
       <SocialStrip />
+      <ShortFaq />
       <Footer />
     </>
   );

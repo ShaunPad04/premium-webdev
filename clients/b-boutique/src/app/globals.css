@@ -10638,3 +10638,62 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
    white; Hayley's opening quote mark is black, not red. */
 .ab-hero::after { content: none; }
 .ab-quote::before { color: var(--bb-black); }
+
+/* The grid is edge to edge with no seams (Brad, 25 Sep). */
+.ss-grid { gap: 0; }
+.ss { padding-bottom: 0; }
+
+/* ── Short FAQ above the footer (2026-09-25, after Radian) ─────────────── */
+.sfq { background: #FFFFFF; color: var(--bb-black); padding: clamp(64px, 8vw, 112px) 18px clamp(64px, 8vw, 104px); text-align: center; }
+.sfq-eyebrow { margin: 0 0 14px; font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; color: #555555; }
+.sfq h2.sfq-title { margin: 0 0 clamp(32px, 4vw, 44px); font: 400 clamp(22px, 2.2vw, 28px)/1.15 var(--font-body); letter-spacing: 0.01em; text-transform: uppercase; color: var(--bb-black); }
+.sfq-list { max-width: 960px; margin: 0 auto; text-align: left; border-top: 1px solid rgba(14, 11, 12, 0.14); }
+.sfq-item { border-bottom: 1px solid rgba(14, 11, 12, 0.14); }
+.sfq-q {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  min-height: 56px; padding: 16px 0; cursor: pointer; list-style: none;
+  font: 400 15px/1.4 var(--font-body);
+}
+.sfq-q::-webkit-details-marker { display: none; }
+.sfq-q:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 4px; }
+.sfq-icon { position: relative; flex: none; width: 12px; height: 12px; }
+.sfq-icon::before, .sfq-icon::after { content: ""; position: absolute; inset: 50% 0 auto; height: 1px; margin-top: -0.5px; background: currentColor; transition: rotate 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+.sfq-icon::after { rotate: 90deg; }
+.sfq-item[open] .sfq-icon::after { rotate: 0deg; }
+.sfq-a { margin: 0; padding: 0 48px 22px 0; max-width: 72ch; font-size: 15px; line-height: 1.65; color: #3A3536; }
+@supports (interpolate-size: allow-keywords) {
+  .sfq-item { interpolate-size: allow-keywords; }
+  .sfq-item::details-content { height: 0; overflow: clip; transition: height 360ms cubic-bezier(0.22, 1, 0.36, 1), content-visibility 360ms allow-discrete; }
+  .sfq-item[open]::details-content { height: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sfq-icon::before, .sfq-icon::after, .sfq-item::details-content { transition: none; }
+}
+
+/* ── The footer is uncovered as the page scrolls away (2026-09-25, Brad:
+ * a scroll-driven footer, after Radian). The page content rides above it
+ * and the footer waits underneath, sticky to the bottom of the screen, so
+ * the last section lifts off it like a curtain; a soft shadow under that
+ * edge gives it depth, and the footer's contents rise the last few pixels
+ * into place as it is uncovered. Only where the whole footer fits on the
+ * screen, or the bottom of it could never be reached: on phones and short
+ * windows it is an ordinary footer. The movement is transform only, so a
+ * part-way state is always fully legible. */
+@media (min-width: 1024px) and (min-height: 760px) {
+  .page-vt > :is(main, section) { position: relative; z-index: 1; background: #FFFFFF; }
+  .page-vt > :has(+ footer.wf) {
+    box-shadow: 0 28px 48px -28px rgba(14, 11, 12, 0.28);
+  }
+  footer.wf { position: sticky; bottom: 0; z-index: 0; border-top: 0; }
+  @supports (animation-timeline: view()) {
+    footer.wf .wf-inner {
+      animation: wf-lift linear both;
+      /* The last 600px of the page: done exactly when the bottom is
+         reached, on any page length or window height. */
+      animation-timeline: scroll(root);
+      animation-range: calc(100% - 600px) 100%;
+    }
+  }
+}
+@keyframes wf-lift { from { translate: 0 64px; scale: 0.985; } }
+@media (prefers-reduced-motion: reduce) { footer.wf .wf-inner { animation: none; } }

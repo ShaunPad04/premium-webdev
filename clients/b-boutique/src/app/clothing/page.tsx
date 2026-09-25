@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { SocialStrip } from "@/components/SocialStrip";
+import { ShortFaq } from "@/components/ShortFaq";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { CategoryBar } from "@/components/CategoryBar";
@@ -89,6 +90,7 @@ export default function ClothingPage() {
         <Visit />
       </main>
       <SocialStrip />
+      <ShortFaq />
       <Footer />
     </>
   );
