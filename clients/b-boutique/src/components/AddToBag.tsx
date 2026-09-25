@@ -129,7 +129,7 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
      knits and coats; the thigh for trousers; the object's centre for
      homeware. */
   const swatchAt =
-    product.category === "Homeware" ? "50% 50%" : product.category === "Trousers" ? "44% 64%" : "44% 32%";
+    product.category === "Homeware" ? "50% 50%" : product.category === "Trousers" ? "44% 64%" : product.category === "Skirts" ? "47% 52%" : "44% 32%";
 
   /* The one add both buttons use: refuses, with a message, until a colour
      (where there is a choice) and a size are chosen. */

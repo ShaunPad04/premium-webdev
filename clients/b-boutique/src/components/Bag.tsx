@@ -107,7 +107,7 @@ export function Bag() {
   const savingsP = lines.reduce((sum, l) => {
     const p = productBySlug(l.slug);
     if (!p || p.demo) return sum;
-    const was = wasPriceP(p.priceP);
+    const was = wasPriceP(p.priceP, p.slug);
     return was === null ? sum : sum + (was - p.priceP) * l.qty;
   }, 0);
 
@@ -165,7 +165,7 @@ export function Bag() {
                     </span>
                     <span className="bag-empty-meta">{n.category}</span>
                     <span className="bag-empty-name">{n.name}</span>
-                    <span className="bag-empty-price"><Price priceP={n.priceP} /></span>
+                    <span className="bag-empty-price"><Price priceP={n.priceP} slug={n.slug} /></span>
                   </Link>
                 </li>
               ))}
@@ -242,7 +242,7 @@ export function Bag() {
 
   /* Where a swatch crops its photograph: the same rule AddToBag uses. */
   const swatchAt = (category: string) =>
-    category === "Homeware" ? "50% 50%" : category === "Trousers" ? "44% 64%" : "44% 32%";
+    category === "Homeware" ? "50% 50%" : category === "Trousers" ? "44% 64%" : category === "Skirts" ? "47% 52%" : "44% 32%";
 
   /* ── Layout, rebuilt 2026-09-23 ─────────────────────────────────────────
    * The client called the old bag "extremely generic and unorganised": one
@@ -322,8 +322,8 @@ export function Bag() {
                           withdrawn after it went in the bag. */}
                       <p className="bk-each">
                         {p.demo ? "Price to confirm" : `${formatPrice(p.priceP)} each`}
-                        {!p.demo && wasPriceP(p.priceP) !== null ? (
-                          <s className="bk-was"><span className="sr-only">, usually </span>{formatPrice(wasPriceP(p.priceP)!)}</s>
+                        {!p.demo && wasPriceP(p.priceP, p.slug) !== null ? (
+                          <s className="bk-was"><span className="sr-only">, usually </span>{formatPrice(wasPriceP(p.priceP, p.slug)!)}</s>
                         ) : null}
                       </p>
                     </div>

@@ -154,7 +154,7 @@ export function NavSearch() {
                         <span className="navsearch-hit-body">
                           <span className="navsearch-hit-name">{p.name}</span>
                           <span className="navsearch-hit-meta">
-                            {p.category} · <Price priceP={p.priceP} />
+                            {p.category} · <Price priceP={p.priceP} slug={p.slug} />
                           </span>
                         </span>
                       </Link>

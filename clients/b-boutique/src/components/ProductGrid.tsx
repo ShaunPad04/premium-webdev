@@ -137,7 +137,7 @@ export function ProductGrid({
                     project has been careful about from the start: a displayed
                     price is what a customer is entitled to pay. */}
                 {isBuyable(p) ? (
-                  <span className="prod-price"><Price priceP={p.priceP} /></span>
+                  <span className="prod-price"><Price priceP={p.priceP} slug={p.slug} /></span>
                 ) : (
                   <span className="prod-price prod-price--pending">
                     Price to confirm

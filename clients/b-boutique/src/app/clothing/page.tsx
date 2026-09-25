@@ -14,7 +14,7 @@ import { RevealText } from "@/components/RevealText";
 export const metadata: Metadata = {
   title: "Clothing",
   description:
-    "Coats, jackets, knitwear, trousers, tops, co-ords and dresses at B Boutique, 18 Sea View Street, Cleethorpes. Chosen a piece at a time, and available online or on the rail.",
+    "Coats, jackets, knitwear, trousers, tops, skirts, co-ords and dresses at B Boutique, 18 Sea View Street, Cleethorpes. Chosen a piece at a time, and available online or on the rail.",
   alternates: { canonical: "/clothing" },
 };
 
@@ -49,7 +49,7 @@ export default function ClothingPage() {
         <PageMasthead
           eyebrow="The rails"
           title="Clothing"
-          lede="Coats, jackets, knitwear, trousers, tops, co-ords and dresses. One room, and every piece picked by hand rather than ordered by the pack."
+          lede="Coats, jackets, knitwear, trousers, tops, skirts, co-ords and dresses. One room, and every piece picked by hand rather than ordered by the pack."
           aside={
             <p className="pm-phone">
               <span className="pm-phone-label">On the rails</span>

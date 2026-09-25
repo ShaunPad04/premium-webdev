@@ -83,6 +83,7 @@ const TONE: Record<string, string> = {
   Trousers: "marble",
   "Coats & Jackets": "onyx",
   "Co-ords": "marble",
+  Skirts: "marble",
   Dresses: "onyx",
   Homeware: "gold",
 };
@@ -233,7 +234,14 @@ export function formatPriceShort(priceP: number): string {
  *  finishes and every compare price disappears at once. */
 export const SALE = { active: true, offP: 1000 } as const;
 
-export function wasPriceP(priceP: number): number | null {
+/** Pieces that arrived after the sale was set and are NOT in it. Hayley's
+ *  prices for these (2026-09-25) came with no "usual" price, so showing one
+ *  £10 higher struck through would be a reference price nobody has stated.
+ *  Remove a slug here only once she confirms it is part of the sale. */
+const NOT_IN_SALE = new Set(["tartan-check-tie-skirt", "tartan-check-blouse", "tailored-barrel-fit-trousers"]);
+
+export function wasPriceP(priceP: number, slug?: string): number | null {
+  if (slug && NOT_IN_SALE.has(slug)) return null;
   return SALE.active && priceP > 0 ? priceP + SALE.offP : null;
 }
 

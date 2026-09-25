@@ -884,6 +884,66 @@ export const stocklist: readonly StockPiece[] = [
       { sku: "BB-VASE-BELL", supplierRef: "", colour: "Gold", priceP: 4500, priceConfirmed: true, image: "bb-vase-bell" },
     ],
   },
+  /* Added 2026-09-25 from the client's messages (Hayley: colours, counts and
+     prices) and the supplier's own product pages on babezlondon.com (style
+     number, fabric composition with percentages, size ratio). Photographs:
+     the supplier's, re-set on the shop's backdrop. */
+  {
+    slug: "tartan-check-tie-skirt",
+    name: "Tartan Check Tie Skirt",
+    category: "Skirts",
+    short: "A tartan skirt tied at the waist, with a pointed handkerchief hem.",
+    full: "Cut to look like a check shirt knotted round the waist, with the sleeves tied at the front and the hem falling in uneven points. Throw a plain white tee or a fine knit over it and the skirt does the rest.",
+    features: ["Tartan check", "Tie waist", "Asymmetric handkerchief hem", "Structured cotton"],
+    fabric: "95% Cotton, 5% Polyester",
+    fabricPublished: true,
+    care: "",
+    sizes: ["One size"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "Eng152",
+    colourways: [
+      { sku: "BB-TIESKIRT-BUR", supplierRef: "Eng152-BUR", colour: "Burgundy", priceP: 4300, priceConfirmed: true, image: "bb-tieskirt-bur" },
+      { sku: "BB-TIESKIRT-BRN", supplierRef: "Eng152-BRN", colour: "Brown", priceP: 4300, priceConfirmed: true, image: "bb-tieskirt-brn" },
+    ],
+  },
+  {
+    slug: "tartan-check-blouse",
+    name: "Tartan Check Blouse",
+    category: "Tops",
+    short: "A relaxed tartan shirt with a chest pocket and buttoned cuffs.",
+    full: "An easy, slightly oversized check shirt that buttons all the way up the front, with a single chest pocket and buttoned cuffs. Wear it done up, open over a tee, or knotted at the waist.",
+    features: ["Tartan check", "Front button closure", "Chest pocket", "Long sleeves with buttoned cuffs"],
+    fabric: "95% Cotton, 5% Polyester",
+    fabricPublished: true,
+    care: "",
+    sizes: ["One size"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "Eng151",
+    colourways: [
+      { sku: "BB-TARTANBLS-BRN", supplierRef: "Eng151-BRN", colour: "Brown", priceP: 4300, priceConfirmed: true, image: "bb-tartanbls-brn" },
+      { sku: "BB-TARTANBLS-BUR", supplierRef: "Eng151-BUR", colour: "Burgundy", priceP: 4300, priceConfirmed: true, image: "bb-tartanbls-bur" },
+    ],
+  },
+  {
+    slug: "tailored-barrel-fit-trousers",
+    name: "Tailored Barrel Fit Trousers",
+    category: "Trousers",
+    short: "Pleated, tailored trousers with a curved barrel leg.",
+    full: "Tailored through the waist with front pleats, then curving out through the leg and back in towards the ankle. Sharp enough for work, easy with a tee and trainers at the weekend.",
+    features: ["Pleated front", "Barrel leg", "Tailored waistband", "Side pockets"],
+    fabric: "95% Polyester, 5% Elastane",
+    fabricPublished: true,
+    care: "",
+    sizes: ["S", "M", "L"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "16012-3",
+    colourways: [
+      { sku: "BB-BARRELTAIL-BLK", supplierRef: "16012-3-BLK", colour: "Black", priceP: 4600, priceConfirmed: true, image: "bb-barreltail-blk" },
+    ],
+  },
 ];
 
 /** Every colourway whose price the client has not confirmed. Read by

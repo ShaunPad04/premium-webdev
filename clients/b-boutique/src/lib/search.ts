@@ -119,6 +119,7 @@ export const SEARCH_SUGGESTIONS = [
   "Knitwear",
   "Trousers",
   "Tops",
+  "Skirts",
   "Dresses",
   "Co-ords",
   "Homeware",

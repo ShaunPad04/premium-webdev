@@ -316,7 +316,8 @@ export const categories = [
   { slug: "knitwear",       name: "Knitwear",         note: "Fair Isle, boucle, cable and rib — the bulk of this drop." },
   { slug: "coats-jackets",  name: "Coats & Jackets",  note: "Trench, leopard, quilted check and longline." },
   { slug: "trousers",       name: "Trousers",         note: "Barrel, wide, straight and a jean jogger." },
-  { slug: "tops",           name: "Tops",             note: "Fine knit, pinstripe and a lace ruffle." },
+  { slug: "tops",           name: "Tops",             note: "Fine knit, pinstripe, tartan and a lace ruffle." },
+  { slug: "skirts",         name: "Skirts",           note: "A tartan tie skirt, in burgundy and brown." },
   { slug: "co-ords",        name: "Co-ords",          note: "Two pieces, bought to be worn together." },
   { slug: "dresses",        name: "Dresses",          note: "Knit, with sheer sleeves." },
   { slug: "homeware",       name: "Homeware",         note: "Glazed ceramic, and things worth wrapping." },
@@ -355,6 +356,7 @@ const RAIL_CATEGORY_ORDER = [
   "Coats & Jackets",
   "Trousers",
   "Tops",
+  "Skirts",
   "Co-ords",
   "Dresses",
   "Homeware",
@@ -387,7 +389,7 @@ export const newIn = (() => {
           ? "onyx"
           : p.category === "Homeware"
             ? "gold"
-            : p.category === "Trousers" || p.category === "Co-ords"
+            : p.category === "Trousers" || p.category === "Co-ords" || p.category === "Skirts"
               ? "marble"
               : "bone",
       photo: p.colourways[0].image,

@@ -4,8 +4,8 @@ import { formatPriceShort, wasPriceP } from "@/lib/catalogue";
    on (lib/catalogue.ts SALE). Renders inline content only, so every caller
    keeps its own element and class. The strike is not read out as a
    strike, so the words "was" and "now" say it for a screen reader. */
-export function Price({ priceP }: { priceP: number }) {
-  const was = wasPriceP(priceP);
+export function Price({ priceP, slug }: { priceP: number; slug?: string }) {
+  const was = wasPriceP(priceP, slug);
   if (was === null) return <>{formatPriceShort(priceP)}</>;
   return (
     <>

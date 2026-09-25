@@ -146,6 +146,17 @@
     },
     "cosy-hooded-boucle-coat": {
       "Brown": 3
+    },
+    "tartan-check-tie-skirt": {
+      "Burgundy": 5,
+      "Brown": 2
+    },
+    "tartan-check-blouse": {
+      "Brown": 2,
+      "Burgundy": 2
+    },
+    "tailored-barrel-fit-trousers": {
+      "Black": 3
     }
   },
   "statedSplit": {
@@ -164,6 +175,11 @@
     "piping-detail-denim-jacket-trouser-set": {
       "XXS": 1,
       "XS": 2,
+      "M": 1,
+      "L": 1
+    },
+    "tailored-barrel-fit-trousers": {
+      "S": 1,
       "M": 1,
       "L": 1
     }

@@ -99,7 +99,7 @@ export default async function ProductPage({
               {/* Same rule as the grid: a placeholder is not a price, and
                   this is the page where somebody decides to spend money. */}
               {isBuyable(product) ? (
-                <p className="pdp-price"><Price priceP={product.priceP} /></p>
+                <p className="pdp-price"><Price priceP={product.priceP} slug={product.slug} /></p>
               ) : (
                 <p className="pdp-price pdp-price--pending">Price to confirm</p>
               )}

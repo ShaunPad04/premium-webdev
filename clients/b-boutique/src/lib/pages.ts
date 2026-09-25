@@ -80,6 +80,7 @@ export const clothingCards: CategoryCard[] = [
   "coats-jackets",
   "trousers",
   "tops",
+  "skirts",
   "co-ords",
   "dresses",
 ].map(fromStock);
@@ -97,7 +98,8 @@ export const clothingCards: CategoryCard[] = [
  *  So each one points at the nearest live category, or at /clothing when
  *  there is no honest nearest. `coats` and `jackets` both go to the rail that
  *  now holds both. `shirts` goes to Tops, which is where a lace blouse
- *  actually is. `skirts`, `denim` and `accessories` have no equivalent — this
+ *  actually is. `denim` and `accessories` have no equivalent (`skirts` did too, until
+ *  the tartan tie skirt arrived on 2026-09-25 and it became a live category) — this
  *  drop contains none — so they land on the full list rather than on a
  *  category that would be a lie about what is in it.
  *
@@ -107,7 +109,6 @@ export const RETIRED_CATEGORIES: Record<string, string> = {
   jackets: "/clothing/coats-jackets",
   coats: "/clothing/coats-jackets",
   shirts: "/clothing/tops",
-  skirts: "/clothing",
   denim: "/clothing/trousers",
   accessories: "/shop",
   /* Homeware IS a live category with three pieces in it, and it deliberately

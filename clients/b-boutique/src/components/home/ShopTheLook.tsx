@@ -68,7 +68,7 @@ export function ShopTheLook() {
                 >
                   <span className="stl-n" aria-hidden="true">{s.n}</span>
                   <span className="stl-name">{s.p!.name}</span>
-                  <span className="stl-price"><Price priceP={s.p!.priceP} /></span>
+                  <span className="stl-price"><Price priceP={s.p!.priceP} slug={s.p!.slug} /></span>
                   <span className="stl-arrow" aria-hidden="true">&rarr;</span>
                 </Link>
               </li>
