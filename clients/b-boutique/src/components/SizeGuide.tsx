@@ -37,15 +37,25 @@ export function SizeGuide({ product }: { product: Product }) {
     ? `mailto:${shop.email}?subject=${encodeURIComponent(`Measurements: ${product.name}`)}`
     : null;
 
+  /* Lenis drives the page scroll itself, so a wheel over the open dialog
+     scrolled the page behind it. Stop it while the guide is open and let
+     the dialog scroll natively (data-lenis-prevent), as the photo viewer does. */
+  function open() {
+    window.__lenis?.stop();
+    ref.current?.showModal();
+  }
+
   return (
     <>
-      <button type="button" className="sg-open" onClick={() => ref.current?.showModal()} aria-haspopup="dialog">
+      <button type="button" className="sg-open" onClick={open} aria-haspopup="dialog">
         Size guide
       </button>
       <dialog
         ref={ref}
         className="sg"
         aria-labelledby={`${id}-h`}
+        data-lenis-prevent=""
+        onClose={() => window.__lenis?.start()}
         onClick={(e) => {
           if (e.target === e.currentTarget) ref.current?.close();
         }}

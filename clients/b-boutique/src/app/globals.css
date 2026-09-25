@@ -10640,23 +10640,20 @@ h2.ucs-h em { font-style: italic; }
 .ss-follow:hover { background: #2A2426; }
 .ss-follow:active { transform: scale(0.97); }
 .ss-follow:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
-.ss-row {
-  list-style: none; margin: 0; padding: 0 18px; display: grid; gap: 8px;
-  grid-auto-flow: column; grid-auto-columns: 62vw; overflow-x: auto; scroll-snap-type: x mandatory;
-  scrollbar-width: none;
+.ss-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #FFFFFF;
 }
-.ss-row::-webkit-scrollbar { display: none; }
-.ss-row > li { scroll-snap-align: start; }
-@media (min-width: 768px) {
-  .ss-row { grid-auto-flow: row; grid-template-columns: repeat(5, 1fr); padding-inline: var(--bb-gutter-editorial, 56px); gap: 10px; overflow: visible; }
-}
-.ss-tile { position: relative; display: block; aspect-ratio: 3 / 4; overflow: hidden; background: #EDEDED; }
+.ss-tile { position: relative; aspect-ratio: 1; overflow: hidden; background: #EDEDED; }
+.ss-film { display: block; width: 100%; height: 100%; }
 .ss-media { display: block; width: 100%; height: 100%; object-fit: cover; transition: scale 900ms cubic-bezier(0.22,1,0.36,1); }
-.ss-tile:hover .ss-media { scale: 1.04; }
-.ss-tile:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
+.ss-media--film { object-position: 50% 22%; }
+@media (hover: hover) { .ss-tile:hover .ss-media { scale: 1.04; } }
+.ss-film:focus-visible { outline: 2px solid #FFFFFF; outline-offset: -6px; }
 .ss-play {
   position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 999px;
   display: grid; place-items: center; padding-left: 2px; color: #FFFFFF;
   background: rgba(14,11,12,0.5); backdrop-filter: blur(6px);
 }
+@media (max-width: 639px) { .ss-play { top: 6px; right: 6px; width: 22px; height: 22px; } .ss-play svg { width: 7px; height: 9px; } }
 @media (prefers-reduced-motion: reduce) { .ss-media { transition: none; } }
