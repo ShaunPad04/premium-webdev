@@ -17,9 +17,11 @@ import { SocialMark } from "./SocialMark";
  * alt text says what they show, not a product name. They are not her posts
  * either, which is why the grid does not dress itself up as a Facebook feed.
  *
- * The film is fetched only when the grid nears the screen, plays muted and
- * looped inline, pauses off screen, and never plays for anyone who has asked
- * for reduced motion (they get the still). */
+ * The film is fetched only when the grid nears the screen and plays muted
+ * and looped inline, with no controls and no play badge: it reads as a
+ * moving photograph, not a player (Brad, 25 Sep). It rests off screen,
+ * which nobody sees, and never plays for anyone who has asked for reduced
+ * motion (they get the still). */
 
 type Mood = { img: string; alt: string };
 
@@ -33,7 +35,7 @@ const BEFORE: Mood[] = [{ img: "paris", alt: "A woman in black sunglasses and a 
 const AFTER: Mood[] = [
   { img: "milan", alt: "A black leather handbag, tortoiseshell sunglasses and gold hoops on a marble table" },
   { img: "nyfw", alt: "A model on a New York runway in a camel coat and wide black trousers" },
-  { img: "london", alt: "A woman in a brown satin dress on a wet London street at dusk" },
+  { img: "london", alt: "A woman in a brown satin dress on a wet London street at dusk, a black cab behind her" },
   { img: "como", alt: "A woman in ivory silk leaning on a stone terrace above Lake Como" },
 ];
 
@@ -70,20 +72,16 @@ export function SocialStrip() {
   }, []);
 
   return (
-    <section className="ss" aria-labelledby="ss-h">
-      <div className="ss-head">
-        <div>
-          <p className="ss-eyebrow">Follow along</p>
-          <h2 id="ss-h" className="ss-title">New on the rail, first on Facebook.</h2>
-        </div>
-        {fb ? (
+    <section className="ss" aria-label="Follow B Boutique">
+      {fb ? (
+        <div className="ss-head">
           <a className="ss-follow" href={fb.href} target="_blank" rel="noopener noreferrer">
             <SocialMark name="Facebook" />
             <span>Follow B Boutique</span>
             <span className="sr-only"> on Facebook (opens in a new tab)</span>
           </a>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
       <ul className="ss-grid">
         {BEFORE.map((m) => <MoodTile key={m.img} m={m} />)}
         <li className="ss-tile">
@@ -94,6 +92,8 @@ export function SocialStrip() {
               muted
               loop
               playsInline
+              disablePictureInPicture
+              disableRemotePlayback
               preload="none"
               poster="/img/look/film-600.jpg"
               aria-hidden="true"
@@ -101,9 +101,6 @@ export function SocialStrip() {
               <source src="/img/look/film.webm" type="video/webm" />
               <source src="/img/look/film.mp4" type="video/mp4" />
             </video>
-            <span className="ss-play" aria-hidden="true">
-              <svg width="10" height="12" viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z" fill="currentColor" /></svg>
-            </span>
           </Link>
         </li>
         {AFTER.map((m) => <MoodTile key={m.img} m={m} />)}

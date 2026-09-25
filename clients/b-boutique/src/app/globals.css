@@ -10592,8 +10592,6 @@ h2.ucs-h em { font-style: italic; }
   padding-inline: 18px; margin-bottom: clamp(22px, 3vw, 34px);
 }
 @media (min-width: 768px) { .ss-head { padding-inline: var(--bb-gutter-editorial, 56px); } }
-.ss-eyebrow { margin: 0 0 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #555555; }
-.ss-title { margin: 0; max-width: 18ch; font-family: var(--font-display), Georgia, serif; font-weight: 400; font-size: clamp(30px, 4.2vw, 56px); line-height: 1.02; letter-spacing: -0.012em; }
 .ss-follow {
   display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px;
   border-radius: 999px; background: var(--bb-black); color: #FFFFFF; text-decoration: none;
@@ -10614,10 +10612,41 @@ h2.ucs-h em { font-style: italic; }
 .ss-media--film { object-position: 50% 22%; }
 @media (hover: hover) { .ss-tile:hover .ss-media { scale: 1.04; } }
 .ss-film:focus-visible { outline: 2px solid #FFFFFF; outline-offset: -6px; }
-.ss-play {
-  position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 999px;
-  display: grid; place-items: center; padding-left: 2px; color: #FFFFFF;
-  background: rgba(14,11,12,0.5); backdrop-filter: blur(6px);
-}
-@media (max-width: 639px) { .ss-play { top: 6px; right: 6px; width: 22px; height: 22px; } .ss-play svg { width: 7px; height: 9px; } }
 @media (prefers-reduced-motion: reduce) { .ss-media { transition: none; } }
+
+/* ── White footer (2026-09-25, Brad: "just a regular white footer" with the
+ * logo in it) ─────────────────────────────────────────────────────────────
+ * Overrides the black rounded panel and its drifting waves above: a plain
+ * white footer, black type, a hairline to separate it from the page, the
+ * B monogram at the head of the first column. Muted type is #555, 7.5:1 on
+ * white. */
+.wf {
+  background: #FFFFFF; color: var(--bb-black);
+  border-radius: 0; box-shadow: none; clip-path: none;
+  border-top: 1px solid rgba(14, 11, 12, 0.12);
+}
+.wf-waves { display: none; }
+.wf-logo-link { display: inline-block; margin-bottom: 26px; color: var(--bb-black); }
+.wf-logo { display: block; width: 58px; height: auto; }
+.wf-logo-link:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 4px; }
+h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
+.wf-eyebrow, .wf h2.wf-group, .wf-hours, .wf-meta, .ft-made { color: #555555; }
+.wf-legal { border-top-color: rgba(14, 11, 12, 0.12); }
+.wf-legal .wf-link { color: #555555; }
+.wf-legal .wf-link:hover { color: var(--bb-black); }
+.wf-social-btn { border-color: rgba(14, 11, 12, 0.28); }
+.wf-social-btn:hover { background: transparent; border-color: var(--bb-black); }
+.wf .ft-made-link { color: #555555; text-decoration-color: rgba(14, 11, 12, 0.4); }
+.wf .ft-made-link:is(:hover, :focus-visible) { color: var(--bb-black); text-decoration-color: var(--bb-black); }
+/* Buttons: the black pill and the outline, inverted from the dark panel. */
+.wf .ft-cta-shop { background: var(--bb-black); color: #FFFFFF; box-shadow: none; }
+.wf .ft-cta-shop:is(:hover, :focus-visible) { color: var(--bb-black); }
+.wf .visit-cta { color: var(--bb-black); border-color: rgba(14, 11, 12, 0.42); }
+.wf .visit-cta::before { background: var(--bb-black); }
+.wf .visit-cta:is(:hover, :focus-visible) { color: #FFFFFF; border-color: var(--bb-black); }
+.wf :is(.ft-cta-shop, .visit-cta):focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
+
+/* Follow along, 2026-09-25 (Brad): the heading is gone; the Follow button
+   sits alone, centred, just above the film. */
+.ss { padding-top: clamp(48px, 6vw, 80px); }
+.ss-head { justify-content: center; margin-bottom: clamp(20px, 2.6vw, 30px); }
