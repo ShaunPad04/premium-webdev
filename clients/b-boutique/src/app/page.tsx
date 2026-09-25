@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { NewArrivalRail } from "@/components/NewArrivalRail";
@@ -12,6 +13,9 @@ import { Reviews } from "@/components/home/Reviews";
 import { Visit } from "@/components/Visit";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
+
+/* Every other page names its own canonical; the home page did not. */
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 /* The home page, cut from ~17 screens to about half that (2026-09-24, Brad,
  * after the homepage critique). It answered the same questions four or five
