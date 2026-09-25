@@ -1,156 +1,62 @@
 "use client";
 
-import { useCallback, useRef, useState, useSyncExternalStore } from "react";
-import { motion, useMotionValueEvent, useReducedMotion, useScroll, type PanInfo } from "motion/react";
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
+import { STYLE, StackCard, StackChrome, type StackItem } from "./vertical-image-stack-parts";
 
-/* VerticalImageStack, from 21st.dev, adapted for B Boutique (2026-09-24).
+export type { StackItem };
+
+/* The "Up close" stack, in two stages (2026-09-25).
  *
- * Changed from the original:
- * - It listened for the mouse wheel on the WHOLE window, so every scroll
- *   anywhere on the page flipped a card. Here the section is a sticky stage
- *   and the page's own scroll through it chooses the card; dragging, the
- *   dots and the arrow keys move the page to that card's point, so scroll
- *   position and card never disagree.
- * - motion/react (already a dependency) instead of adding framer-motion.
- * - Plain <picture> sources the site already builds, not next/image.
- * - Reduced motion: no stage, the cards as a simple row.
- * - Each card can carry a caption and a link. */
-export type StackItem = {
-  id: string;
-  sources: { type: string; srcSet: string }[];
-  fallback: string;
-  alt: string;
-  title: string;
-  sub: string;
-  href: string;
-};
-
-const STYLE = (diff: number) =>
-  diff === 0 ? { y: 0, scale: 1, opacity: 1, rotateX: 0, zIndex: 5 }
-  : diff === -1 ? { y: -150, scale: 0.82, opacity: 0.55, rotateX: 8, zIndex: 4 }
-  : diff === -2 ? { y: -260, scale: 0.7, opacity: 0.25, rotateX: 15, zIndex: 3 }
-  : diff === 1 ? { y: 150, scale: 0.82, opacity: 0.55, rotateX: -8, zIndex: 4 }
-  : diff === 2 ? { y: 260, scale: 0.7, opacity: 0.25, rotateX: -15, zIndex: 3 }
-  : { y: diff > 0 ? 380 : -380, scale: 0.6, opacity: 0, rotateX: diff > 0 ? -20 : 20, zIndex: 0 };
-
-/* Drag is for a mouse only (2026-09-24, Brad: on a phone the stack
-   sometimes moved "by itself"). On touch, a swipe that began on a card was
-   taken as a card drag, and its end called goTo, which smooth-scrolled the
-   page to the next card without the reader scrolling. Touch now only
-   scrolls the page; the page's scroll alone turns the cards. */
-const FINE = "(hover: hover) and (pointer: fine)";
-const subFine = (cb: () => void) => {
-  const m = window.matchMedia(FINE);
-  m.addEventListener("change", cb);
-  return () => m.removeEventListener("change", cb);
-};
-const useFinePointer = () =>
-  useSyncExternalStore(subFine, () => window.matchMedia(FINE).matches, () => false);
+ * The live stack (vertical-image-stack-live.tsx) needs the motion library
+ * for its spring and its mouse drag, and loading that library with the page
+ * put ~50KB in front of the first paint on every visit, for a section most
+ * of a screen below the fold. So the server draws the stack as it looks
+ * before anyone scrolls — card one in front, two and three fanned behind,
+ * the same STYLE numbers — and the live one replaces it when the browser is
+ * idle or the section comes within a screen and a half of view, whichever is
+ * first. Both are drawn from the same parts, so the swap changes nothing on
+ * screen. */
+const Live = dynamic(() => import("./vertical-image-stack-live"), { ssr: false });
 
 export function VerticalImageStack({ items, children }: { items: StackItem[]; children?: React.ReactNode }) {
-  const track = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const [current, setCurrent] = useState(0);
-  const fine = useFinePointer();
+  const root = useRef<HTMLDivElement>(null);
+  const [live, setLive] = useState(false);
+
+  useEffect(() => {
+    const go = () => setLive(true);
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number; cancelIdleCallback?: (h: number) => void };
+    const idle = w.requestIdleCallback ? w.requestIdleCallback(go, { timeout: 4000 }) : window.setTimeout(go, 2500);
+    const io = new IntersectionObserver((e) => e.some((x) => x.isIntersecting) && go(), { rootMargin: "150% 0px" });
+    if (root.current) io.observe(root.current);
+    return () => {
+      (w.cancelIdleCallback ?? window.clearTimeout)(idle);
+      io.disconnect();
+    };
+  }, []);
+
+  if (live) return <Live items={items}>{children}</Live>;
+
   const n = items.length;
-
-  const { scrollYProgress } = useScroll({ target: track, offset: ["start start", "end end"] });
-  useMotionValueEvent(scrollYProgress, "change", (p) => {
-    setCurrent(Math.min(n - 1, Math.max(0, Math.floor(p * n))));
-  });
-
-  /* Move the PAGE to card i, so the scroll stays the one source of truth. */
-  const goTo = useCallback((i: number) => {
-    const el = track.current;
-    if (!el) return;
-    const i2 = Math.min(n - 1, Math.max(0, i));
-    const range = el.offsetHeight - window.innerHeight;
-    const y = el.getBoundingClientRect().top + window.scrollY + range * ((i2 + 0.5) / n);
-    if (window.__lenis) window.__lenis.scrollTo(y, { duration: 0.7 });
-    else window.scrollTo({ top: y, behavior: "smooth" });
-  }, [n]);
-
-  const onDragEnd = (_: unknown, info: PanInfo) => {
-    if (info.offset.y < -50) goTo(current + 1);
-    else if (info.offset.y > 50) goTo(current - 1);
-  };
-
-
-  const card = (item: StackItem, isCurrent: boolean) => (
-    <a href={item.href} className="vis-card" tabIndex={reduce || isCurrent ? 0 : -1} aria-hidden={reduce || isCurrent ? undefined : true} draggable={false}>
-      <picture>
-        {item.sources.map((s) => <source key={s.type} type={s.type} srcSet={s.srcSet} sizes="(min-width: 768px) 340px, 70vw" />)}
-        <img src={item.fallback} alt={item.alt} loading="lazy" decoding="async" draggable={false} className="vis-img" />
-      </picture>
-      <span className="vis-cap">
-        <span className="vis-title">{item.title}</span>
-        <span className="vis-sub">{item.sub}</span>
-      </span>
-    </a>
-  );
-
-  if (reduce) {
-    return (
-      <div className="vis vis--still">
-        {children}
-        <ul className="vis-still-row">{items.map((it) => <li key={it.id}>{card(it, true)}</li>)}</ul>
-      </div>
-    );
-  }
-
   return (
-    <div ref={track} className="vis" style={{ "--vis-n": n } as React.CSSProperties}>
-      <div
-        className="vis-stage"
-        onKeyDown={(e) => {
-          if (e.key === "ArrowDown") { e.preventDefault(); goTo(current + 1); }
-          if (e.key === "ArrowUp") { e.preventDefault(); goTo(current - 1); }
-        }}
-      >
+    <div ref={root} className="vis" style={{ "--vis-n": n } as React.CSSProperties}>
+      <div className="vis-stage">
         {children}
         <div className="vis-stack">
-          {items.map((item, i) => {
-            const diff = i - current;
-            if (Math.abs(diff) > 2) return null;
-            const s = STYLE(diff);
+          {items.slice(0, 3).map((item, i) => {
+            const s = STYLE(i);
             return (
-              <motion.div
+              <div
                 key={item.id}
                 className="vis-slot"
-                initial={false}
-                animate={{ y: s.y, scale: s.scale, opacity: s.opacity, rotateX: s.rotateX }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                drag={fine && diff === 0 ? "y" : false}
-                dragConstraints={{ top: 0, bottom: 0 }}
-                dragElastic={0.2}
-                onDragEnd={onDragEnd}
-                style={{ zIndex: s.zIndex }}
+                style={{ zIndex: s.zIndex, opacity: s.opacity, transform: `translateY(${s.y}px) scale(${s.scale}) rotateX(${s.rotateX}deg)` }}
               >
-                {card(item, diff === 0)}
-              </motion.div>
+                <StackCard item={item} focusable={i === 0} />
+              </div>
             );
           })}
         </div>
-
-        <div className="vis-count" aria-hidden="true">
-          <span className="vis-count-now">{String(current + 1).padStart(2, "0")}</span>
-          <span className="vis-count-rule" />
-          <span className="vis-count-all">{String(n).padStart(2, "0")}</span>
-        </div>
-
-        <div className="vis-dots">
-          {items.map((it, i) => (
-            <button
-              key={it.id}
-              type="button"
-              className="vis-dot"
-              data-on={i === current ? "" : undefined}
-              aria-label={`Show ${it.title}`}
-              aria-current={i === current ? "true" : undefined}
-              onClick={() => goTo(i)}
-            />
-          ))}
-        </div>
+        <StackChrome n={n} current={0} labels={items.map((it) => it.title)} />
       </div>
     </div>
   );

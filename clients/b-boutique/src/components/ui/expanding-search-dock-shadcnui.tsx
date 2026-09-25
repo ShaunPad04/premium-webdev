@@ -1,7 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useRef, type ReactNode, type RefObject } from "react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 /* The 21st.dev "Expanding Search Dock", adapted (2026-09-23).
  *
@@ -51,7 +51,16 @@ export function ExpandingSearchDock({
   triggerRef,
   children,
 }: Props) {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
+  /* The field's fade in and out is CSS (globals.css, .sdock-form), not the
+     motion library: this sits in the header on every page, and the library
+     was ~50KB of the first download for an 180ms opacity fade. `shown`
+     keeps the field mounted while it fades out; it is set during render,
+     not in an effect, and cleared when the fade-out ends. */
+  const [shown, setShown] = useState(open);
+  if (open && !shown) setShown(true);
+  if (!open && shown && reduce) setShown(false);
+  const closing = !open && shown;
   const input = useRef<HTMLInputElement>(null);
   const ownTrigger = useRef<HTMLButtonElement>(null);
   const trigger = triggerRef ?? ownTrigger;
@@ -86,16 +95,15 @@ export function ExpandingSearchDock({
         <Glass />
       </button>
 
-      <AnimatePresence>
-        {open ? (
-          <motion.form
-            key="field"
+      {shown ? (
+          <form
             role="search"
             className="sdock-form"
-            initial={{ opacity: reduce ? 1 : 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reduce ? 0 : 0.18, ease: [0.22, 1, 0.36, 1] }}
+            data-closing={closing || undefined}
+            inert={closing || undefined}
+            onAnimationEnd={(e) => {
+              if (e.animationName === "sdock-fade-out") setShown(false);
+            }}
             onSubmit={(e) => {
               e.preventDefault();
               const q = value.trim();
@@ -129,9 +137,8 @@ export function ExpandingSearchDock({
                 <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </button>
-          </motion.form>
+          </form>
         ) : null}
-      </AnimatePresence>
       {children}
     </div>
   );

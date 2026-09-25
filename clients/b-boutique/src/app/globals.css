@@ -9039,8 +9039,13 @@ h2.ft-group { font-family: var(--font-body); font-size: 12px; font-weight: 600; 
   color: var(--inverse-ink);
   border: 1px solid rgba(255, 255, 255, 0.36);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
-  animation: sdock-open-r 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: sdock-open-r 460ms cubic-bezier(0.22, 1, 0.36, 1) both,
+    sdock-fade-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+/* The fade the motion library used to do (2026-09-25): 180ms in, 180ms out. */
+.sdock-form[data-closing] { animation: sdock-fade-out 180ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+@keyframes sdock-fade-in { from { opacity: 0; } }
+@keyframes sdock-fade-out { to { opacity: 0; } }
 .sdock-form:focus-within { border-color: #FFFFFF; }
 @keyframes sdock-open-r {
   from { clip-path: inset(0 0 0 calc(100% - 44px) round 999px); }
@@ -9076,8 +9081,9 @@ h2.ft-group { font-family: var(--font-body); font-size: 12px; font-weight: 600; 
   .sdock { position: static; }
   .sdock-form {
     left: 12px; right: 12px; width: auto;
-    animation-name: sdock-open-l;
+    animation-name: sdock-open-l, sdock-fade-in;
   }
+  .sdock-form[data-closing] { animation-name: sdock-fade-out; }
   @keyframes sdock-open-l {
     from { clip-path: inset(0 calc(100% - 92px) 0 44px round 999px); }
     to   { clip-path: inset(0 0 0 0 round 999px); }
