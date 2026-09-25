@@ -125,7 +125,7 @@ const delivery: Policy = {
       heading: "When it is sent",
       kind: "derived",
       body: [
-        "We aim to post your order the next working day.",
+        "We aim to post your order the next business day.",
         "The shop is open seven days a week, but the post office is not, so an order placed late on a Saturday usually goes on the Monday.",
       ],
     },

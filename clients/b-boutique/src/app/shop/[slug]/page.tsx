@@ -257,7 +257,7 @@ export default async function ProductPage({
                   and standard", "Seamless returns / easy returns and
                   exchanges" and "Authenticity guaranteed / 100% verified".
                   None of those is true here as written: there is one
-                  service (Royal Mail, next working day), no exchanges on
+                  service (Royal Mail, next business day), no exchanges on
                   online orders, and nothing verifies anything. So the
                   layout is his and every word is hers, read from the same
                   constants the bag and checkout use. */}
@@ -267,7 +267,7 @@ export default async function ProductPage({
                   <div>
                     <p className="pdp-perk-t">UK delivery</p>
                     <p className="pdp-perk-d">
-                      {formatPriceShort(DELIVERY_P)} by Royal Mail, next working day. Free over{" "}
+                      {formatPriceShort(DELIVERY_P)} by Royal Mail, next business day. Free over{" "}
                       {formatPriceShort(FREE_DELIVERY_OVER_P)}.
                     </p>
                   </div>

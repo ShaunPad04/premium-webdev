@@ -380,7 +380,7 @@ export function Bag() {
             <h2 id="bk-delivery" className="bk-card-h">
               <span className="bk-num">02</span>Delivery details
             </h2>
-            <p className="bk-lede">We post within the UK only, by Royal Mail, next working day.</p>
+            <p className="bk-lede">We post within the UK only, by Royal Mail, next business day.</p>
             <DeliveryDetails
               value={details}
               onChange={(next) => {
@@ -462,7 +462,7 @@ export function Bag() {
               hosted page (lib/sumup.ts), never on this site. */}
           <ul className="bk-trust">
             <li>Payment is taken on SumUp&rsquo;s secure page. Your card details never reach this site.</li>
-            <li>Royal Mail, next working day. Free over {formatPriceShort(FREE_DELIVERY_OVER_P)}.</li>
+            <li>Royal Mail, next business day. Free over {formatPriceShort(FREE_DELIVERY_OVER_P)}.</li>
             <li>14 days to change your mind.</li>
           </ul>
 

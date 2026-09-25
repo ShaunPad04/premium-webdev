@@ -181,7 +181,7 @@ export function DeliveryDetails({
           delivery only is the client's own confirmed term and a customer who
           reads it here does not get as far as typing a Dublin address. */}
       <p className="dd-note">
-        We post within the UK only, by Royal Mail, next working day.
+        We post within the UK only, by Royal Mail, next business day.
       </p>
 
       {row("name", "Name", { autoComplete: "name", maxLength: 100 })}

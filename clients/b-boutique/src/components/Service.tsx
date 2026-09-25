@@ -25,7 +25,7 @@ const ITEMS = [
     href: "/delivery",
     icon: "M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3v3h-7M6 18a1.8 1.8 0 1 0 0-.01M17 18a1.8 1.8 0 1 0 0-.01",
     title: `UK delivery ${formatPriceShort(DELIVERY_P)}`,
-    line: `Free over ${formatPriceShort(FREE_DELIVERY_OVER_P)} · next working day`,
+    line: `Free over ${formatPriceShort(FREE_DELIVERY_OVER_P)} · next business day`,
   },
   {
     href: "/returns",
