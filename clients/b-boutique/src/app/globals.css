@@ -10697,3 +10697,26 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 }
 @keyframes wf-lift { from { translate: 0 64px; scale: 0.985; } }
 @media (prefers-reduced-motion: reduce) { footer.wf .wf-inner { animation: none; } }
+
+/* Hero dots read on the cream knit as well as on black (Brad, 25 Sep: hard
+   to see for older eyes): a thin dark ring outside the white one and a soft
+   shadow, and the white centre gets a dark edge of its own. */
+.lk-dot { box-shadow: 0 0 0 1px rgba(255,255,255,0.7), 0 0 0 2px rgba(14,11,12,0.35), 0 2px 12px rgba(14,11,12,0.4); }
+.lk-dot span { box-shadow: 0 0 0 1.5px rgba(14,11,12,0.45); }
+
+/* The category photographs sit edge to edge, no seams (Brad, 25 Sep). */
+.cats-rail { gap: 0; }
+
+/* Grid height (Brad, 25 Sep: "too large?"). Full-width squares were 640px
+   each at 1920, so the grid ran to ~1280px and the first row alone filled the
+   screen. On tablets and up each row is capped at 44% of the screen height:
+   on wide screens the tiles turn a little landscape and the whole grid sits
+   on one screen, as Radian's does. Crops hold the upper third, where the
+   faces are. Phones keep squares. */
+@media (min-width: 768px) {
+  .ss-tile { aspect-ratio: auto; height: min(33.34vw, 44svh); }
+  .ss-media { object-position: 50% 32%; }
+  .ss-media--film { object-position: 50% 24%; }
+}
+.rv-rating-only { margin: 0; font-size: 15px; line-height: 1.6; color: #555555; }
+@media (min-width: 1024px) { .rv-list { max-width: 1240px; grid-template-columns: repeat(3, 1fr); } }

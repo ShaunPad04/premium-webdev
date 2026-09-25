@@ -34,13 +34,20 @@ export function Reviews({ items = reviews }: { items?: Review[] }) {
         </p>
         <ul className="rv-list">
           {items.map((r) => (
-            <li key={r.name + r.quote.slice(0, 20)} className="rv-card">
+            <li key={r.name} className="rv-card">
               <figure>
                 {r.stars ? <Stars n={r.stars} /> : null}
-                <blockquote className="rv-quote"><p>{r.quote}</p></blockquote>
+                {r.quote ? (
+                  <blockquote className="rv-quote"><p>{r.quote}</p></blockquote>
+                ) : (
+                  <p className="rv-rating-only">
+                    {r.stars ? `A ${["one", "two", "three", "four", "five"][r.stars - 1]}-star rating, ` : "A rating, "}
+                    left without a written review.
+                  </p>
+                )}
                 <figcaption className="rv-by">
                   <span className="rv-name">{r.name}</span>
-                  <span className="rv-src">{r.source} review</span>
+                  <span className="rv-src">{r.source} {r.quote ? "review" : "rating"}</span>
                 </figcaption>
               </figure>
             </li>

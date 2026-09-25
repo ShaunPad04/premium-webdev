@@ -8,7 +8,9 @@
  * three self-selected reviews on the shop's own site is not what that
  * schema is for, and Google treats it as self-serving. */
 export type Review = {
-  quote: string;
+  /** The review's own words. Omitted for a star rating left with no text:
+   *  the card then shows the stars and the name, and no words at all. */
+  quote?: string;
   name: string;
   /** The stars given on Google, 1 to 5. Omit if unknown; never guess. */
   stars?: 1 | 2 | 3 | 4 | 5;
@@ -18,8 +20,9 @@ export type Review = {
 /* Copied from her Google Business listing on 2026-09-24 (a screenshot
    Brad sent of https://share.google/dtmJLWZtTxzgd5CqA), word for word,
    spelling included: a correction would put words in a customer's mouth.
-   The third review, Sean T. (5 stars), has no text, so it is counted in
-   the summary below but has no card. */
+   The third review, Sean T. (5 stars), has no text; since 2026-09-25 (Brad:
+   "why only two when there's three?") it has a card with his stars and
+   name and no quote, rather than words nobody wrote. */
 export const reviews: Review[] = [
   {
     quote: "Lovely selection of ladies clothing. Friendly and helpful. Great new premises on Seaview St. Cleethorpes",
@@ -30,6 +33,11 @@ export const reviews: Review[] = [
   {
     quote: "Nice affordable clothing for my mothers birthday, lovely staff absolute pleasure to be around would definetely recommend to everyone!",
     name: "Shaun J",
+    stars: 5,
+    source: "Google",
+  },
+  {
+    name: "Sean T.",
     stars: 5,
     source: "Google",
   },

@@ -25,7 +25,7 @@ import { Cta, Where } from "./HeroStrips";
 type Spot = { slug: string; colour: string; d: [number, number]; m: [number, number]; side: "l" | "r" };
 
 const SPOTS: Spot[] = [
-  { slug: "italian-knit-ribbed-cardigan", colour: "Cream", d: [66.5, 47], m: [79, 50], side: "r" },
+  { slug: "italian-knit-ribbed-cardigan", colour: "Cream", d: [70, 47], m: [84, 50], side: "r" },
   { slug: "tailored-barrel-fit-trousers", colour: "Black", d: [52, 68], m: [55, 68], side: "l" },
 ];
 
