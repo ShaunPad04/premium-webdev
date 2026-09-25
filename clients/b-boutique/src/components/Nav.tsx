@@ -216,13 +216,13 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
                 <NavMenuItem key={item.label} item={item} />
               ) : (
                 <li key={item.label} className="nav-item">
-                  <a
+                  <Link
                     href={item.href}
                     aria-current={pathname === item.href ? "page" : undefined}
                     className="nav-link nav-link--bar flip-host text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
                   >
                     <FlipText>{item.label}</FlipText>
-                  </a>
+                  </Link>
                 </li>
               ),
             )}
@@ -302,7 +302,7 @@ function NavMenuItem({
         trigger.current?.focus();
       }}
     >
-      <a
+      <Link
         ref={trigger}
         href={item.href}
         className="nav-link nav-link--bar nav-link--caret flip-host text-[10px] font-semibold uppercase leading-none tracking-[0.14em]"
@@ -312,15 +312,15 @@ function NavMenuItem({
         <svg className="nav-caret" width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true">
           <path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </a>
+      </Link>
 
       <div className="nav-menu-wrap">
         <ul className="nav-menu" aria-label={`${item.label} categories`}>
           {item.menu.map((sub, i) => (
             <li key={sub.href} className="nav-menu-item" style={{ "--i": i } as React.CSSProperties}>
-              <a href={sub.href} className="nav-menu-link flip-host">
+              <Link href={sub.href} className="nav-menu-link flip-host">
                 <FlipText>{sub.label}</FlipText>
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

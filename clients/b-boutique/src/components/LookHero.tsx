@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
+import { useState } from "react";
 
 import { productBySlug } from "@/lib/catalogue";
 import { Price } from "./Price";
@@ -11,9 +11,11 @@ import { Cta, Where } from "./HeroStrips";
  *
  * One campaign frame: a model in two real pieces from the rail, generated
  * in Higgsfield from those pieces' own product photographs and checked
- * against them. A dot sits on each garment; hovering (or focusing, or on a
- * phone tapping) one opens a card with the piece's name, colour and price
- * and a link to it. "Shop the look" opens both.
+ * against them. A dot sits on each garment and is the link to that exact
+ * piece: click or tap it and you are on its page. Hovering or focusing it
+ * first previews a card with the name, colour and price. (Brad, 25 Sep:
+ * the dot should go straight to the product; "Shop the look" removed as it
+ * repeated Shop all.)
  *
  * The dots are placed in the photograph's own coordinates, inside a box
  * sized exactly as `object-fit: cover` sizes the picture, so they stay on
@@ -29,35 +31,9 @@ const SPOTS: Spot[] = [
 
 export function LookHero() {
   const [open, setOpen] = useState<number | null>(null);
-  const [all, setAll] = useState(false);
-  const root = useRef<HTMLDivElement>(null);
-  const id = useId();
-
-  /* A tap anywhere else closes an open card; Escape too. */
-  useEffect(() => {
-    if (open === null && !all) return;
-    const off = (e: PointerEvent) => {
-      if (!(e.target as Element).closest(".lk-spot, .lk-look")) {
-        setOpen(null);
-        setAll(false);
-      }
-    };
-    const esc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(null);
-        setAll(false);
-      }
-    };
-    document.addEventListener("pointerdown", off);
-    document.addEventListener("keydown", esc);
-    return () => {
-      document.removeEventListener("pointerdown", off);
-      document.removeEventListener("keydown", esc);
-    };
-  }, [open, all]);
 
   return (
-    <div className="lk" ref={root}>
+    <div className="lk">
       <picture className="lk-pic">
         <source media="(min-width: 768px)" type="image/avif" srcSet="/img/hero/look-d1920.avif 1920w, /img/hero/look-d2560.avif 2560w, /img/hero/look-d3840.avif 3840w" sizes="100vw" />
         <source media="(min-width: 768px)" type="image/webp" srcSet="/img/hero/look-d1920.webp 1920w, /img/hero/look-d2560.webp 2560w, /img/hero/look-d3840.webp 3840w" sizes="100vw" />
@@ -77,7 +53,7 @@ export function LookHero() {
         {SPOTS.map((s, i) => {
           const p = productBySlug(s.slug);
           if (!p) return null;
-          const shown = all || open === i;
+          const shown = open === i;
           return (
             <div
               key={s.slug}
@@ -88,18 +64,18 @@ export function LookHero() {
               onMouseEnter={() => setOpen(i)}
               onMouseLeave={() => setOpen((v) => (v === i ? null : v))}
             >
-              <button
-                type="button"
+              <Link
+                href={`/shop/${p.slug}`}
                 className="lk-dot"
-                aria-expanded={shown}
-                aria-controls={`${id}-${i}`}
-                aria-label={`${p.name}, show details`}
-                onClick={() => setOpen((v) => (v === i ? null : i))}
+                aria-label={`${p.name} in ${s.colour.toLowerCase()}, view piece`}
                 onFocus={() => setOpen(i)}
+                onBlur={() => setOpen((v) => (v === i ? null : v))}
               >
                 <span aria-hidden="true" />
-              </button>
-              <Link href={`/shop/${p.slug}`} id={`${id}-${i}`} className="lk-card" tabIndex={shown ? 0 : -1} aria-hidden={!shown}>
+              </Link>
+              {/* The preview card is the same link, for a pointer that lands
+                  on it; keyboard and screen readers already have the dot. */}
+              <Link href={`/shop/${p.slug}`} className="lk-card" tabIndex={-1} aria-hidden="true">
                 <span className="lk-card-name">{p.name}</span>
                 <span className="lk-card-meta">
                   {s.colour} <span aria-hidden="true">·</span> <Price priceP={p.priceP} slug={p.slug} />
@@ -122,9 +98,6 @@ export function LookHero() {
         <p className="lk-sub">An Italian ribbed cardigan and a tailored barrel trouser. Two pieces from the rail, one easy outfit.</p>
         <div className="lk-actions">
           <Cta />
-          <button type="button" className="lk-look" aria-pressed={all} onClick={() => setAll((v) => !v)}>
-            {all ? "Hide the pieces" : "Shop the look"}
-          </button>
         </div>
       </div>
       <Where />

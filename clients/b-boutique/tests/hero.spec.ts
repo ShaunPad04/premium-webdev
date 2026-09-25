@@ -25,14 +25,17 @@ test('the lookbook hero survives a swipe and its pieces open to real pages', asy
     await page.mouse.move(box.x + box.width * 0.3, y, { steps: 6 });
     await page.mouse.up();
   }
-  await page.locator('.lk-look').click();
-  const cards = page.locator('.lk-card');
-  await expect(cards).toHaveCount(2);
-  for (const href of await cards.evaluateAll((els) => els.map((e) => e.getAttribute('href')))) {
+  /* Each dot is the link to its piece (Brad, 25 Sep): hover previews the
+     card, a click lands on the product itself. */
+  const dots = page.locator('.lk-dot');
+  await expect(dots).toHaveCount(2);
+  for (const href of await dots.evaluateAll((els) => els.map((e) => e.getAttribute('href')))) {
     const res = await page.request.get(href!);
     expect(res.status(), href!).toBe(200);
   }
-  await expect(page.locator('.lk-spot[data-open]')).toHaveCount(2);
+  await dots.first().hover();
+  await expect(page.locator('.lk-spot[data-open]')).toHaveCount(1);
+  await expect(page.locator('.lk-look')).toHaveCount(0);
   expect(errors, errors.join('\n')).toEqual([]);
   await expect(page.getByText(/couldn.t load/)).toHaveCount(0);
   await expect(page.locator('.lk-title')).toBeVisible();

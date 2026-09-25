@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 
@@ -88,7 +89,7 @@ export function HorizontalRails() {
       <ul ref={rail} className="cats-rail">
         {featured.map((c) => (
           <li key={c.slug} className="cats-card" data-card>
-            <a href={c.href} className="cats-link flip-host">
+            <Link href={c.href} className="cats-link flip-host">
               <Image
                 src={c.image}
                 alt={c.alt}
@@ -113,7 +114,7 @@ export function HorizontalRails() {
                   Explore <span className="cats-arrow" aria-hidden="true">&rarr;</span>
                 </span>
               </span>
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

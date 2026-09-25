@@ -1,3 +1,4 @@
+import Link from "next/link";
 /* Shared by the static stack (drawn on the server) and the live one (the
    motion library, loaded later), so the two draw exactly the same cards. */
 export type StackItem = {
@@ -20,7 +21,7 @@ export const STYLE = (diff: number) =>
 
 export function StackCard({ item, focusable }: { item: StackItem; focusable: boolean }) {
   return (
-    <a href={item.href} className="vis-card" tabIndex={focusable ? 0 : -1} aria-hidden={focusable ? undefined : true} draggable={false}>
+    <Link href={item.href} className="vis-card" tabIndex={focusable ? 0 : -1} aria-hidden={focusable ? undefined : true} draggable={false}>
       <picture>
         {item.sources.map((s) => <source key={s.type} type={s.type} srcSet={s.srcSet} sizes="(min-width: 768px) 340px, 70vw" />)}
         <img src={item.fallback} alt={item.alt} loading="lazy" decoding="async" draggable={false} className="vis-img" />
@@ -29,7 +30,7 @@ export function StackCard({ item, focusable }: { item: StackItem; focusable: boo
         <span className="vis-title">{item.title}</span>
         <span className="vis-sub">{item.sub}</span>
       </span>
-    </a>
+    </Link>
   );
 }
 

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { footerNav, socials, directionsHref } from "@/lib/nav";
 import { shop, addressLines, openingPhrase } from "@/lib/shop";
 import { SocialMark } from "../SocialMark";
@@ -57,12 +58,12 @@ export default function AnimatedWaveFooter() {
             </h2>
             <p className="wf-hours">Open {openingPhrase()}.</p>
             <div className="wf-acts">
-              <a href="/shop" className="hero-cta ft-cta-shop">
+              <Link href="/shop" className="hero-cta ft-cta-shop">
                 <span className="roll"><span>Shop the rails</span></span>
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                   <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </a>
+              </Link>
               <a href={directionsHref} target="_blank" rel="noopener noreferrer" className="visit-cta ft-cta-dir">
                 <span className="roll"><span>Get directions</span></span> <span aria-hidden="true">&#8599;&#xFE0E;</span>
               </a>
@@ -75,7 +76,7 @@ export default function AnimatedWaveFooter() {
               <ul className="wf-links">
                 {group.items.map((item) => (
                   <li key={item.label}>
-                    <a href={item.href} className="wf-link">{item.label}</a>
+                    <Link href={item.href} className="wf-link">{item.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -111,7 +112,7 @@ export default function AnimatedWaveFooter() {
             <ul>
               {footerNav[2].items.map((item) => (
                 <li key={item.label}>
-                  <a href={item.href} className="wf-link">{item.label}</a>
+                  <Link href={item.href} className="wf-link">{item.label}</Link>
                 </li>
               ))}
             </ul>

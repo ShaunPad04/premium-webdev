@@ -3,26 +3,33 @@
 import { ViewTransition } from "react";
 import { usePathname } from "next/navigation";
 
-/* The page-to-page transition (2026-09-24, Brad: "elite transitions").
+/* The page-to-page transition.
  *
- * Keyed by the pathname, so a change of page is an exit and an enter: the
- * old page leaves quickly (fade, a small lift, a touch of blur) and the new
- * one rises into place a beat later on an expo ease, the handover pattern in
- * MotionSites' designs and the Next.js view-transitions guide. Anything that
- * is not a change of page (a colour swap, a search filter, a refresh) keeps
- * the same key and `default="none"`, so it never animates the whole page.
+ * 2026-09-24 it wrapped the whole page in the boundary, so each change of
+ * page snapshotted two entire documents (many thousands of pixels tall) and
+ * cross-faded them. 2026-09-25, Brad: "a moment of freeze and glitch". That
+ * was the cost of it: a snapshot that size is slow to capture (the freeze,
+ * once long enough for Chrome to abort the transition), gets clipped (strips
+ * of the old page beside blank white), and a cross-fade of two pages of
+ * text shows both headings at once.
  *
- * The header does not move: it carries its own view-transition-name and is
- * held still in globals.css, so the eye has one fixed point while the
- * content changes. The grid → product photograph morph still plays inside
- * this, because a named pair takes precedence over the enter and exit.
- *
- * A browser without view transitions navigates instantly, as before. */
+ * Now the boundary holds only an empty, fixed, viewport-sized cue. Changing
+ * its key is what makes React run a view transition on a change of page;
+ * the page itself travels in the browser's root snapshot, which is only
+ * ever the viewport. globals.css holds the old one still and wipes the new
+ * one up over it, opaque, so nothing blank or doubled can show. The header
+ * keeps its own name and stays put; the grid-to-product photograph morph
+ * still plays on top. Anything that is not a change of page keeps the same
+ * key and does not animate. A browser without view transitions navigates
+ * instantly. */
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   return (
-    <ViewTransition key={pathname} enter="page-in" exit="page-out" default="none">
+    <>
+      <ViewTransition key={pathname} enter="page-in" exit="page-out" default="none">
+        <div className="page-vt-cue" aria-hidden="true" />
+      </ViewTransition>
       <div className="page-vt">{children}</div>
-    </ViewTransition>
+    </>
   );
 }

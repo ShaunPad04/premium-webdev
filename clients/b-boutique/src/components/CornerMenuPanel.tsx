@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import type { RefObject } from "react";
 
@@ -125,7 +126,7 @@ export default function CornerMenuPanel({
                       }
                       className="border-b border-bone/12 last:border-b-0"
                     >
-                      <a
+                      <Link
                         href={item.href}
                         onClick={close}
                         className="group flex min-h-[44px] items-center gap-3.5 py-2.5 transition-[padding] duration-200 ease-out hover:pl-1.5 focus-visible:pl-1.5"
@@ -178,7 +179,7 @@ export default function CornerMenuPanel({
                           <path d="M3 11L11 3M11 3H4.5M11 3v6.5" stroke="currentColor" strokeWidth="1.6"
                             strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
-                      </a>
+                      </Link>
                     </motion.li>
                   ))}
                 </ul>

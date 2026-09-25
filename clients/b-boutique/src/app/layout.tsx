@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { MagneticButtons } from "@/components/MagneticButtons";
-import { NavMotion } from "@/components/NavMotion";
 import { PageTransition } from "@/components/PageTransition";
 import { AddedToast } from "@/components/AddedToast";
 import { Bodoni_Moda, Hanken_Grotesk } from "next/font/google";
@@ -231,7 +230,6 @@ export default function RootLayout({
             useSyncExternalStore, so every component that needs it subscribes
             directly and there is nothing to thread through the tree. See the
             note at the top of lib/useCart. */}
-        <NavMotion />
         <MagneticButtons />
         <PageTransition>{children}</PageTransition>
         <AddedToast />

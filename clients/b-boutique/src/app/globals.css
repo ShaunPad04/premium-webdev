@@ -8573,43 +8573,11 @@ a, button, label { -webkit-tap-highlight-color: transparent; }
   .flip-host:is(:hover, :focus-visible) .flip-cube, .flip:hover .flip-cube { transform: none; }
 }
 
-/* Page transition (NavMotion sets <html data-nav> on the first internal
-   click, so the first load never plays it). The new page fades in while a
-   soft edge sweeps across it from the left. `backwards` only: once it has
-   played nothing stays applied, so no clip lingers on #main. */
-html[data-nav] #main { animation: page-in 900ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
-@keyframes page-in {
-  from {
-    opacity: 0;
-    clip-path: inset(0 100% 0 0);
-  }
-  35% { opacity: 1; }
-  to {
-    opacity: 1;
-    clip-path: inset(0 0 0 0);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  html[data-nav] #main { animation: none; }
-}
-
-/* The same fade-and-sweep for full page loads between the site's own pages
-   (the header links are plain <a>s). Cross-document View Transitions: the
-   browser holds the old page, then reveals the new one. Chrome/Edge 126+
-   and Safari 18.2+; elsewhere the page simply loads as before. A visitor
-   arriving from outside the site gets no transition at all. */
-@view-transition { navigation: auto; }
-::view-transition-old(root) { animation: vt-out 320ms ease both; }
-::view-transition-new(root) { animation: vt-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-@keyframes vt-out { to { opacity: 0; } }
-@keyframes vt-in {
-  from { opacity: 0; clip-path: inset(0 100% 0 0); }
-  35% { opacity: 1; }
-  to { opacity: 1; clip-path: inset(0 0 0 0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  @view-transition { navigation: none; }
-}
+/* (2026-09-25: the #main fade-and-sweep that NavMotion switched on, and the
+   cross-document fade after it, are gone. With the transition in
+   PageTransition.tsx they made three animations stacked on one change of
+   page, and the sweep started every new page from blank: Brad's "freeze and
+   glitch". One transition now, in PageTransition.tsx.) */
 
 
 /* ══ Late 2026-09-23: header type pure white. (Headings were red here for
@@ -9963,27 +9931,30 @@ body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
  * Phones travel two thirds of the distance (MotionSites' rule): a 390px
  * screen reads the same lift as larger. */
 .page-vt { display: flex; flex-direction: column; flex: 1 0 auto; min-height: 100%; }
-:root { --vt-rise: 22px; }
-@media (max-width: 767px) { :root { --vt-rise: 14px; } }
-::view-transition-old(.page-out) { animation: vt-page-out 200ms cubic-bezier(0.4, 0, 1, 1) both; }
-::view-transition-new(.page-in) { animation: vt-page-in 640ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both; }
-@keyframes vt-page-out { to { opacity: 0; translate: 0 calc(var(--vt-rise) * -0.4); filter: blur(2px); } }
-@keyframes vt-page-in { from { opacity: 0; translate: 0 var(--vt-rise); } }
+/* 2026-09-25: see PageTransition.tsx. The cue is empty and never animates;
+   the page moves in the root snapshot. The old page holds still and fully
+   opaque; the new one wipes up over it on an expo ease. Both are only the
+   viewport, so the capture is cheap and never clipped. */
+.page-vt-cue { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
+::view-transition-old(.page-out), ::view-transition-new(.page-in) { animation: none; }
+::view-transition-old(root) { animation: none; }
+::view-transition-new(root) { animation: vt-page-wipe 560ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes vt-page-wipe { from { clip-path: inset(100% 0 0 0); } }
 /* The header is the fixed point: no fade, no slide, above the pages. */
 ::view-transition-group(site-header) { animation: none; z-index: 100; }
 ::view-transition-old(site-header) { display: none; }
 ::view-transition-new(site-header) { animation: none; }
-/* Most of the site's own links are plain <a> (the header, the menu), so a
-   change of page is a full document load and React never sees it. The
-   browser's cross-document view transition gives those the same handover:
-   the old page's snapshot leaves, the new one rises, the header stays.
-   Chrome/Edge 126+, Safari 18.2+; elsewhere the page simply loads. */
-@view-transition { navigation: auto; }
-::view-transition-old(root) { animation: vt-page-out 200ms cubic-bezier(0.4, 0, 1, 1) both; }
-::view-transition-new(root) { animation: vt-page-in 640ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both; }
-@media (prefers-reduced-motion: reduce) {
-  @view-transition { navigation: none; }
-}
+/* No cross-document transition (2026-09-25, Brad: "a moment of freeze and
+   glitch" between pages). The header, menu and footer links were plain <a>,
+   so every change of page was a full document load: the browser froze on
+   the old page until the new one could paint, then cross-faded two
+   snapshots whose delayed, "both"-filled animations left the new page
+   washed out with parts of the old one showing through. Those links are
+   next/link now, so a change of page is a client navigation that React's
+   <ViewTransition> in PageTransition.tsx animates, with the route already
+   prefetched. The cross-document one is switched off so nothing can fall
+   back to it. */
+@view-transition { navigation: none; }
 
 /* ── The page rises over the hero (2026-09-24, Brad) ──────────────────────
  * Reference: fuel.framer.website. The hero stays put (sticky) and the rest
@@ -10608,13 +10579,6 @@ h2.ucs-h em { font-style: italic; }
 .lk-sub { margin: 16px 0 0; max-width: 38ch; font-size: 15px; line-height: 1.55; color: rgba(255,255,255,0.84); }
 @media (max-width: 767px) { .lk-sub { display: none; } }
 .lk-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 26px; }
-.lk-look {
-  padding: 10px 0; border: 0; background: none; color: #FFFFFF; cursor: pointer; min-height: 44px;
-  font: inherit; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
-  text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px;
-}
-.lk-look:hover { text-decoration-thickness: 2px; }
-.lk-look:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
   .lk-dot::after { animation: none; }
   .lk-card, .lk-dot { transition: none; }
