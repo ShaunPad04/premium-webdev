@@ -1,7 +1,12 @@
 import type { NextRequest } from "next/server";
 
 import { productBySlug } from "@/lib/catalogue";
+import { listedTotal } from "@/lib/opening-stock";
 import { availabilityForSlug, stockIsConfigured } from "@/lib/stock";
+import { variantsFor } from "@/lib/variants";
+
+/* The bag's own cap; nobody is ever offered more than this of one variant. */
+const MAX_QTY = 6;
 
 /* What is left of one piece — yes or no, never a number.
  *
@@ -29,6 +34,14 @@ import { availabilityForSlug, stockIsConfigured } from "@/lib/stock";
  * price, and it is arguably worse because it pressures the purchase rather
  * than describing it. The shop floor gets numbers. The shop front does not.
  *
+ * ── Except one: how many can go in a bag (2026-09-25, Brad) ────────────────
+ * The quantity picker allowed six of anything, including a size with one on
+ * the rail. So each variant now carries `limits[id]`: the most one bag may
+ * hold. It is the count where one exists, otherwise the master list's total
+ * for that colour (no size can hold more than its colour does), capped at
+ * the bag's six, so a count above six is never revealed. The page uses it to
+ * stop the + button; it never prints it.
+ *
  * ── This is a courtesy, not the gate ──────────────────────────────────────
  * Anything a browser is told, a browser can ignore. The real check is in
  * /api/checkout, server-side, immediately before the payment is created.
@@ -42,20 +55,33 @@ export async function GET(request: NextRequest) {
     return Response.json({ ok: false, error: "Unknown piece." }, { status: 404 });
   }
 
+  const product = productBySlug(slug)!;
+  const limitsFrom = (counted: Record<string, { qty: number }>) =>
+    Object.fromEntries(
+      variantsFor(product).map((v) => {
+        const n = counted[v.id]?.qty ?? listedTotal(slug, v.colour, v.size);
+        return [v.id, n === null ? MAX_QTY : Math.max(0, Math.min(MAX_QTY, n))];
+      }),
+    );
+
   if (!stockIsConfigured()) {
     /* No database. Not an error and not "everything is sold out" — it is the
        shop as it was before stock existed, and the page carries on. */
-    return Response.json({ ok: true, configured: false, variants: {} });
+    return Response.json({ ok: true, configured: false, variants: {}, limits: limitsFrom({}) });
   }
 
   try {
-    const variants = await availabilityForSlug(slug);
-    return Response.json({ ok: true, configured: true, variants: variants ?? {} });
+    const counted = (await availabilityForSlug(slug)) ?? {};
+    /* The states go out without their numbers, as before. */
+    const variants = Object.fromEntries(
+      Object.entries(counted).map(([id, v]) => [id, { state: v.state, restockable: v.restockable }]),
+    );
+    return Response.json({ ok: true, configured: true, variants, limits: limitsFrom(counted) });
   } catch (err) {
     /* A database that is down must not close the shop. Log it, answer as if
        nothing is counted, and let the checkout — which cannot proceed without
        a real answer — be the one that refuses. */
     console.error("availability: query failed", err);
-    return Response.json({ ok: true, configured: false, variants: {} });
+    return Response.json({ ok: true, configured: false, variants: {}, limits: limitsFrom({}) });
   }
 }

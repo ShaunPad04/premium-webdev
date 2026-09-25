@@ -63,7 +63,7 @@ type Availability = Record<string, { state: State; restockable: boolean }>;
    only. Buy now and the secure-checkout line stay on the product page. */
 export function AddToBag({ product, compact = false }: { product: Product; compact?: boolean }) {
   const uid = useId();
-  const { add } = useCart();
+  const { add, lines } = useCart();
   const router = useRouter();
 
   const colours = coloursFor(product.slug);
@@ -88,6 +88,10 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
      already on screen — which looks identical to nothing having happened. */
   const [added, setAdded] = useState<{ size: string; colour: string; n: number; qty: number } | null>(null);
   const [stock, setStock] = useState<Availability>({});
+  /* The most one bag may hold of each variant (see /api/availability): the
+     shop's count, or the list's colour total where no size count exists yet.
+     Never printed, only used to stop the + button. */
+  const [limits, setLimits] = useState<Record<string, number>>({});
   /* Quantity (2026-09-24, Brad). 1 to the bag's own cap; the checkout still
      reserves against counted stock, so this cannot oversell a piece. */
   const [qty, setQty] = useState(1);
@@ -98,8 +102,9 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
       signal: ac.signal,
     })
       .then((r) => (r.ok ? r.json() : null))
-      .then((d: { variants?: Availability } | null) => {
+      .then((d: { variants?: Availability; limits?: Record<string, number> } | null) => {
         if (d?.variants) setStock(d.variants);
+        if (d?.limits) setLimits(d.limits);
       })
       /* A failed lookup leaves every variant unknown, which is the state the
          shop was in before stock existed. It must never fail closed and tell
@@ -133,6 +138,15 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
 
   /* The one add both buttons use: refuses, with a message, until a colour
      (where there is a choice) and a size are chosen. */
+  /* How many more of the chosen variant this bag can take: its limit, less
+     what is already in the bag. Until a size (and colour) is chosen there is
+     no variant, so the bag's own cap stands. */
+  const vid = size !== null && (colour !== null || !colourChoice) ? variantId(product.slug, size, colour ?? "") : null;
+  const inBag = vid ? lines.find((l) => variantId(l.slug, l.size, l.colour) === vid)?.qty ?? 0 : 0;
+  const room = vid ? Math.max(0, Math.min(MAX_QTY, limits[vid] ?? MAX_QTY) - inBag) : MAX_QTY;
+  const shownQty = Math.max(1, Math.min(qty, room));
+  const full = vid !== null && room === 0 && !chosenOut;
+
   const addChosen = () => {
     if (colourChoice && colour === null) {
       setError("Please choose a colour first.");
@@ -142,7 +156,11 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
       setError("Please choose a size first.");
       return false;
     }
-    add(product.slug, size, colour ?? "", compact ? 1 : qty);
+    if (full) {
+      setError("Everything we have in this size is already in your bag.");
+      return false;
+    }
+    add(product.slug, size, colour ?? "", compact ? 1 : shownQty);
     return true;
   };
 
@@ -262,11 +280,11 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
           <div className="atb-qty">
             <span className="cf-label" id={`${uid}-qty`}>Quantity</span>
             <div className="atb-qty-box" role="group" aria-labelledby={`${uid}-qty`}>
-              <button type="button" className="atb-qty-btn" aria-label="One fewer" disabled={qty <= 1} onClick={() => setQty((q) => Math.max(1, q - 1))}>
+              <button type="button" className="atb-qty-btn" aria-label="One fewer" disabled={shownQty <= 1} onClick={() => setQty(Math.max(1, shownQty - 1))}>
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
               </button>
-              <output className="atb-qty-n" aria-live="polite">{qty}</output>
-              <button type="button" className="atb-qty-btn" aria-label="One more" disabled={qty >= MAX_QTY} onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}>
+              <output className="atb-qty-n" aria-live="polite">{shownQty}</output>
+              <button type="button" className="atb-qty-btn" aria-label="One more" disabled={shownQty >= Math.min(MAX_QTY, room)} onClick={() => setQty(Math.min(MAX_QTY, room, shownQty + 1))}>
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M7 2v10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
               </button>
             </div>
@@ -278,7 +296,7 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
           disabled={chosenOut}
           onClick={() => {
             if (!addChosen()) return;
-            setAdded((prev) => ({ size: size!, colour: colour ?? "", n: (prev?.n ?? 0) + 1, qty }));
+            setAdded((prev) => ({ size: size!, colour: colour ?? "", n: (prev?.n ?? 0) + 1, qty: compact ? 1 : shownQty }));
           }}
         >
           <span className="roll"><span>{chosenOut ? "Sold out" : "Add to bag"}</span></span>

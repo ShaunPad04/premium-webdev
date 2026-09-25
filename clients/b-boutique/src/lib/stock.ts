@@ -384,7 +384,7 @@ export type Availability = "in" | "out" | "unknown";
 
 export async function availabilityForSlug(
   slug: string,
-): Promise<Record<string, { state: Availability; restockable: boolean }> | null> {
+): Promise<Record<string, { state: Availability; restockable: boolean; qty: number }> | null> {
   const q = sql();
   if (!q) return null;
 
@@ -393,11 +393,12 @@ export async function availabilityForSlug(
     SELECT id, qty, restockable FROM stock WHERE slug = ${slug}
   `) as { id: string; qty: number; restockable: boolean }[];
 
-  const out: Record<string, { state: Availability; restockable: boolean }> = {};
+  const out: Record<string, { state: Availability; restockable: boolean; qty: number }> = {};
   for (const r of rows) {
     out[r.id] = {
       state: Number(r.qty) > 0 ? "in" : "out",
       restockable: Boolean(r.restockable),
+      qty: Number(r.qty),
     };
   }
   return out;

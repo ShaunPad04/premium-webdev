@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 
 import { deliveryFor, productBySlug } from "@/lib/catalogue";
 import { countsFor } from "@/lib/stock";
+import { listedTotal } from "@/lib/opening-stock";
 import {
   createPendingOrder,
   releaseOrder,
@@ -297,7 +298,9 @@ export async function POST(request: NextRequest) {
     const counts = await countsFor(priced.map((l) => l.variant));
     if (counts) {
       for (const line of priced) {
-        const have = counts.get(line.variant);
+        /* Never counted: the master list's total for the colour is still a
+           ceiling nobody can buy past (2026-09-25). */
+        const have = counts.get(line.variant) ?? listedTotal(line.slug, line.colour, line.size) ?? undefined;
         if (have === undefined) continue;
         if (have < line.qty) {
           return Response.json(

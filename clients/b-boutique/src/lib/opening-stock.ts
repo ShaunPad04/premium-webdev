@@ -64,3 +64,19 @@ export function openingPlan(): { plan: OpeningCount[]; skipped: string[]; unspli
   }
   return { plan, skipped, unsplit };
 }
+
+/** The master list's total for one colourway, across every size — or null
+ *  when the list has none. For a size nobody has counted yet this is the
+ *  honest upper bound: no single size can hold more than the colour does.
+ *  Used to cap quantities until /stock has a real count for the size. */
+export function listedTotal(slug: string, colour: string, size?: string): number | null {
+  /* Where the list states the per-size split, that is the tighter, exact cap. */
+  if (size !== undefined) {
+    const bySize = (data.statedSizes as Record<string, Record<string, number>>)[slug]?.[size];
+    if (typeof bySize === "number") return bySize;
+    const each = (data.statedSplit as Record<string, number>)[slug];
+    if (typeof each === "number") return each;
+  }
+  const n = (data.opening as Record<string, Record<string, number>>)[slug]?.[colour];
+  return typeof n === "number" ? n : null;
+}

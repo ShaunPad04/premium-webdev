@@ -24,6 +24,7 @@ import {
   type Details,
 } from "@/components/DeliveryDetails";
 import { useCart } from "@/lib/useCart";
+import { variantId } from "@/lib/variants";
 
 /* The bag, and the button that starts a payment.
  *
@@ -41,8 +42,26 @@ import { useCart } from "@/lib/useCart";
  * exactly as it was. There is no payment provider configured today, so the
  * honest outcome right now is a message saying so. */
 export function Bag() {
+  /* Per-variant limits for what is in the bag (see /api/availability), so
+     the + here stops where the product page's does. One request per piece;
+     a failed one leaves the bag's own cap, and checkout checks again. */
+  const [limits, setLimits] = useState<Record<string, number>>({});
   const { lines, count, subtotalP, deliveryP, totalP, setQty, remove } =
     useCart();
+  const slugsKey = [...new Set(lines.map((l) => l.slug))].sort().join(",");
+  useEffect(() => {
+    if (!slugsKey) return;
+    const ac = new AbortController();
+    for (const slug of slugsKey.split(",")) {
+      fetch(`/api/availability?slug=${encodeURIComponent(slug)}`, { signal: ac.signal })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d: { limits?: Record<string, number> } | null) => {
+          if (d?.limits) setLimits((prev) => ({ ...prev, ...d.limits }));
+        })
+        .catch(() => {});
+    }
+    return () => ac.abort();
+  }, [slugsKey]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   /* The delivery field that stopped the last attempt, shown on the field. */
@@ -346,7 +365,7 @@ export function Bag() {
                         <button
                           type="button"
                           aria-label={`One more, ${label}`}
-                          disabled={line.qty >= 6}
+                          disabled={line.qty >= Math.min(6, limits[variantId(line.slug, line.size, line.colour)] ?? 6)}
                           onClick={() => setQty(line.slug, line.size, line.colour, line.qty + 1)}
                         >
                           <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6 2v8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
