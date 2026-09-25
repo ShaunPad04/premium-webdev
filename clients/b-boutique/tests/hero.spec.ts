@@ -10,29 +10,30 @@ import { expect, test } from '@playwright/test';
 test.skip(({ viewport }) => (viewport?.width ?? 0) < 1200, 'desktop; the phone path was checked by hand');
 test.setTimeout(60_000);
 
-test('stepping through every slide does not crash the page', async ({ page }) => {
+test('the lookbook hero survives a swipe and its pieces open to real pages', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   await page.goto('/', { waitUntil: 'networkidle' });
 
-  /* The MADRID hero since 2026-09-23 (late): ONE frame, so nothing to
-     step through. What still matters is that a swipe, the gesture that
-     used to change slides, cannot crash it or move it. */
-  const box = (await page.locator('.lm').boundingBox())!;
+  /* The lookbook hero (2026-09-25): one frame with a dot on each piece.
+     A swipe must not crash it, and both pieces must open to their pages. */
+  const box = (await page.locator('.lk').boundingBox())!;
   const y = box.y + box.height * 0.3;
-  const titles: string[] = [];
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 2; i++) {
     await page.mouse.move(box.x + box.width * 0.7, y);
     await page.mouse.down();
     await page.mouse.move(box.x + box.width * 0.3, y, { steps: 6 });
     await page.mouse.up();
-    await page.waitForTimeout(600);
-    titles.push((await page.locator('.lm-pic[data-on] img').getAttribute('src')) ?? '');
   }
-
+  await page.locator('.lk-look').click();
+  const cards = page.locator('.lk-card');
+  await expect(cards).toHaveCount(2);
+  for (const href of await cards.evaluateAll((els) => els.map((e) => e.getAttribute('href')))) {
+    const res = await page.request.get(href!);
+    expect(res.status(), href!).toBe(200);
+  }
+  await expect(page.locator('.lk-spot[data-open]')).toHaveCount(2);
   expect(errors, errors.join('\n')).toEqual([]);
   await expect(page.getByText(/couldn.t load/)).toHaveCount(0);
-  // One frame, and it stayed put.
-  expect(new Set(titles).size).toBe(1);
-  await expect(page.locator('.lm-title')).toContainText(/b boutique/i);
+  await expect(page.locator('.lk-title')).toBeVisible();
 });

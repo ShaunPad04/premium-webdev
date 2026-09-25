@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import type { Product } from "@/lib/catalogue";
 import { MAX_QTY, useCart } from "@/lib/useCart";
+import { SizeGuide } from "./SizeGuide";
 import { shop } from "@/lib/shop";
 import { colourIsKnown, coloursFor, variantId } from "@/lib/variants";
 import { useColour } from "./ColourChoice";
@@ -210,6 +211,7 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
           aria-describedby={error ? `${uid}-err` : undefined}
         >
           <legend className="cf-label">Size</legend>
+          {compact ? null : <SizeGuide product={product} />}
           <div className="atb-size-row">
             {product.sizes.map((s) => {
               const out = sizeOut(s);
@@ -250,12 +252,13 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
            per piece, and lib/stocklist.ts keeps it in `sizeNote` precisely so
            it can be shown beside the size rather than mistaken for one.
            It was simply never rendered. */
-        <p className="atb-onesize">
+        <div className="atb-onesize">
           {product.sizes[0]}
           {product.sizeNote ? (
             <span className="atb-onesize-note"> &mdash; {product.sizeNote}</span>
           ) : null}
-        </p>
+          {compact || product.category === "Homeware" ? null : <SizeGuide product={product} />}
+        </div>
       )}
 
       {allOut ? (

@@ -1,6 +1,7 @@
 import { shop } from "@/lib/shop";
 
-import { HeroStill, HeroStrips } from "./HeroStrips";
+import { HeroStill } from "./HeroStrips";
+import { LookHero } from "./LookHero";
 import { SafeBoundary } from "./SafeBoundary";
 
 /* The campaign hero.
@@ -62,7 +63,7 @@ export function Hero() {
         homeware on {shop.street}, {shop.town}.
       </h1>
       <SafeBoundary name="hero" fallback={<HeroStill />}>
-        <HeroStrips />
+        <LookHero />
       </SafeBoundary>
     </section>
   );

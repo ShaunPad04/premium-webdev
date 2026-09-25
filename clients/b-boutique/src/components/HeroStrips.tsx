@@ -33,7 +33,7 @@ const SLIDES: LuminaSlide[] = [
    shop.ts, so this line cannot disagree with the Visit section. It sits at
    the foot of the frame, not in the centre: the client asked on 2026-09-22
    for the middle to be the name and one button, nothing else. */
-function Where() {
+export function Where() {
   return (
     <p className="hero-open">
       Open {openingPhrase()} <span aria-hidden="true">·</span> {shop.street}, {shop.town}
@@ -41,7 +41,7 @@ function Where() {
   );
 }
 
-function Cta() {
+export function Cta() {
   return (
     <Link href="/shop" className="hero-cta">
       <span className="roll"><span>Shop all</span></span>

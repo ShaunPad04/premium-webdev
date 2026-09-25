@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { SocialStrip } from "@/components/SocialStrip";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -89,6 +90,7 @@ export default function HomewarePage() {
 
         <Visit />
       </main>
+      <SocialStrip />
       <Footer />
     </>
   );

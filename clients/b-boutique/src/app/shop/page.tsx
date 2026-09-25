@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { SocialStrip } from "@/components/SocialStrip";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { ShopSearch } from "@/components/ShopSearch";
@@ -56,6 +57,7 @@ export default function ShopPage() {
 
         <Visit />
       </main>
+      <SocialStrip />
       <Footer />
     </>
   );
