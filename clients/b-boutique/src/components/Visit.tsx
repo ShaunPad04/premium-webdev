@@ -52,15 +52,6 @@ export function Visit() {
               </dd>
             </div>
           </dl>
-
-          <div className="vx-ctas">
-            <a href={directionsHref} target="_blank" rel="noopener noreferrer" className="vx-btn vx-btn--solid">
-              Get directions <span aria-hidden="true">&rarr;</span>
-            </a>
-            {shop.email ? (
-              <a href={`mailto:${shop.email}`} className="vx-btn vx-btn--line">Email the shop</a>
-            ) : null}
-          </div>
         </div>
 
         <div className="vx-map">

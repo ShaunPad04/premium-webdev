@@ -10064,19 +10064,6 @@ body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
 .vx-row dt { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(14, 11, 12, 0.72); padding-top: 2px; }
 .vx-row dd { margin: 0; color: var(--bb-black); font-variant-numeric: tabular-nums; }
 .vx-row-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
-.vx-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
-@media (min-width: 1024px) { .vx-ctas { margin-top: auto; padding-top: 32px; } }
-.vx-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  min-height: 52px; padding: 0 28px; border-radius: 999px; border: 1px solid var(--bb-black);
-  font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none;
-  transition: background-color 200ms var(--bb-ease), color 200ms var(--bb-ease);
-}
-.vx-btn--solid { background: var(--bb-black); color: #FFFFFF; }
-.vx-btn--solid:hover { background: #2A2526; }
-.vx-btn--line { background: transparent; color: var(--bb-black); }
-.vx-btn--line:hover { background: var(--bb-black); color: #FFFFFF; }
-.vx-btn:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
 
 .vx-map { min-width: 0; }
 .vx-panel { position: relative; overflow: hidden; border-radius: 6px; background: #E9E7E4; aspect-ratio: 4 / 3; }
@@ -10098,10 +10085,7 @@ body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
 
 @media (max-width: 1023px) {
   .vx-map { order: -1; }
-  .vx-ctas { flex-direction: column; }
-  .vx-btn { width: 100%; }
 }
-@media (prefers-reduced-motion: reduce) { .vx-btn { transition: none; } }
 @media (max-width: 767px) {
   .vx-card { padding: 12px 16px; }
   .vx-card-name { font-size: 18px; }
@@ -10150,8 +10134,7 @@ h3.why-title { margin: 8px 0 6px; font-family: var(--font-display), Georgia, ser
 .vx-row-link { text-decoration: none; border-bottom: 1px solid rgba(14, 11, 12, 0.3); }
 .vx-row-link:hover { border-bottom-color: var(--bb-black); }
 .vx-now { font-size: 13px; }
-@media (min-width: 1024px) { .vx-ctas { margin-top: 32px; padding-top: 0; } .vx-info { justify-content: center; } }
-.vx-btn { min-height: 48px; padding: 0 26px; font-size: 11px; }
+@media (min-width: 1024px) { .vx-info { justify-content: center; } }
 .vx-card {
   display: flex; align-items: center; justify-content: space-between; gap: 20px;
   border-radius: 2px; padding: 14px 18px;
@@ -10650,3 +10633,8 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
    sits alone, centred, just above the film. */
 .ss { padding-top: clamp(48px, 6vw, 80px); }
 .ss-head { justify-content: center; margin-bottom: clamp(20px, 2.6vw, 30px); }
+
+/* 2026-09-25 (Brad): the About header ends on a clean edge, no fade to
+   white; Hayley's opening quote mark is black, not red. */
+.ab-hero::after { content: none; }
+.ab-quote::before { color: var(--bb-black); }
