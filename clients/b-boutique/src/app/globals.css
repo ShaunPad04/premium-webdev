@@ -10734,3 +10734,13 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 }
 .ss-follow:hover { background: none; opacity: 0.6; }
 .ss-follow:active { transform: none; }
+
+/* Follow us: two photographs, 4:5, side by side (2026-09-26, Brad). The
+   six-tile rules above still size .ss-tile; these override them. */
+.ss-grid.ss-grid--two { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.ss-grid--two .ss-tile { aspect-ratio: 4 / 5; height: auto; }
+.ss-grid--two .ss-media { object-position: 50% 50%; }
+@media (min-width: 768px) {
+  .ss-grid--two .ss-tile { aspect-ratio: auto; height: min(62.5vw, 88svh); }
+  .ss-grid--two .ss-media { object-position: 50% 12%; }
+}
