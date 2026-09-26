@@ -10,7 +10,12 @@ import { Cta, Where } from "./HeroStrips";
  * photograph with the backdrop extended to 9:16.
  *
  * The dot on each garment (a link to that piece with a preview card) was
- * removed on 2026-09-26 at Brad's request; the photograph stands alone. */
+ * removed on 2026-09-26 at Brad's request; the photograph stands alone.
+ *
+ * Later on 2026-09-26 (Brad, option A): a new frame, the Fair Isle Jumper
+ * restaged from its own product photograph and checked against it, and no
+ * words on the photograph. The eyebrow and headline came off; Shop all stays
+ * on phones only, just above the opening line. The page's h1 is in Hero.tsx. */
 
 export function LookHero() {
   return (
@@ -23,22 +28,19 @@ export function LookHero() {
         <source type="image/webp" srcSet="/img/hero/look-m900.webp 900w, /img/hero/look-m1200.webp 1200w, /img/hero/look-m1800.webp 1800w" sizes="100vw" />
         <img
           src="/img/hero/look-m.jpg"
-          alt="A model seated on a black block in the Italian Knit Ribbed Cardigan in cream and the Tailored Barrel Fit Trousers in black"
+          alt="A model perched on a black block in the Fair Isle Jumper in beige and black wide-leg trousers"
           fetchPriority="high"
           decoding="async"
         />
       </picture>
       <div className="lk-scrim" aria-hidden="true" />
 
-      <div className="lk-copy">
-        <p className="lk-eyebrow">The autumn edit</p>
-        <p className="lk-title">Soft knit, sharp tailoring.</p>
-        <p className="lk-sub">An Italian ribbed cardigan and a tailored barrel trouser. Two pieces from the rail, one easy outfit.</p>
-        <div className="lk-actions">
+      <div className="lk-foot">
+        <div className="lk-cta">
           <Cta />
         </div>
+        <Where />
       </div>
-      <Where />
     </div>
   );
 }

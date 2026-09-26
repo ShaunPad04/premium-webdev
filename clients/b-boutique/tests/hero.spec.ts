@@ -29,5 +29,9 @@ test('the lookbook hero survives a swipe and carries no product dots', async ({ 
   await expect(page.locator('.lk-look')).toHaveCount(0);
   expect(errors, errors.join('\n')).toEqual([]);
   await expect(page.getByText(/couldn.t load/)).toHaveCount(0);
-  await expect(page.locator('.lk-title')).toBeVisible();
+  /* No words on the photograph (Brad, 26 Sep, option A): the headline
+     and the desktop Shop all came off; the frame itself must render. */
+  await expect(page.locator('.lk-title')).toHaveCount(0);
+  await expect(page.locator('.lk-pic img')).toBeVisible();
+  await expect(page.locator('.lk-cta')).toBeHidden();
 });
