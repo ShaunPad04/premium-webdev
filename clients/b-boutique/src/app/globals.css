@@ -7451,10 +7451,6 @@ html:has(.pdp-viewer[open]) { overflow: hidden; }
   color: var(--bb-black);
   --cw: clamp(220px, 62vw, 330px);
 }
-.cf-ambient { position: absolute; inset: 0; z-index: -1; opacity: 0.22; }
-.cf-ambient picture { display: block; width: 100%; height: 100%; }
-.cf-ambient-img { width: 100%; height: 100%; object-fit: cover; filter: blur(48px) saturate(1.1); transform: scale(1.2); }
-.cf::after { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, var(--bb-white) 78%); }
 .cf-head { text-align: center; padding-inline: 18px; margin-bottom: clamp(28px, 4vh, 44px); }
 .cf-eyebrow { margin: 0 0 12px; font-size: 10px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--bb-rouge); }
 .cf-h2 { margin: 0; font-family: var(--font-display-face), Georgia, serif; font-weight: 400; font-size: clamp(40px, 5.4vw, 76px); line-height: 1; }
@@ -7485,11 +7481,10 @@ html:has(.pdp-viewer[open]) { overflow: hidden; }
   display: block;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: var(--bb-grey-light);
-  box-shadow: 0 18px 40px -22px rgba(14, 11, 12, 0.45);
-  transition: box-shadow 800ms ease;
+  /* White, no shadow (2026-09-26, Brad): the photograph is the model cut out
+     on white, so the card itself should not draw a box around it. */
+  background: #FFFFFF;
 }
-.cf-card.is-centre .cf-photo { box-shadow: 0 30px 60px -28px rgba(14, 11, 12, 0.6); }
 .cf-body {
   display: flex;
   flex-direction: column;
@@ -10360,11 +10355,6 @@ h2.ucs-h em { font-style: italic; }
   font-family: var(--font-body), system-ui, sans-serif;
 }
 
-/* New In backdrop layers cross-fade instead of remounting (see the
-   coverflow component). */
-.cf-ambient-layer { position: absolute; inset: 0; opacity: 0; transition: opacity 700ms var(--bb-ease); }
-.cf-ambient-layer[data-on] { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .cf-ambient-layer { transition: none; } }
 
 /* Category photos sit still (2026-09-24, Brad: "make the images stay
    there rather than having to scroll for them to go in position"). */

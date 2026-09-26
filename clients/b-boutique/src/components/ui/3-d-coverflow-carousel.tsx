@@ -42,20 +42,23 @@ import { RevealText } from "@/components/RevealText";
 import { Price } from "@/components/Price";
 
 /* Where each card sits, by its distance from the centre. Offsets are in
-   units of the card width (--cw), so the layout holds at any screen size. */
+   units of the card width (--cw), so the layout holds at any screen size.
+   No brightness filter on the side cards (2026-09-26, Brad: "it should just
+   be the model"): the photographs are cut out on white, and dimming them
+   turned that white into grey boxes. Depth is scale, turn and opacity. */
 function place(offset: number, total: number) {
   const d = offset > total / 2 ? offset - total : offset; // -2..2 around the centre
   switch (d) {
     case 0:
       return { t: "translateX(0) scale(1) rotateY(0deg)", o: 1, z: 30, f: "none" };
     case 1:
-      return { t: "translateX(calc(var(--cw) * 0.86)) scale(0.84) rotateY(-24deg)", o: 0.8, z: 20, f: "brightness(0.92)" };
+      return { t: "translateX(calc(var(--cw) * 0.86)) scale(0.84) rotateY(-24deg)", o: 0.8, z: 20, f: "none" };
     case -1:
-      return { t: "translateX(calc(var(--cw) * -0.86)) scale(0.84) rotateY(24deg)", o: 0.8, z: 20, f: "brightness(0.92)" };
+      return { t: "translateX(calc(var(--cw) * -0.86)) scale(0.84) rotateY(24deg)", o: 0.8, z: 20, f: "none" };
     case 2:
-      return { t: "translateX(calc(var(--cw) * 1.55)) scale(0.68) rotateY(-38deg)", o: 0.45, z: 10, f: "brightness(0.85)" };
+      return { t: "translateX(calc(var(--cw) * 1.55)) scale(0.68) rotateY(-38deg)", o: 0.45, z: 10, f: "none" };
     case -2:
-      return { t: "translateX(calc(var(--cw) * -1.55)) scale(0.68) rotateY(38deg)", o: 0.45, z: 10, f: "brightness(0.85)" };
+      return { t: "translateX(calc(var(--cw) * -1.55)) scale(0.68) rotateY(38deg)", o: 0.45, z: 10, f: "none" };
     default:
       return { t: "translateX(0) scale(0.4)", o: 0, z: 0, f: "none" };
   }
@@ -117,20 +120,6 @@ export function CoverFlowCarousel() {
         (e.deltaX > 0 ? next : prev)();
       }}
     >
-      {/* The centre piece, blown up and faint, behind the stage. */}
-      {/* Every backdrop stays mounted and they cross-fade (2026-09-24, Brad:
-          "a white flash" on swipe). It used to remount one image per slide,
-          so each swipe dropped the old picture and showed white until the
-          new one loaded. Same `sizes` as the cards, so these are the files
-          the cards have already fetched, not a second download. */}
-      <div className="cf-ambient" aria-hidden="true">
-        {items.map((piece) => (
-          <span key={piece.slug} className="cf-ambient-layer" data-on={piece.slug === now.slug ? "" : undefined}>
-            <ProductPhoto photo={piece.photo} sizes="(min-width: 768px) 330px, 62vw" className="cf-ambient-img" />
-          </span>
-        ))}
-      </div>
-
       <div className="cf-head">
         <p className="cf-eyebrow">New arrivals</p>
         <RevealText id="cf-heading" className="cf-h2">
