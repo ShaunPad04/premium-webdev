@@ -1,3 +1,6 @@
+import { readdirSync } from "node:fs";
+import path from "node:path";
+
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -25,6 +28,20 @@ import { openingPhrase, owner, shop } from "@/lib/shop";
 import { productSchema } from "@/lib/product-schema";
 import { jsonLd } from "@/lib/site";
 import { Price } from "@/components/Price";
+import { Spin360 } from "@/components/Spin360";
+
+/* Turntable frames for this piece, if a folder of them exists. A PLACEHOLDER
+   file in the folder marks frames faked from one photograph, and the page
+   says so. See Spin360. */
+function spinFor(slug: string) {
+  try {
+    const files = readdirSync(path.join(process.cwd(), "public/img/spin", slug));
+    const frames = files.filter((f) => /^\d+\.webp$/.test(f)).sort().map((f) => `/img/spin/${slug}/${f}`);
+    return frames.length > 1 ? { frames, placeholder: files.includes("PLACEHOLDER") } : null;
+  } catch {
+    return null;
+  }
+}
 
 /* Prerender every product. There are thirteen of them and they change when
    the code changes, so there is nothing to gain from rendering them on
@@ -60,6 +77,7 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const related = relatedTo(product);
+  const spin = spinFor(product.slug);
 
   return (
     <>
@@ -303,6 +321,24 @@ export default async function ProductPage({
           </div>
         </section>
         </ColourProvider>
+
+        {spin ? (
+          <section aria-labelledby="pdp-spin" className="spin">
+            <div className="spin-copy">
+              <h2 id="pdp-spin" className="also-h2">
+                All the way round
+              </h2>
+              <p className="spin-hint">Drag to turn it, or use the arrow keys.</p>
+              {spin.placeholder ? (
+                <p className="page-pending spin-pending">
+                  [Placeholder turn, made from one photograph. Real turntable
+                  photographs to follow.]
+                </p>
+              ) : null}
+            </div>
+            <Spin360 frames={spin.frames} name={product.name} />
+          </section>
+        ) : null}
 
         {related.length > 0 ? (
           <section aria-labelledby="pdp-also" className="also">
