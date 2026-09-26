@@ -10724,4 +10724,16 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 /* Product photographs are cut out onto a flat warm grey (Brad, 25 Sep,
    after Radian). Every frame behind them shows the same grey, so a photo
    still loading reads as the same card, not a different colour. */
-.prod-media, .cat-media, .piece-media, .acc-lead-media, .cross-media, .bag-media, .pdp-media { background: #F2F1EF; }
+.prod-media, .cat-media, .piece-media, .acc-lead-media, .cross-media, .bag-media, .pdp-media { background: #FFFFFF; }
+
+/* Header and announcement strip in one neutral black (Brad, 25 Sep: they
+   read maroon). The page-you-are-on rule under the header link is white, as
+   the menu type is: black would vanish on the black bar. */
+.announce, .arr-rail { background: #0A0A0A; }
+.navbar .nav-link[aria-current="page"]::after { background: #FFFFFF; }
+/* With the header always solid, nothing may start underneath it. On a phone
+   it is 117px (the announcement strip wraps to 45px, plus the 72px bar). */
+@media (max-width: 767px) {
+  .lk-copy { top: calc(118px + 3svh); }
+}
+@media (max-width: 1023px) { .pdp { padding-top: 120px; } }

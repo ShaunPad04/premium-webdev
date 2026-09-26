@@ -47,7 +47,9 @@ import { NavSearch } from "./NavSearch";
  * Collapsing them into one would put the strip away before the product page
  * had been scrolled at all, which is a visible regression on a route that
  * currently shows it. */
-export function Nav({ solid = false }: { solid?: boolean } = {}) {
+// `solid` is still accepted from the routes that pass it; the bar is always solid now.
+export function Nav(props: { solid?: boolean } = {}) {
+  void props;
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -59,12 +61,9 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const opaque = solid || scrolled;
-  /* Over the home hero the page already says B BOUTIQUE in large type, so
-     the header's own wordmark stands down until the bar turns solid
-     (2026-09-23, Brad). Every other route keeps it. */
+  /* The bar is always solid now and the home hero no longer carries the
+     name in large type, so the monogram shows on every route. */
   const pathname = usePathname();
-  const markHidden = pathname === "/" && !opaque;
 
   return (
     <header
@@ -83,36 +82,15 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
            showed through and turned the bar a muddy grey-brown sitting
            under a strip of the true ink. Two shades of "dark" stacked on
            top of each other read as a mistake. One colour, one band. */
-        background: opaque ? "#0E0B0C" : "transparent",
-        borderBottom: `1px solid ${opaque ? "rgba(255,255,255,.10)" : "transparent"}`,
-        transition:
-          "background 480ms var(--bb-ease), border-color 480ms var(--bb-ease)",
+        background: "#0A0A0A",
+        borderBottom: "1px solid rgba(255,255,255,.10)",
       }}
     >
-      {/* A whisper of a scrim, only while transparent, and only at the very
-          top edge. The photograph is the point — a heavy overlay turns its red
-          to burgundy. This exists so 10px type stays legible over a highlight,
-          nothing more. */}
-      {!opaque ? (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-[150px]"
-          style={{
-            /* Deeper since 2026-09-23. The centred header put the wordmark
-               over the bright middle of the hero and SEARCH / MENU over the
-               lit windows of the new masthead photographs: measured with the
-               text hidden, 1.6-3.4:1 at the old .42/.16. This keeps the top
-               edge of each photograph readable without veiling the frame. */
-            /* The second layer is for the right-hand controls, which sit
-               over the lit side of the masthead photographs on a wide
-               screen (4.2:1 without it at 1280-1920). An ellipse from the
-               top-right corner, not a full-height band: the band ended in a
-               hard line across the photograph at the box's 150px edge. */
-            background:
-              "linear-gradient(to bottom, rgba(14, 11, 12, .74) 0%, rgba(14, 11, 12, .6) 45%, rgba(14, 11, 12, .22) 78%, transparent 100%), radial-gradient(ellipse 40% 100% at 100% 0%, rgba(14, 11, 12, .4) 0%, rgba(14, 11, 12, .3) 45%, transparent 100%)",
-          }}
-        />
-      ) : null}
+      {/* Solid neutral black since 2026-09-25 (Brad: the header read maroon).
+          It used to be transparent over the page's photograph with a dark
+          scrim, and the warm masthead photographs showed through it as
+          burgundy; the site ink #0E0B0C also leans red. Now one flat
+          #0A0A0A band, matching the announcement strip, whatever is below. */}
 
       {/* The announcement bar, above the nav row.
        *
@@ -173,9 +151,6 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
              you are already on the home page. */
           href="/#top"
           aria-label="B Boutique, home"
-          data-hidden={markHidden || undefined}
-          tabIndex={markHidden ? -1 : undefined}
-          aria-hidden={markHidden || undefined}
           /* py-3 for the same reason as the MENU button: a 20px-tall link in
              a 72px items-center row becomes a 44px target and nothing moves. */
           className="navbar-mark display py-3 text-[20px] leading-none tracking-[-0.005em] lg:text-[22px]"
