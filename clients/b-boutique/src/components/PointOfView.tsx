@@ -29,10 +29,6 @@ export function PointOfView() {
       id="our-story"
       aria-labelledby="pov-heading"
       className="pov"
-      /* On a desktop the quote pins while its words fill in (2026-09-26,
-         Brad: on a MacBook the reveal was over in one trackpad swipe).
-         globals.css .pov sets --pin; TextRevealScroll reads the track. */
-      data-reveal-track=""
     >
       <div className="pov-inner">
         <div>

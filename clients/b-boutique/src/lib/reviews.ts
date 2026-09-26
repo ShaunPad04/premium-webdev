@@ -20,9 +20,9 @@ export type Review = {
 /* Copied from her Google Business listing on 2026-09-24 (a screenshot
    Brad sent of https://share.google/dtmJLWZtTxzgd5CqA), word for word,
    spelling included: a correction would put words in a customer's mouth.
-   The third review, Sean T. (5 stars), has no text; since 2026-09-25 (Brad:
-   "why only two when there's three?") it has a card with his stars and
-   name and no quote, rather than words nobody wrote. */
+   The third card was Sean T.'s rating-only review (5 stars, no text); on
+   2026-09-26 Brad asked for Lily's newer review in its place, copied word
+   for word from his screenshot of the listing, the closing "x" included. */
 export const reviews: Review[] = [
   {
     quote: "Lovely selection of ladies clothing. Friendly and helpful. Great new premises on Seaview St. Cleethorpes",
@@ -37,7 +37,8 @@ export const reviews: Review[] = [
     source: "Google",
   },
   {
-    name: "Sean T.",
+    quote: "Just bought a high quality quarter zip, lovely service x",
+    name: "Lily",
     stars: 5,
     source: "Google",
   },

@@ -67,27 +67,10 @@ export default function TextRevealScroll({
         const update = () => {
             frame = 0
             const vh = window.innerHeight
-            // Pinned: when an ancestor marked data-reveal-track is pinning the
-            // text (its CSS sets --pin: 1), the text itself stops moving, so
-            // progress follows the track instead: 0 the moment its sticky
-            // child sticks, 1 at 80% of the pinned distance, leaving a beat
-            // with the line fully lit.
-            const track = root.closest<HTMLElement>("[data-reveal-track]")
-            const trackCss = track ? getComputedStyle(track) : null
-            let p: number
-            if (track && trackCss && trackCss.getPropertyValue("--pin").trim() === "1") {
-                const r = track.getBoundingClientRect()
-                const inner = track.firstElementChild as HTMLElement | null
-                const stickTop = inner ? parseFloat(getComputedStyle(inner).top) || 0 : 0
-                const pad = parseFloat(trackCss.paddingTop) || 0
-                const travel = r.height - pad - (inner?.offsetHeight ?? 0)
-                p = clamp((stickTop - pad - r.top) / Math.max(1, travel * 0.8))
-            } else {
-                const top = root.getBoundingClientRect().top
-                const startY = (vh * start) / 100
-                const endY = (vh * end) / 100
-                p = clamp((startY - top) / Math.max(1, startY - endY))
-            }
+            const top = root.getBoundingClientRect().top
+            const startY = (vh * start) / 100
+            const endY = (vh * end) / 100
+            const p = clamp((startY - top) / Math.max(1, startY - endY))
             const lit = p * n
             // Each word brightens continuously from dimOpacity to 1 as the
             // scroll passes it. Safe for contrast only because the caller's

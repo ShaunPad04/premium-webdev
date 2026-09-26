@@ -10728,18 +10728,5 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 }
 @media (max-width: 1023px) { .pdp { padding-top: 120px; } }
 
-/* The philosophy quote pins on a desktop while its words fill in
- * (2026-09-26, Brad: on a MacBook the reveal was over in one trackpad
- * swipe). The section is taller than the screen and its content sticks in
- * the middle of it; TextRevealScroll reads --pin and drives the words from
- * the section's scroll instead of the text's position. Phones keep the
- * normal scrolling reveal; reduced motion gets neither. */
-@media (min-width: 1024px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
-  /* The quote starts right under the hero edge, as before the pin
-     (2026-09-26, Brad: "why have you moved it so far down"); it pins once
-     it reaches the middle of the screen, not from the section's top. */
-  .pov { --pin: 1; height: 230svh; padding-block: 64px 0; }
-  .pov-inner { position: sticky; top: calc(50svh - 170px); }
-}
 /* Mood photographs with the head at the very top (SocialStrip `top`). */
 .ss-media.ss-media--top { object-position: 50% 0%; }
