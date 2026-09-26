@@ -10769,32 +10769,56 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 
 /* ── Turntable (Spin360) ─────────────────────────────────────────────────
    White, not bone: the frames are shot on white, so the stage has no edge.
-   Copy left, viewer right from 768; stacked below. */
+   Copy left, viewer right from 768; stacked below.
+
+   With motion allowed, `.spin` is a scroll TRACK and `.spin-pin` sticks for
+   its length while Spin360 turns her once, reading progress live from the
+   track's rect. Native sticky, not a ScrollTrigger pin: nothing stored, so
+   nothing goes stale. Under reduced motion there is no track and no pin, the
+   section is its natural height and the stage is dragged instead. */
 .spin {
-  display: grid;
-  gap: clamp(24px, 4vw, 56px);
-  padding: clamp(56px, 8vw, 104px) 18px;
   background: #fff;
   border-top: 1px solid rgba(14, 11, 12, 0.1);
 }
+.spin-pin {
+  display: grid;
+  align-content: center;
+  gap: clamp(20px, 4vw, 56px);
+  padding: clamp(56px, 8vw, 104px) 18px;
+}
 @media (min-width: 768px) {
-  .spin { grid-template-columns: 1fr minmax(0, 480px); align-items: center; padding-inline: var(--bb-gutter-editorial); }
+  .spin-pin { grid-template-columns: 1fr auto; align-items: center; padding-inline: var(--bb-gutter-editorial); }
 }
 .spin-hint { margin: 0; color: var(--ink-muted); font-size: 15px; line-height: 1.5; }
+.spin-hint--scroll { display: none; }
 .spin-pending { margin-top: 16px; }
 
+/* Sized off the viewport height as well as the width, so the whole figure
+   fits inside the pinned pane on a short laptop and on a phone. */
 .spin-stage {
   position: relative;
+  width: min(100%, 480px, 50svh);
   aspect-ratio: 3 / 4;
-  touch-action: pan-y;
+  justify-self: center;
   user-select: none;
-  cursor: progress;
 }
-.spin-stage[data-ready] { cursor: grab; }
-.spin-stage[data-ready]:active { cursor: grabbing; }
 .spin-img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
 .spin-canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; pointer-events: none; }
 .spin-stage[data-ready] .spin-canvas { opacity: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* 260svh of track = one turn over 160svh of scroll. */
+  .spin { height: 260svh; }
+  .spin-pin { position: sticky; top: 0; height: 100svh; padding-block: 72px 24px; box-sizing: border-box; }
+  .spin-hint--scroll { display: block; }
+  .spin-hint--still { display: none; }
+  @media (min-width: 768px) { .spin-stage { width: min(480px, 58svh); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spin-stage { touch-action: pan-y; cursor: progress; }
+  .spin-stage[data-ready] { cursor: grab; }
+  .spin-stage[data-ready]:active { cursor: grabbing; }
+}
 
 /* Loading is a hairline filling under the frame, not a spinner over it:
    the first frame is already a photograph worth looking at. */

@@ -1,32 +1,43 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
-/* Drag-to-turn viewer (2026-09-26, Brad, after the FramerGeeks
- * ProductViewer360). Rebuilt here rather than embedded: the Framer module
- * pulls the Framer runtime from framerusercontent.com, which this site does
- * not load.
+/* Scroll-turned viewer (2026-09-27, Brad: "when we scroll, she spins rather
+ * than having to spin it with swiping"). Started as a rebuild of the
+ * FramerGeeks ProductViewer360 without the Framer runtime.
  *
  * Frames live at public/img/spin/<slug>/00.webp, 01.webp, … and the product
  * page finds them itself, so adding a turn to another piece is dropping a
- * folder in. Nothing is fetched until the viewer is near the screen. Once
- * every frame is in, it turns once on its own (not under reduced motion) and
- * then waits: a drag across its full width is one full turn, and the arrow
- * keys step it a frame at a time. */
+ * folder in. Nothing is fetched until the viewer is near the screen.
+ *
+ * ── The scroll ──────────────────────────────────────────────────────────
+ * The enclosing `.spin` section is a tall track and `.spin-pin` inside it is
+ * native `position: sticky` (globals.css). Progress through the track is read
+ * LIVE from getBoundingClientRect on every scroll event, never stored, so it
+ * stays right whatever loads or pins above it — the same reason Black Line's
+ * own process ride is sticky rather than a ScrollTrigger pin. One full turn
+ * over the track, ending on the front again. Lenis moves the real window
+ * scroll, so native scroll events arrive every frame.
+ *
+ * ── Reduced motion ─────────────────────────────────────────────────────
+ * No track and no pin (the CSS is inside a no-preference query). The front
+ * frame stands still and drag or the arrow keys step it, which is motion
+ * only when the visitor asks for it.
+ *
+ * ── Why a canvas ────────────────────────────────────────────────────────
+ * Frames are decoded once up front and drawn to a canvas, never swapped into
+ * an <img>: changing an <img>'s src lets the browser paint it empty until the
+ * next frame decodes, which flickered white (Brad, 2026-09-26). A frame that
+ * is not decoded yet is not drawn, so the canvas holds the last good one. */
 export function Spin360({ frames, name }: { frames: readonly string[]; name: string }) {
   const n = frames.length;
   const box = useRef<HTMLDivElement>(null);
-  /* Frames are drawn to a canvas from images decoded up front, never swapped
-     into an <img>: changing an <img>'s src lets the browser paint it empty
-     until the new frame decodes, which on a fast drag flickered white
-     (Brad, 2026-09-26). A frame that is not decoded yet is simply not drawn,
-     so the canvas holds the last good one. */
   const canvas = useRef<HTMLCanvasElement>(null);
   const decoded = useRef<(HTMLImageElement | undefined)[]>([]);
+  const shown = useRef(-1);
   const drag = useRef<{ x: number; f: number } | null>(null);
-  const touched = useRef(false);
   const reduced = usePrefersReducedMotion();
 
   const [frame, setFrame] = useState(0);
@@ -44,7 +55,7 @@ export function Spin360({ frames, name }: { frames: readonly string[]; name: str
           io.disconnect();
         }
       },
-      { rootMargin: "400px" },
+      { rootMargin: "600px" },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -63,32 +74,44 @@ export function Spin360({ frames, name }: { frames: readonly string[]; name: str
     });
   }, [near, frames]);
 
-  useEffect(() => {
+  const draw = useCallback((f: number) => {
     const c = canvas.current;
-    const img = decoded.current[frame];
-    if (!c || !img) return;
+    const img = decoded.current[f];
+    if (!c || !img || f === shown.current) return;
     if (c.width !== img.naturalWidth) {
       c.width = img.naturalWidth;
       c.height = img.naturalHeight;
     }
     c.getContext("2d")?.drawImage(img, 0, 0);
-  }, [frame, loaded]);
+    shown.current = f;
+  }, []);
 
-  /* One turn on arrival, eased in and out (--ease-inout), so it reads as
-     "this moves" rather than as a loop to be stopped. Under 5s, so WCAG
-     2.2.2 asks for no pause control. */
+  /* Scroll mode: position in the track -> frame. Written straight to the
+     canvas, no React state, so scrolling re-renders nothing. */
   useEffect(() => {
-    if (!ready || reduced || touched.current) return;
-    const start = performance.now();
-    let raf = requestAnimationFrame(function tick(now) {
-      if (touched.current) return;
-      const t = Math.min(1, (now - start) / 2400);
-      const e = t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
-      setFrame(Math.round(e * n) % n);
-      if (t < 1) raf = requestAnimationFrame(tick);
-    });
-    return () => cancelAnimationFrame(raf);
-  }, [ready, reduced, n]);
+    if (!ready || reduced) return;
+    const track = box.current?.closest<HTMLElement>(".spin");
+    if (!track) return;
+    const update = () => {
+      const r = track.getBoundingClientRect();
+      const travel = r.height - window.innerHeight;
+      const p = travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 0;
+      draw(Math.round(p * n) % n);
+    };
+    shown.current = -1;
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [ready, reduced, n, draw]);
+
+  /* Reduced mode: the visitor steps it. */
+  useEffect(() => {
+    if (ready && reduced) draw(frame);
+  }, [ready, reduced, frame, draw]);
 
   const step = (f: number) => ((f % n) + n) % n;
   const deg = Math.round((frame * 360) / n);
@@ -98,35 +121,37 @@ export function Spin360({ frames, name }: { frames: readonly string[]; name: str
       ref={box}
       className="spin-stage"
       data-ready={ready ? "" : undefined}
-      role="slider"
-      tabIndex={0}
-      aria-label={`Turn the ${name}`}
-      aria-valuemin={0}
-      aria-valuemax={359}
-      aria-valuenow={deg}
-      aria-valuetext={`${deg} degrees`}
-      onKeyDown={(e) => {
-        const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
-        if (e.key === "Home") setFrame(0);
-        else if (d) setFrame((f) => step(f + d));
-        else return;
-        touched.current = true;
-        e.preventDefault();
-      }}
-      onPointerDown={(e) => {
-        if (!ready) return;
-        touched.current = true;
-        e.currentTarget.setPointerCapture(e.pointerId);
-        drag.current = { x: e.clientX, f: frame };
-      }}
-      onPointerMove={(e) => {
-        const d = drag.current;
-        if (!d) return;
-        const perFrame = e.currentTarget.clientWidth / n;
-        setFrame(step(d.f - Math.round((e.clientX - d.x) / perFrame)));
-      }}
-      onPointerUp={() => (drag.current = null)}
-      onPointerCancel={() => (drag.current = null)}
+      {...(reduced
+        ? {
+            role: "slider",
+            tabIndex: 0,
+            "aria-label": `Turn the ${name}`,
+            "aria-valuemin": 0,
+            "aria-valuemax": 359,
+            "aria-valuenow": deg,
+            "aria-valuetext": `${deg} degrees`,
+            onKeyDown: (e: React.KeyboardEvent) => {
+              const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+              if (e.key === "Home") setFrame(0);
+              else if (d) setFrame((f) => step(f + d));
+              else return;
+              e.preventDefault();
+            },
+            onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => {
+              if (!ready) return;
+              e.currentTarget.setPointerCapture(e.pointerId);
+              drag.current = { x: e.clientX, f: frame };
+            },
+            onPointerMove: (e: React.PointerEvent<HTMLDivElement>) => {
+              const d = drag.current;
+              if (!d) return;
+              const perFrame = e.currentTarget.clientWidth / n;
+              setFrame(step(d.f - Math.round((e.clientX - d.x) / perFrame)));
+            },
+            onPointerUp: () => (drag.current = null),
+            onPointerCancel: () => (drag.current = null),
+          }
+        : { role: "img", "aria-label": `${name}, turning as you scroll` })}
     >
       {/* The first frame as a still until every frame is decoded; its src
           never changes, so it cannot flash. */}

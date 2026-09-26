@@ -324,20 +324,26 @@ export default async function ProductPage({
         </ColourProvider>
 
         {spin ? (
+          /* `.spin` is the scroll track and `.spin-pin` the sticky pane; see
+             Spin360. Both hints render and CSS shows the one that matches the
+             visitor's motion setting, which the server cannot know. */
           <section aria-labelledby="pdp-spin" className="spin">
-            <div className="spin-copy">
-              <h2 id="pdp-spin" className="also-h2">
-                All the way round
-              </h2>
-              <p className="spin-hint">Drag to turn it, or use the arrow keys.</p>
-              {spin.generated ? (
-                <p className="page-pending spin-pending">
-                  [Generated turn. The back of the piece has not been checked
-                  against the real garment yet.]
-                </p>
-              ) : null}
+            <div className="spin-pin">
+              <div className="spin-copy">
+                <h2 id="pdp-spin" className="also-h2">
+                  All the way round
+                </h2>
+                <p className="spin-hint spin-hint--scroll">Keep scrolling and she turns.</p>
+                <p className="spin-hint spin-hint--still">Drag to turn it, or use the arrow keys.</p>
+                {spin.generated ? (
+                  <p className="page-pending spin-pending">
+                    [Generated turn. The back of the piece has not been checked
+                    against the real garment yet.]
+                  </p>
+                ) : null}
+              </div>
+              <Spin360 frames={spin.frames} name={product.name} />
             </div>
-            <Spin360 frames={spin.frames} name={product.name} />
           </section>
         ) : null}
 
