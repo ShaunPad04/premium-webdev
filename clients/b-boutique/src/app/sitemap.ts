@@ -9,7 +9,7 @@ import { absolute } from "@/lib/site";
  * generated from, so a new piece is in the sitemap the moment it is on sale. */
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages = [
-    "/", "/shop", "/clothing", "/homeware", "/about", "/contact",
+    "/", "/clothing", "/homeware", "/about", "/contact",
     "/faq", "/delivery", "/returns", "/privacy", "/terms",
   ];
   return [

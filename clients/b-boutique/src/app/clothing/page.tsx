@@ -53,14 +53,10 @@ export default function ClothingPage() {
         <section aria-labelledby="clothing-all" className="page-section cat-page">
           <div className="page-inner">
             <div className="page-head">
-              <p className="cat-eyebrow">The rails</p>
-              <h1 id="clothing-all" className="page-h2 cat-h1">Clothing</h1>
-              <p className="cat-count">{items.length} {items.length === 1 ? "piece" : "pieces"}</p>
-              <p className="page-lede">
-                New stock comes in regularly, so this is what is in now rather than a
-                standing range. Everything here can be bought online or seen on
-                the rail. Narrow it by category above.
-              </p>
+              {/* The visible heading block came off (2026-09-26, Brad): the
+                  category bar and the pieces are the page. The h1 stays for
+                  screen readers and search engines. */}
+              <h1 id="clothing-all" className="sr-only">Clothing</h1>
               {pendingPriceNotice() ? (
                 <p className="page-pending">{pendingPriceNotice()}</p>
               ) : null}

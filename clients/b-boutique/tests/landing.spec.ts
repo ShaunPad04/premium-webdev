@@ -42,7 +42,7 @@ async function clickMidGlide(page: Page, href: string, scope = 'main') {
 }
 
 test('every product in the shop opens at the top of its page', async ({ page }) => {
-  await page.goto('/shop', { waitUntil: 'networkidle' });
+  await page.goto('/clothing', { waitUntil: 'networkidle' });
   const products = await page.evaluate(() => [
     ...new Set([...document.querySelectorAll('main a[href^="/shop/"]')].map((a) => a.getAttribute('href')!)),
   ]);
@@ -50,7 +50,7 @@ test('every product in the shop opens at the top of its page', async ({ page }) 
 
   const wrong: string[] = [];
   for (const href of products) {
-    await page.goto('/shop', { waitUntil: 'networkidle' });
+    await page.goto('/clothing', { waitUntil: 'networkidle' });
     await clickMidGlide(page, href);
     await page.waitForURL(`**${href}`);
     const y = await settle(page);
@@ -92,7 +92,7 @@ test('a product in "You may also like" opens at the top', async ({ page }) => {
 });
 
 test('Back returns to exactly where you were', async ({ page }) => {
-  await page.goto('/shop', { waitUntil: 'networkidle' });
+  await page.goto('/clothing', { waitUntil: 'networkidle' });
   const href = await page.evaluate(() => {
     const links = [...document.querySelectorAll('main a[href^="/shop/"]')];
     const a = links[Math.floor(links.length * 0.7)];

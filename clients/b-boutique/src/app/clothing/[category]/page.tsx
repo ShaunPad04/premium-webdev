@@ -83,14 +83,10 @@ export default async function CategoryPage({
         <section aria-labelledby="cat-items" className="page-section cat-page">
           <div className="page-inner">
             <div className="page-head">
-              <p className="cat-eyebrow">The rails</p>
-              <h1 id="cat-items" className="page-h2 cat-h1">{card.name}</h1>
-              <p className="cat-count">{items.length} {items.length === 1 ? "piece" : "pieces"}</p>
-              <p className="page-lede">
-                {card.note} New stock comes in regularly. What is here is what is on the rail now —
-                everything is one of one or close to it, so what sells does not
-                come back.
-              </p>
+              {/* The visible heading block came off (2026-09-26, Brad): the
+                  category bar and the pieces are the page. The h1 stays for
+                  screen readers and search engines. */}
+              <h1 id="cat-items" className="sr-only">{card.name}</h1>
               {pendingPriceNotice() ? (
                 <p className="page-pending">{pendingPriceNotice()}</p>
               ) : null}
@@ -123,7 +119,7 @@ export default async function CategoryPage({
                   {shop.email}
                 </a>{" "}
                 and ask what has just come in, or{" "}
-                <Link href="/shop" className="cf-fail-link">
+                <Link href="/clothing" className="cf-fail-link">
                   see everything in the shop
                 </Link>
                 .

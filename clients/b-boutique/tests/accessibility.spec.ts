@@ -16,7 +16,6 @@ const ROUTES = [
   '/about',
   '/contact',
   '/faq',
-  '/shop',
   '/shop/fair-isle-jumper',
   /* One whose price is still a placeholder: it renders a different control
      path (no bag button, an email link instead) and that path needs auditing
@@ -61,23 +60,26 @@ for (const route of ROUTES) {
   });
 }
 
-/* The shop's search has two states the loop above never reaches, because both
-   only exist after somebody types: a filtered grid, and the empty result with
-   its own heading, chips and phone link. An empty state is exactly where a
-   contrast or naming mistake hides — nobody looks at it until a customer
-   does. So it is audited as a state, not as a route. */
-test('/shop search: filtered results have no WCAG A/AA violations', async ({ page }) => {
-  await page.goto('/shop');
-  await page.locator('#shop-q').fill('coat');
-  /* Five, not two. The count changed on 2026-09-22 when the 26 invented
-     products were replaced by the client's real stock — and the assertion is
-     kept as an exact number rather than loosened to toBeGreaterThan(0),
-     because its job here is to prove the FILTER ACTUALLY RAN before axe
-     looks at the page. A test that accepts any count passes just as happily
-     against an unfiltered grid, which is the state it exists to rule out.
-     Seven since the client's photographs arrived for the Leopard Embroidered
-     Velvet Bomber and the Cosy Hooded Boucle Coat, both Coats & Jackets. */
-  await expect(page.locator('.prod')).toHaveCount(7);
+/* The search has two states the loop above never reaches, because both
+   only exist after somebody types: a list of matches, and the empty result
+   with its own help text and chips. An empty state is exactly where a
+   contrast or naming mistake hides, so each is audited as a state.
+
+   Since 2026-09-26 both live in the header's search panel: the /shop page,
+   whose field these tests used to drive, was removed at the client's request
+   and every match is now listed in the panel itself. */
+async function openSearch(page: import('@playwright/test').Page, q: string) {
+  /* A plain text page, so nothing under the open panel skews the audit. */
+  await page.goto('/delivery');
+  await page.locator('.sdock-trigger').click();
+  await page.locator('.sdock-input').fill(q);
+}
+
+test('search: the list of matches has no WCAG A/AA violations', async ({ page }) => {
+  await openSearch(page, 'coat');
+  /* An exact count, not toBeGreaterThan(0): it proves the filter ran before
+     axe looks. Seven Coats & Jackets match "coat" in the client's stock. */
+  await expect(page.locator('.navsearch-hit')).toHaveCount(7);
 
   const { violations } = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -85,10 +87,9 @@ test('/shop search: filtered results have no WCAG A/AA violations', async ({ pag
   expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
 });
 
-test('/shop search: the empty result has no WCAG A/AA violations', async ({ page }) => {
-  await page.goto('/shop');
-  await page.locator('#shop-q').fill('wellingtons');
-  await expect(page.locator('.find-empty')).toBeVisible();
+test('search: the empty result has no WCAG A/AA violations', async ({ page }) => {
+  await openSearch(page, 'wellingtons');
+  await expect(page.locator('.navsearch-empty')).toBeVisible();
 
   const { violations } = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

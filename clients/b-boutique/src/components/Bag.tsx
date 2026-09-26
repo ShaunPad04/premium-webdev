@@ -167,7 +167,7 @@ export function Bag() {
           <Link href="/#new-in" className="btn-solid bag-empty-cta">
             <span className="roll"><span>See what&rsquo;s new</span></span> <span aria-hidden="true">&rarr;</span>
           </Link>
-          <Link href="/shop" className="bag-empty-all">Shop everything</Link>
+          <Link href="/clothing" className="bag-empty-all">Shop everything</Link>
         </div>
         {picks.length ? (
           <section className="bag-empty-new" aria-labelledby="bag-empty-new-h">
@@ -390,7 +390,7 @@ export function Bag() {
                 );
               })}
             </ul>
-            <Link href="/shop" className="bk-continue">
+            <Link href="/clothing" className="bk-continue">
               <span aria-hidden="true">&larr;</span> Continue shopping
             </Link>
           </section>

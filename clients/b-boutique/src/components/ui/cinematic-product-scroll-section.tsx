@@ -290,7 +290,7 @@ export function Component() {
       <div ref={stripRef} className="cps-strip">
         <div className="cps-strip-head">
           <span className="label">All three</span>
-          <Link href="/shop" className="cps-strip-link">
+          <Link href="/clothing" className="cps-strip-link">
             <span>Shop everything</span>
             <Arrow />
           </Link>

@@ -51,10 +51,10 @@ export default function HomewarePage() {
         <section aria-labelledby="home-items" className="page-section cat-page">
           <div className="page-inner">
             <div className="page-head">
-              <p className="cat-eyebrow">For the home</p>
-              <h1 id="home-items" className="page-h2 cat-h1">Homeware</h1>
-              <p className="cat-count">{items.length} {items.length === 1 ? "piece" : "pieces"}</p>
-              <p className="page-lede">{homeware.note}</p>
+              {/* The visible heading block came off (2026-09-26, Brad): the
+                  category bar and the pieces are the page. The h1 stays for
+                  screen readers and search engines. */}
+              <h1 id="home-items" className="sr-only">Homeware</h1>
             </div>
 
             {items.length ? (
@@ -68,7 +68,7 @@ export default function HomewarePage() {
                   {shop.email}
                 </a>{" "}
                 and ask what has just come in, or{" "}
-                <Link href="/shop" className="cf-fail-link">
+                <Link href="/clothing" className="cf-fail-link">
                   see everything in the shop
                 </Link>
                 .

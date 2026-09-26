@@ -23,7 +23,12 @@ const nextConfig: NextConfig = {
      and a cached 308 would keep sending browsers away from it. */
   async redirects() {
     return [
-      { source: "/accessories", destination: "/shop", permanent: false },
+      { source: "/accessories", destination: "/clothing", permanent: false },
+      /* /shop came out on 2026-09-26 (Brad): "View all clothing" in the
+         Catalogue menu is the same list. Temporary, like /accessories, so it
+         can come back without a cached redirect in the way. Product pages
+         under /shop/[slug] are untouched. */
+      { source: "/shop", destination: "/clothing", permanent: false },
       /* The vercel.app address serves the same site as the real domain. The
          canonical tag already names bboutiqueclee.com; this makes it the only
          address a browser or crawler ends up on. Preview deployments have

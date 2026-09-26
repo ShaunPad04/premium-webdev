@@ -178,7 +178,7 @@ export default async function CheckoutSuccessPage({
             </p>
 
             <p className="page-body">
-              <Link href={paid ? "/shop" : "/bag"} className="btn-solid">
+              <Link href={paid ? "/clothing" : "/bag"} className="btn-solid">
                 <span className="roll"><span>{paid ? "Back to the shop" : "Back to your bag"}</span></span>{" "}
                 <span aria-hidden="true">&rarr;</span>
               </Link>

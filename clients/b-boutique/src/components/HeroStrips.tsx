@@ -43,7 +43,7 @@ export function Where() {
 
 export function Cta() {
   return (
-    <Link href="/shop" className="hero-cta">
+    <Link href="/clothing" className="hero-cta">
       <span className="roll"><span>Shop all</span></span>
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
         <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />

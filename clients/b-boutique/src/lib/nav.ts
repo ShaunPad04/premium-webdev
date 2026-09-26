@@ -28,14 +28,13 @@ export type MenuItem = {
  *  `pending` is gone from Womenswear and Accessories: both now have a page.
  */
 export const MENU: MenuItem[] = [
-  { n: "01", label: "Shop", href: "/shop" },
-  { n: "02", label: "Womenswear", href: "/clothing" },
-  { n: "03", label: "Homeware", href: "/homeware" },
-  { n: "04", label: "New Arrivals", href: "/#new-in" },
-  { n: "05", label: "About", href: "/about" },
-  { n: "06", label: "Visit Us", href: "/#visit" },
-  { n: "07", label: "FAQ", href: "/faq" },
-  { n: "08", label: "Contact", href: "/contact" },
+  { n: "01", label: "Womenswear", href: "/clothing" },
+  { n: "02", label: "Homeware", href: "/homeware" },
+  { n: "03", label: "New Arrivals", href: "/#new-in" },
+  { n: "04", label: "About", href: "/about" },
+  { n: "05", label: "Visit Us", href: "/#visit" },
+  { n: "06", label: "FAQ", href: "/faq" },
+  { n: "07", label: "Contact", href: "/contact" },
 ];
 
 /** Social accounts.
@@ -112,7 +111,6 @@ export const footerNav: { heading: string; items: MenuItem[] }[] = [
   {
     heading: "Shop",
     items: [
-      { n: "", label: "Shop all", href: "/shop" },
       { n: "", label: "New In", href: "/#new-in" },
       { n: "", label: "Clothing", href: "/clothing" },
       { n: "", label: "Homeware", href: "/homeware" },
@@ -179,17 +177,10 @@ export const CATALOGUE_MENU = [
 ];
 
 export const PRIMARY = [
-  { label: "Shop", href: "/shop" },
+  /* Two links only (2026-09-26, Brad): Shop came out with /shop, and About,
+     FAQ and Contact live in the menu panel (MENU above), not the bar. */
   { label: "New In", href: "/#new-in" },
   { label: "Catalogue", href: "/clothing", menu: CATALOGUE_MENU },
-  /* Accessories came out of all three navigations on 2026-09-22 at the
-     client's instruction: the shop does not stock them. /accessories now
-     redirects to /shop (next.config.ts) so no old link lands on a 404. */
-  { label: "About", href: "/about" },
-  /* FAQ in the header (2026-09-24, Brad): the questions moved off the home
-     page to /faq the same day. */
-  { label: "FAQ", href: "/faq" },
-  { label: "Contact", href: "/contact" },
 ] as const;
 
 /** The three things the shop sells.

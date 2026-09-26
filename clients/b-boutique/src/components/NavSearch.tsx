@@ -49,9 +49,6 @@ import { Price } from "@/components/Price";
  * never point at an empty shelf. A colour search finding nothing is the
  * honest answer until the client supplies colours; see lib/search.ts. */
 
-/** Enough to answer "do they have one", not a second shop page. The full
- *  grid is one keystroke away and the panel says so. */
-const MAX_RESULTS = 6;
 
 export function NavSearch() {
   const [open, setOpen] = useState(false);
@@ -113,8 +110,13 @@ export function NavSearch() {
         value={q}
         onValueChange={setQ}
         onSearch={(v) => {
+          /* There is no /shop results page any more (2026-09-26, Brad):
+             Enter opens the best match; with none, the panel stays open on
+             its empty state. Every match is listed in the panel itself. */
+          const hit = searchProducts(products, v.trim())[0];
+          if (!hit) return;
           setOpen(false);
-          router.push(`/shop?q=${encodeURIComponent(v)}#find`);
+          router.push(`/shop/${hit.slug}`);
         }}
         placeholder="Coats, knitwear, a silk dress…"
         controls={panelId}
@@ -135,7 +137,7 @@ export function NavSearch() {
             {query && results.length > 0 ? (
               <>
                 <ul className="navsearch-results">
-                  {results.slice(0, MAX_RESULTS).map((p) => (
+                  {results.map((p) => (
                     <li key={p.slug}>
                       <Link
                         href={`/shop/${p.slug}`}
@@ -161,16 +163,6 @@ export function NavSearch() {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  href={`/shop?q=${encodeURIComponent(query)}#find`}
-                  onClick={close}
-                  className="navsearch-all"
-                >
-                  {results.length > MAX_RESULTS
-                    ? `See all ${results.length} in the shop`
-                    : "See these in the shop"}
-                  <span aria-hidden="true"> &rarr;</span>
-                </Link>
               </>
             ) : null}
 

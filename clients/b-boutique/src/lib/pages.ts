@@ -110,7 +110,7 @@ export const RETIRED_CATEGORIES: Record<string, string> = {
   coats: "/clothing/coats-jackets",
   shirts: "/clothing/tops",
   denim: "/clothing/trousers",
-  accessories: "/shop",
+  accessories: "/clothing",
   /* Homeware IS a live category with three pieces in it, and it deliberately
      has no /clothing page — a clothing page that lists ceramic vases is not a
      clothing page. That left /clothing/homeware returning a 404 for a slug

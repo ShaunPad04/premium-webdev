@@ -27,7 +27,7 @@ export default function NotFound() {
         />
         <section className="page-section" aria-label="Where to go next">
           <div className="page-inner nf-links">
-            <Link href="/shop" className="nf-link">
+            <Link href="/clothing" className="nf-link">
               Shop everything <span aria-hidden="true">&rarr;</span>
             </Link>
             <Link href="/#new-in" className="nf-link">

@@ -10495,7 +10495,9 @@ h2.ucs-h em { font-style: italic; }
   font-size: clamp(40px, 5.6vw, 84px); line-height: 1.0; letter-spacing: -0.015em;
 }
 .lk-sub { margin: 16px 0 0; max-width: 38ch; font-size: 15px; line-height: 1.55; color: rgba(255,255,255,0.84); }
-@media (max-width: 767px) { .lk-sub { display: none; } }
+/* Hidden at every width (2026-09-26, Brad): phones never had it; the
+   desktop now drops it too, leaving eyebrow, title and Shop all. */
+.lk-sub { display: none; }
 .lk-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 26px; }
 
 /* ── Follow along strip (2026-09-25, preview) ───────────────────────────── */
@@ -10697,16 +10699,15 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
    bag, which lost its band for the same reason. */
 /* The fixed header plus announcement bar is 117-119px at every width
    (measured); the rest is breathing room. */
-.cat-page { padding-top: calc(120px + clamp(36px, 5vw, 64px)); }
+.cat-page { padding-top: calc(120px + clamp(24px, 3vw, 40px)); }
 .cat-eyebrow { margin: 0 0 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bb-grey-dark); }
 .page-h2.cat-h1 { margin: 0; font-family: var(--font-display), Georgia, serif; font-weight: 400; font-size: clamp(40px, 5vw, 72px); line-height: 1; letter-spacing: -0.01em; text-transform: none; }
 .cat-count { margin: 12px 0 0; font-size: 13px; letter-spacing: 0.06em; color: var(--bb-grey-dark); font-variant-numeric: tabular-nums; }
-/* The marquee white with black type (2026-09-26, Brad), the philosophy
-   section above it removed; its sentence now runs in the marquee. The
-   bottom hairline keeps the white band off the photographs below. */
-.arr-rail { background: #FFFFFF; border-block: 1px solid rgba(10, 10, 10, 0.12); }
-.arr-rail .stmt-text { color: #0A0A0A; }
-.arr-rail .arr-dot { background: rgba(10, 10, 10, 0.35); }
+/* The marquee: black with white type again (2026-09-26, Brad, after a white
+   trial). The philosophy section above it is gone; its sentence runs here. */
+.arr-rail { background: #0A0A0A; border-block: 0; }
+.arr-rail .stmt-text { color: #FFFFFF; }
+.arr-rail .arr-dot { background: rgba(255, 255, 255, 0.45); }
 /* No slanted white wedge (Brad: "it should only be the marquee"): the
    marquee is the first thing up over the hero. */
 .home-rise > .rise { padding-top: 0; }
@@ -10744,3 +10745,16 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
   .ss-grid--two .ss-tile { aspect-ratio: auto; height: min(62.5vw, 88svh); }
   .ss-grid--two .ss-media { object-position: 50% 12%; }
 }
+
+/* Home: the header docks as the marquee reaches the top (Nav.tsx). It slides
+   down into place rather than blinking on. */
+.nav-docked { animation: nav-dock 420ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes nav-dock { from { transform: translateY(-100%); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .nav-docked { animation: none; } }
+
+/* Search lists every match in its panel now that /shop is gone; long lists
+   scroll inside it. */
+.navsearch-panel .navsearch-results { max-height: min(56svh, 460px); overflow-y: auto; overscroll-behavior: contain; }
+/* A struck "was" price inside the black search panel: #555 is for white
+   ground and fails on the ink (found by the search audit, 2026-09-26). */
+.navsearch-hit-meta .price-was { color: rgba(255, 255, 255, 0.62); }

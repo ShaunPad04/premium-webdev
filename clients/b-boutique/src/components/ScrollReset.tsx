@@ -127,7 +127,10 @@ function land(target: () => number | undefined) {
   function onScroll() {
     if (performance.now() > until) return stop();
     const y = target();
-    if (y !== undefined && Math.abs(window.scrollY - y) > 1) jumpTo(y);
+    /* Any drift, not "more than 1px": a 1px residue from the page just left
+       used to be tolerated and stuck (a product opened at scrollY 1 from
+       /clothing, found by the landing test, 2026-09-26). */
+    if (y !== undefined && Math.abs(window.scrollY - y) > 0.5) jumpTo(y);
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   inputs.forEach((t) => window.addEventListener(t, stop, { capture: true, passive: true }));
