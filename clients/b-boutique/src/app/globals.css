@@ -10712,3 +10712,25 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 .home-rise > .rise { padding-top: 0; }
 .home-rise > .rise::before { display: none; }
 .home-rise > .rise > .arr-rail { border-top: 0; }
+
+/* Follow: plain underlined words to their Facebook page, not a pill
+   (2026-09-26, Brad). */
+.ss-follow {
+  display: inline-block;
+  min-height: 0;
+  padding: 8px 0 6px;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-radius: 0;
+  background: none;
+  color: var(--bb-black);
+  font-family: var(--font-body), Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: opacity 200ms ease;
+}
+.ss-follow:hover { background: none; opacity: 0.6; }
+.ss-follow:active { transform: none; }

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 import { socials } from "@/lib/nav";
-import { SocialMark } from "./SocialMark";
 
 /* "Follow along" grid above the footer (2026-09-25, preview for Brad,
  * after the Radian theme's): three by two, square tiles edge to edge, the
@@ -79,8 +78,8 @@ export function SocialStrip() {
       {fb ? (
         <div className="ss-head">
           <a className="ss-follow" href={fb.href} target="_blank" rel="noopener noreferrer">
-            <SocialMark name="Facebook" />
-            <span>Follow B Boutique</span>
+            {/* Plain underlined words, not a pill (2026-09-26, Brad). */}
+            <span>Follow us</span>
             <span className="sr-only"> on Facebook (opens in a new tab)</span>
           </a>
         </div>
