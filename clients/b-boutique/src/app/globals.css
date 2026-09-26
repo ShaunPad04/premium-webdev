@@ -10737,3 +10737,21 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
   .lk-copy { top: calc(118px + 3svh); }
 }
 @media (max-width: 1023px) { .pdp { padding-top: 120px; } }
+
+/* The philosophy quote pins on a desktop while its words fill in
+ * (2026-09-26, Brad: on a MacBook the reveal was over in one trackpad
+ * swipe). The section is taller than the screen and its content sticks in
+ * the middle of it; TextRevealScroll reads --pin and drives the words from
+ * the section's scroll instead of the text's position. Phones keep the
+ * normal scrolling reveal; reduced motion gets neither. */
+@media (min-width: 1024px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
+  .pov { --pin: 1; height: 230svh; padding-block: 0; }
+  .pov-inner {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    box-sizing: border-box;
+    padding-block: 96px 48px;
+    align-items: center;
+  }
+}

@@ -67,10 +67,21 @@ export default function TextRevealScroll({
         const update = () => {
             frame = 0
             const vh = window.innerHeight
-            const top = root.getBoundingClientRect().top
-            const startY = (vh * start) / 100
-            const endY = (vh * end) / 100
-            const p = clamp((startY - top) / Math.max(1, startY - endY))
+            // Pinned: when an ancestor marked data-reveal-track is pinning the
+            // text (its CSS sets --pin: 1), the text itself stops moving, so
+            // progress follows the track instead: 0 as it pins, 1 at 80% of
+            // the pinned distance, leaving a beat with the line fully lit.
+            const track = root.closest<HTMLElement>("[data-reveal-track]")
+            let p: number
+            if (track && getComputedStyle(track).getPropertyValue("--pin").trim() === "1") {
+                const r = track.getBoundingClientRect()
+                p = clamp(-r.top / Math.max(1, (r.height - vh) * 0.8))
+            } else {
+                const top = root.getBoundingClientRect().top
+                const startY = (vh * start) / 100
+                const endY = (vh * end) / 100
+                p = clamp((startY - top) / Math.max(1, startY - endY))
+            }
             const lit = p * n
             // Each word brightens continuously from dimOpacity to 1 as the
             // scroll passes it. Safe for contrast only because the caller's
