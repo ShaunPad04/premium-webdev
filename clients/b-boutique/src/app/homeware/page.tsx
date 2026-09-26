@@ -6,12 +6,10 @@ import { Footer } from "@/components/Footer";
 import { SocialStrip } from "@/components/SocialStrip";
 import { ShortFaq } from "@/components/ShortFaq";
 import { MotionLayer } from "@/components/MotionLayer";
-import { PageMasthead } from "@/components/PageMasthead";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
 import { productsIn } from "@/lib/catalogue";
 import { categories, shop } from "@/lib/shop";
-import { RevealText } from "@/components/RevealText";
 
 const homeware = categories.find((c) => c.slug === "homeware")!;
 
@@ -44,29 +42,19 @@ export default function HomewarePage() {
   return (
     <>
       <MotionLayer />
-      <Nav />
+      {/* No PageMasthead (2026-09-26, Brad): the photograph band above the
+          rails is gone and the header is solid, as on the bag. The page's one
+          h1 is the category name, over the pieces. */}
+      <Nav solid />
       <main id="main" className="flex-1">
-        <PageMasthead
-          eyebrow="For the home"
-          title="Homeware"
-          lede={homeware.note}
-          aside={
-            <p className="pm-phone">
-              <span className="pm-phone-label">In this category</span>
-              <span className="pm-phone-number">
-                {items.length} {items.length === 1 ? "piece" : "pieces"}
-              </span>
-            </p>
-          }
-          texture="homeware"
-        />
 
-        <section aria-labelledby="home-items" className="page-section">
+        <section aria-labelledby="home-items" className="page-section cat-page">
           <div className="page-inner">
             <div className="page-head">
-              <RevealText id="home-items" className="page-h2">
-                What is in.
-              </RevealText>
+              <p className="cat-eyebrow">For the home</p>
+              <h1 id="home-items" className="page-h2 cat-h1">Homeware</h1>
+              <p className="cat-count">{items.length} {items.length === 1 ? "piece" : "pieces"}</p>
+              <p className="page-lede">{homeware.note}</p>
             </div>
 
             {items.length ? (

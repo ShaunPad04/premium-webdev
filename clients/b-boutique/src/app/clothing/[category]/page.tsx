@@ -7,7 +7,6 @@ import { Footer } from "@/components/Footer";
 import { SocialStrip } from "@/components/SocialStrip";
 import { ShortFaq } from "@/components/ShortFaq";
 import { MotionLayer } from "@/components/MotionLayer";
-import { PageMasthead } from "@/components/PageMasthead";
 import { CategoryBar } from "@/components/CategoryBar";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
@@ -75,34 +74,20 @@ export default async function CategoryPage({
   return (
     <>
       <MotionLayer />
-      <Nav />
+      {/* No PageMasthead (2026-09-26, Brad): the photograph band above the
+          rails is gone and the header is solid, as on the bag. The page's one
+          h1 is the category name, over the pieces. */}
+      <Nav solid />
       <main id="main" className="flex-1">
-        <PageMasthead
-          eyebrow="The rails"
-          title={card.name}
-          lede={card.note}
-          aside={
-            <p className="pm-phone">
-              <span className="pm-phone-label">In this category</span>
-              <span className="pm-phone-number">
-                {items.length} {items.length === 1 ? "piece" : "pieces"}
-              </span>
-            </p>
-          }
-          /* One macro of cloth per rail, keyed on the slug so a category
-             without a texture simply renders the plain band. See
-             PageMasthead — material only, never a garment or a shop. */
-          texture={card.slug}
-        />
 
-        <section aria-labelledby="cat-items" className="page-section">
+        <section aria-labelledby="cat-items" className="page-section cat-page">
           <div className="page-inner">
             <div className="page-head">
-              <h2 id="cat-items" className="page-h2">
-                What is in.
-              </h2>
+              <p className="cat-eyebrow">The rails</p>
+              <h1 id="cat-items" className="page-h2 cat-h1">{card.name}</h1>
+              <p className="cat-count">{items.length} {items.length === 1 ? "piece" : "pieces"}</p>
               <p className="page-lede">
-                New stock comes in regularly. What is here is what is on the rail now —
+                {card.note} New stock comes in regularly. What is here is what is on the rail now —
                 everything is one of one or close to it, so what sells does not
                 come back.
               </p>

@@ -5,13 +5,11 @@ import { Footer } from "@/components/Footer";
 import { SocialStrip } from "@/components/SocialStrip";
 import { ShortFaq } from "@/components/ShortFaq";
 import { MotionLayer } from "@/components/MotionLayer";
-import { PageMasthead } from "@/components/PageMasthead";
 import { CategoryBar } from "@/components/CategoryBar";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
 import { pendingPriceNotice } from "@/lib/catalogue";
 import { clothingProducts } from "@/lib/pages";
-import { RevealText } from "@/components/RevealText";
 
 export const metadata: Metadata = {
   title: "Clothing",
@@ -46,29 +44,18 @@ export default function ClothingPage() {
   return (
     <>
       <MotionLayer />
-      <Nav />
+      {/* No PageMasthead (2026-09-26, Brad): the photograph band above the
+          rails is gone and the header is solid, as on the bag. The page's one
+          h1 is the category name, over the pieces. */}
+      <Nav solid />
       <main id="main" className="flex-1">
-        <PageMasthead
-          eyebrow="The rails"
-          title="Clothing"
-          lede="Coats, jackets, knitwear, trousers, tops, skirts, co-ords and dresses. One room, and every piece picked by hand rather than ordered by the pack."
-          aside={
-            <p className="pm-phone">
-              <span className="pm-phone-label">On the rails</span>
-              <span className="pm-phone-number">
-                {items.length} {items.length === 1 ? "piece" : "pieces"}
-              </span>
-            </p>
-          }
-        texture="clothing"
-        />
 
-        <section aria-labelledby="clothing-all" className="page-section">
+        <section aria-labelledby="clothing-all" className="page-section cat-page">
           <div className="page-inner">
             <div className="page-head">
-              <RevealText id="clothing-all" className="page-h2">
-                Everything on the rails.
-              </RevealText>
+              <p className="cat-eyebrow">The rails</p>
+              <h1 id="clothing-all" className="page-h2 cat-h1">Clothing</h1>
+              <p className="cat-count">{items.length} {items.length === 1 ? "piece" : "pieces"}</p>
               <p className="page-lede">
                 New stock comes in regularly, so this is what is in now rather than a
                 standing range. Everything here can be bought online or seen on

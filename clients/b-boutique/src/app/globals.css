@@ -10691,3 +10691,13 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 @media (max-width: 1023px) {
   .navbar:has(.sdock[data-open]) > :not(.navbar-search) { visibility: hidden; }
 }
+
+/* Catalogue pages without the photograph band (2026-09-26, Brad): the solid
+   header, then the category name over its pieces. Same top clearance as the
+   bag, which lost its band for the same reason. */
+/* The fixed header plus announcement bar is 117-119px at every width
+   (measured); the rest is breathing room. */
+.cat-page { padding-top: calc(120px + clamp(36px, 5vw, 64px)); }
+.cat-eyebrow { margin: 0 0 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bb-grey-dark); }
+.page-h2.cat-h1 { margin: 0; font-family: var(--font-display), Georgia, serif; font-weight: 400; font-size: clamp(40px, 5vw, 72px); line-height: 1; letter-spacing: -0.01em; text-transform: none; }
+.cat-count { margin: 12px 0 0; font-size: 13px; letter-spacing: 0.06em; color: var(--bb-grey-dark); font-variant-numeric: tabular-nums; }
