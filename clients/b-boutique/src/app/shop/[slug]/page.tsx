@@ -30,14 +30,15 @@ import { jsonLd } from "@/lib/site";
 import { Price } from "@/components/Price";
 import { Spin360 } from "@/components/Spin360";
 
-/* Turntable frames for this piece, if a folder of them exists. A PLACEHOLDER
-   file in the folder marks frames faked from one photograph, and the page
-   says so. See Spin360. */
+/* Turntable frames for this piece, if a folder of them exists. A GENERATED
+   file in the folder marks frames made by AI rather than photographed, and
+   the page says so: the back of the piece is then the model's guess, not a
+   fact about the garment. See Spin360. */
 function spinFor(slug: string) {
   try {
     const files = readdirSync(path.join(process.cwd(), "public/img/spin", slug));
     const frames = files.filter((f) => /^\d+\.webp$/.test(f)).sort().map((f) => `/img/spin/${slug}/${f}`);
-    return frames.length > 1 ? { frames, placeholder: files.includes("PLACEHOLDER") } : null;
+    return frames.length > 1 ? { frames, generated: files.includes("GENERATED") } : null;
   } catch {
     return null;
   }
@@ -329,10 +330,10 @@ export default async function ProductPage({
                 All the way round
               </h2>
               <p className="spin-hint">Drag to turn it, or use the arrow keys.</p>
-              {spin.placeholder ? (
+              {spin.generated ? (
                 <p className="page-pending spin-pending">
-                  [Placeholder turn, made from one photograph. Real turntable
-                  photographs to follow.]
+                  [Generated turn. The back of the piece has not been checked
+                  against the real garment yet.]
                 </p>
               ) : null}
             </div>

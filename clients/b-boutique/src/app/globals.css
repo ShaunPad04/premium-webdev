@@ -10771,7 +10771,7 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 
 .spin-stage {
   position: relative;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 4;
   touch-action: pan-y;
   user-select: none;
   cursor: progress;
