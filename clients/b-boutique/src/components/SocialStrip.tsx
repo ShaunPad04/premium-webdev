@@ -23,7 +23,10 @@ import { SocialMark } from "./SocialMark";
  * which nobody sees, and never plays for anyone who has asked for reduced
  * motion (they get the still). */
 
-type Mood = { img: string; alt: string };
+/* `top`: the head sits at the very top of the photograph, so the tile is
+   anchored to its top edge rather than a third of the way down, which cut
+   the head off on a desktop's wide, short tiles (Brad, 2026-09-26). */
+type Mood = { img: string; alt: string; top?: boolean };
 
 const FILM = {
   href: "/shop/tailored-barrel-fit-trousers",
@@ -34,8 +37,8 @@ const FILM = {
 const BEFORE: Mood[] = [{ img: "paris", alt: "A woman in black sunglasses and a black blazer against a sunlit Paris wall" }];
 const AFTER: Mood[] = [
   { img: "milan", alt: "A black leather handbag, tortoiseshell sunglasses and gold hoops on a marble table" },
-  { img: "nyfw", alt: "A model on a New York runway in a camel coat and wide black trousers" },
-  { img: "london", alt: "A woman in a brown satin dress on a wet London street at dusk, a black cab behind her" },
+  { img: "nyfw", top: true, alt: "A model on a New York runway in a camel coat and wide black trousers" },
+  { img: "london", top: true, alt: "A woman in a brown satin dress on a wet London street at dusk, a black cab behind her" },
   { img: "como", alt: "A woman in ivory silk leaning on a stone terrace above Lake Como" },
 ];
 
@@ -45,7 +48,7 @@ function MoodTile({ m }: { m: Mood }) {
       <picture>
         <source type="image/avif" srcSet={`/img/look/${m.img}-640.avif 640w, /img/look/${m.img}-1000.avif 1000w`} sizes="34vw" />
         <source type="image/webp" srcSet={`/img/look/${m.img}-640.webp 640w, /img/look/${m.img}-1000.webp 1000w`} sizes="34vw" />
-        <img className="ss-media" src={`/img/look/${m.img}-1000.jpg`} alt={m.alt} width={1000} height={1000} loading="lazy" decoding="async" />
+        <img className={m.top ? "ss-media ss-media--top" : "ss-media"} src={`/img/look/${m.img}-1000.jpg`} alt={m.alt} width={1000} height={1000} loading="lazy" decoding="async" />
       </picture>
     </li>
   );
@@ -95,11 +98,16 @@ export function SocialStrip() {
               disablePictureInPicture
               disableRemotePlayback
               preload="none"
-              poster="/img/look/film-600.jpg"
+              poster="/img/look/film-poster.jpg"
               aria-hidden="true"
             >
-              <source src="/img/look/film.webm" type="video/webm" />
+              {/* Re-encoded at 1080x1440 (2026-09-26, Brad: the film looked
+                  soft). It was 720x960 at ~400kbps, stretched to ~1280px wide
+                  on a Retina desktop. H.264 first: VP9 plateaued below it here
+                  (SSIM 0.983 vs 0.993 against the master). The WebM, same
+                  size, is for browsers built without H.264. */}
               <source src="/img/look/film.mp4" type="video/mp4" />
+              <source src="/img/look/film.webm" type="video/webm" />
             </video>
           </Link>
         </li>

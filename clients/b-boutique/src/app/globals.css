@@ -10755,3 +10755,5 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
     align-items: center;
   }
 }
+/* Mood photographs with the head at the very top (SocialStrip `top`). */
+.ss-media.ss-media--top { object-position: 50% 0%; }
