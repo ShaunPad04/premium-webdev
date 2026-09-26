@@ -10701,3 +10701,14 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 .cat-eyebrow { margin: 0 0 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bb-grey-dark); }
 .page-h2.cat-h1 { margin: 0; font-family: var(--font-display), Georgia, serif; font-weight: 400; font-size: clamp(40px, 5vw, 72px); line-height: 1; letter-spacing: -0.01em; text-transform: none; }
 .cat-count { margin: 12px 0 0; font-size: 13px; letter-spacing: 0.06em; color: var(--bb-grey-dark); font-variant-numeric: tabular-nums; }
+/* The marquee white with black type (2026-09-26, Brad), the philosophy
+   section above it removed; its sentence now runs in the marquee. The
+   bottom hairline keeps the white band off the photographs below. */
+.arr-rail { background: #FFFFFF; border-block: 1px solid rgba(10, 10, 10, 0.12); }
+.arr-rail .stmt-text { color: #0A0A0A; }
+.arr-rail .arr-dot { background: rgba(10, 10, 10, 0.35); }
+/* No slanted white wedge (Brad: "it should only be the marquee"): the
+   marquee is the first thing up over the hero. */
+.home-rise > .rise { padding-top: 0; }
+.home-rise > .rise::before { display: none; }
+.home-rise > .rise > .arr-rail { border-top: 0; }

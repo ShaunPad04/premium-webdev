@@ -1,3 +1,5 @@
+import { philosophy } from "@/lib/about";
+
 /* The band under the hero since 2026-09-23 (Brad's reference): NEW ARRIVAL
  * in the hero's Anton caps, white on black, a red dot between each, moving.
  *
@@ -11,7 +13,9 @@
 /* 2026-09-24, Brad: three words now, NEW ARRIVAL · ONE OF ONE ·
    CLEETHORPES. "One of one" stands on the shop's own FAQ ("most pieces
    here are one of one"). */
-const WORDS = ["New arrival", "One of one", "Cleethorpes"];
+/* 2026-09-26, Brad (idea A): the philosophy section left the home page and
+   its approved sentence (lib/about.ts) runs here in place of NEW ARRIVAL. */
+const WORDS = [philosophy.statement.replace(/\.$/, ""), "One of one", "Cleethorpes"];
 const REPEAT = 4;
 
 export function NewArrivalRail() {

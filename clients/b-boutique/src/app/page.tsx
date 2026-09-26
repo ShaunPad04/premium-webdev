@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { NewArrivalRail } from "@/components/NewArrivalRail";
-import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import { NewInSlides } from "@/components/NewInSlides";
 import { WhyUs } from "@/components/home/WhyUs";
@@ -50,10 +49,9 @@ export default function Home() {
       <main id="main" className="flex-1 home-rise">
         <Hero />
         <div className="rise">
-        {/* The quote first, then the marquee (2026-09-24, Brad): the panel
-            that rises over the hero now arrives white, like the reference,
-            with the black New Arrival band below the quote. */}
-        <PointOfView />
+        {/* The marquee is the first thing up over the hero (2026-09-26,
+            Brad): white, carrying the philosophy sentence. The quote section
+            (PointOfView) came off the home page; the component is kept. */}
         <NewArrivalRail />
         <HorizontalRails />
         <ShopTheLook />
