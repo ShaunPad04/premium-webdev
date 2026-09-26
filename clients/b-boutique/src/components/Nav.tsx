@@ -47,9 +47,7 @@ import { NavSearch } from "./NavSearch";
  * Collapsing them into one would put the strip away before the product page
  * had been scrolled at all, which is a visible regression on a route that
  * currently shows it. */
-// `solid` is still accepted from the routes that pass it; the bar is always solid now.
-export function Nav(props: { solid?: boolean } = {}) {
-  void props;
+export function Nav({ solid = false }: { solid?: boolean } = {}) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -61,8 +59,11 @@ export function Nav(props: { solid?: boolean } = {}) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* The bar is always solid now and the home hero no longer carries the
-     name in large type, so the monogram shows on every route. */
+  /* See-through over the page's photograph, solid once the reader scrolls
+     (2026-09-26, Brad). The bag and product pages open solid: they have no
+     photograph behind the bar. The monogram shows throughout; the home hero
+     no longer carries the name in large type. */
+  const opaque = solid || scrolled;
   const pathname = usePathname();
 
   return (
@@ -82,15 +83,26 @@ export function Nav(props: { solid?: boolean } = {}) {
            showed through and turned the bar a muddy grey-brown sitting
            under a strip of the true ink. Two shades of "dark" stacked on
            top of each other read as a mistake. One colour, one band. */
-        background: "#0A0A0A",
-        borderBottom: "1px solid rgba(255,255,255,.10)",
+        background: opaque ? "#0A0A0A" : "transparent",
+        borderBottom: `1px solid ${opaque ? "rgba(255,255,255,.10)" : "transparent"}`,
+        transition:
+          "background 480ms var(--bb-ease), border-color 480ms var(--bb-ease)",
       }}
     >
-      {/* Solid neutral black since 2026-09-25 (Brad: the header read maroon).
-          It used to be transparent over the page's photograph with a dark
-          scrim, and the warm masthead photographs showed through it as
-          burgundy; the site ink #0E0B0C also leans red. Now one flat
-          #0A0A0A band, matching the announcement strip, whatever is below. */}
+      {/* A light scrim, only while see-through, so the small type stays
+          legible over a bright photograph. Neutral black, not the site ink:
+          the warm #0E0B0C scrim over the warm masthead photographs is what
+          read as maroon (Brad, 2026-09-25). */}
+      {!opaque ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-[150px]"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(10, 10, 10, .62) 0%, rgba(10, 10, 10, .45) 45%, rgba(10, 10, 10, .16) 78%, transparent 100%), radial-gradient(ellipse 40% 100% at 100% 0%, rgba(10, 10, 10, .32) 0%, rgba(10, 10, 10, .22) 45%, transparent 100%)",
+          }}
+        />
+      ) : null}
 
       {/* The announcement bar, above the nav row.
        *
