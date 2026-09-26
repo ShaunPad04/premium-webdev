@@ -13,14 +13,14 @@
    which a bare `html` would lose to. */
 html:root { --font-display: var(--font-body); }
 
-:is(h1, h2, .lm-title):not(.sr-only) {
+:is(h1, h2):not(.sr-only) {
   font-weight: 400 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.01em !important;
   line-height: 1.08 !important;
 }
 :is(h1, h2):not(.sr-only) { font-size: clamp(24px, 2.6vw, 38px) !important; }
-:is(h1, h2, .lm-title) em { font-style: normal !important; }
+:is(h1, h2) em { font-style: normal !important; }
 
 /* Sub-headings and product names keep the serif, in sentence case. */
 :is(h3, .prod-name, .vx-card-name, .ps-title, .fqx-q-text, .fqx-panel-q, .owner-name):not(.sr-only) {
@@ -28,4 +28,11 @@ html:root { --font-display: var(--font-body); }
   font-weight: 400 !important;
   text-transform: none !important;
   letter-spacing: 0 !important;
+}
+
+/* Except the hero's "B Boutique": the serif as it was, in sentence case
+   (2026-09-26, Brad: only there). */
+.hero .lm-title {
+  font-family: "Bodoni Moda", Georgia, serif !important;
+  text-transform: none !important;
 }

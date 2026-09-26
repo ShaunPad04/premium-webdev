@@ -10005,29 +10005,6 @@ body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
 }
 @keyframes rise-dim { to { opacity: 0.6; } }
 
-/* The hero draws in to a rounded card as the page rises over it
-   (2026-09-26, Brad chose "card" of three scroll-driven previews). On the
-   same --rise timeline as the dim, so it moves exactly with the scroll;
-   the opening line under the frame fades as it goes. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .home-rise > .hero .lm,
-    .home-rise > .hero > .hero-open {
-      animation-timeline: --rise;
-      animation-range: entry 0% entry 100%;
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-    }
-    .home-rise > .hero .lm { animation-name: hero-card; will-change: clip-path, transform; }
-    .home-rise > .hero > .hero-open { animation-name: hero-open-fade; }
-  }
-}
-@keyframes hero-card {
-  from { clip-path: inset(0 0 0 0 round 0); transform: scale(1); }
-  to { clip-path: inset(6% 5% 12% 5% round 28px); transform: scale(0.97); }
-}
-@keyframes hero-open-fade { to { opacity: 0; } }
-
 /* Up close words, centred (2026-09-24, Brad: "should this not be in the
    middle of the picture, so it stands out"). Centred on the close-up over
    a soft oval of shade rather than a bottom band, so the heading reads as
@@ -10829,3 +10806,32 @@ h3.pol-h { font-size: clamp(20px, 2.3vw, 27px); line-height: 1.22; }
   text-transform: uppercase;
 }
 
+
+/* Reviews as Google-style cards (Reviews.tsx, 2026-09-26, Brad): a lettered
+   avatar, name, gold stars, the words. Last, so it overrides the older
+   hairline layout above. */
+.rv-list { max-width: 1240px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
+@media (min-width: 1024px) { .rv-list { grid-template-columns: repeat(4, 1fr); } }
+.rv-card { border: 1px solid rgba(14, 11, 12, 0.12); border-top-width: 1px; border-radius: 14px; padding: 20px 20px 22px; background: #FFFFFF; }
+.rv-card figure { gap: 14px; }
+.rv-by { margin-top: 0; flex-direction: row; align-items: center; gap: 12px; }
+.rv-avatar { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; color: #FFFFFF; font: 500 18px/1 var(--font-body), sans-serif; }
+.rv-who { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.rv-name { font-size: 15px; font-weight: 600; letter-spacing: 0; }
+.rv-meta { display: flex; align-items: center; gap: 8px; }
+.rv-card .rv-stars svg[data-on], .rv-summary .rv-stars svg[data-on] { color: #E8A800; }
+.rv-quote, .rv-quote p { font-family: var(--font-body), sans-serif; font-size: 15px; line-height: 1.6; color: #2A2627; }
+.rv-quote p::before, .rv-quote p::after { content: none; }
+
+/* Reviews as an animated card stack (Reviews.tsx, 2026-09-26, Brad). */
+/* clip, not hidden: the fanned cards must not widen a phone page, and
+   clip (unlike hidden) leaves the sticky stage inside it working. */
+.rv--stack { padding-bottom: 0; overflow-x: clip; }
+.rv-stack-stage { position: sticky; top: 0; height: 100svh; display: grid; place-items: center; padding-top: 72px; }
+.rv-stack-cards { width: min(360px, 86vw); height: 380px; }
+.rv-stack-card { justify-content: space-between; text-align: center; }
+.rv-stack-stars { color: #E8A800; }
+.rv-stack-quote { margin: 0; font: 400 17px/1.6 var(--font-body), sans-serif; color: #2A2627; }
+.rv-stack-by { display: flex; align-items: center; gap: 12px; text-align: left; }
+.rv-stack-grid { list-style: none; margin: clamp(32px, 5vw, 56px) auto 0; padding: 0 0 clamp(64px, 9vw, 110px); max-width: 1240px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
+.rv-stack-card--flat { display: flex; flex-direction: column; gap: 18px; padding: 22px; border: 1px solid rgba(14, 11, 12, 0.12); border-radius: 16px; background: #FFFFFF; text-align: left; }

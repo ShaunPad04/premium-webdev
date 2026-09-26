@@ -42,12 +42,20 @@ export const reviews: Review[] = [
     stars: 5,
     source: "Google",
   },
+  /* Added 2026-09-26 from Brad's screenshot of the listing ("2 hours ago"),
+     word for word, no closing full stop, as written. */
+  {
+    quote: "I bought a lovely leopard print coat for my wife today and all I can say is I'm very impressed with the shop, owner and the selection of clothes. Highly recommend",
+    name: "Luke Griffiths",
+    stars: 5,
+    source: "Google",
+  },
 ];
 
 /* What Google shows at the top of the listing, as of 2026-09-24. Update it
    by hand when the listing changes; it is displayed, never marked up. */
 export const googleSummary = {
   rating: "5.0",
-  count: 3,
+  /* No count (2026-09-26, Brad): it went stale with every new review. */
   href: "https://share.google/dtmJLWZtTxzgd5CqA",
 } as const;

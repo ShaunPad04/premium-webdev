@@ -1,59 +1,95 @@
+"use client";
+
+import { useReducedMotion } from "motion/react";
+
+import { CardTransformed, CardsContainer, ContainerScroll, ReviewStars } from "@/components/ui/animated-cards-stack";
 import { googleSummary, reviews, type Review } from "@/lib/reviews";
 
-/* Reviews, static (2026-09-24, Brad). Three is a small number, so no
- * marquee and no carousel: the cards sit still, side by side on a desktop
- * and stacked on a phone. Every word comes from lib/reviews.ts, which holds
- * only reviews copied from Google, and the section renders nothing while
- * that list is empty. */
-function Stars({ n }: { n: number }) {
+/* Reviews (2026-09-26, Brad: the 21st.dev animated cards stack). The cards
+ * sit in a fanned pile on a sticky stage and lift off one by one as the
+ * page scrolls, leaving the last. Every word comes from lib/reviews.ts,
+ * which holds only reviews copied from Google, and the section renders
+ * nothing while that list is empty.
+ *
+ * Each card reads like Google's own: a lettered avatar, the name, the
+ * stars, the words. No date ("2 hours ago" is true for two hours) and no
+ * review count (it went stale with every new review); the link goes to the
+ * listing, which always has both. With reduced motion there is no pile:
+ * the cards sit in a plain grid. */
+
+/* The avatar's colour is picked from the name, so it stays the same on
+   every visit, as Google's does. Each has white text at 4.5:1 or better. */
+const AVATAR = ["#B3261E", "#1F5E4B", "#3B4A8C", "#7A3E6B", "#5B5B5B"];
+const avatarColour = (name: string) =>
+  AVATAR[[...name].reduce((a, c) => a + c.charCodeAt(0), 0) % AVATAR.length];
+
+function Card({ r, id }: { r: Review; id: string }) {
   return (
-    <span className="rv-stars" role="img" aria-label={`${n} out of 5 stars`}>
-      {Array.from({ length: 5 }, (_, i) => (
-        <svg key={i} width="14" height="14" viewBox="0 0 20 20" aria-hidden="true" data-on={i < n || undefined}>
-          <path d="M10 1.8l2.5 5.3 5.8.7-4.3 4 1.1 5.8L10 14.8l-5.1 2.8 1.1-5.8-4.3-4 5.8-.7z" fill="currentColor" />
-        </svg>
-      ))}
-    </span>
+    <>
+      {r.stars ? <ReviewStars rating={r.stars} className="rv-stack-stars" /> : null}
+      <blockquote id={`${id}-q`} className="rv-stack-quote">
+        {r.quote ?? "A rating, left without a written review."}
+      </blockquote>
+      <div className="rv-stack-by">
+        <span className="rv-avatar" aria-hidden="true" style={{ background: avatarColour(r.name) }}>
+          {r.name.trim().charAt(0).toUpperCase()}
+        </span>
+        <span className="rv-who">
+          <span id={`${id}-n`} className="rv-name">{r.name}</span>
+          <span className="rv-src">{r.source} {r.quote ? "review" : "rating"}</span>
+        </span>
+      </div>
+    </>
   );
 }
 
 export function Reviews({ items = reviews }: { items?: Review[] }) {
+  const reduce = useReducedMotion();
   if (items.length === 0) return null;
   return (
-    <section className="rv" aria-labelledby="rv-h">
+    <section className="rv rv--stack" aria-labelledby="rv-h">
       <div className="rv-inner">
         <p className="label rv-eyebrow">Reviews</p>
         <h2 id="rv-h" className="rv-h">In their <em>words</em>.</h2>
         <p className="rv-summary">
-          <Stars n={5} />
+          <ReviewStars rating={5} className="rv-stack-stars" />
           <span>{googleSummary.rating} on Google</span>
           <span aria-hidden="true">·</span>
           <a href={googleSummary.href} target="_blank" rel="noopener noreferrer" className="rv-summary-link">
-            {googleSummary.count} reviews
+            Read them on Google<span className="sr-only"> (opens in a new tab)</span>
           </a>
         </p>
-        <ul className="rv-list">
-          {items.map((r) => (
-            <li key={r.name} className="rv-card">
-              <figure>
-                {r.stars ? <Stars n={r.stars} /> : null}
-                {r.quote ? (
-                  <blockquote className="rv-quote"><p>{r.quote}</p></blockquote>
-                ) : (
-                  <p className="rv-rating-only">
-                    {r.stars ? `A ${["one", "two", "three", "four", "five"][r.stars - 1]}-star rating, ` : "A rating, "}
-                    left without a written review.
-                  </p>
-                )}
-                <figcaption className="rv-by">
-                  <span className="rv-name">{r.name}</span>
-                  <span className="rv-src">{r.source} {r.quote ? "review" : "rating"}</span>
-                </figcaption>
-              </figure>
+      </div>
+
+      {reduce ? (
+        <ul className="rv-stack-grid">
+          {items.map((r, i) => (
+            <li key={r.name} className="rv-stack-card rv-stack-card--flat" aria-labelledby={`rv${i}-n`}>
+              <Card r={r} id={`rv${i}`} />
             </li>
           ))}
         </ul>
-      </div>
+      ) : (
+        <ContainerScroll className="rv-stack-scroll" style={{ height: `${Math.max(2, items.length) * 75}svh` }}>
+          <div className="rv-stack-stage">
+            <CardsContainer className="rv-stack-cards">
+              {items.map((r, i) => (
+                <CardTransformed
+                  key={r.name}
+                  arrayLength={items.length}
+                  index={i + 2}
+                  role="article"
+                  aria-labelledby={`rv${i}-n`}
+                  aria-describedby={`rv${i}-q`}
+                  className="rv-stack-card"
+                >
+                  <Card r={r} id={`rv${i}`} />
+                </CardTransformed>
+              ))}
+            </CardsContainer>
+          </div>
+        </ContainerScroll>
+      )}
     </section>
   );
 }

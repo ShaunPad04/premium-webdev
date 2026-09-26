@@ -326,9 +326,10 @@ export default async function ProductPage({
           </section>
         ) : null}
 
+        {/* Follow us above the map and Visit (2026-09-26, Brad). */}
+        <SocialStrip />
         <Visit />
       </main>
-      <SocialStrip />
       <ShortFaq />
       <Footer />
     </>
