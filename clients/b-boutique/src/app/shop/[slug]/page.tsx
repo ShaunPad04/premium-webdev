@@ -1,3 +1,6 @@
+import { readdirSync } from "node:fs";
+import path from "node:path";
+
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -25,6 +28,21 @@ import { openingPhrase, owner, shop } from "@/lib/shop";
 import { productSchema } from "@/lib/product-schema";
 import { jsonLd } from "@/lib/site";
 import { Price } from "@/components/Price";
+import { Spin360 } from "@/components/Spin360";
+
+/* Turntable frames for this piece, if a folder of them exists. A GENERATED
+   file in the folder marks frames made by AI rather than photographed, and
+   the page says so: the back of the piece is then the model's guess, not a
+   fact about the garment. See Spin360. */
+function spinFor(slug: string) {
+  try {
+    const files = readdirSync(path.join(process.cwd(), "public/img/spin", slug));
+    const frames = files.filter((f) => /^\d+\.webp$/.test(f)).sort().map((f) => `/img/spin/${slug}/${f}`);
+    return frames.length > 1 ? { frames, generated: files.includes("GENERATED") } : null;
+  } catch {
+    return null;
+  }
+}
 
 /* Prerender every product. There are thirteen of them and they change when
    the code changes, so there is nothing to gain from rendering them on
@@ -60,6 +78,7 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const related = relatedTo(product);
+  const spin = spinFor(product.slug);
 
   return (
     <>
@@ -303,6 +322,30 @@ export default async function ProductPage({
           </div>
         </section>
         </ColourProvider>
+
+        {spin ? (
+          /* `.spin` is the scroll track and `.spin-pin` the sticky pane; see
+             Spin360. Both hints render and CSS shows the one that matches the
+             visitor's motion setting, which the server cannot know. */
+          <section aria-labelledby="pdp-spin" className="spin">
+            <div className="spin-pin">
+              <div className="spin-copy">
+                <h2 id="pdp-spin" className="also-h2">
+                  All the way round
+                </h2>
+                <p className="spin-hint spin-hint--scroll">Keep scrolling and she turns.</p>
+                <p className="spin-hint spin-hint--still">Drag to turn it, or use the arrow keys.</p>
+                {spin.generated ? (
+                  <p className="page-pending spin-pending">
+                    [Generated turn. The back of the piece has not been checked
+                    against the real garment yet.]
+                  </p>
+                ) : null}
+              </div>
+              <Spin360 frames={spin.frames} name={product.name} />
+            </div>
+          </section>
+        ) : null}
 
         {related.length > 0 ? (
           <section aria-labelledby="pdp-also" className="also">
