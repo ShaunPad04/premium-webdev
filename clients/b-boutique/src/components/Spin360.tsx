@@ -18,6 +18,13 @@ import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 export function Spin360({ frames, name }: { frames: readonly string[]; name: string }) {
   const n = frames.length;
   const box = useRef<HTMLDivElement>(null);
+  /* Frames are drawn to a canvas from images decoded up front, never swapped
+     into an <img>: changing an <img>'s src lets the browser paint it empty
+     until the new frame decodes, which on a fast drag flickered white
+     (Brad, 2026-09-26). A frame that is not decoded yet is simply not drawn,
+     so the canvas holds the last good one. */
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const decoded = useRef<(HTMLImageElement | undefined)[]>([]);
   const drag = useRef<{ x: number; f: number } | null>(null);
   const touched = useRef(false);
   const reduced = usePrefersReducedMotion();
@@ -45,12 +52,27 @@ export function Spin360({ frames, name }: { frames: readonly string[]; name: str
 
   useEffect(() => {
     if (!near) return;
-    for (const src of frames) {
+    frames.forEach((src, i) => {
       const img = new Image();
-      img.onload = img.onerror = () => setLoaded((c) => c + 1);
       img.src = src;
-    }
+      img
+        .decode()
+        .then(() => (decoded.current[i] = img))
+        .catch(() => {})
+        .finally(() => setLoaded((c) => c + 1));
+    });
   }, [near, frames]);
+
+  useEffect(() => {
+    const c = canvas.current;
+    const img = decoded.current[frame];
+    if (!c || !img) return;
+    if (c.width !== img.naturalWidth) {
+      c.width = img.naturalWidth;
+      c.height = img.naturalHeight;
+    }
+    c.getContext("2d")?.drawImage(img, 0, 0);
+  }, [frame, loaded]);
 
   /* One turn on arrival, eased in and out (--ease-inout), so it reads as
      "this moves" rather than as a loop to be stopped. Under 5s, so WCAG
@@ -106,7 +128,10 @@ export function Spin360({ frames, name }: { frames: readonly string[]; name: str
       onPointerUp={() => (drag.current = null)}
       onPointerCancel={() => (drag.current = null)}
     >
-      <img src={frames[frame]} alt="" draggable={false} loading="lazy" decoding="async" className="spin-img" />
+      {/* The first frame as a still until every frame is decoded; its src
+          never changes, so it cannot flash. */}
+      <img src={frames[0]} alt="" draggable={false} loading="lazy" decoding="async" className="spin-img" />
+      <canvas ref={canvas} className="spin-canvas" aria-hidden="true" />
       <span className="spin-progress" aria-hidden="true" style={{ transform: `scaleX(${loaded / n})` }} />
     </div>
   );

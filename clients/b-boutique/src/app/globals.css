@@ -10793,6 +10793,8 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 .spin-stage[data-ready] { cursor: grab; }
 .spin-stage[data-ready]:active { cursor: grabbing; }
 .spin-img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
+.spin-canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; pointer-events: none; }
+.spin-stage[data-ready] .spin-canvas { opacity: 1; }
 
 /* Loading is a hairline filling under the frame, not a spinner over it:
    the first frame is already a photograph worth looking at. */
