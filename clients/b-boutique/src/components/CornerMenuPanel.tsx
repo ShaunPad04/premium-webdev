@@ -105,7 +105,7 @@ export default function CornerMenuPanel({
                  Above 640 it was a card floating 24-32px in from the edge
                  and 20px down; the client asked why it was not tucked into
                  the right. A drawer has no margins to look adrift in. */
-              className="pointer-events-auto fixed inset-y-0 right-0 z-50 h-svh max-h-svh w-full overflow-hidden border-l border-bone/15 bg-panel text-bone shadow-[0_18px_60px_rgba(0,0,0,.45)] sm:w-[24rem]"
+              className="pointer-events-auto fixed inset-y-0 right-0 z-50 h-svh max-h-svh w-full overflow-hidden border-l border-bone/15 bg-[#0A0A0A] text-bone shadow-[0_18px_60px_rgba(0,0,0,.45)] sm:w-[24rem]"
               {...panelMotion}
             >
               <div className="grain cm-scroll relative flex h-full max-h-svh flex-col overflow-y-auto p-6 pt-[7.75rem] sm:px-8">
@@ -171,7 +171,7 @@ export default function CornerMenuPanel({
                             Tailwind's font-semibold beats the base-layer
                             .display rule, which is exactly why CLAUDE.md
                             insists .display stays in @layer base. */}
-                        <span className="display text-[1.75rem] font-normal leading-[1.04] tracking-[-0.008em] sm:text-[2rem]">
+                        <span className="cm-link">
                           {item.label}
                         </span>
                         <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"
