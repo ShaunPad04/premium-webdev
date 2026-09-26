@@ -359,7 +359,8 @@ const RAIL_CATEGORY_ORDER = [
   "Skirts",
   "Co-ords",
   "Dresses",
-  "Homeware",
+  /* No Homeware (2026-09-26, Brad: the Tomato Vase looked out of place in
+     New In). The rail is clothing only; homeware has its own page. */
 ] as const;
 
 export const newIn = (() => {
@@ -403,14 +404,14 @@ export const newIn = (() => {
   }
   for (const p of stocklist) {
     if (out.length >= 10) break;
-    push(p);
+    if (p.category !== "Homeware") push(p);
   }
   return out;
 })();
 
 
 
-/** The five featured category panels.
+/** The four featured category panels.
  *
  *  A subset of `categories` above rather than a second taxonomy — `slug` is
  *  the join, so a rename in one place cannot leave the two disagreeing. Only
@@ -495,28 +496,7 @@ export const featured = [
     alt: "Model wearing charcoal knitwear",
     href: "/clothing/knitwear",
   },
-  /* Was Accessories until 2026-09-22, at the client's request: no
-     accessories are sold online (the /accessories page says so itself), so a
-     home-page card leading there promised a rail with nothing on it. Its
-     photograph was also a generated black handbag that reads as a Hermès
-     Birkin — an implied luxury-brand stockist on a shop that has confirmed it
-     carries no big labels.
-
-     The image is HER photograph of a real piece, the Tomato Vase, not
-     generated artwork: a card for a category of three objects should show
-     one of the three. */
-  {
-    slug: "homeware",
-    number: "05",
-    name: "Homeware",
-    image: "/img/product/bb-vase-tomato-1280.webp",
-    alt: "The Tomato Vase, a red ceramic vase covered in tomatoes, on a plaster plinth",
-    href: "/homeware",
-    /* Her photographs are SQUARE; the other cards' are 3:4. object-fit:
-       cover in a ~0.6-wide card scales a square by HEIGHT, so it needs a
-       source as wide as the card is tall. Measured with the rail's default
-       sizes: 640px delivered where a 547px-tall card at DPR 2 needs 1,094 —
-       visibly soft. 40vw covers 1024-1920, 120vw a phone. */
-    sizes: "(min-width: 1024px) 40vw, 120vw",
-  },
+  /* Homeware came off this rail on 2026-09-26 (Brad: the vase card looked
+     out of place among the four portraits, and the rail is for clothing).
+     Homeware is still in the menu and at /homeware. */
 ] as const;

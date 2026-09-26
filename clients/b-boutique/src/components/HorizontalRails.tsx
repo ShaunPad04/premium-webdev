@@ -102,7 +102,10 @@ export function HorizontalRails() {
                    upscaled. 30vw covers the crop across 1024-1920 (the true
                    need runs 23-31vw), and 88vw covers it on a phone, where a
                    78vw card 452 tall needs 339 of a 3:4 frame. */
-                sizes={"sizes" in c ? c.sizes : "(min-width: 1024px) 21vw, 80vw"}
+                /* Four cards since Homeware left the rail (2026-09-26).
+                   Measured: at 1440 a card is 360x547, so the 3:4 photo is
+                   drawn 410 wide (28.5vw); 30vw covers it. */
+                sizes="(min-width: 1024px) 30vw, 88vw"
                 quality={90}
                 className="cats-img"
               />

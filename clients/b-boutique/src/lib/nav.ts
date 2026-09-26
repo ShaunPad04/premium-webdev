@@ -177,10 +177,13 @@ export const CATALOGUE_MENU = [
 ];
 
 export const PRIMARY = [
-  /* Two links only (2026-09-26, Brad): Shop came out with /shop, and About,
-     FAQ and Contact live in the menu panel (MENU above), not the bar. */
+  /* Shop came out with /shop (2026-09-26). About and Contact came back to
+     the bar later the same day (Brad), beside New In and Catalogue; FAQ
+     stays in the menu panel (MENU above), which still lists all three. */
   { label: "New In", href: "/#new-in" },
   { label: "Catalogue", href: "/clothing", menu: CATALOGUE_MENU },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ] as const;
 
 /** The three things the shop sells.

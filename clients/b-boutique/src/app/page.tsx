@@ -5,7 +5,6 @@ import { NewArrivalRail } from "@/components/NewArrivalRail";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import { NewInSlides } from "@/components/NewInSlides";
 import { WhyUs } from "@/components/home/WhyUs";
-import { ShopTheLook } from "@/components/home/ShopTheLook";
 import { UpClose } from "@/components/home/UpClose";
 import { OwnerCard } from "@/components/OwnerCard";
 import { Reviews } from "@/components/home/Reviews";
@@ -54,7 +53,8 @@ export default function Home() {
             (PointOfView) came off the home page; the component is kept. */}
         <NewArrivalRail />
         <HorizontalRails />
-        <ShopTheLook />
+        {/* Shop the look ("Straight from the window") came off the home
+            page on 2026-09-26 at Brad's request; the component is kept. */}
         <UpClose />
         {/* New In after Up close (2026-09-24, Brad). Step inside was removed
             the same day at his request. */}

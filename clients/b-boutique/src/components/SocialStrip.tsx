@@ -29,8 +29,15 @@ export function SocialStrip() {
       {fb ? (
         <div className="ss-head">
           <a className="ss-follow" href={fb.href} target="_blank" rel="noopener noreferrer">
-            {/* Plain underlined words, not a pill (2026-09-26, Brad). */}
-            <span>Follow us</span>
+            {/* The Facebook logo on the left, in Facebook blue, with a lift
+                on hover (2026-09-26, Brad); the words stay plain. */}
+            <span className="ss-follow-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="12" fill="#0866FF" />
+                <path fill="#FFFFFF" d="M16.671 15.469 17.203 12h-3.328V9.749c0-.949.465-1.874 1.956-1.874h1.513V4.922s-1.374-.235-2.686-.235c-2.741 0-4.533 1.662-4.533 4.669V12H7.078v3.469h3.047V24a12.1 12.1 0 0 0 3.75 0v-8.531z" />
+              </svg>
+            </span>
+            <span className="ss-follow-text">Follow us</span>
             <span className="sr-only"> on Facebook (opens in a new tab)</span>
           </a>
         </div>
