@@ -9455,7 +9455,9 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
 .pdp-perks li { display: grid; grid-template-columns: 24px 1fr; gap: 12px; align-items: start; }
 .pdp-perks svg { margin-top: 1px; }
 .pdp-perk-t { margin: 0 0 4px; font: 600 13px/1.3 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
-.pdp-perk-d { margin: 0; font-size: 15px; line-height: 1.55; }
+/* The same type as Hayley's words in "Our commitment" (.pdp-desc), Brad,
+   2026-09-26: one paragraph style on the product page. */
+.pdp-perk-d { margin: 0; font-size: 14.5px; line-height: 1.65; color: rgba(14, 11, 12, 0.78); }
 /* Up close: the fabric zoom-out (2026-09-24, Brad). Static collage by
    default; the zoom only where scroll timelines exist and motion is on. */
 .uc { background: var(--inverse-bg); color: var(--inverse-ink); padding-top: clamp(64px, 9vw, 128px); }
@@ -9593,11 +9595,6 @@ h1.pdp-name { margin-bottom: 18px; }
 /* Air above the photograph too: at scroll 0 the header is 106px with the
    announcement strip, so the frame started 3px under it. */
 @media (min-width: 1024px) { .pdp { padding-top: calc(var(--header-h) + 34px + 28px); } }
-/* The fold that is open on arrival has nothing to reveal, so its text does
-   not fade in on page load (it also kept the contrast audit from sampling
-   the text mid-fade). The height still eases when it is closed and opened. */
-.pdp-fold--initial[open] .pdp-fold-body > *,
-.pdp-fold--initial[open] .pdp-feat > li { animation: none; }
 
 /* No red here (2026-09-24, Brad). Footer social buttons keep their lift
    on hover but take no colour; the bag's pay button is the site's black,
@@ -10007,6 +10004,29 @@ body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
   }
 }
 @keyframes rise-dim { to { opacity: 0.6; } }
+
+/* The hero draws in to a rounded card as the page rises over it
+   (2026-09-26, Brad chose "card" of three scroll-driven previews). On the
+   same --rise timeline as the dim, so it moves exactly with the scroll;
+   the opening line under the frame fades as it goes. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .home-rise > .hero .lm,
+    .home-rise > .hero > .hero-open {
+      animation-timeline: --rise;
+      animation-range: entry 0% entry 100%;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+    }
+    .home-rise > .hero .lm { animation-name: hero-card; will-change: clip-path, transform; }
+    .home-rise > .hero > .hero-open { animation-name: hero-open-fade; }
+  }
+}
+@keyframes hero-card {
+  from { clip-path: inset(0 0 0 0 round 0); transform: scale(1); }
+  to { clip-path: inset(6% 5% 12% 5% round 28px); transform: scale(0.97); }
+}
+@keyframes hero-open-fade { to { opacity: 0; } }
 
 /* Up close words, centred (2026-09-24, Brad: "should this not be in the
    middle of the picture, so it stands out"). Centred on the close-up over
@@ -10740,12 +10760,6 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
   .ss-grid--two .ss-media { object-position: 50% 12%; }
 }
 
-/* Home: the header docks as the marquee reaches the top (Nav.tsx). It slides
-   down into place rather than blinking on. */
-.nav-docked { animation: nav-dock 420ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-@keyframes nav-dock { from { transform: translateY(-100%); } to { transform: none; } }
-@media (prefers-reduced-motion: reduce) { .nav-docked { animation: none; } }
-
 /* Search lists every match in its panel now that /shop is gone; long lists
    scroll inside it. */
 .navsearch-panel .navsearch-results { max-height: min(56svh, 460px); overflow-y: auto; overscroll-behavior: contain; }
@@ -10789,3 +10803,66 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
   transition: transform 400ms var(--ease-out), opacity 400ms var(--ease-out);
 }
 .spin-stage[data-ready] .spin-progress { opacity: 0; }
+
+/* ── One type system (2026-09-26, Brad: "the fonts are all different") ───
+   Measured on ten routes: only Hanken Grotesk and Bodoni Moda ever render,
+   but they were used inconsistently. The rules, restated:
+     Bodoni (--font-display), sentence case: product names and headings.
+     Hanken (--font-body): everything else; small labels share ONE style.
+   These rules are last so they win over the older per-section ones. */
+
+/* Product names in the catalogue grid were Hanken (via the
+   --font-display-face alias); everywhere else a name is Bodoni. */
+.prod-name { font-family: var(--font-display), Georgia, serif; font-weight: 400; }
+
+/* Headings that were Hanken while their siblings are Bodoni. The h3s need
+   the element in the selector to beat the global h3:not(.sr-only) rule.
+   The short FAQ title stays in Hanken capitals: Brad preferred it
+   (2026-09-26, "I like this font better"). */
+h3.ab-principle-t,
+h3.pol-h,
+.bag-empty-h {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: -0.005em;
+}
+h3.ab-principle-t { font-size: clamp(28px, 3vw, 46px); line-height: 1.05; }
+h3.pol-h { font-size: clamp(20px, 2.3vw, 27px); line-height: 1.22; }
+
+/* Small uppercase labels (eyebrows, captions): five treatments, 9 to 12px,
+   weight 500 or 600, tracking .16 to .22em. Now one. Colours stay each
+   section's own. */
+.label,
+.ps-caption,
+.cf-eyebrow,
+.owner-eyebrow,
+.visit-eyebrow,
+.stl-eyebrow,
+.ucs-eyebrow,
+.why-eyebrow,
+.sfq-eyebrow,
+.wf-eyebrow,
+.pm-eyebrow,
+.ab-eyebrow,
+.fqx-eyebrow,
+.faq-eyebrow,
+.ccard-eyebrow,
+.cat-eyebrow,
+.cs-eyebrow,
+.pov-eyebrow,
+.rv-eyebrow,
+.cps-eyebrow,
+.hwb-eyebrow,
+.ft-cta-eyebrow,
+.sg-eyebrow,
+.st-gate-eyebrow,
+.pinky-eyebrow {
+  font-family: var(--font-body), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+

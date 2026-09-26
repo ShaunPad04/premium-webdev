@@ -188,11 +188,11 @@ export default async function ProductPage({
                   single byte of JavaScript arrives. This page stays a server
                   component.
 
-                  Details is open by default and the other two are closed. On
-                  a garment the description is what somebody actually reads;
-                  composition and postage are what they check. */}
+                  All three start closed (2026-09-26, Brad: the description
+                  was open before anyone asked for it). The reader opens what
+                  they want. */}
               <div className="pdp-folds">
-                <details className="pdp-fold pdp-fold--initial" open>
+                <details className="pdp-fold">
                   <summary className="pdp-fold-head">
                     Product description
                     <span aria-hidden="true" className="pdp-fold-mark" />

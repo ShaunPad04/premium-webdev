@@ -8,6 +8,7 @@ import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
 import { SITE_ORIGIN, jsonLd } from "@/lib/site";
 import "./globals.css";
+import "./type.css";
 
 /* Two faces, and only two.
  *
@@ -34,7 +35,10 @@ import "./globals.css";
  * Everything else (navigation, labels, body, buttons, prices, marquee):
  * Hanken Grotesk, a clean contemporary grotesk that replaces DM Sans.
  * Self-hosted by next/font at build time; nothing is requested from Google
- * on load (/privacy says so). */
+ * on load (/privacy says so).
+ *
+ * Since 2026-09-26 (Brad, option C) headings are Hanken capitals and the
+ * serif is kept for sub-headings and product names: see type.css. */
 const display = Bodoni_Moda({
   variable: "--font-display",
   subsets: ["latin"],
