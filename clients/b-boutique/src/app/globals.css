@@ -10680,3 +10680,14 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
   line-height: 1.2;
 }
 @media (min-width: 640px) { .cm-link { font-size: 16px; } }
+
+/* The open search is see-through (2026-09-26, Brad): no fill and no shadow,
+   only the white hairline and the type, on the photograph or the black bar.
+   On a phone the field spans the header, so what it would otherwise show
+   through (menu, logo, bag) steps out while it is open. The results list
+   under it keeps its fill: that is text that has to be read. */
+.sdock-form { background: transparent; box-shadow: none; }
+.sdock-close, .sdock-close:hover { background: transparent; }
+@media (max-width: 1023px) {
+  .navbar:has(.sdock[data-open]) > :not(.navbar-search) { visibility: hidden; }
+}
