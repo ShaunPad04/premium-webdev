@@ -1,7 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ComponentType } from "react";
 import { STYLE, StackCard, StackChrome, type StackItem } from "./vertical-image-stack-parts";
 
 export type { StackItem };
@@ -17,14 +16,25 @@ export type { StackItem };
  * idle or the section comes within a screen and a half of view, whichever is
  * first. Both are drawn from the same parts, so the swap changes nothing on
  * screen. */
-const Live = dynamic(() => import("./vertical-image-stack-live"), { ssr: false });
+type LiveStack = ComponentType<{ items: StackItem[]; children?: React.ReactNode }>;
 
 export function VerticalImageStack({ items, children }: { items: StackItem[]; children?: React.ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
-  const [live, setLive] = useState(false);
+  /* The live component itself, held in state once its code has arrived.
+     It used to be next/dynamic, which rendered nothing while the chunk
+     downloaded: for that moment the section was 0px tall instead of ~3,500,
+     and everything below it jumped up, which sent a /#new-in link from
+     another page to the wrong place (2026-09-26). The server-drawn stack
+     now stays until the live one can take over in the same frame. */
+  const [Live, setLive] = useState<LiveStack | null>(null);
 
   useEffect(() => {
-    const go = () => setLive(true);
+    let done = false;
+    const go = () => {
+      if (done) return;
+      done = true;
+      import("./vertical-image-stack-live").then((m) => setLive(() => m.default));
+    };
     const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number; cancelIdleCallback?: (h: number) => void };
     const idle = w.requestIdleCallback ? w.requestIdleCallback(go, { timeout: 4000 }) : window.setTimeout(go, 2500);
     const io = new IntersectionObserver((e) => e.some((x) => x.isIntersecting) && go(), { rootMargin: "150% 0px" });
@@ -35,7 +45,7 @@ export function VerticalImageStack({ items, children }: { items: StackItem[]; ch
     };
   }, []);
 
-  if (live) return <Live items={items}>{children}</Live>;
+  if (Live) return <Live items={items}>{children}</Live>;
 
   const n = items.length;
   return (
