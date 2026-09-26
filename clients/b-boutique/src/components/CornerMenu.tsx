@@ -156,9 +156,11 @@ export function CornerMenu() {
            tap target, and this is the primary navigation control on a phone.
            The header is a fixed 72px flex row with items-center, so a taller
            button changes nothing visible — verified pixel-identical. */
-        className="group relative z-[60] inline-flex shrink-0 items-center gap-2.5 py-[17px] text-[10px] font-semibold uppercase leading-none tracking-[0.14em] text-bb-white transition-opacity duration-200 hover:opacity-70"
+        className="group relative z-[60] inline-flex min-w-11 shrink-0 items-center justify-end gap-2.5 py-[17px] text-[10px] font-semibold uppercase leading-none tracking-[0.14em] text-bb-white transition-opacity duration-200 hover:opacity-70"
       >
-        <span className="nb-word">{open ? "Close" : "Menu"}</span>
+        {/* The word is for a screen reader only (2026-09-26, Brad: "just have
+            the two lines"); the rules below carry it on screen. */}
+        <span className="sr-only">{open ? "Close menu" : "Menu"}</span>
         {/* Two 1px rules, not a hamburger. On open they cross into a close
             mark, which keeps one mark doing both jobs rather than swapping
             glyphs. */}

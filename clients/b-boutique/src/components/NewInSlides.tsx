@@ -4,8 +4,9 @@
  * The same ten pieces as before (`newIn`, lib/shop.ts). Everything a slide
  * shows comes from the stocklist: the one-line description written for a
  * card (`short`), the price the checkout charges, and, where a piece comes
- * in a second colourway, that colourway's photograph under its supplier
- * colour name. */
+ * in more than one colourway, each colourway's photograph under its
+ * supplier colour name. Sizes are shown as information; the choosing is
+ * done on the product page. */
 import { newIn } from "@/lib/shop";
 import { stocklist } from "@/lib/stocklist";
 import { ProductPhoto } from "@/components/ProductPhoto";
@@ -13,34 +14,33 @@ import { Price } from "@/components/Price";
 import { RevealText } from "@/components/RevealText";
 import { ProductSlides, type ProductSlide } from "@/components/ui/product-slides";
 
-/* Measured slot: the photograph is 250-360px wide from 1024px up, and at most
-   62% of the screen below that. */
-const SIZES = "(min-width: 1024px) 360px, 62vw";
+/* Measured slot: the model is 304-448px wide from 1024px up (62% of the
+   screen's height, 4:5), and at most 60% of the screen below that. */
+const SIZES = "(min-width: 1024px) 448px, 60vw";
 
 export function NewInSlides() {
   const slides: ProductSlide[] = newIn.map((piece) => {
     const stock = stocklist.find((p) => p.slug === piece.slug);
-    const [first, second] = stock?.colourways ?? [];
-    const photo = (name: string) => (
+    const photo = (name: string, sizes = SIZES) => (
       <ProductPhoto
         photo={name}
         square={piece.category === "Homeware"}
         alt=""
-        sizes={SIZES}
+        sizes={sizes}
         className="absolute inset-0 h-full w-full object-cover"
       />
     );
+    const ways = stock?.colourways ?? [];
     return {
       id: piece.slug,
       title: piece.name,
       caption: piece.category,
       description: stock?.short,
       price: piece.priced ? <Price priceP={piece.priceP} slug={piece.slug} /> : "Price to confirm",
+      sizes: stock ? [...stock.sizes] : undefined,
       href: `/shop/${piece.slug}`,
       image: photo(piece.photo),
-      secondaryImage: second && second.image !== piece.photo ? photo(second.image) : undefined,
-      imageLabel: first?.colour,
-      secondaryLabel: second?.colour,
+      variants: ways.length > 1 ? ways.map((c) => ({ label: c.colour, image: photo(c.image), thumb: photo(c.image, "40px") })) : undefined,
     };
   });
 
