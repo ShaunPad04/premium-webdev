@@ -69,13 +69,19 @@ export default function TextRevealScroll({
             const vh = window.innerHeight
             // Pinned: when an ancestor marked data-reveal-track is pinning the
             // text (its CSS sets --pin: 1), the text itself stops moving, so
-            // progress follows the track instead: 0 as it pins, 1 at 80% of
-            // the pinned distance, leaving a beat with the line fully lit.
+            // progress follows the track instead: 0 the moment its sticky
+            // child sticks, 1 at 80% of the pinned distance, leaving a beat
+            // with the line fully lit.
             const track = root.closest<HTMLElement>("[data-reveal-track]")
+            const trackCss = track ? getComputedStyle(track) : null
             let p: number
-            if (track && getComputedStyle(track).getPropertyValue("--pin").trim() === "1") {
+            if (track && trackCss && trackCss.getPropertyValue("--pin").trim() === "1") {
                 const r = track.getBoundingClientRect()
-                p = clamp(-r.top / Math.max(1, (r.height - vh) * 0.8))
+                const inner = track.firstElementChild as HTMLElement | null
+                const stickTop = inner ? parseFloat(getComputedStyle(inner).top) || 0 : 0
+                const pad = parseFloat(trackCss.paddingTop) || 0
+                const travel = r.height - pad - (inner?.offsetHeight ?? 0)
+                p = clamp((stickTop - pad - r.top) / Math.max(1, travel * 0.8))
             } else {
                 const top = root.getBoundingClientRect().top
                 const startY = (vh * start) / 100
