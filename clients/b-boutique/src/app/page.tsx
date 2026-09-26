@@ -4,7 +4,7 @@ import { Hero } from "@/components/Hero";
 import { NewArrivalRail } from "@/components/NewArrivalRail";
 import { PointOfView } from "@/components/PointOfView";
 import { HorizontalRails } from "@/components/HorizontalRails";
-import { CoverFlowCarousel } from "@/components/ui/3-d-coverflow-carousel";
+import { NewInSlides } from "@/components/NewInSlides";
 import { WhyUs } from "@/components/home/WhyUs";
 import { ShopTheLook } from "@/components/home/ShopTheLook";
 import { UpClose } from "@/components/home/UpClose";
@@ -60,7 +60,7 @@ export default function Home() {
         <UpClose />
         {/* New In after Up close (2026-09-24, Brad). Step inside was removed
             the same day at his request. */}
-        <CoverFlowCarousel />
+        <NewInSlides />
         <OwnerCard />
         <WhyUs />
         {/* Renders nothing until lib/reviews.ts holds her real Google reviews. */}

@@ -1,0 +1,208 @@
+/* ProductSlides (product-slides.tsx). Everything is scoped under .ps and
+   themed through custom properties, so another site sets these and nothing
+   else. Sizes (--ps-i image width, --ps-h image height) come from JS. */
+.ps {
+  --ps-ink: var(--bb-black, #0e0b0c);
+  --ps-muted: var(--bb-grey-dark, #555);
+  --ps-line: rgba(14, 11, 12, 0.14);
+  --ps-bg: #fff;
+  --ps-display: var(--font-display-face, Georgia, serif);
+  position: relative;
+  color: var(--ps-ink);
+}
+
+.ps-stage {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+.ps-stage:active { cursor: grabbing; }
+.ps-track { position: absolute; inset: 0; }
+
+.ps-slide {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: flex;
+  background: var(--ps-bg);
+  will-change: transform;
+  cursor: pointer;
+}
+.ps-slide.is-open { cursor: auto; }
+.ps-slide.is-stacked { flex-direction: column; }
+
+.ps-media {
+  position: relative;
+  flex: none;
+  display: block;
+  width: var(--ps-i);
+  height: var(--ps-h);
+  overflow: hidden;
+  background: var(--ps-bg);
+  -webkit-user-drag: none;
+}
+.ps-img {
+  position: absolute;
+  inset: 0;
+  transition: opacity 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ps-img.is-hidden { opacity: 0; }
+.ps-img img { pointer-events: none; }
+.ps-media:focus-visible { outline: 2px solid var(--ps-ink); outline-offset: 4px; }
+
+/* The details. Beside the photograph on a wide screen, a quiet column set
+   low against it like a caption on a gallery wall; under it on a phone. */
+.ps-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 0 0 8px 36px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 400ms ease, transform 400ms ease;
+}
+.ps-slide.is-open .ps-panel {
+  opacity: 1;
+  transform: none;
+  transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1) 220ms, transform 600ms cubic-bezier(0.16, 1, 0.3, 1) 220ms;
+}
+.ps-slide.is-stacked .ps-panel {
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 22px 4px 0;
+}
+
+.ps-caption {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ps-muted);
+}
+.ps-title {
+  margin: 0;
+  font-family: var(--ps-display);
+  font-weight: 400;
+  font-size: clamp(24px, 2.3vw, 34px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+.ps-desc {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ps-muted);
+}
+.ps-slide.is-stacked .ps-desc {
+  font-size: 13.5px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ps-price { margin: 0; font-size: 15px; font-variant-numeric: tabular-nums; }
+
+.ps-swatches { display: flex; gap: 6px; }
+.ps-swatch {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--ps-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ps-ink);
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 200ms ease, background-color 200ms ease, color 200ms ease;
+}
+@media (hover: hover) { .ps-swatch:hover { border-color: var(--ps-ink); } }
+.ps-swatch[aria-pressed="true"] { background: var(--ps-ink); border-color: var(--ps-ink); color: var(--ps-bg); }
+.ps-swatch:focus-visible { outline: 2px solid var(--ps-ink); outline-offset: 2px; }
+
+.ps-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  margin-top: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid currentColor;
+  color: var(--ps-ink);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.ps-slide.is-stacked .ps-cta { align-self: center; }
+.ps-cta-arrow { transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1); }
+.ps-cta:hover .ps-cta-arrow, .ps-cta:focus-visible .ps-cta-arrow { transform: translateX(4px); }
+.ps-cta:focus-visible { outline: 2px solid var(--ps-ink); outline-offset: 4px; }
+
+/* Arrows either side of a row of bars; the current bar is longer. */
+.ps-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 20px);
+  margin-top: clamp(24px, 4vh, 40px);
+  padding-inline: 16px;
+}
+.ps-arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--ps-line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ps-ink);
+  cursor: pointer;
+  transition: border-color 200ms ease, background-color 200ms ease, color 200ms ease;
+}
+.ps-arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+@media (hover: hover) { .ps-arrow:hover:not(:disabled) { background: var(--ps-ink); border-color: var(--ps-ink); color: var(--ps-bg); } }
+.ps-arrow:disabled { opacity: 0.3; cursor: default; }
+.ps-arrow:focus-visible { outline: 2px solid var(--ps-ink); outline-offset: 3px; }
+
+.ps-dots { display: flex; align-items: center; }
+.ps-dot {
+  display: grid;
+  place-items: center;
+  height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.ps-dot span {
+  display: block;
+  width: 14px;
+  height: 2px;
+  background: var(--ps-line);
+  transition: width 500ms cubic-bezier(0.16, 1, 0.3, 1), background-color 300ms ease;
+}
+@media (hover: hover) { .ps-dot:hover span { background: rgba(14, 11, 12, 0.4); } }
+.ps-dot[aria-current="true"] span { width: 32px; background: var(--ps-ink); }
+.ps-dot:focus-visible { outline: 2px solid var(--ps-ink); outline-offset: -8px; }
+@media (max-width: 480px) {
+  .ps-dot { padding: 0 2px; }
+  .ps-dot span { width: 9px; }
+  .ps-dot[aria-current="true"] span { width: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-img, .ps-panel, .ps-slide.is-open .ps-panel, .ps-dot span, .ps-cta-arrow { transition: none; }
+}
