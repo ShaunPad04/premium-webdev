@@ -5,8 +5,8 @@
  * shows comes from the stocklist: the one-line description written for a
  * card (`short`), the price the checkout charges, and, where a piece comes
  * in more than one colourway, each colourway's photograph under its
- * supplier colour name. Sizes are shown as information; the choosing is
- * done on the product page. */
+ * supplier colour name. A size picked here carries to the product page
+ * (?size=, 2026-09-26, Brad), where Add to bag is. */
 import { newIn } from "@/lib/shop";
 import { stocklist } from "@/lib/stocklist";
 import { ProductPhoto } from "@/components/ProductPhoto";

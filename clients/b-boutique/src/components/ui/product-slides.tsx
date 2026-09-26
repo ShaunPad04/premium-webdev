@@ -9,8 +9,10 @@
  *     middle; one either side, smaller and faded. Clicking a side model brings
  *     it in. No arrows, no dots: that is the reference's own interaction.
  *   - One details column, outside the row: caption, title, description,
- *     price, sizes (information only, never a picker), colour switches with
- *     thumbnails, and a link. It crossfades when the piece changes. Beside
+ *     price, size switches, colour switches with
+ *     thumbnails, and a link; a chosen size rides on the link as ?size=
+ *     (2026-09-26, Brad: sizes were not clickable). It crossfades when the
+ *     piece changes. Beside
  *     the row from 1024px up, under it below that.
  *   - Colourway thumbnails bottom-right of the row, as in the reference; a
  *     pointer shortcut to the same colour switches, hidden from assistive
@@ -49,7 +51,8 @@ export type ProductSlide = {
   description?: string;
   /** Already formatted; a node so a site can use its own price component. */
   price?: ReactNode;
-  /** Shown as information, never as a size picker. */
+  /** Switches when there is more than one; the chosen one is added to
+   *  `href` as ?size=. A single size is not a choice and shows as text. */
   sizes?: string[];
   href?: string;
   /** The model photograph. Decorative: the title names the slide. */
@@ -92,6 +95,7 @@ export function ProductSlides({ slides, label, loop = true, initial = 0, ctaLabe
   const [geo, setGeo] = useState<Geo | null>(null);
   const [active, setActive] = useState(initial); // virtual index when looping
   const [variant, setVariant] = useState(0);
+  const [size, setSize] = useState<string | null>(null);
   const dragX = useMotionValue(0);
   const drag = useRef<{ x: number; y: number; id: number; on: boolean } | null>(null);
   const dragged = useRef(false);
@@ -112,6 +116,7 @@ export function ProductSlides({ slides, label, loop = true, initial = 0, ctaLabe
     (v: number) => {
       setActive(loop ? v : Math.max(0, Math.min(n - 1, v)));
       setVariant(0);
+      setSize(null);
     },
     [loop, n],
   );
@@ -296,11 +301,25 @@ export function ProductSlides({ slides, label, loop = true, initial = 0, ctaLabe
               <h3 className="ps-title">{slide.title}</h3>
               {slide.description && <p className="ps-desc">{slide.description}</p>}
               {slide.price && <p className="ps-price">{slide.price}</p>}
-              {slide.sizes && slide.sizes.length > 0 && (
-                <ul className="ps-sizes" aria-label="Sizes">
-                  {slide.sizes.map((z) => <li key={z}>{z}</li>)}
+              {slide.sizes && slide.sizes.length > 1 ? (
+                <div className="ps-sizes" role="group" aria-label="Size">
+                  {slide.sizes.map((z) => (
+                    <button
+                      key={z}
+                      type="button"
+                      className="ps-size"
+                      aria-pressed={z === size}
+                      onClick={() => setSize(z === size ? null : z)}
+                    >
+                      {z}
+                    </button>
+                  ))}
+                </div>
+              ) : slide.sizes && slide.sizes.length === 1 ? (
+                <ul className="ps-sizes" aria-label="Size">
+                  <li className="ps-size ps-size--one">{slide.sizes[0]}</li>
                 </ul>
-              )}
+              ) : null}
               {variants.length > 1 && (
                 <div className="ps-colours" role="group" aria-label="Colour">
                   {variants.map((x, i) => (
@@ -318,7 +337,7 @@ export function ProductSlides({ slides, label, loop = true, initial = 0, ctaLabe
                 </div>
               )}
               {slide.href && (
-                <Link href={slide.href} className="ps-cta">
+                <Link href={size ? `${slide.href}?size=${encodeURIComponent(size)}` : slide.href} className="ps-cta">
                   {ctaLabel}
                 </Link>
               )}

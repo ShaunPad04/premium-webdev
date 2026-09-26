@@ -1,0 +1,31 @@
+/* Headings (2026-09-26, Brad chose option C of three, rendered on six
+   pages). The headings take the short FAQ title's style, which he picked
+   out: Hanken Grotesk, regular weight, capitals, a touch of tracking. The
+   serif (Bodoni Moda) stays for sub-headings and product names, so a
+   little of the fashion-magazine note remains. Body text is unchanged.
+
+   This file is imported after globals.css and has the last word over some
+   fifty older per-section heading rules, which is why it uses !important:
+   one place that decides, rather than fifty to keep in step. */
+
+/* --font-display is what those rules ask for; it now answers Hanken.
+   html:root, because next/font sets the variable with a class on <html>,
+   which a bare `html` would lose to. */
+html:root { --font-display: var(--font-body); }
+
+:is(h1, h2, .lm-title):not(.sr-only) {
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.01em !important;
+  line-height: 1.08 !important;
+}
+:is(h1, h2):not(.sr-only) { font-size: clamp(24px, 2.6vw, 38px) !important; }
+:is(h1, h2, .lm-title) em { font-style: normal !important; }
+
+/* Sub-headings and product names keep the serif, in sentence case. */
+:is(h3, .prod-name, .vx-card-name, .ps-title, .fqx-q-text, .fqx-panel-q, .owner-name):not(.sr-only) {
+  font-family: "Bodoni Moda", Georgia, serif !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}

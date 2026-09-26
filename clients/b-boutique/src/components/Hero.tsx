@@ -1,7 +1,6 @@
 import { shop } from "@/lib/shop";
 
-import { HeroStill } from "./HeroStrips";
-import { LookHero } from "./LookHero";
+import { HeroStill, HeroStrips } from "./HeroStrips";
 import { SafeBoundary } from "./SafeBoundary";
 
 /* The campaign hero.
@@ -63,7 +62,9 @@ export function Hero() {
         homeware on {shop.street}, {shop.town}.
       </h1>
       <SafeBoundary name="hero" fallback={<HeroStill />}>
-        <LookHero />
+        {/* The red-field horses frame is back (2026-09-26, Brad), in place
+            of the Fair Isle lookbook frame (LookHero.tsx, kept). */}
+        <HeroStrips />
       </SafeBoundary>
     </section>
   );

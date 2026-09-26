@@ -106,9 +106,9 @@
 @media (min-width: 1024px) { .ps-details { padding-inline: 0; } }
 .ps-caption {
   margin: 0 0 10px;
-  font-size: 10px;
+  font-size: 11px; /* the site's one label style (2026-09-26) */
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ps-muted);
 }
@@ -138,13 +138,26 @@
   padding: 0;
   list-style: none;
 }
-.ps-sizes li {
-  padding: 7px 10px;
+.ps-size {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  min-width: 44px;
+  justify-content: center;
+  padding: 0 12px;
   border: 1px solid var(--ps-line);
+  background: transparent;
+  color: var(--ps-muted);
+  font: inherit;
   font-size: 11px;
   letter-spacing: 0.06em;
-  color: var(--ps-muted);
+  cursor: pointer;
+  transition: border-color 200ms ease, color 200ms ease, background-color 200ms ease;
 }
+.ps-size--one { cursor: default; }
+.ps-size[aria-pressed="true"] { border-color: var(--ps-ink); background: var(--ps-ink); color: var(--ps-bg); }
+@media (hover: hover) { button.ps-size:hover { border-color: var(--ps-ink); color: var(--ps-ink); } button.ps-size[aria-pressed="true"]:hover { color: var(--ps-bg); } }
+.ps-size:focus-visible { outline: 2px solid var(--ps-ink); outline-offset: 2px; }
 .ps-colours { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .ps-colour {
   display: inline-flex;
@@ -185,5 +198,5 @@
 .ps-cta:focus-visible { outline: 2px solid var(--ps-ink); outline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ps-img, .ps-thumb, .ps-colour, .ps-cta { transition: none; }
+  .ps-img, .ps-thumb, .ps-colour, .ps-size, .ps-cta { transition: none; }
 }

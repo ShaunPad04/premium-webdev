@@ -49,20 +49,11 @@ import { NavSearch } from "./NavSearch";
  * currently shows it. */
 export function Nav({ solid = false }: { solid?: boolean } = {}) {
   const [scrolled, setScrolled] = useState(false);
-  /* Home only: the marquee under the hero has reached the top of the screen.
-     null where the page has no marquee, so every other route keeps the
-     fixed header it has always had. */
-  const [docked, setDocked] = useState<boolean | null>(null);
 
   useEffect(() => {
-    /* 64px, not the hero's full height: the bar has to be readable the moment
-       the photograph starts sliding out from under it, not a screen later. */
-    const rail = document.querySelector<HTMLElement>(".home-rise .arr-rail");
-    const onScroll = () => {
-      setScrolled(window.scrollY > 64);
-      /* 72px, the bar's height: it lands just as the marquee arrives under it. */
-      if (rail) setDocked(rail.getBoundingClientRect().top <= 72);
-    };
+    /* 8px, not the hero's full height (2026-09-26, Brad; it was 64px): the
+       bar goes solid the moment the reader starts to scroll. */
+    const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
@@ -77,18 +68,17 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
      photograph behind the bar. The monogram shows throughout; the home hero
      no longer carries the name in large type.
 
-     On the home page (2026-09-26, Brad) the header is not sticky over the
-     hero: it sits at the top of the page and scrolls away with it, and only
-     comes back, fixed and solid, once the marquee reaches the top. */
-  const home = docked !== null;
-  const opaque = solid || (home ? docked : scrolled);
+     The home page is no exception (2026-09-26, Brad: sticky as soon as you
+     start to scroll). It briefly waited for the marquee to reach the top;
+     that is gone. */
+  const opaque = solid || scrolled;
   const pathname = usePathname();
 
   return (
     <header
       /* z-[60] keeps the Menu trigger above the panel it opens (z-50); the
          panel reserves top padding for exactly this. */
-      className={`${home && !docked ? "absolute" : "fixed"} inset-x-0 top-0 z-[60] text-bb-white${home && docked ? " nav-docked" : ""}`}
+      className="fixed inset-x-0 top-0 z-[60] text-bb-white"
       style={{
         /* The scrollbar's width while the menu locks the page; see
            CornerMenu. 0 the rest of the time. */
