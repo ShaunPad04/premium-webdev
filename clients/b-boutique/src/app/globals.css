@@ -10861,6 +10861,36 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 }
 @media (prefers-reduced-motion: reduce) { .sfq-more-cta svg { transition: none; } }
 
+/* Full-screen menu (components/ui/immersive-full-screen-nav.tsx). The
+   header, with the close mark, stays above it. */
+.ifn-inner { display: flex; min-height: 100svh; flex-direction: column; justify-content: space-between; gap: 40px; padding: 116px 24px 32px; transform-origin: 50% 40%; }
+@media (min-width: 1024px) { .ifn-inner { padding: 128px clamp(48px, 6vw, 112px) 40px; } }
+.ifn-main { display: flex; align-items: center; justify-content: space-between; gap: 48px; flex: 1; }
+.ifn-links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.ifn-links li { display: flex; align-items: baseline; gap: 14px; }
+.ifn-n { width: 22px; flex: none; font: 600 10px/1 var(--font-body), sans-serif; letter-spacing: 0.16em; color: rgba(255, 255, 255, 0.55); }
+.ifn-link { font-family: "Bodoni Moda", Georgia, serif; font-weight: 400; font-size: clamp(36px, 9.5vw, 48px); line-height: 1.1; color: #FFFFFF; text-decoration: none; }
+@media (min-width: 1024px) { .ifn-link { font-size: clamp(44px, 4.6vw, 80px); } }
+.ifn-link:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 6px; }
+.ifn-photos { display: none; }
+@media (min-width: 1024px) {
+  .ifn-photos { display: flex; align-items: flex-end; gap: clamp(16px, 2vw, 32px); }
+  .ifn-photo { width: clamp(180px, 16vw, 280px); aspect-ratio: 4 / 5; overflow: hidden; border-radius: 14px; }
+  .ifn-photo:nth-child(2) { margin-bottom: 64px; }
+  .ifn-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .ifn-photo:hover img { transform: scale(1.05); }
+}
+.ifn-foot { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 40px; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.16); }
+.ifn-foot-col { display: flex; flex-direction: column; gap: 4px; }
+.ifn-meta { margin: 0; font-size: 13px; line-height: 1.6; color: rgba(255, 255, 255, 0.78); }
+.ifn-a { color: #FFFFFF; text-decoration: none; min-height: 28px; display: inline-flex; align-items: center; }
+.ifn-a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.ifn-socials { list-style: none; display: flex; gap: 8px; margin: 0; padding: 0; }
+.ifn-social { display: grid; place-items: center; width: 44px; height: 44px; color: #FFFFFF; transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+.ifn-social:hover { transform: translateY(-3px); }
+.ifn-a:focus-visible, .ifn-social:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .ifn-photo img, .ifn-social { transition: none; } }
+
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───
    Measured on ten routes: only Hanken Grotesk and Bodoni Moda ever render,
    but they were used inconsistently. The rules, restated:

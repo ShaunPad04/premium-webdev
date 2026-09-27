@@ -10,7 +10,9 @@ import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
    when the browser is idle, or as soon as the trigger is hovered, focused or
    touched, whichever is first. Nothing about the menu is needed to draw the
    page, and loading it up front put ~50KB in front of the first paint. */
-const CornerMenuPanel = dynamic(() => import("./CornerMenuPanel"), { ssr: false });
+/* The full-screen panel since 2026-09-27 (Brad). CornerMenuPanel, the
+   drawer it replaced, is kept for a switch back. */
+const CornerMenuPanel = dynamic(() => import("./ui/immersive-full-screen-nav"), { ssr: false });
 
 /* Corner menu.
  *
