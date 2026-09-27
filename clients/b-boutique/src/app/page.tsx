@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { HeroTurn } from "@/components/HeroTurn";
 import { spinFor } from "@/lib/spin";
-import { openingSummary, shop } from "@/lib/shop";
+import { featured, openingSummary, shop } from "@/lib/shop";
+import { FREE_DELIVERY_OVER_P, formatPriceShort } from "@/lib/catalogue";
 import { NewArrivalRail } from "@/components/NewArrivalRail";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import { NewInSlides } from "@/components/NewInSlides";
@@ -57,8 +58,14 @@ export default function Home() {
             frames={turn.frames}
             generated={turn.generated}
             name="Fair Isle Jumper"
-            hours={openingSummary().replace(/\.$/, "")}
             heading={`B Boutique — for every woman who walks in. Independent womenswear and homeware on ${shop.street}, ${shop.town}.`}
+            statement={`Womenswear and homeware, chosen by hand, one piece at a time, on ${shop.street} in ${shop.town}.`}
+            captions={[
+              openingSummary().replace(/\.$/, ""),
+              `${shop.street}, ${shop.town}`,
+              `Free UK delivery over ${formatPriceShort(FREE_DELIVERY_OVER_P)}`,
+            ]}
+            labels={featured.map((f) => f.name)}
           />
         ) : null}
         <div className="rise">
