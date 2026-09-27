@@ -11011,7 +11011,7 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
    the shape of the white-to-oxblood preview, in the charcoal of the
    marquee below). No grain: measured, it cost more dropped frames than
    anything else on the stage. */
-.th { --th-ink: #0E0B0C; --th-muted: rgba(14, 11, 12, 0.72); --th-bg: radial-gradient(125% 125% at 50% 10%, #FFFFFF 40%, #3A3837 100%); position: relative; }
+.th { --th-ink: #0E0B0C; --th-muted: rgba(14, 11, 12, 0.72); --th-bg: radial-gradient(120% 95% at 50% 0%, #FFFFFF 22%, #8A8683 62%, #2B2928 100%); position: relative; }
 .th-pin { --r: min(640px, 60vw); position: relative; height: 100svh; min-height: 560px; overflow: hidden; color: var(--th-ink); background: var(--th-bg); }
 
 /* The ring. */
@@ -11082,6 +11082,16 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
   .th-note { top: auto; bottom: 4px; left: 16px; right: 16px; max-width: none; text-align: center; }
   .th-foot { bottom: 40px; }
 }
+/* Charcoal ground (2026-09-27, Brad picked from previews): on desktop the
+   charcoal rises from the bottom and sides to about halfway (A); on phones
+   a straight top-to-bottom fade that starts under the jumper (B). The text
+   that now sits on the dark lower half turns white to keep its contrast. */
+@media (max-width: 767px) {
+  .th { --th-bg: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 18%, #A9A5A2 52%, #3A3837 82%, #1E1C1B 100%); }
+}
+.th-statement, .th-caption { color: rgba(255, 255, 255, 0.86); }
+.th-cta { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22); }
+.th-cta:focus-visible { outline-color: #FFFFFF; }
 @media (prefers-reduced-motion: reduce) {
   .th-cta svg { transition: none; }
   .th-caption { animation: none; }
@@ -11211,6 +11221,28 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
   .owner-portrait .owner-img { object-position: 50% 12%; }
   .owner-eyebrow, .owner .owner-name, .owner-bio-text, .owner-details .owner-cta { padding-inline: 0; margin-inline: 0; }
   .owner-bio-text { max-width: 52ch; }
+}
+
+/* Menu hover photo (2026-09-27, Brad picked C): a small tilted photo
+   follows the cursor over the links on desktop; the other links dim. */
+.ifn-float { position: fixed; left: 0; top: 0; z-index: 3; width: 220px; aspect-ratio: 4 / 5; pointer-events: none; opacity: 0; scale: 0.9; rotate: -3deg; transition: opacity 260ms cubic-bezier(0.22, 1, 0.36, 1), scale 420ms cubic-bezier(0.22, 1, 0.36, 1); }
+.ifn-float[data-on] { opacity: 1; scale: 1; }
+.ifn-float img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 14px; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8); opacity: 0; transition: opacity 260ms ease; }
+.ifn-float img[data-on] { opacity: 1; }
+/* On the children: GSAP owns the li's own opacity (the entrance). */
+.ifn-links li > * { transition: opacity 300ms ease; }
+.ifn-links li[data-dim] > * { opacity: 0.4; }
+
+/* Menu links centred on desktop (2026-09-27, Brad), now the two standing
+   photos are gone. The number sits to the left of each word as before. */
+@media (min-width: 1024px) {
+  .ifn-main { justify-content: center; }
+  .ifn-links { align-items: center; }
+  /* No 01-07 numbers beside centred words, and the foot centred to match. */
+  .ifn-n { display: none; }
+  .ifn-foot { align-items: center; text-align: center; }
+  .ifn-foot-col { align-items: center; }
+  .ifn-socials { margin-left: 0; justify-content: center; }
 }
 
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───

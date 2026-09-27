@@ -4,15 +4,21 @@ import { ScrollAcross } from "@/components/ScrollAcross";
 /* Why B Boutique (2026-09-24, Brad asked for a "why choose us" strip in
  * place of a journal with nothing in it yet).
  *
- * Four reasons, every one of them already true on this site and read from
+ * Seven reasons, every one of them already true on this site and read from
  * the same place the rest of the site reads it: "chosen by hand" is the
  * philosophy line, "one of one" is the FAQ, the delivery threshold is
  * FREE_DELIVERY_OVER_P, and 14 days is the online cancellation right in
- * lib/policies.ts. Nothing here is a new claim.
+ * lib/policies.ts. Three more came in on 2026-09-27 (Brad, so the scroll
+ * across lasts longer), each from an answer the client gave in lib/faq.ts:
+ * everything online is on the rail in Cleethorpes ("Do you sell online?"),
+ * the four-day hold with a deposit, and gift cards in any amount, bought
+ * and used in person. Nothing here is a new claim.
  *
  * The photographs are GENERATED mood images (Higgsfield, scripts: none;
  * sources in assets/why): a hand at a rail, a cardigan on a hook, a jumper
- * in tissue in a plain paper mailer, a folded jumper. None of them is her
+ * in tissue in a plain paper mailer, a folded jumper; and, added with the
+ * three new reasons, a fitting corner, a knit tied with a blank tag, a blank
+ * card in an envelope (same style, the first two as references). None is her
  * shop or her stock, and none is captioned as if it were; they are
  * decorative (alt=""), and the words carry the meaning. The delivery image
  * was a black gift box until 2026-09-24, when Brad confirmed orders do not
@@ -23,8 +29,11 @@ import { ScrollAcross } from "@/components/ScrollAcross";
 const POINTS = [
   { img: "hand", title: "Chosen by hand", text: "Every piece on the rails is chosen by hand, one at a time." },
   { img: "one", title: "Mostly one of one", text: "Most pieces here are one of one, so yours won't be on everyone else." },
+  { img: "try", title: "Try it on in the shop", text: "Everything online is on the rail in Cleethorpes, so you can see it first." },
   { img: "parcel", title: `Free UK delivery over ${formatPriceShort(FREE_DELIVERY_OVER_P)}`, text: "Sent by Royal Mail, packed by hand." },
   { img: "return", title: "14 days to change your mind", text: "Bought online? Send it back within 14 days for a refund." },
+  { img: "hold", title: "We'll hold it for you", text: "We keep a piece for four days with a deposit paid." },
+  { img: "gift", title: "Gift cards in any amount", text: "Bought and used in the shop, against anything on the rails." },
 ] as const;
 
 const set = (n: string, ext: string) => `/img/why/${n}-640.${ext} 640w, /img/why/${n}-896.${ext} 896w`;
