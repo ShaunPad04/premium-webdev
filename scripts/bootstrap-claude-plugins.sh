@@ -33,6 +33,7 @@ MARKETPLACES=(
   "claude-code-plugins|anthropics/claude-code"
   "chrome-devtools-plugins|ChromeDevTools/chrome-devtools-mcp"
   "impeccable|pbakaus/impeccable"
+  "21st|21st-dev/claude-code-plugin"
 )
 
 # plugin-name@marketplace
@@ -42,6 +43,7 @@ PLUGINS=(
   "frontend-design@claude-code-plugins"
   "chrome-devtools-mcp@chrome-devtools-plugins"
   "impeccable@impeccable"
+  "21st@21st"
 )
 
 c()  { printf '%s\n' "$*"; }
@@ -153,6 +155,30 @@ if [ -f .mcp.json ] && grep -q 'chrome-devtools' .mcp.json 2>/dev/null; then
   bad "project .mcp.json also registers chrome-devtools -> DUPLICATE. Remove it; the plugin owns this."
 else
   ok "no competing project-level chrome-devtools MCP entry"
+fi
+c ""
+
+# ---------- 21st CLI + key ----------
+# The 21st skills shell out to the `21st` CLI; the plugin's MCP server sends
+# ${API_KEY_21ST} as its x-api-key header. The key is a secret: it lives in the
+# cloud environment's variables, never in this repo.
+c "21ST"
+if command -v 21st >/dev/null 2>&1; then
+  ok "21st CLI (already installed)"
+elif [ "$MODE" = "--check" ]; then
+  skip "21st CLI MISSING -> would npm install -g @21st-dev/cli"
+else
+  add "21st CLI <- npm @21st-dev/cli"
+  if npm install -g @21st-dev/cli >/dev/null 2>&1 && command -v 21st >/dev/null 2>&1; then
+    ok "21st CLI installed"
+  else
+    bad "21st CLI install failed (is registry.npmjs.org reachable?)"
+  fi
+fi
+if [ -n "${API_KEY_21ST:-}" ]; then
+  ok "API_KEY_21ST is set"
+else
+  bad "API_KEY_21ST not set -> add it to this cloud environment's variables (key: https://21st.dev/mcp)"
 fi
 c ""
 

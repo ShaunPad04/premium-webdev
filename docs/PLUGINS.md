@@ -1,6 +1,6 @@
 # Plugin layer
 
-Five capabilities cannot travel through account sync and must be plugins.
+Six capabilities cannot travel through account sync and must be plugins.
 
 Two of them contain **no skill at all**, which is the reason the split exists:
 
@@ -11,6 +11,7 @@ Two of them contain **no skill at all**, which is the reason the split exists:
 | `feature-dev` 1.0.0 | 0 | 3 | 0 | 0 |
 | `security-guidance` 2.0.0 | 0 | 0 | 4 | 0 |
 | `frontend-design` 1.1.0 | 1 | 0 | 0 | 0 |
+| `21st` 0.4.1 | 7 | 0 | 0 | 1 |
 
 `feature-dev` ships agents and a command; `security-guidance` ships only hooks.
 Account sync distributes *skills*, so neither could ever be delivered that way.
@@ -33,6 +34,7 @@ plugin or MCP registration.
 | `claude-code-plugins` | `anthropics/claude-code` | `security-guidance`, `feature-dev`, `frontend-design` |
 | `chrome-devtools-plugins` | `ChromeDevTools/chrome-devtools-mcp` | `chrome-devtools-mcp` |
 | `impeccable` | `pbakaus/impeccable` | `impeccable` |
+| `21st` | `21st-dev/claude-code-plugin` | `21st` |
 
 ```
 security-guidance@claude-code-plugins
@@ -40,7 +42,13 @@ feature-dev@claude-code-plugins
 frontend-design@claude-code-plugins
 chrome-devtools-mcp@chrome-devtools-plugins
 impeccable@impeccable
+21st@21st
 ```
+
+`21st` also needs the `21st` CLI (the bootstrap installs it from npm) and an
+`API_KEY_21ST` variable in the cloud environment settings, plus network access
+to `21st.dev`. The bootstrap reports a missing key as a problem rather than
+failing silently.
 
 ## Default state — and why
 
@@ -49,6 +57,7 @@ impeccable@impeccable
 | `impeccable` | **enabled** | The live driver for existing-UI work |
 | `chrome-devtools-mcp` | **enabled** | Debugging/inspection layer |
 | `feature-dev` | **enabled** | Engineering architecture; cheap |
+| `21st` | **enabled** | Real components/themes via the 21st MCP + seven 21st skills |
 | `security-guidance` | **disabled** | Its `Stop` hook runs an LLM diff review on every stop |
 | `frontend-design` | **disabled** | A second automatic frontend conductor would compete with `frontend-design-skill` |
 
