@@ -23,16 +23,14 @@ test('a New Arrivals size is a switch and rides on the link', async ({ page }, t
   await expect(page.locator('#new-in .ps-cta')).toHaveAttribute('href', new RegExp(`\\?size=${encodeURIComponent(label)}$`));
 });
 
-test('New In on phones: arrows step through the pieces, no sizes', async ({ page }, testInfo) => {
+test('New In on phones: one piece, no sizes, no arrows', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'phone layout only');
   await page.goto('/', { waitUntil: 'networkidle' });
-  const next = page.locator('#new-in .ps-step[aria-label="Next piece"]');
-  await next.scrollIntoViewIfNeeded();
+  const cta = page.locator('#new-in .ps-cta');
+  await cta.scrollIntoViewIfNeeded();
+  await expect(cta).toBeVisible();
   await expect(page.locator('#new-in .ps-size').first()).toBeHidden();
-  const title = page.locator('#new-in .ps-title');
-  const first = (await title.textContent())!.trim();
-  await next.click();
-  await expect(title).not.toHaveText(first);
+  await expect(page.locator('#new-in .ps-step').first()).toBeHidden();
 });
 
 test('Up close: three fabrics, each linking to its piece', async ({ page }) => {
