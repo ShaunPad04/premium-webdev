@@ -34,9 +34,9 @@ test('the home hero survives a swipe and carries no product dots', async ({ page
   /* The page's one h1, and one button. */
   await expect(page.locator('h1')).toHaveCount(1);
   await expect(page.locator('.th .th-cta')).toBeVisible();
-  /* She turns on her own (the stacked-alpha video drawn to a canvas), and
-     the note saying the turn is generated stays on the page until the
-     client has checked the back of the jumper against the real garment. */
+  /* She turns on her own (the stacked-alpha video drawn to a canvas). The
+     "generated turn" note came off on 2026-09-27: Brad confirmed the back
+     of the jumper against the real garment and asked for it removed. */
   await expect(page.locator('.th-canvas[data-ready]')).toHaveCount(1, { timeout: 20_000 });
-  await expect(page.locator('.th-note')).toBeVisible();
+  await expect(page.locator('.th-note')).toHaveCount(0);
 });

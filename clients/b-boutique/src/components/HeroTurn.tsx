@@ -33,8 +33,10 @@ import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
  * no bubbles; no three.js. Inter Black, condensed, as the original.
  *
  * Reduced motion: no playback and no orbit; the front frame and the first
- * word. The GENERATED note goes wherever she is, until the client checks
- * the back of the jumper. */
+ * word. The "generated turn" note came off on 2026-09-27, when Brad
+ * confirmed the back of the jumper against the real garment and the
+ * GENERATED file was removed; the `generated` prop still shows it if a new
+ * AI-made turn is ever added. */
 const WORDS = ["B Boutique", "Hand-picked", "One of one", "Womenswear", "Cleethorpes"];
 const STEP = 360 / WORDS.length;
 /* Measured on the clip (assets/spin/fair-isle-jumper/README.md): video
