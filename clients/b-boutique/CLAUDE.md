@@ -1079,3 +1079,15 @@ generated mood images, not her posts, so they are `alt=""` inside links named
 by the account. The section needs `width: 100%`: its parent centres its
 children and it shrank to thumbnails without it.
 
+## FAQ — 2026-09-27
+
+Brad kept the FAQ itself as it is (pills, silver edge, the five questions);
+three whole-section directions (numbered split with her counter photo,
+question tabs, a chat thread) and three refinements (ink when open, two
+columns, a proximity glow) were all turned down, and **no images in the
+FAQ** (Brad). Only the "Still have a question?" card changed: B, "Quiet
+line", of three (A a silver pill, C two buttons), then without its email
+line and without "Still have a question?" itself. What is left is one black
+"Ask us anything" button to /contact under the questions. `shortFaqItems()` is exported from `ShortFaq.tsx` so the question
+list has one source.
+

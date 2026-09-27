@@ -107,6 +107,21 @@
         "C: names huge over one full-bleed photo",
         "Previous: full-bleed photo with two black pills"
       ]
+    },
+    "faq": {
+      "decided": "2026-09-27",
+      "note": "FAQ kept as it is; no images (Brad)",
+      "stillHaveAQuestion": "One black \"Ask us anything\" button to /contact under the questions; no box, no email line, no \"Still have a question?\"",
+      "rejected": [
+        "Numbered split with photo",
+        "Question tabs",
+        "Conversation",
+        "Ink when open",
+        "Two columns",
+        "Proximity glow",
+        "Silver pill card",
+        "Two-routes card"
+      ]
     }
   }
 }

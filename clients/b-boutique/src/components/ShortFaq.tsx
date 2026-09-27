@@ -28,7 +28,7 @@ function block(heading: string): string {
    section just above shows the address, map and hours; the rest can go
    through "Ask us anything". Elsewhere: the three that matter while
    shopping. */
-export function ShortFaq({ all = false }: { all?: boolean }) {
+export function shortFaqItems(all: boolean): { q: string; a: string }[] {
   const returns = faq.find((f) => f.q.startsWith("Can I return"))?.a;
   const ship = {
     q: "Where do you ship?",
@@ -41,9 +41,13 @@ export function ShortFaq({ all = false }: { all?: boolean }) {
   const ret = returns ? { q: "What is your return policy?", a: returns } : null;
   const inShop = ["Can you hold an item", "Do you sell gift cards"]
     .map((start) => faq.find((f) => !f.temporary && f.q.startsWith(start)));
-  const items = (all ? [ship, ret, size, ...inShop] : [ship, ret, size]).filter(
+  return (all ? [ship, ret, size, ...inShop] : [ship, ret, size]).filter(
     (x): x is { q: string; a: string } => Boolean(x),
   );
+}
+
+export function ShortFaq({ all = false }: { all?: boolean }) {
+  const items = shortFaqItems(all);
 
   return (
     <section id={all ? "faq" : undefined} className="sfq" aria-labelledby="sfq-h">
@@ -54,16 +58,11 @@ export function ShortFaq({ all = false }: { all?: boolean }) {
           <FaqItem key={it.q} q={it.q} a={it.a} />
         ))}
       </div>
-      {/* Anything else goes to the contact page (2026-09-27, Brad). No
-          promised reply time: none has been confirmed by the shop. */}
+      {/* Anything else goes to the contact page (2026-09-27, Brad): one
+          black button under the questions, no box and no line above it (he
+          picked B, "Quiet line", of three, then took out its email line and
+          its "Still have a question?"). */}
       <div className="sfq-more">
-        <span className="sfq-more-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
-        </span>
-        <span className="sfq-more-text">
-          <span className="sfq-more-title">Still have a question?</span>
-          <span className="sfq-more-sub">Send us a message and we&rsquo;ll get back to you.</span>
-        </span>
         <Link href="/contact" className="sfq-more-cta">
           Ask us anything
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>

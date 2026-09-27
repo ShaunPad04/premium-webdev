@@ -10875,38 +10875,19 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
    no accent colour in the editorial sections). */
 .ucs2 .ucs-eyebrow { color: rgba(14, 11, 12, 0.72); }
 
-/* "Still have a question?" under the FAQ (2026-09-27, Brad's reference):
-   a black band, the one statement moment in this section, with the button
-   in white. Stacks on a phone. */
-.sfq-more {
-  /* A little narrower than the FAQ above it (2026-09-27, Brad). */
-  max-width: 760px; margin: clamp(32px, 4vw, 48px) auto 0; padding: 14px 16px;
-  display: flex; align-items: center; gap: 16px; text-align: left;
-  background: #0E0B0C; color: #FFFFFF; border-radius: 18px;
-}
-.sfq-more-icon { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #FFFFFF; color: #0E0B0C; }
-.sfq-more-text { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
-.sfq-more-title { font-size: 16px; font-weight: 600; }
-.sfq-more-sub { font-size: 14px; color: rgba(255, 255, 255, 0.72); }
+/* "Ask us anything" under the FAQ (2026-09-27, Brad): one black button to
+   the contact page, no box, no line above it. */
+.sfq-more { margin: clamp(32px, 4vw, 48px) auto 0; text-align: center; }
 .sfq-more-cta {
-  flex: none; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 20px;
-  border-radius: 999px; background: #FFFFFF; color: #0E0B0C; font-size: 14px; font-weight: 600; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 22px; white-space: nowrap;
+  border-radius: 999px; background: #0E0B0C; color: #FFFFFF; font-size: 14px; font-weight: 600; text-decoration: none;
   transition: background-color 200ms ease;
 }
 .sfq-more-cta svg { transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
-.sfq-more-cta:hover { background: #EDEDED; }
+.sfq-more-cta:hover { background: #2A2426; }
 .sfq-more-cta:hover svg, .sfq-more-cta:focus-visible svg { transform: translateX(3px); }
-.sfq-more-cta:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
-/* Phones: a compact card (2026-09-27, Brad: "large"). No icon, tighter
-   padding and type, the button its own width under the words. */
-@media (max-width: 599px) {
-  .sfq-more { flex-wrap: wrap; gap: 12px; padding: 16px 18px; border-radius: 16px; }
-  .sfq-more-icon { display: none; }
-  .sfq-more-title { font-size: 15px; }
-  .sfq-more-sub { font-size: 13px; line-height: 1.45; }
-  .sfq-more-cta { min-height: 44px; padding: 0 18px; font-size: 13px; }
-}
-@media (prefers-reduced-motion: reduce) { .sfq-more-cta svg { transition: none; } }
+.sfq-more-cta:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .sfq-more-cta, .sfq-more-cta svg { transition: none; } }
 
 /* Full-screen menu (components/ui/immersive-full-screen-nav.tsx). The
    header, with the close mark, stays above it. */
