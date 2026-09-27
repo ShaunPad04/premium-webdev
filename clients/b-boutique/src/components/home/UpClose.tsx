@@ -37,6 +37,9 @@ const FRAMES = [
    ruled sheet with its care and the piece it is found in. No composition
    row: none of the three has a published fibre content (fabricPublished is
    false in the stocklist), and a percentage is not something to guess. */
+const wide = (n: string, ext: string) => [1600, 2400, 3200].map((w) => `/img/fabric/${n}-wide-${w}.${ext} ${w}w`).join(", ");
+const tall = (n: string, ext: string) => [800, 1200, 1800].map((w) => `/img/fabric/${n}-tall-${w}.${ext} ${w}w`).join(", ");
+
 const LIVE = FRAMES.filter((f) => stocklist.some((x) => x.slug === f.slug));
 
 const ITEMS: StickyContentItem[] = LIVE.map((f, i) => {
@@ -49,10 +52,16 @@ const ITEMS: StickyContentItem[] = LIVE.map((f, i) => {
       ...(p.care ? [{ label: "Care", value: p.care }] : []),
       { label: "Found in", value: p.name, href: `/shop/${p.slug}`, srText: " (view the piece)" },
     ],
-    image: `/img/fabric/${f.src}-1000.jpg`,
+    /* 4K Higgsfield recreations of the earlier close-ups (2026-09-27, Brad:
+       the old 1728px portraits were soft full-bleed): a tall 9:16 set for
+       portrait screens and a wide 16:9 set for landscape ones, so neither
+       is cropped out of the other. Built by scripts/build-fabric.py. */
+    image: `/img/fabric/${f.src}-wide-1600.jpg`,
     sources: [
-      { type: "image/avif", srcSet: `/img/fabric/${f.src}-1000.avif 1000w, /img/fabric/${f.src}-2000.avif 2000w` },
-      { type: "image/webp", srcSet: `/img/fabric/${f.src}-1000.webp 1000w, /img/fabric/${f.src}-2000.webp 2000w` },
+      { media: "(max-aspect-ratio: 1/1)", type: "image/avif", srcSet: tall(f.src, "avif"), sizes: "max(100vw, 56svh)" },
+      { media: "(max-aspect-ratio: 1/1)", type: "image/webp", srcSet: tall(f.src, "webp"), sizes: "max(100vw, 56svh)" },
+      { type: "image/avif", srcSet: wide(f.src, "avif") },
+      { type: "image/webp", srcSet: wide(f.src, "webp") },
     ],
     alt: `Close-up of the fabric of the ${p.name}`,
   };
@@ -65,9 +74,9 @@ export function UpClose() {
       items={ITEMS}
       index={LIVE.map((f) => f.short)}
       labelledBy="uc-h"
-      /* 21:9 close-ups filling the whole screen (2026-09-27): drawn at
-         the wider of the screen and 2.33 x its height. */
-      sizes="max(100vw, 233svh)"
+      /* The wide 16:9 set on landscape screens: drawn at the wider of the
+         screen and 1.78 x its height. The tall set carries its own. */
+      sizes="max(100vw, 178svh)"
       header={
         <>
           <p className="label ucs-eyebrow">Up close</p>

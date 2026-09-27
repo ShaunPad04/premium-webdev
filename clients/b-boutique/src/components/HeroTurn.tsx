@@ -85,7 +85,6 @@ export function HeroTurn({
     const v = vid.current;
     if (!p || !st || !c || !v || reduced) return;
     const words = [...p.querySelectorAll<HTMLElement>("[data-word]")];
-    const statementEl = p.querySelector<HTMLElement>(".th-statement");
     const gl = c.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false });
     const c2 = gl ? null : c.getContext("2d");
     let live = true;
@@ -145,18 +144,13 @@ export function HeroTurn({
       const f = (v.currentTime * FPS) % 184;
       const ring = -angleAt(f);
       st.style.transform = `rotateY(${ring.toFixed(2)}deg)`;
-      let brightest = 0;
       words.forEach((wd, i) => {
         const d = ((((i * STEP + ring) % 360) + 540) % 360) - 180;
         const o = Math.min(1, Math.max(0, (48 - Math.abs(d)) / 26));
         wd.style.opacity = o.toFixed(3);
-        brightest = Math.max(brightest, o);
       });
-      if (statementEl) {
-        const calm = 1 - brightest;
-        statementEl.style.opacity = calm.toFixed(3);
-        statementEl.style.transform = `translate3d(${((1 - calm) * 16).toFixed(1)}px, 0, 0)`;
-      }
+      /* The statement stays at full strength (2026-09-27): it is real text,
+         and fading it with the words took it below contrast. */
       raf = requestAnimationFrame(tick);
     };
 
@@ -200,7 +194,10 @@ export function HeroTurn({
           <div ref={stage} className="th-stage">
             {WORDS.map((wd, i) => (
               <span key={wd} data-word="" className="th-ringword" style={{ "--seat": `${180 + i * STEP}deg` } as React.CSSProperties}>
-                <span className="th-ringword-in">{wd}</span>
+                {/* Drawn by CSS from data-text: the ring is decoration (the h1
+                    and the statement carry the words), and a half-faded
+                    word would otherwise read to checkers as faint text. */}
+                <span className="th-ringword-in" data-text={wd} />
               </span>
             ))}
           </div>

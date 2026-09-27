@@ -10797,35 +10797,33 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .pay-marks img { display: block; width: 38px; height: 24px; border-radius: 3px; }
 .bk-cards.pay-marks { margin-top: 14px; }
 
-/* Shop owner, desktop only (2026-09-27, Brad: the phone layout "looks fine",
-   the desktop one did not fill the page). Her words lead, set large in the
-   serif with an opening quote mark; her name follows as a signature, then
-   the second paragraph and the contact link; the photograph, unchanged,
-   stands to the right. display: contents lets the existing markup sit in
-   one grid without changing what a phone gets. */
+/* Shop owner, desktop only: half and half (2026-09-27, Brad picked A of
+   three desktop directions; the phone layout is unchanged). Her portrait
+   fills the left half edge to edge; the role, her name, her words and the
+   contact link sit centred in the right half. display: contents lets the
+   existing markup share one grid without changing what a phone gets. */
 @media (min-width: 1024px) {
-  .owner-body, .owner-details, .owner-bio { display: contents; }
-  .owner-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, 420px);
-    column-gap: clamp(56px, 7vw, 120px);
-    align-items: center;
+  .owner { padding-block: 0; }
+  .owner-inner {
+    max-width: none; padding: 0;
+    display: grid; grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto auto auto auto auto 1fr;
+    min-height: min(100svh, 860px);
   }
-  .owner-portrait { grid-column: 2; grid-row: 1 / span 4; width: 100%; max-width: none; }
-  .owner-bio-text:first-child {
-    grid-column: 1; grid-row: 1; margin: 0; max-width: 24ch;
-    font-family: "Bodoni Moda", Georgia, serif; font-weight: 400;
-    font-size: clamp(32px, 3.2vw, 48px); line-height: 1.18; letter-spacing: -0.005em;
-    color: var(--bb-black);
-  }
-  .owner-bio-text:first-child::before {
-    content: "\201C"; display: block; font-size: 1.9em; line-height: 0.6; margin-bottom: 0.12em;
-  }
-  .owner .owner-name { grid-column: 1; grid-row: 2; margin-top: clamp(24px, 2.4vw, 36px); font-size: 26px !important; line-height: 1.2 !important; }
+  .owner-layout, .owner-body, .owner-details, .owner-bio { display: contents; }
+  .owner-portrait { grid-column: 1; grid-row: 1 / -1; width: 100%; max-width: none; height: 100%; aspect-ratio: auto; }
+  .owner-portrait .owner-img { object-position: 50% 25%; }
+  .owner-inner > *:not(.owner-layout) { grid-column: 2; }
+  .owner-eyebrow { grid-column: 2; grid-row: 2; margin: 0; padding-inline: clamp(48px, 6vw, 110px); }
+  .owner .owner-name { grid-column: 2; grid-row: 3; margin: 16px 0 0; padding-inline: clamp(48px, 6vw, 110px); font-size: clamp(44px, 4.2vw, 64px) !important; line-height: 1.05 !important; }
   .owner-name br { display: none; }
   .owner-name .owner-surname::before { content: " "; }
-  .owner-bio-text + .owner-bio-text { grid-column: 1; grid-row: 3; margin: 18px 0 0; max-width: 52ch; }
-  .owner-details .owner-cta { grid-column: 1; grid-row: 4; margin-top: 28px; justify-self: start; }
+  .owner-bio-text { grid-column: 2; margin: 0; padding-inline: clamp(48px, 6vw, 110px); max-width: calc(52ch + 2 * clamp(48px, 6vw, 110px)); font-size: 16px; line-height: 1.65; }
+  /* Full ink: its words start faint for the scroll reveal, and at body size
+     the faint step must still pass 4.5:1 (ScrollWords' 0.58 is of ink). */
+  .owner-bio-text:first-child { grid-row: 4; margin-top: 22px; color: var(--bb-black); }
+  .owner-bio-text + .owner-bio-text { grid-row: 5; margin-top: 14px; }
+  .owner-details .owner-cta { grid-column: 2; grid-row: 6; justify-self: start; margin: 26px clamp(48px, 6vw, 110px) 0; }
 }
 
 /* Category row on phones and tablets: a swipe pager, not a scroller
@@ -10988,10 +10986,10 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
    ring (HeroTurn.tsx, 2026-09-27, after "Jellyfish Drift"). One screen, no
    scroll track. HeroTurn turns .th-stage and sets each word's opacity from
    the video's clock; nothing here is driven by scroll.
-   Ground: stone, a warm grey deepening to taupe at the edges (Brad picked
-   it from five, then asked for more of a gradient). No grain: measured, it cost more dropped frames than
+   Ground: plain white (2026-09-27, Brad, after trying stone and four
+   others). No grain: measured, it cost more dropped frames than
    anything else on the stage. */
-.th { --th-ink: #0E0B0C; --th-muted: rgba(14, 11, 12, 0.72); --th-bg: radial-gradient(115% 100% at 50% 32%, #F1F0ED 0%, #DAD7D2 38%, #BFB9B1 72%, #A69F96 100%); position: relative; }
+.th { --th-ink: #0E0B0C; --th-muted: rgba(14, 11, 12, 0.72); --th-bg: #FFFFFF; position: relative; }
 .th-pin { --r: min(640px, 60vw); position: relative; height: 100svh; min-height: 560px; overflow: hidden; color: var(--th-ink); background: var(--th-bg); }
 
 /* The ring. */
@@ -11007,6 +11005,7 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 }
 /* A poster-tall cut without a condensed font, as the original. */
 .th-ringword-in { display: inline-block; transform: scaleX(0.82); }
+.th-ringword-in::before { content: attr(data-text); }
 .th-ringword:first-child { opacity: 1; }
 /* Phones (2026-09-27, Brad: "fits perfectly on mobile"): the words sized so
    the longest ("Hand-picked", "Cleethorpes") fits the width with a margin
@@ -11027,7 +11026,6 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .th-statement {
   position: absolute; z-index: 3; right: 4vw; bottom: 150px; width: min(22vw, 300px); margin: 0; transform: translate3d(0, 0, 0);
   font-size: 12px; font-weight: 600; line-height: 1.8; letter-spacing: 0.1em; text-transform: uppercase; text-align: right; color: var(--th-muted);
-  will-change: opacity, transform;
 }
 .th-micro { position: absolute; z-index: 3; left: clamp(18px, 3vw, 44px); top: 140px; margin: 0; font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--th-muted); }
 @media (max-width: 1023px) { .th-statement { display: none; } }
@@ -11139,8 +11137,6 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .ss2-mark svg { width: 18px; height: 18px; }
 .ss2-arrow { display: none; }
 @media (prefers-reduced-motion: reduce) { .ss2-pill, .ss2-arrow { transition: none; } }
-@media (min-width: 768px) { .ss2--phone { display: none; } }
-@media (max-width: 767px) { .ss--desktop { display: none; } }
 
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───
    Measured on ten routes: only Hanken Grotesk and Bodoni Moda ever render,

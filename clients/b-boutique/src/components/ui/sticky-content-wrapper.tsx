@@ -27,7 +27,9 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import "./sticky-content-wrapper.css";
 
-export type StickySource = { type: string; srcSet: string };
+/** `media` picks a set by screen shape (the tall crops on portrait screens);
+ *  `sizes` overrides the component's own for that set. */
+export type StickySource = { type: string; srcSet: string; media?: string; sizes?: string };
 
 export type StickySpec = { label: string; value: string; href?: string; srText?: string };
 
@@ -274,7 +276,7 @@ export function StickyContentWrapper({
               style={{ zIndex: n - i, transform: `scale(${i === 0 ? activeImageScale : initialImageScale})` }}
             >
               <picture>
-                {item.sources?.map((s) => <source key={s.type} type={s.type} srcSet={s.srcSet} sizes={sizes} />)}
+                {item.sources?.map((s) => <source key={`${s.media ?? ""}${s.type}`} type={s.type} srcSet={s.srcSet} media={s.media} sizes={s.sizes ?? sizes} />)}
                 <img src={item.image} alt={item.alt} className="h-full w-full object-cover" loading="lazy" decoding="async" />
               </picture>
             </div>
