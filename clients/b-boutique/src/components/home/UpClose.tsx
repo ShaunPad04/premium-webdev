@@ -65,9 +65,9 @@ export function UpClose() {
       items={ITEMS}
       index={LIVE.map((f) => f.short)}
       labelledBy="uc-h"
-      /* 21:9 close-ups cropped to a tall panel: drawn about 2.33 x the
-         panel's height wide (half the screen wide from 1026px up). */
-      sizes="(max-width: 1025px) max(90vw, 86svh), max(50vw, 233svh)"
+      /* 21:9 close-ups filling the whole screen (2026-09-27): drawn at
+         the wider of the screen and 2.33 x its height. */
+      sizes="max(100vw, 233svh)"
       header={
         <>
           <p className="label ucs-eyebrow">Up close</p>

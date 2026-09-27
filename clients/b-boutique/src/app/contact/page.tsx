@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { PageMasthead } from "@/components/PageMasthead";
 import { ContactForm } from "@/components/ContactForm";
-import { PathBand } from "@/components/PathBand";
+import { RibbonBand } from "@/components/RibbonBand";
 import { Visit } from "@/components/Visit";
 import { addressLines, openingPhrase, shop } from "@/lib/shop";
 import { socials } from "@/lib/nav";
@@ -50,20 +50,8 @@ export default function ContactPage() {
              inbox configured yet, and a masthead claiming otherwise would be
              the exact thing the form itself is built not to do. */
           lede="Email the shop, or come in and ask. If it is easier to write, there is a form below."
-          aside={
-            /* Was the phone number until 2026-09-21, when the client asked
-               for numbers to come off the site. Email is now the only route,
-               which is why it is promoted to the masthead rather than left
-               to the form below it. */
-            shop.email ? (
-              <p className="pm-phone">
-                <span className="pm-phone-label">Email the shop</span>
-                <a href={`mailto:${shop.email}`} className="pm-phone-number pm-phone-number--email">
-                  {shop.email}
-                </a>
-              </p>
-            ) : null
-          }
+          /* No email line in the masthead (2026-09-27, Brad): the "Get in
+             touch" card directly below already gives the address. */
         texture="contact"
         />
 
@@ -131,7 +119,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        <PathBand />
+        <RibbonBand />
 
         <Visit />
       </main>

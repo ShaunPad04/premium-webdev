@@ -3278,24 +3278,6 @@ body {
 .pinky-cta svg { transition: transform var(--bb-dur-quick) var(--bb-ease); }
 .pinky-cta:hover svg, .pinky-cta:focus-visible svg { transform: translateX(3px); }
 
-/* ── The contact page's path band ─────────────────────────────────────────
-   See PathBand.tsx. On paper, rouge type: the site's signature colour at its
-   9.33:1-on-paper strength, set small and tracked like the site's labels so
-   it reads as a line of the shop's facts rather than as a slogan. */
-.pathband {
-  background: var(--bb-white);
-  color: var(--bb-rouge);
-  overflow: hidden;
-  height: clamp(120px, 18vw, 240px);
-}
-.pathband-svg { display: block; width: 100%; height: 100%; }
-.pathband-text {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-}
-
 /* ── /contact ──────────────────────────────────────────────────────────── */
 /* Shared field styles, still used by the checkout's delivery details and
    the bag (DeliveryDetails.tsx, AddToBag.tsx). The contact form itself moved
@@ -9253,11 +9235,6 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
    is not bare text). The curve is drawn twice: a wider red stroke under a
    slightly narrower ink one, which leaves a hairline red border either side
    of an ink band, and the words ride centred on it in white. */
-.pathband-svg .tp-ribbon-edge { stroke: var(--accent); stroke-width: 44px; stroke-linecap: butt; }
-.pathband-svg .tp-ribbon { stroke: var(--inverse-bg); stroke-width: 40px; stroke-linecap: butt; }
-.pathband-svg text { dominant-baseline: central; }
-.pathband-svg .pathband-text { fill: var(--inverse-ink); }
-.pathband { color: var(--inverse-ink); }
 .fqx-panel-n { top: auto; bottom: -18px; right: 26px; font-size: 150px; }
 .fqx-panel-q { max-width: 20ch; }
 .fqx-panel-n::before { content: attr(data-n); }
@@ -9391,7 +9368,6 @@ h2.wf-group { font: 500 11px/1 var(--font-body); letter-spacing: 0.14em; text-tr
 .sdock-trigger { border-color: transparent; }
 .sdock-trigger:hover { border-color: transparent; background: rgba(255, 255, 255, 0.08); }
 .navsearch-panel:has(.navsearch-chips--rest) { display: none; }
-.pathband-svg .tp-ribbon-edge { stroke: var(--inverse-bg); }
 @media (min-width: 1024px) and (max-width: 1279px) { .sdock-form { width: 240px; } }
 
 /* Header monogram (2026-09-24). The wordmark and the B share one grid cell
@@ -10769,7 +10745,10 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
   position: relative; border: 1.5px solid transparent; border-bottom: 1.5px solid transparent; border-radius: 28px;
   background:
     linear-gradient(var(--pill-fill), var(--pill-fill)) padding-box,
-    linear-gradient(115deg, #9A9A9A 0%, #E8E8E8 22%, #FFFFFF 34%, #BDBDBD 52%, #8E8E8E 68%, #E8E8E8 84%, #A8A8A8 100%) border-box;
+    /* No white or near-white stops (2026-09-27, Brad: parts of the edge
+       looked like they were disappearing into the white page). The silver
+       still runs light to dark, but never lighter than #C4C4C4. */
+    linear-gradient(115deg, #8A8A8A 0%, #B8B8B8 22%, #C4C4C4 34%, #9E9E9E 52%, #7E7E7E 68%, #B4B4B4 84%, #929292 100%) border-box;
   box-shadow: 0 1px 2px rgba(14, 11, 12, 0.06), 0 6px 18px -10px rgba(14, 11, 12, 0.18);
   color: var(--pill-ink);
 }
@@ -10893,7 +10872,8 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
    a black band, the one statement moment in this section, with the button
    in white. Stacks on a phone. */
 .sfq-more {
-  max-width: 960px; margin: clamp(32px, 4vw, 48px) auto 0; padding: 18px 20px;
+  /* A little narrower than the FAQ above it (2026-09-27, Brad). */
+  max-width: 760px; margin: clamp(32px, 4vw, 48px) auto 0; padding: 14px 16px;
   display: flex; align-items: center; gap: 16px; text-align: left;
   background: #0E0B0C; color: #FFFFFF; border-radius: 18px;
 }
@@ -11089,6 +11069,54 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
   .th-caption { animation: none; }
   .th-caption:first-child { opacity: 1; }
 }
+
+/* Product page service lines side by side (2026-09-27, Brad): three
+   equal tiles, the icon over the name, white with a thin dark line like
+   the Visit cards. Each is a link to its details. */
+.pdp-perks--row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.pdp-perks--row li { display: block; }
+/* Smaller (2026-09-27, Brad: "still a bit too large"): on a desktop each is
+   a pill, the icon beside the name; on a phone, where three pills side by
+   side cannot hold "Try it on in the shop" on one line, a short rounded
+   tile with the icon over the name. */
+.pdp-perk {
+  display: flex; align-items: center; justify-content: center; gap: 8px; height: 100%; min-height: 44px;
+  padding: 8px 12px; border: 1px solid rgba(14, 11, 12, 0.78); border-radius: 999px; background: #FFFFFF;
+  color: var(--bb-black); text-align: center; text-decoration: none;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+.pdp-perk:hover { background: var(--bb-black); color: #FFFFFF; }
+.pdp-perk:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 3px; }
+.pdp-perk-ico { display: grid; place-items: center; flex: none; }
+.pdp-perk-ico svg { width: 17px; height: 17px; margin: 0; }
+.pdp-perks--row .pdp-perk-t { margin: 0; font-size: 10.5px; line-height: 1.3; letter-spacing: 0.08em; }
+/* From 600px each pill is as wide as its own words, so none of them wraps. */
+@media (min-width: 600px) {
+  .pdp-perks--row { display: flex; flex-direction: row; flex-wrap: wrap; }
+  .pdp-perks--row li { flex: 1 1 auto; }
+  .pdp-perks--row .pdp-perk-t { white-space: nowrap; }
+}
+/* Phones: no frame round them (2026-09-27, Brad), just the icon over the
+   name; the press state still shows it is a link. */
+@media (max-width: 599px) {
+  .pdp-perk { flex-direction: column; justify-content: flex-start; gap: 6px; padding: 8px 4px; border: 0; border-radius: 12px; }
+  .pdp-perk:hover { background: #F4F3F1; color: var(--bb-black); }
+}
+@media (prefers-reduced-motion: reduce) { .pdp-perk { transition: none; } }
+
+/* Contact ribbons (RibbonBand.tsx, 2026-09-27, Brad picked these over the
+   curved band and a scroll marquee): two crossing black ribbons. */
+.rb-ribbons { position: relative; display: grid; padding: clamp(56px, 7vw, 96px) 0; overflow: hidden; background: #FFFFFF; }
+.rb-ribbons > .rb-ribbon { grid-area: 1 / 1; width: 110%; margin-left: -5%; }
+.rb-ribbon--back { background: #2A2426 !important; }
+
+.ir { overflow: hidden; padding: 14px 0; background: var(--bb-black); color: #FFFFFF; font: 600 clamp(12px, 1.1vw, 15px)/1 var(--font-body); letter-spacing: 0.18em; }
+.ir-track { display: flex; width: max-content; white-space: nowrap; animation: ir-run var(--ir-duration, 10s) linear infinite; }
+.ir-track--reverse { animation-name: ir-run-reverse; }
+.ir-item { display: inline-block; margin-right: 2em; user-select: none; }
+@keyframes ir-run { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes ir-run-reverse { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) { .ir-track { animation: none; } }
 
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───
    Measured on ten routes: only Hanken Grotesk and Bodoni Moda ever render,
