@@ -11435,3 +11435,33 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 .nf404-btn--line:hover { background: #F4F4F5; }
 .nf404-btn:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .nf404-btn { transition: none; } }
+
+/* /checkout/success — 2026-09-27, after 21st.dev "Order Confirmation Card"
+   (kavikatiyar), Brad's pick of three: a centred card with the outcome's
+   icon, reference, status and one button; what happens next under it.
+   components/CheckoutResult.tsx. The page asks SumUp; it never reads the
+   outcome from the URL. */
+.cr-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.cr-icon { display: block; width: 48px; height: 48px; }
+[data-state="paid"] .cr-icon { color: #22C55E; }
+[data-state="refused"] .cr-icon { color: #DC2626; }
+[data-state="unknown"] .cr-icon { color: #71717A; }
+.cr-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 24px; border-radius: 6px; background: #0E0B0C; color: #fff; font-size: 14px; font-weight: 500; text-decoration: none; transition: background-color 150ms; }
+.cr-btn:hover { background: #2A2426; }
+.cr-btn--full { width: 100%; min-height: 48px; font-size: 15px; }
+.cr-a .cr-small-h { margin: 0 0 10px; font-size: 16px !important; font-weight: 600 !important; text-transform: none !important; letter-spacing: -0.01em !important; }
+.cr-a a:not(.cr-btn) { color: inherit; text-underline-offset: 3px; }
+
+/* A · Order Confirmation Card */
+.cr-a { display: flex; flex-direction: column; align-items: center; padding: 150px 16px 96px; }
+.cr-a-card { width: 100%; max-width: 440px; display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 32px; border: 1px solid #E4E4E7; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, .1), 0 4px 6px -4px rgba(0, 0, 0, .1); text-align: center; }
+.cr-a .cr-a-h { margin: 0; font-size: 26px !important; font-weight: 600 !important; text-transform: none !important; letter-spacing: -0.01em !important; }
+.cr-a-lede { margin: -8px 0 0; font-size: 14px; line-height: 1.6; color: #71717A; }
+.cr-a-rows { width: 100%; margin: 0; padding-top: 8px; display: grid; gap: 14px; }
+.cr-a-rows > div { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 14px; border-bottom: 1px solid #E4E4E7; font-size: 14px; color: #71717A; }
+.cr-a-rows > div:last-child { border-bottom: 0; padding-bottom: 0; }
+.cr-a-rows dd { margin: 0; color: #0E0B0C; font-weight: 500; }
+.cr-a-next { max-width: 440px; margin-top: 32px; font-size: 14px; line-height: 1.7; color: #52525B; }
+.cr-a-next p { margin: 0 0 10px; }
+
+@media (prefers-reduced-motion: reduce) { .cr-btn { transition: none; } }

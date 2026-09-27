@@ -216,6 +216,14 @@
         "A Not Found 404 Page (hirael)",
         "B Not Found 06 (shadcnui-blocks)"
       ]
+    },
+    "checkoutResult": {
+      "decided": "2026-09-27",
+      "layout": "After 21st.dev Order Confirmation Card (kavikatiyar): centred card, icon, title, reference, status, one button; next steps below",
+      "rejected": [
+        "B Ticket Confirmation Card (ravikatiyar162)",
+        "C Success Alert (cnippet-dev)"
+      ]
     }
   },
   "typography": {

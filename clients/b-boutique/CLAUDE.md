@@ -1239,3 +1239,18 @@ Brad picked **C of three built from real 21st.dev components: "not found 2"
 out at its foot with a CSS mask (still real text; the h1 is labelled "Page
 not found"), one line, "Go home" and "Explore" (to /clothing). The dark
 masthead and "Not on the rails." are gone. Next still sends the 404 status.
+
+## Payment result page — 2026-09-27
+
+/checkout/success: Brad picked **A of three built from real 21st.dev
+components: "Order Confirmation Card" (kavikatiyar)**; B "Ticket
+Confirmation Card" (ravikatiyar162) and C "Success Alert" (cnippet-dev) were
+the others. A centred card: the outcome's icon (green tick, red cross, grey
+clock), the title, the reference, the status, one button; what happens next
+under it. The words for all three outcomes live in
+`components/CheckoutResult.tsx` (`checkoutCopy`). The card shows **no amount
+and no barcode**: the page knows only the reference and SumUp's status, and
+says nothing it cannot back. The paid copy no longer promises to "ring"
+(the phone is optional): a piece that has gone is refunded straight away and
+the shop gets in touch, per her policy. The settling logic in the page is
+unchanged.
