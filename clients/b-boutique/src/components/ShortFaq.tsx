@@ -1,3 +1,4 @@
+import { FaqItem } from "@/components/FaqItem";
 import { faq } from "@/lib/faq";
 import { policyBySlug } from "@/lib/policies";
 import { shop } from "@/lib/shop";
@@ -11,8 +12,8 @@ import { sizeSummary } from "@/lib/stocklist";
  * answer that is itself written from the returns policy, sizes from the
  * stock list. So this cannot disagree with /delivery, /returns or /faq.
  *
- * Native <details>: keyboard, screen readers and find-in-page work with no
- * script, and the answers are in the HTML whether a row is open or not. */
+ * Each row is a native <details> (FaqItem), animated open and closed with
+ * the Web Animations API; the answers are in the HTML either way. */
 
 function block(heading: string): string {
   return policyBySlug("delivery")?.blocks.find((b) => b.heading === heading)?.body[0] ?? "";
@@ -38,13 +39,7 @@ export function ShortFaq() {
       <h2 id="sfq-h" className="sfq-title">Frequently asked questions</h2>
       <div className="sfq-list">
         {items.map((it) => (
-          <details key={it.q} className="sfq-item">
-            <summary className="sfq-q">
-              <span>{it.q}</span>
-              <span className="sfq-icon" aria-hidden="true" />
-            </summary>
-            <p className="sfq-a">{it.a}</p>
-          </details>
+          <FaqItem key={it.q} q={it.q} a={it.a} />
         ))}
       </div>
     </section>

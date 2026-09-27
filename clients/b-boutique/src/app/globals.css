@@ -10568,15 +10568,13 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 .sfq-icon { position: relative; flex: none; width: 12px; height: 12px; }
 .sfq-icon::before, .sfq-icon::after { content: ""; position: absolute; inset: 50% 0 auto; height: 1px; margin-top: -0.5px; background: currentColor; transition: rotate 300ms cubic-bezier(0.22, 1, 0.36, 1); }
 .sfq-icon::after { rotate: 90deg; }
-.sfq-item[open] .sfq-icon::after { rotate: 0deg; }
+.sfq-item[open]:not([data-open="false"]) .sfq-icon::after,
+.sfq-item[data-open="true"] .sfq-icon::after { rotate: 0deg; }
+/* FaqItem animates this wrapper's height; it clips while it moves. */
+.sfq-body { overflow: hidden; }
 .sfq-a { margin: 0; padding: 0 48px 22px 0; max-width: 72ch; font-size: 15px; line-height: 1.65; color: #3A3536; }
-@supports (interpolate-size: allow-keywords) {
-  .sfq-item { interpolate-size: allow-keywords; }
-  .sfq-item::details-content { height: 0; overflow: clip; transition: height 360ms cubic-bezier(0.22, 1, 0.36, 1), content-visibility 360ms allow-discrete; }
-  .sfq-item[open]::details-content { height: auto; }
-}
 @media (prefers-reduced-motion: reduce) {
-  .sfq-icon::before, .sfq-icon::after, .sfq-item::details-content { transition: none; }
+  .sfq-icon::before, .sfq-icon::after { transition: none; }
 }
 
 /* ── The footer is uncovered as the page scrolls away (2026-09-25, Brad:
@@ -10829,6 +10827,37 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .pay-marks { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
 .pay-marks img { display: block; width: 38px; height: 24px; border-radius: 3px; }
 .bk-cards.pay-marks { margin-top: 14px; }
+
+/* Shop owner, desktop only (2026-09-27, Brad: the phone layout "looks fine",
+   the desktop one did not fill the page). Her words lead, set large in the
+   serif with an opening quote mark; her name follows as a signature, then
+   the second paragraph and the contact link; the photograph, unchanged,
+   stands to the right. display: contents lets the existing markup sit in
+   one grid without changing what a phone gets. */
+@media (min-width: 1024px) {
+  .owner-body, .owner-details, .owner-bio { display: contents; }
+  .owner-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 420px);
+    column-gap: clamp(56px, 7vw, 120px);
+    align-items: center;
+  }
+  .owner-portrait { grid-column: 2; grid-row: 1 / span 4; width: 100%; max-width: none; }
+  .owner-bio-text:first-child {
+    grid-column: 1; grid-row: 1; margin: 0; max-width: 24ch;
+    font-family: "Bodoni Moda", Georgia, serif; font-weight: 400;
+    font-size: clamp(32px, 3.2vw, 48px); line-height: 1.18; letter-spacing: -0.005em;
+    color: var(--bb-black);
+  }
+  .owner-bio-text:first-child::before {
+    content: "\201C"; display: block; font-size: 1.9em; line-height: 0.6; margin-bottom: 0.12em;
+  }
+  .owner .owner-name { grid-column: 1; grid-row: 2; margin-top: clamp(24px, 2.4vw, 36px); font-size: 26px !important; line-height: 1.2 !important; }
+  .owner-name br { display: none; }
+  .owner-name .owner-surname::before { content: " "; }
+  .owner-bio-text + .owner-bio-text { grid-column: 1; grid-row: 3; margin: 18px 0 0; max-width: 52ch; }
+  .owner-details .owner-cta { grid-column: 1; grid-row: 4; margin-top: 28px; justify-self: start; }
+}
 
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───
    Measured on ten routes: only Hanken Grotesk and Bodoni Moda ever render,
