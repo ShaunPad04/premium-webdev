@@ -31,7 +31,7 @@ export default function BagPage() {
         <section className="page-section bag-page" aria-labelledby="bag-h1">
           <div className="page-inner">
             <h1 id="bag-h1" className="bk-title">
-              Your <em>bag</em>
+              Your bag
             </h1>
             <Bag />
           </div>

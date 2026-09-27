@@ -183,6 +183,17 @@
         "B Three framed cards",
         "C Centred, email set huge"
       ]
+    },
+    "bag": {
+      "decided": "2026-09-27",
+      "layout": "After 21st.dev Checkout Block (preetsuthar17): bold title, steps, bordered cards with large section titles, summary card with green saving strip and trust box; CSS only over Bag.tsx",
+      "rejected": [
+        "A Interactive Checkout (kokonutd)",
+        "B Checkout Form (ruixen.ui)",
+        "Framed",
+        "Dark summary",
+        "Receipt"
+      ]
     }
   },
   "typography": {

@@ -1204,3 +1204,17 @@ by email" tag; beside it the email, Instagram and "Visit the shop" as pills,
 then the unchanged `ContactForm` and its privacy line. The dark masthead and
 the two-pane card are gone (its CSS with them). The ribbon band and Visit
 stay. The meta description said "Call" and now says "Email".
+
+## Bag — 2026-09-27
+
+Two rounds. Brad turned down three in-house restyles (framed, dark summary,
+receipt), then picked **C of three built from real 21st.dev components**
+(fetched with get_component and matched): **"Checkout Block"**
+(preetsuthar17). A "Interactive Checkout" (kokonutd) and B "Checkout Form"
+(ruixen.ui) were the others. On /bag: a bold sentence-case "Your bag", the
+numbered steps, the pieces and delivery each in a bordered 10px card with a
+20px section title, the summary a bordered card with the sale saving in a
+green strip and the three reassurances in their own box. **CSS only**
+(`.bag-page` rules at the end of globals.css): pricing, delivery, holds and
+the SumUp handover in `Bag.tsx` are untouched. Always label option sheets
+A / B / C with the letter large on each (Brad could not tell them apart).
