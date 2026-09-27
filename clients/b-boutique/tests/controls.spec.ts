@@ -22,7 +22,7 @@ test('a New Arrivals size is a switch and rides on the link', async ({ page }) =
 
 test('Up close: three fabrics, each linking to its piece', async ({ page }) => {
   await page.goto('/', { waitUntil: 'networkidle' });
-  const links = page.locator('.scw .scw-link');
+  const links = page.locator('.scw .scw-spec-link');
   await expect(links).toHaveCount(3);
   expect(await links.evaluateAll((as) => as.map((a) => a.getAttribute('href')))).toEqual([
     '/shop/cosy-hooded-boucle-coat',

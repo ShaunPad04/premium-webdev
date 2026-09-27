@@ -192,3 +192,11 @@ export function parseSizeCounts(
   if (counts.length === 0) return { ok: false, reason: "nothing readable" };
   return { ok: true, counts };
 }
+
+/** Where in a product photograph a colour swatch crops: the garment's own
+ *  fabric, off the zip line. Measured on the catalogue's photos: chest-left
+ *  for tops, knits and coats; the thigh for trousers; the object's centre
+ *  for homeware. Shared by the product page and the New In slides. */
+export function swatchPosition(category: string): string {
+  return category === "Homeware" ? "50% 50%" : category === "Trousers" ? "44% 64%" : category === "Skirts" ? "47% 52%" : "44% 32%";
+}

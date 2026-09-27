@@ -8,7 +8,7 @@ import type { Product } from "@/lib/catalogue";
 import { MAX_QTY, useCart } from "@/lib/useCart";
 import { SizeGuide } from "./SizeGuide";
 import { shop } from "@/lib/shop";
-import { colourIsKnown, coloursFor, variantId } from "@/lib/variants";
+import { colourIsKnown, coloursFor, swatchPosition, variantId } from "@/lib/variants";
 import { useColour } from "./ColourChoice";
 
 /* Colour, size, then add.
@@ -130,12 +130,7 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
 
   const chosenOut = size !== null && sizeOut(size);
 
-  /* Where in the photograph the swatch crops: the garment's own fabric, off
-     the zip line. Measured on the catalogue's photos: chest-left for tops,
-     knits and coats; the thigh for trousers; the object's centre for
-     homeware. */
-  const swatchAt =
-    product.category === "Homeware" ? "50% 50%" : product.category === "Trousers" ? "44% 64%" : product.category === "Skirts" ? "47% 52%" : "44% 32%";
+  const swatchAt = swatchPosition(product.category);
 
   /* The one add both buttons use: refuses, with a message, until a colour
      (where there is a choice) and a size are chosen. */

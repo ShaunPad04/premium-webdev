@@ -15,7 +15,6 @@ const ROUTES = [
   '/homeware',
   '/about',
   '/contact',
-  '/faq',
   '/shop/fair-isle-jumper',
   /* One whose price is still a placeholder: it renders a different control
      path (no bag button, an email link instead) and that path needs auditing

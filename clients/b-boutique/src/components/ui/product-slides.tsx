@@ -41,6 +41,9 @@ export type ProductVariant = {
   image: ReactNode;
   /** A small version for the switches; falls back to a plain chip. */
   thumb?: ReactNode;
+  /** A round swatch instead: this image, cropped at `at` (a
+   *  background-position), as on the product page. */
+  swatch?: { src: string; at: string };
 };
 
 export type ProductSlide = {
@@ -323,16 +326,29 @@ export function ProductSlides({ slides, label, loop = true, initial = 0, ctaLabe
               {variants.length > 1 && (
                 <div className="ps-colours" role="group" aria-label="Colour">
                   {variants.map((x, i) => (
-                    <button
-                      key={x.label}
-                      type="button"
-                      className="ps-colour"
-                      aria-pressed={i === variant}
-                      onClick={() => setVariant(i)}
-                    >
-                      {x.thumb && <span className="ps-colour-thumb" aria-hidden="true">{x.thumb}</span>}
-                      {x.label}
-                    </button>
+                    x.swatch ? (
+                      <button
+                        key={x.label}
+                        type="button"
+                        className="ps-swatch"
+                        aria-pressed={i === variant}
+                        aria-label={x.label}
+                        title={x.label}
+                        onClick={() => setVariant(i)}
+                        style={{ backgroundImage: `url(${x.swatch.src})`, backgroundPosition: x.swatch.at }}
+                      />
+                    ) : (
+                      <button
+                        key={x.label}
+                        type="button"
+                        className="ps-colour"
+                        aria-pressed={i === variant}
+                        onClick={() => setVariant(i)}
+                      >
+                        {x.thumb && <span className="ps-colour-thumb" aria-hidden="true">{x.thumb}</span>}
+                        {x.label}
+                      </button>
+                    )
                   ))}
                 </div>
               )}

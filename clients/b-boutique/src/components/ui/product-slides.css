@@ -200,3 +200,38 @@
 @media (prefers-reduced-motion: reduce) {
   .ps-img, .ps-thumb, .ps-colour, .ps-size, .ps-cta { transition: none; }
 }
+
+/* Size and colour as on the product page (2026-09-27, Brad): rounded size
+   pills, and round swatches filled with a crop of the colourway's own
+   photograph. Same measurements as `.atb .atb-size` and `.atb-swatch` in
+   globals.css; only these two controls changed in this section. */
+.ps-sizes { gap: 8px; }
+.ps-size {
+  min-width: 56px;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--ps-line);
+  border-radius: 10px;
+  background: #FFFFFF;
+  color: var(--ps-ink);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.ps-colours { gap: 10px; margin-top: 16px; }
+.ps-swatch {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: #EDEDED;
+  background-size: 900%;
+  box-shadow: 0 0 0 1px var(--ps-line);
+  cursor: pointer;
+  transition: box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1), transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ps-swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3px var(--ps-ink); }
+@media (hover: hover) and (pointer: fine) { .ps-swatch:hover { transform: scale(1.06); } }
+.ps-swatch:focus-visible { outline: 2px solid var(--ps-ink); outline-offset: 5px; }
+@media (prefers-reduced-motion: reduce) { .ps-swatch { transition: none; } }

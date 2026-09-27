@@ -9,6 +9,7 @@
  * (?size=, 2026-09-26, Brad), where Add to bag is. */
 import { newIn } from "@/lib/shop";
 import { stocklist } from "@/lib/stocklist";
+import { swatchPosition } from "@/lib/variants";
 import { ProductPhoto } from "@/components/ProductPhoto";
 import { Price } from "@/components/Price";
 import { RevealText } from "@/components/RevealText";
@@ -40,7 +41,16 @@ export function NewInSlides() {
       sizes: stock ? [...stock.sizes] : undefined,
       href: `/shop/${piece.slug}`,
       image: photo(piece.photo),
-      variants: ways.length > 1 ? ways.map((c) => ({ label: c.colour, image: photo(c.image), thumb: photo(c.image, "40px") })) : undefined,
+      /* Swatches as on the product page: a crop of each colourway's own
+         photograph, positioned on the fabric (2026-09-27, Brad). */
+      variants: ways.length > 1
+        ? ways.map((c) => ({
+            label: c.colour,
+            image: photo(c.image),
+            thumb: photo(c.image, "40px"),
+            swatch: { src: `/img/product/${c.image}-640.jpg`, at: swatchPosition(piece.category) },
+          }))
+        : undefined,
     };
   });
 

@@ -10,7 +10,7 @@ import { absolute } from "@/lib/site";
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages = [
     "/", "/clothing", "/homeware", "/about", "/contact",
-    "/faq", "/delivery", "/returns", "/privacy", "/terms",
+    "/delivery", "/returns", "/privacy", "/terms",
   ];
   return [
     ...pages.map((p) => ({ url: absolute(p), priority: p === "/" ? 1 : 0.6 })),

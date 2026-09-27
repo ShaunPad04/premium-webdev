@@ -29,6 +29,9 @@ const nextConfig: NextConfig = {
          can come back without a cached redirect in the way. Product pages
          under /shop/[slug] are untouched. */
       { source: "/shop", destination: "/clothing", permanent: false },
+      /* /faq came out on 2026-09-27 (Brad): every question is on the home
+         page now, above the footer. Temporary, for the same reason. */
+      { source: "/faq", destination: "/#faq", permanent: false },
       /* The vercel.app address serves the same site as the real domain. The
          canonical tag already names bboutiqueclee.com; this makes it the only
          address a browser or crawler ends up on. Preview deployments have

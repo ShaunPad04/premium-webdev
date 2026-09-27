@@ -35,7 +35,8 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
  * Taken off the home page, not deleted: the Homeware band (the category row
  * has a Homeware tile), the delivery/returns/visit strip (delivery is in the
  * announcement bar and the bag, the visit is the section below it) and the
- * FAQ, which is its own page at /faq. The cinematic statement scene it
+ * long FAQ (the full one is back above the footer since 2026-09-27, when
+ * /faq came out). The cinematic statement scene it
  * replaced showed each piece three times with four full buy blocks. */
 export default function Home() {
   return (
@@ -66,7 +67,7 @@ export default function Home() {
         </div>
       </main>
       <SocialStrip />
-      <ShortFaq />
+      <ShortFaq all />
       <Footer />
     </>
   );

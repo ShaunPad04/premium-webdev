@@ -10035,22 +10035,12 @@ h2.why-h em { font-style: italic; }
 .why-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 14px; }
 @media (min-width: 1024px) { .why-list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(20px, 2vw, 32px); } }
 .why-item { display: flex; flex-direction: column; }
-.why-media { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 4px; background: #E9E5DF; margin-bottom: 18px; }
+.why-media { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 16px; background: #E9E5DF; margin-bottom: 18px; }
 .why-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 900ms cubic-bezier(0.16, 1, 0.3, 1); }
 .why-item:hover .why-img { scale: 1.04; }
 .why-num { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; color: rgba(14, 11, 12, 0.6); }
 h3.why-title { margin: 8px 0 6px; font-family: var(--font-display), Georgia, serif; font-size: clamp(20px, 1.7vw, 26px); line-height: 1.15; font-weight: 400; text-transform: none; letter-spacing: 0; }
 .why-text { margin: 0; font-size: 14px; line-height: 1.55; color: rgba(14, 11, 12, 0.72); max-width: 32ch; }
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .why-list { view-timeline-name: --why; view-timeline-axis: block; }
-    .why-media { animation: why-open linear both; animation-timeline: --why; animation-range: entry calc(5% + var(--n, 0) * 6%) cover calc(35% + var(--n, 0) * 5%); }
-  }
-}
-@keyframes why-open {
-  from { clip-path: inset(100% 0 0 0); }
-  to { clip-path: inset(0 0 0 0); }
-}
 @media (prefers-reduced-motion: reduce) { .why-img { transition: none; } }
 
 /* Visit, second pass to Brad's mock (2026-09-24): rows are label left, value
@@ -10818,6 +10808,58 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 @media (max-width: 1023px) and (prefers-reduced-motion: reduce) {
   .cats-rail { transition: none; }
 }
+
+/* Why B Boutique moves across as the page scrolls (2026-09-27, Brad;
+   ScrollAcross.tsx). Only while the track is live, which it is not under
+   reduced motion: then the grid above stands as it was. The section holds
+   for exactly as long as the row takes to cross. Cards are sized to the
+   screen's height as well as its width, so a card and its words always
+   fit inside the held screen. */
+.why:has([data-across-track]) { padding-block: 0; }
+[data-across-track] .across-pin {
+  position: sticky; top: 0; height: 100svh; overflow: hidden;
+  display: flex; align-items: center; padding-top: 64px;
+}
+[data-across-track] .why-inner { width: 100%; }
+[data-across-track] .why-list {
+  --why-card: min(76vw, calc((100svh - 340px) * 0.8));
+  display: flex; flex-wrap: nowrap; gap: 16px; will-change: transform;
+}
+@media (min-width: 1024px) {
+  [data-across-track] .why-list { --why-card: min(34vw, calc((100svh - 380px) * 0.8)); gap: clamp(20px, 2vw, 32px); }
+}
+[data-across-track] .why-item { flex: 0 0 var(--why-card); }
+
+/* Up close: the eyebrow in ink, not red (2026-09-27, the specimen plan:
+   no accent colour in the editorial sections). */
+.ucs2 .ucs-eyebrow { color: rgba(14, 11, 12, 0.72); }
+
+/* "Still have a question?" under the FAQ (2026-09-27, Brad's reference):
+   a black band, the one statement moment in this section, with the button
+   in white. Stacks on a phone. */
+.sfq-more {
+  max-width: 960px; margin: clamp(32px, 4vw, 48px) auto 0; padding: 18px 20px;
+  display: flex; align-items: center; gap: 16px; text-align: left;
+  background: #0E0B0C; color: #FFFFFF; border-radius: 18px;
+}
+.sfq-more-icon { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #FFFFFF; color: #0E0B0C; }
+.sfq-more-text { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+.sfq-more-title { font-size: 16px; font-weight: 600; }
+.sfq-more-sub { font-size: 14px; color: rgba(255, 255, 255, 0.72); }
+.sfq-more-cta {
+  flex: none; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 20px;
+  border-radius: 999px; background: #FFFFFF; color: #0E0B0C; font-size: 14px; font-weight: 600; text-decoration: none;
+  transition: background-color 200ms ease;
+}
+.sfq-more-cta svg { transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+.sfq-more-cta:hover { background: #EDEDED; }
+.sfq-more-cta:hover svg, .sfq-more-cta:focus-visible svg { transform: translateX(3px); }
+.sfq-more-cta:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+@media (max-width: 599px) {
+  .sfq-more { flex-wrap: wrap; }
+  .sfq-more-cta { width: 100%; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) { .sfq-more-cta svg { transition: none; } }
 
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───
    Measured on ten routes: only Hanken Grotesk and Bodoni Moda ever render,

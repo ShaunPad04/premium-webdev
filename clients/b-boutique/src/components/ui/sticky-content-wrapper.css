@@ -44,3 +44,52 @@ h3.scw-h {
   h3.scw-h { font-size: clamp(28px, 7vw, 40px); margin-bottom: 10px; }
   .scw-p { font-size: 14.5px; margin-bottom: 10px; }
 }
+
+/* ── Material specimen (2026-09-27, Brad: "looks unfinished", "about 5
+   different fonts"). Four text roles only: the label (small caps), the
+   section title (the site's h2), the display name (the serif) and body.
+   Three bands on a desktop: the header at the top, the fabric centred in
+   the middle, the index at the foot, so the panel has no empty half. */
+.scw-label { margin: 0; font: 600 11px/1.4 var(--font-body), sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: var(--scw-muted); }
+.scw-kicker { margin-bottom: 14px; }
+.scw .scw-p { font-size: 16px; line-height: 1.6; max-width: 40ch; }
+.scw-specs { width: 100%; max-width: 440px; margin: 10px 0 0; border-top: 1px solid rgba(14, 11, 12, 0.14); }
+.scw-spec { display: grid; grid-template-columns: 96px 1fr; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid rgba(14, 11, 12, 0.14); }
+.scw-spec dd { margin: 0; font-size: 16px; line-height: 1.5; color: var(--scw-ink); }
+.scw-spec-link { display: inline-flex; align-items: center; gap: 8px; color: var(--scw-ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; text-decoration-color: rgba(14, 11, 12, 0.3); transition: text-decoration-color 200ms ease; }
+.scw-spec-link svg { width: 14px; height: 14px; flex: none; transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+.scw-spec-link:hover, .scw-spec-link:focus-visible { text-decoration-color: currentColor; }
+.scw-spec-link:hover svg, .scw-spec-link:focus-visible svg { transform: translateX(3px); }
+.scw-spec-link:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+
+.scw-index { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 28px; margin: 0; padding: 16px 0 0; border-top: 1px solid rgba(14, 11, 12, 0.14); }
+.scw-index-btn { min-height: 32px; padding: 0; border: 0; background: none; cursor: pointer; color: rgba(14, 11, 12, 0.64); transition: color 300ms ease; } /* 0.64 ink on #F7F7F5 is about 5.6:1 */
+.scw-index-btn span { margin-right: 6px; }
+.scw-index-btn[aria-current="true"] { color: var(--scw-ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+.scw-index-btn:hover { color: var(--scw-ink); }
+.scw-index-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { .scw-index-btn, .scw-spec-link svg { transition: none; } }
+
+@media (min-width: 1026px) {
+  .scw-content { justify-content: center; }
+}
+@media (max-width: 1025px) {
+  .scw-kicker { margin-bottom: 6px; }
+  .scw .scw-p { font-size: 15px; margin-bottom: 4px; }
+  .scw-spec { grid-template-columns: 78px 1fr; padding: 9px 0; }
+  .scw-spec dd { font-size: 14.5px; }
+  /* No room under the words on a phone or tablet; the 01 / 03 counter
+     already says where you are. */
+  .scw-index { display: none; }
+}
+/* Short phones (an iPhone SE is 667 tall): the longest care line ran past
+   the panel. Tighter type there only. */
+@media (max-width: 1025px) and (max-height: 740px) {
+  .scw-head { margin-bottom: 8px; }
+  .scw-kicker { margin-bottom: 2px; }
+  h3.scw-h { font-size: 26px; margin-bottom: 6px; }
+  .scw .scw-p { font-size: 13.5px; line-height: 1.5; }
+  .scw-specs { margin-top: 4px; }
+  .scw-spec { padding: 6px 0; gap: 10px; grid-template-columns: 70px 1fr; }
+  .scw-spec dd { font-size: 13px; line-height: 1.4; }
+}

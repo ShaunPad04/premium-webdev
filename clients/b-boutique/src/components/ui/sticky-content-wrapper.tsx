@@ -23,14 +23,21 @@
  *     ScrollTrigger is kept in step with it. */
 
 import Link from "next/link";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import "./sticky-content-wrapper.css";
 
 export type StickySource = { type: string; srcSet: string };
 
+export type StickySpec = { label: string; value: string; href?: string; srText?: string };
+
 export type StickyContentItem = {
   heading: string;
+  /** A small line above the heading, e.g. "01 / 03". */
+  kicker?: string;
+  /** A ruled spec sheet under the words: label left, value right. A value
+   *  with an `href` is a link. */
+  specs?: StickySpec[];
   paragraphs?: string[];
   list?: string[];
   link?: { href: string; text: string; srText?: string };
@@ -46,6 +53,10 @@ type Props = {
   labelledBy?: string;
   /** `sizes` for the photographs. */
   sizes?: string;
+  /** Short names, one per item, shown as an index at the foot of the words
+   *  in place of the scroll hint. The current one is marked; each jumps to
+   *  its step. */
+  index?: string[];
   className?: string;
   contentEnterYPercent?: number;
   contentExitYPercent?: number;
@@ -64,6 +75,7 @@ export function StickyContentWrapper({
   header,
   labelledBy,
   sizes = "50vw",
+  index,
   className = "",
   contentEnterYPercent = 2,
   contentExitYPercent = -2,
@@ -78,6 +90,7 @@ export function StickyContentWrapper({
   const contents = useRef<(HTMLDivElement | null)[]>([]);
   const images = useRef<(HTMLDivElement | null)[]>([]);
   const n = items.length;
+  const [active, setActive] = useState(0);
 
   useEffect(() => {
     const el = section.current;
@@ -112,6 +125,7 @@ export function StickyContentWrapper({
             start: "top top",
             end: "bottom bottom",
             scrub: 1,
+            onUpdate: (self) => setActive(Math.round(self.progress * (n - 1))),
             snap: n > 1
               ? {
                   snapTo: Array.from({ length: n }, (_, i) => i / (n - 1)),
@@ -162,6 +176,18 @@ export function StickyContentWrapper({
     };
   }, [n, contentEnterYPercent, contentExitYPercent, contentTransitionDuration, contentDelay, stepGap, initialImageScale, activeImageScale, exitImageScale]);
 
+  /* The section's steps are evenly spaced through its scroll, so step i
+     sits at i/(n-1) of the way from its top to its bottom. */
+  const go = (i: number) => {
+    const el = section.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    const y = top + (n > 1 ? (i / (n - 1)) * (el.offsetHeight - window.innerHeight) : 0);
+    const lenis = (window as Window & { __lenis?: { scrollTo?: (y: number) => void } }).__lenis;
+    if (lenis?.scrollTo) lenis.scrollTo(y);
+    else window.scrollTo({ top: y, behavior: "smooth" });
+  };
+
   if (n === 0) return null;
 
   return (
@@ -177,8 +203,27 @@ export function StickyContentWrapper({
               className="scw-content absolute inset-0"
               style={i === 0 ? undefined : { opacity: 0, visibility: "hidden" }}
             >
+              {item.kicker ? <p className="scw-label scw-kicker">{item.kicker}</p> : null}
               <h3 className="scw-h">{item.heading}</h3>
               {item.paragraphs?.map((p) => <p key={p.slice(0, 24)} className="scw-p">{p}</p>)}
+              {item.specs?.length ? (
+                <dl className="scw-specs">
+                  {item.specs.map((sp) => (
+                    <div key={sp.label} className="scw-spec">
+                      <dt className="scw-label">{sp.label}</dt>
+                      <dd>
+                        {sp.href ? (
+                          <Link href={sp.href} className="scw-spec-link">
+                            {sp.value}
+                            {sp.srText ? <span className="sr-only">{sp.srText}</span> : null}
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                          </Link>
+                        ) : sp.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : null}
               {item.list?.length ? (
                 <ul className="scw-list">
                   {item.list.map((li) => <li key={li}>{li}</li>)}
@@ -198,14 +243,26 @@ export function StickyContentWrapper({
             </div>
           ))}
           </div>
-          <div className="scw-hint" aria-hidden="true">
-            <span>Scroll</span>
-            <svg width="20" height="28" viewBox="0 0 20 28" fill="none">
-              <polyline className="scw-chev scw-chev1" points="2,2 10,9 18,2" />
-              <polyline className="scw-chev scw-chev2" points="2,10 10,17 18,10" />
-              <polyline className="scw-chev scw-chev3" points="2,18 10,25 18,18" />
-            </svg>
-          </div>
+          {index?.length ? (
+            <ol className="scw-index" aria-label="Materials">
+              {index.map((name, i) => (
+                <li key={name}>
+                  <button type="button" className="scw-label scw-index-btn" aria-current={i === active ? "true" : undefined} onClick={() => go(i)}>
+                    <span aria-hidden="true">{String(i + 1).padStart(2, "0")}</span> {name}
+                  </button>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div className="scw-hint" aria-hidden="true">
+              <span>Scroll</span>
+              <svg width="20" height="28" viewBox="0 0 20 28" fill="none">
+                <polyline className="scw-chev scw-chev1" points="2,2 10,9 18,2" />
+                <polyline className="scw-chev scw-chev2" points="2,10 10,17 18,10" />
+                <polyline className="scw-chev scw-chev3" points="2,18 10,25 18,18" />
+              </svg>
+            </div>
+          )}
         </div>
 
         <div className="scw-right relative h-full w-1/2 overflow-hidden max-[1025px]:mt-[calc(72px+3svh)] max-[1025px]:h-[37%] max-[1025px]:w-full">

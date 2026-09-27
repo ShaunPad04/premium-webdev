@@ -1,4 +1,5 @@
 import { formatPriceShort, FREE_DELIVERY_OVER_P } from "@/lib/catalogue";
+import { ScrollAcross } from "@/components/ScrollAcross";
 
 /* Why B Boutique (2026-09-24, Brad asked for a "why choose us" strip in
  * place of a journal with nothing in it yet).
@@ -15,7 +16,10 @@ import { formatPriceShort, FREE_DELIVERY_OVER_P } from "@/lib/catalogue";
  * shop or her stock, and none is captioned as if it were; they are
  * decorative (alt=""), and the words carry the meaning. The delivery image
  * was a black gift box until 2026-09-24, when Brad confirmed orders do not
- * come in one; it is now plain postal packaging. */
+ * come in one; it is now plain postal packaging.
+ *
+ * Scrolling down through the section moves the four across, right to left,
+ * while the section holds still (2026-09-27, Brad; ScrollAcross). */
 const POINTS = [
   { img: "hand", title: "Chosen by hand", text: "Every piece on the rails is chosen by hand, one at a time." },
   { img: "one", title: "Mostly one of one", text: "Most pieces here are one of one, so yours won't be on everyone else." },
@@ -28,6 +32,7 @@ const set = (n: string, ext: string) => `/img/why/${n}-640.${ext} 640w, /img/why
 export function WhyUs() {
   return (
     <section className="why" aria-labelledby="why-h">
+      <ScrollAcross className="why-track">
       <div className="why-inner">
         <div className="why-head">
           <p className="label why-eyebrow">Why B Boutique</p>
@@ -35,13 +40,13 @@ export function WhyUs() {
             A shop, <em>not a warehouse.</em>
           </h2>
         </div>
-        <ol className="why-list">
+        <ol className="why-list" data-across>
           {POINTS.map((p, i) => (
             <li key={p.img} className="why-item" style={{ "--n": i } as React.CSSProperties}>
               <span className="why-media">
                 <picture>
-                  <source type="image/avif" srcSet={set(p.img, "avif")} sizes="(min-width: 1024px) 23vw, 46vw" />
-                  <source type="image/webp" srcSet={set(p.img, "webp")} sizes="(min-width: 1024px) 23vw, 46vw" />
+                  <source type="image/avif" srcSet={set(p.img, "avif")} sizes="(min-width: 1024px) 34vw, 76vw" />
+                  <source type="image/webp" srcSet={set(p.img, "webp")} sizes="(min-width: 1024px) 34vw, 76vw" />
                   <img src={`/img/why/${p.img}-640.jpg`} alt="" width={896} height={1120} loading="lazy" decoding="async" className="why-img" />
                 </picture>
               </span>
@@ -52,6 +57,7 @@ export function WhyUs() {
           ))}
         </ol>
       </div>
+      </ScrollAcross>
     </section>
   );
 }
