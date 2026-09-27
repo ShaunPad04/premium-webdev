@@ -122,6 +122,15 @@
         "Silver pill card",
         "Two-routes card"
       ]
+    },
+    "footer": {
+      "decided": "2026-09-27",
+      "layout": "Centred: B mark, address and hours, one line of links, email and social marks, legal row (21st.dev \"Animated Footer Section\")",
+      "rejected": [
+        "A: black sign-off with the name huge across the foot",
+        "B: the email address set large",
+        "Previous: four-column wave footer"
+      ]
     }
   }
 }

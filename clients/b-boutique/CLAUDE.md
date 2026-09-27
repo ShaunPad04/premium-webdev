@@ -1091,3 +1091,20 @@ line and without "Still have a question?" itself. What is left is one black
 "Ask us anything" button to /contact under the questions. `shortFaqItems()` is exported from `ShortFaq.tsx` so the question
 list has one source.
 
+## Footer — 2026-09-27
+
+Brad picked **C, Centred** of three 21st-ui-explore directions (A a black
+sign-off with "B Boutique" huge across the foot, B the email address set
+large), after 21st.dev "Animated Footer Section". `ui/animated-wave-footer.tsx`
+(name historical; the waves are gone): the B mark, address and hours, one
+line of links, the email and social marks, then the buying-online links,
+payments and the credit. About half the old height on a phone. It keeps
+`footer.wf` and `.wf-inner`, which the desktop scroll reveal hangs off.
+
+**Scroll fix, same day.** The page stopped at the Reviews on desktop: Lenis
+measured `<html>`, which is `h-full` and never changes size, so its resize
+observer never fired when the Up close roll added its pinned scroll room
+after load, and it kept the old, shorter limit. `SmoothScroll.tsx` now
+passes `content: document.body`. Measured: wheel reaches the bottom on the
+home page and /contact at 1440 and 390.
+

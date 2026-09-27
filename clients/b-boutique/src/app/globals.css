@@ -11582,3 +11582,28 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 .em-sub { margin: 4px 0 0; font-size: 13px; color: rgba(14, 11, 12, 0.72); font-variant-numeric: tabular-nums; }
 .em-line { height: 1px; margin-top: 10px; background: linear-gradient(to right, #0E0B0C, rgba(14, 11, 12, 0)); transform-origin: left; }
 .em-hint { margin: 10px 0 0; font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(14, 11, 12, 0.64); }
+
+/* The footer, centred (2026-09-27, Brad picked C of three; see
+   ui/animated-wave-footer.tsx). White, everything on the centre line. */
+.fc { color: #0E0B0C; }
+.fc-inner { text-align: center; }
+@media (min-width: 1024px) { .fc-inner { padding-top: clamp(72px, 7vw, 104px); } }
+.fc ul { list-style: none; margin: 0; padding: 0; }
+.fc-logo-link { display: inline-block; color: #0E0B0C; }
+.fc-logo { display: block; width: 64px; height: auto; }
+.fc-where { margin: 14px 0 26px; font-size: 14px; line-height: 1.6; color: #3A3536; }
+.fc-where span { display: block; }
+@media (min-width: 768px) { .fc-where span { display: inline; } .fc-where span + span::before { content: " \00B7\00A0"; } }
+.fc-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 26px; font-size: 15px; }
+.fc-link { display: inline-block; padding-block: 6px; color: inherit; text-decoration: none; background: linear-gradient(currentColor, currentColor) 50% calc(100% - 4px) / 0 1px no-repeat; transition: background-size 350ms cubic-bezier(0.22, 1, 0.36, 1); }
+.fc-link:hover, .fc-link:focus-visible { background-size: 100% 1px; }
+.fc-social { display: flex; justify-content: center; gap: 8px; margin-top: 26px !important; }
+.fc-social-btn { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(14, 11, 12, 0.18); color: #0E0B0C; transition: background-color 200ms ease, color 200ms ease; }
+.fc-social-btn svg { width: 18px; height: 18px; }
+.fc-social-btn:hover { background: #0E0B0C; color: #FFFFFF; }
+.fc a:focus-visible, .fc button:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 3px; }
+.fc-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 24px; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(14, 11, 12, 0.14); font-size: 13px; color: rgba(14, 11, 12, 0.72); }
+.fc-meta p { margin: 0; }
+.fc-legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 20px; }
+.fc-meta .ft-top-btn { color: inherit; }
+@media (prefers-reduced-motion: reduce) { .fc-link, .fc-social-btn { transition: none; } }
