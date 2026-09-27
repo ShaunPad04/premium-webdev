@@ -44,6 +44,8 @@ export default function AboutPage() {
         <div className="hs">
           <section className="hs-hero" aria-labelledby="hs-title">
             <picture>
+              {/* Phones: no hero panel (Brad, 2026-09-27: "looks odd"), so no download either. */}
+              <source media="(max-width: 767px)" srcSet="data:image/gif;base64,R0lGODlhAQABAAAAACw=" />
               <source type="image/avif" srcSet="/img/about/shopfront-640.avif 640w, /img/about/shopfront-1024.avif 1024w" sizes="100vw" />
               <img src={src(shopfront)} alt={shopfront.alt} fetchPriority="high" />
             </picture>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { MagneticButtons } from "@/components/MagneticButtons";
 import { PageTransition } from "@/components/PageTransition";
 import { AddedToast } from "@/components/AddedToast";
-import { Hanken_Grotesk } from "next/font/google";
+import { Bodoni_Moda, Hanken_Grotesk } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
@@ -41,6 +41,16 @@ import "./type.css";
  * serif is kept for sub-headings and product names: see type.css.
  * Since 2026-09-27 (Brad) Hanken is the only typeface and Bodoni is no
  * longer loaded; --font-display points at Hanken in type.css. */
+
+/* Bodoni Moda, for the hero's "B Boutique" and nothing else (Brad,
+   2026-09-27). One weight, upright only. */
+const heroName = Bodoni_Moda({
+  variable: "--font-hero-name",
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal"],
+  display: "swap",
+});
 
 const body = Hanken_Grotesk({
   variable: "--font-body",
@@ -196,7 +206,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-GB"
-      className={`${body.variable} h-full antialiased`}
+      className={`${heroName.variable} ${body.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bone text-onyx">
         {/* Every forward navigation lands at the top of the new page; back

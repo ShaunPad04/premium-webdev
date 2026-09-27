@@ -2825,6 +2825,14 @@ body {
   .hs-hero-d, .hs-over { left: 36px; bottom: 36px; }
 }
 
+/* Phones: the hero panel goes (Brad, 2026-09-27: "on mobile it looks
+   odd"); its h1 stays for screen readers, and Hayley opens the page. */
+@media (max-width: 767px) {
+  .hs-hero { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .hs .hs-owner { margin-top: 0; }
+  .hs { padding-top: 140px; }
+}
+
 /* Hayley: portrait panel with the name on it, her words beside. */
 .hs-owner { display: grid; gap: 28px; margin-top: clamp(64px, 8vw, 112px); align-items: center; }
 .hs-panel { position: relative; overflow: hidden; border-radius: 14px; background: #3F3F41; }
@@ -11533,3 +11541,20 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
   .vxb-info .vxb-list { width: 100%; }
   .vxb-info .vxb-go { align-self: center; }
 }
+
+/* Footer: every hoverable thing moves (Brad, 2026-09-27). Transforms only;
+   none under reduced motion. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .fc-logo-link { transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .fc-logo-link:hover { transform: scale(1.08) rotate(-3deg); }
+  .fc-link { transition: background-size 350ms cubic-bezier(0.22, 1, 0.36, 1), transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .fc-link:hover { transform: translateY(-2px); }
+  .fc-social-btn { transition: background-color 200ms ease, color 200ms ease, transform 350ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .fc-social-btn:hover { transform: translateY(-4px); }
+  .fc-social-btn svg { transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .fc-social-btn:hover svg { transform: scale(1.12); }
+}
+
+/* The hero's "B Boutique" alone keeps the serif (Brad, 2026-09-27): Bodoni
+   Moda 400 is loaded for this one line (layout.tsx, --font-hero-name). */
+.hx-c .hx-name { font-family: var(--font-hero-name), Georgia, serif !important; }

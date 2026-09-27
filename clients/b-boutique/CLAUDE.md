@@ -1168,6 +1168,12 @@ monogram is an SVG and unaffected. Hanken has no arrow glyphs, so text
 arrows (which fell back to Arial) are the drawn `Arrow.tsx`. Measured after:
 only Hanken renders on /, /clothing, a product page, /homeware, /contact.
 The earlier sections of this file that say Bodoni or Playfair are history.
+**One exception, same day (Brad):** the hero's "B Boutique" is Bodoni Moda
+400, loaded for that line alone (`--font-hero-name` in layout.tsx,
+`.hx-c .hx-name`). Nowhere else.
+
+Footer, same day: every hoverable thing moves (logo tilts, links lift and
+underline, social buttons rise and fill, Back to top's arrow nudges up).
 
 ## Visit box and the hero on phones — 2026-09-27
 
