@@ -11245,6 +11245,62 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
   .ifn-socials { margin-left: 0; justify-content: center; }
 }
 
+/* Shop by category as tabs over one photograph (2026-09-27, Brad). The
+   heading takes the site's h2 style from type.css.
+   Desktop: heading and tabs on one row, a rounded photo filling the rest
+   of the screen under the 72px header; photos crossfade.
+   Phones: the same heading and tabs, then a rounded 3:4 photo card (Brad
+   tried a full-screen version and kept this one); the four photos sit side
+   by side in the card and follow the finger (CategoryTabs sets --o per
+   photo and --drag while dragging). */
+.ctab { background: #FFFFFF; }
+.ctab-h { margin: 0; }
+.ctab-tabs { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.ctab-tabs::-webkit-scrollbar { display: none; }
+.ctab-tab {
+  flex: none; min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid rgba(14, 11, 12, 0.18);
+  background: #FFFFFF; color: #0E0B0C; font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.14em; text-transform: uppercase;
+  cursor: pointer; transition: background-color 240ms ease, color 240ms ease, border-color 240ms ease;
+}
+@media (hover: hover) { .ctab-tab:hover { border-color: #0E0B0C; } }
+.ctab-tab[aria-selected="true"] { background: #0E0B0C; border-color: #0E0B0C; color: #FFFFFF; }
+.ctab-tab:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 3px; }
+.ctab-frame { position: relative; overflow: hidden; background: #3F3F41; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.ctab-pic { position: absolute; inset: 0; }
+.ctab-img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; pointer-events: none; }
+.ctab-cta {
+  position: absolute; z-index: 3; left: clamp(16px, 2.4vw, 32px); bottom: clamp(16px, 2.4vw, 32px);
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; border-radius: 999px;
+  background: #0E0B0C; color: #FFFFFF; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22);
+  font: 600 12px/1 var(--font-body), sans-serif; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none;
+}
+.ctab-cta svg { transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+.ctab-cta:hover svg, .ctab-cta:focus-visible svg { transform: translateX(3px); }
+.ctab-cta:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+
+@media (min-width: 1024px) {
+  .ctab { padding-top: clamp(40px, 4vw, 56px); }
+  .ctab-inner { max-width: calc(1520px + 2 * clamp(32px, 4vw, 72px)); margin: 0 auto; padding-inline: clamp(32px, 4vw, 72px); }
+  .ctab-head { display: flex; align-items: center; justify-content: space-between; gap: 32px; margin-bottom: 24px; }
+  .ctab-frame { height: clamp(460px, calc(100svh - 72px - 150px), 820px); border-radius: 22px; }
+  .ctab-pic { opacity: 0; transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .ctab-pic[data-on] { opacity: 1; }
+  .ctab-img { transform: scale(1.04); transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .ctab-pic[data-on] .ctab-img { transform: none; }
+}
+
+@media (max-width: 1023px) {
+  .ctab { padding-top: clamp(40px, 5vw, 56px); }
+  .ctab-inner { padding-inline: 16px; }
+  .ctab-h { margin-bottom: 18px; }
+  .ctab-tabs { margin: 0 -16px 16px; padding: 2px 16px; }
+  .ctab-frame { aspect-ratio: 3 / 4; border-radius: 20px; }
+  .ctab-pic { transform: translate3d(calc(var(--o, 0) * 100% + var(--drag, 0px)), 0, 0); transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; }
+  .ctab-frame[data-dragging] .ctab-pic { transition: none; }
+}
+@media (min-width: 768px) and (max-width: 1023px) { .ctab-inner { padding-inline: clamp(32px, 4vw, 72px); } .ctab-tabs { margin-inline: 0; padding-inline: 0; } }
+@media (prefers-reduced-motion: reduce) { .ctab-pic, .ctab-img, .ctab-tab, .ctab-cta svg { transition: none !important; } .ctab-img { transform: none !important; } }
+
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───
    Measured on ten routes: only Hanken Grotesk and Bodoni Moda ever render,
    but they were used inconsistently. The rules, restated:

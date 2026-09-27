@@ -7,7 +7,7 @@ import { spinFor } from "@/lib/spin";
 import { featured, openingSummary, shop } from "@/lib/shop";
 import { FREE_DELIVERY_OVER_P, formatPriceShort } from "@/lib/catalogue";
 import { NewArrivalRail } from "@/components/NewArrivalRail";
-import { HorizontalRails } from "@/components/HorizontalRails";
+import { CategoryTabs } from "@/components/CategoryTabs";
 import { NewInSlides } from "@/components/NewInSlides";
 import { WhyUs } from "@/components/home/WhyUs";
 import { UpClose } from "@/components/home/UpClose";
@@ -82,7 +82,9 @@ export default function Home() {
             Brad): white, carrying the philosophy sentence. The quote section
             (PointOfView) came off the home page; the component is kept. */}
         <NewArrivalRail />
-        <HorizontalRails />
+        {/* Tabs over one photo since 2026-09-27 (Brad); HorizontalRails is
+            kept for a switch back. */}
+        <CategoryTabs />
         {/* Shop the look ("Straight from the window") came off the home
             page on 2026-09-26 at Brad's request; the component is kept. */}
         <UpClose />
