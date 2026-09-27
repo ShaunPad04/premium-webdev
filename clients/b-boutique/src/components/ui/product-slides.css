@@ -263,3 +263,30 @@
   .ps-caption, .ps-desc { display: none; }
   .ps-sizes, .ps-colours { justify-content: center; }
 }
+
+/* Prev / next beside the button: phones only. */
+.ps-cta-row { display: contents; }
+.ps-step { display: none; }
+
+/* New In on phones (2026-09-27, Brad picked B of three): one piece at a
+   time, bigger, on a soft ground, with arrows either side of the button.
+   Sizes and colours are left to the product page. Larger screens keep the
+   centre stage with the neighbours either side, until a desktop direction
+   is chosen. */
+@media (max-width: 767px) {
+  .nis .ps-hint, .nis .ps-sizes, .nis .ps-colours, .nis .ps-thumbs, .nis .ps-caption, .nis .ps-desc { display: none; }
+  .nis .ps-slide:not(.is-active) { visibility: hidden; }
+  .nis .ps-stage { margin-inline: 20px; border-radius: 18px; background: #F4F3F1; }
+  /* The photographs are on white; multiply lets the soft ground show
+     through them instead of a white box on grey. */
+  .nis .ps-slide img { mix-blend-mode: multiply; }
+  /* The slide is its own layer (it moves), so the ground has to be on it
+     for the multiply to have something to blend with. */
+  .nis .ps-slide { background: #F4F3F1; }
+  .nis .ps-cta-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .nis .ps-step {
+    display: inline-grid; place-items: center; flex: none; width: 48px; height: 48px; padding: 0;
+    border: 1px solid rgba(14, 11, 12, 0.18); border-radius: 50%; background: #FFFFFF; color: #0E0B0C; cursor: pointer;
+  }
+  .nis .ps-step:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 3px; }
+}

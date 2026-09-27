@@ -22,11 +22,11 @@ const PHOTOS: Photo[] = [
   { img: "follow-casual", alt: "A woman in a cream cable-knit jumper and light jeans walking along a seaside promenade" },
 ];
 
-export function SocialStrip() {
+function SocialStripDesktop() {
   const fb = socials.find((s) => s.name === "Facebook");
 
   return (
-    <section className="ss" aria-label="Follow B Boutique">
+    <section className="ss ss--desktop" aria-label="Follow B Boutique">
       {fb ? (
         <div className="ss-head">
           <a className="ss-follow" href={fb.href} target="_blank" rel="noopener noreferrer">
@@ -54,5 +54,54 @@ export function SocialStrip() {
         ))}
       </ul>
     </section>
+  );
+}
+
+/* On phones, full-bleed since 2026-09-27 (Brad picked B of three for
+   mobile; desktop is being chosen separately and keeps the two photos): the promenade
+   photograph fills the section and the two accounts sit on it as wide white
+   pills, each with its mark and its name, black and white. The suit photo
+   is no longer used here. */
+const PHOTO = { img: "follow-casual", alt: "A woman in a cream cable-knit jumper and light jeans walking along a seaside promenade" };
+
+function SocialStripPhone() {
+  const links = (["Instagram", "Facebook"] as const)
+    .map((name) => socials.find((s) => s.name === name))
+    .filter((s): s is NonNullable<typeof s> => Boolean(s));
+
+  return (
+    <section className="ss2 ss2--phone" aria-labelledby="ss2-h">
+      <picture>
+        <source type="image/avif" srcSet={`/img/look/${PHOTO.img}-800.avif 800w, /img/look/${PHOTO.img}-1200.avif 1200w, /img/look/${PHOTO.img}-1600.avif 1600w`} sizes="100vw" />
+        <source type="image/webp" srcSet={`/img/look/${PHOTO.img}-800.webp 800w, /img/look/${PHOTO.img}-1200.webp 1200w, /img/look/${PHOTO.img}-1600.webp 1600w`} sizes="100vw" />
+        <img className="ss2-media" src={`/img/look/${PHOTO.img}-1200.jpg`} alt={PHOTO.alt} width={1200} height={1500} loading="lazy" decoding="async" />
+      </picture>
+      <div className="ss2-body">
+        <p id="ss2-h" className="ss2-label">Follow us</p>
+        <ul className="ss2-links">
+          {links.map((l) => (
+            <li key={l.name}>
+              <a className="ss2-pill" href={l.href} target="_blank" rel="noopener noreferrer">
+                <span className="ss2-mark" aria-hidden="true"><SocialMark name={l.name} /></span>
+                <span className="ss2-name">{l.name}</span>
+                <span className="sr-only"> (opens in a new tab)</span>
+                <svg className="ss2-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/* Phones get the full-bleed version, larger screens the two photographs,
+   until Brad picks a desktop direction; CSS shows one of the two. */
+export function SocialStrip() {
+  return (
+    <>
+      <SocialStripPhone />
+      <SocialStripDesktop />
+    </>
   );
 }
