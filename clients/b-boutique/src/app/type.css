@@ -19,7 +19,9 @@ html:root { --font-display: var(--font-body); }
   letter-spacing: 0.01em !important;
   line-height: 1.08 !important;
 }
-:is(h1, h2):not(.sr-only) { font-size: clamp(24px, 2.6vw, 38px) !important; }
+:is(h1, h2):not(.sr-only) { font-size: clamp(24px, 2.4vw, 32px) !important; }
+/* Headings never leave one word alone on a line (2026-09-27). */
+:is(h1, h2, h3) { text-wrap: balance; }
 :is(h1, h2) em { font-style: normal !important; }
 
 /* Sub-headings and product names keep the serif, in sentence case. */

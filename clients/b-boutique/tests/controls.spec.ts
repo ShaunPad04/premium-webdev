@@ -35,11 +35,14 @@ test('New In on phones: one piece, no sizes, no arrows', async ({ page }, testIn
 
 test('Up close: seven materials, each a close-up named by its material only', async ({ page }) => {
   await page.goto('/', { waitUntil: 'networkidle' });
-  /* The grid is what a screen reader reads (and what phones see); the
-     rolling layer on a desktop is the same seven, decorative. */
-  const names = page.locator('.uc3 .csr-grid-title');
-  await expect(names).toHaveText(['Velvet', 'Bouclé', 'Jacquard knit', 'Lace', 'Tweed check', 'Chunky knit', 'Velour']);
-  const alts = await page.locator('.uc3 .csr-grid img').evaluateAll((els) => els.map((e) => e.getAttribute('alt')));
-  expect(alts.every((a) => a && a.startsWith('Close-up of the '))).toBe(true);
+  /* The Scroll Gallery (2026-09-27): seven full-bleed slides in order, each
+     image described by its material and piece; the band names the one in
+     view and links to its garment. */
+  const alts = await page.locator('.uc3 .ucg-slide img').evaluateAll((els) => els.map((e) => e.getAttribute('alt')));
+  expect(alts).toHaveLength(7);
+  const order = ['velvet', 'bouclé', 'jacquard knit', 'lace', 'tweed check', 'chunky knit', 'velour'];
+  alts.forEach((a, i) => expect(a).toMatch(new RegExp(`^Close-up of the ${order[i]} of the `)));
+  await expect(page.locator('.uc3 .ucg-title')).toHaveText('Velvet');
+  await expect(page.locator('.uc3 .ucg-link')).toHaveAttribute('href', '/shop/leopard-embroidered-velvet-bomber');
 });
 

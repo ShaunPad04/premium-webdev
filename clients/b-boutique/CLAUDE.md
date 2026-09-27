@@ -1254,3 +1254,31 @@ says nothing it cannot back. The paid copy no longer promises to "ring"
 (the phone is optional): a piece that has gone is refunded straight away and
 the shop gets in touch, per her policy. The settling logic in the page is
 unchanged.
+
+## Consistency pass — 2026-09-27
+
+Brad's brief 4c. One block at the end of globals.css ("Consistency pass")
+with the final word: section padding `--sec-pad` 96/72/56 top and bottom on
+every home section except the hero; one container (`--container` 1280px,
+`--gutter` 40px desktop / 24px phone) so every heading starts on the same
+edge (80px at 1440, 24px at 390); type on 12/14/16/18/24/32/48 plus the hero
+name; labels 12px, tracking capped at 0.12em, all eyebrows grey
+(`--eyebrow`) except white over photographs; one pill button 48px / 14px /
+uppercase / 0.12em; one radius `--radius` 16px; social tiles capped at 480px
+tall; headings `text-wrap: balance` and no full stops. The FAQ questions stay
+centred (his 2026-09-26 call). Keep new sections on these variables.
+
+## Up close, third round — 2026-09-27
+
+Brad picked **A of three 21st.dev scroll components: "Scroll Gallery"
+(soralabs)**; B "Stacking Cards" (danielpetho) and C "Immersive Scroll
+Gallery" (ishamsu) were the others. `home/UpCloseGallery.tsx`: pinned
+full-bleed under the header, each of the seven fabrics wipes up over the
+last (one clip-path edge, not the original's 20 GSAP strips; built on
+motion), easing 1.25x to rest; the name swaps in a band across the middle
+with "Shop the piece" to that garment. Reduced motion: a grid of the seven.
+Replaced the Circular Split Roll (desktop) and swipe pile (phones), both
+kept in components/ui. Large sources: `/img/fabric/*-wide-2400|*-2000.webp`.
+**Motion gotcha:** a range `useTransform` on opacity can be run on the
+accelerated scroll-timeline path and returned wrong values near the end of
+a track; use a function transform when the value must be exact.

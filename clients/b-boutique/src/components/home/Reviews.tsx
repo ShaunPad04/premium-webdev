@@ -50,7 +50,7 @@ export function Reviews({ items = reviews }: { items?: Review[] }) {
     <section className="rv rv--stack" aria-labelledby="rv-h">
       <div className="rv-inner">
         <p className="label rv-eyebrow">Reviews</p>
-        <h2 id="rv-h" className="rv-h">In their <em>words</em>.</h2>
+        <h2 id="rv-h" className="rv-h">In their <em>words</em></h2>
         <p className="rv-summary">
           <ReviewStars rating={5} className="rv-stack-stars" />
           <span>{googleSummary.rating} on Google</span>

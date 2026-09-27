@@ -66,14 +66,13 @@
     },
     "upClose": {
       "decided": "2026-09-27",
-      "desktop": "Circular Split Roll (21st.dev), seven fabrics",
-      "phone": "Image Stack Carousel (21st.dev), five fabrics, throw or tap",
+      "layout": "After 21st.dev Scroll Gallery (soralabs): pinned full-bleed fabric wipes with name band and Shop the piece",
       "rejected": [
-        "Swing-tag sticky card (previous)",
-        "Phone grid",
-        "Swatch strip",
-        "Scroll wheel",
-        "Fabric index"
+        "B Stacking Cards (danielpetho)",
+        "C Immersive Scroll Gallery (ishamsu)",
+        "Name list",
+        "Sideways strip",
+        "Bento"
       ]
     },
     "marquee": {

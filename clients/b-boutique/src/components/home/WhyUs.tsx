@@ -46,7 +46,7 @@ export function WhyUs() {
         <div className="why-head">
           <p className="label why-eyebrow">Why B Boutique</p>
           <h2 id="why-h" className="why-h">
-            A shop, <em>not a warehouse.</em>
+            A shop, <em>not a warehouse</em>
           </h2>
         </div>
         <ol className="why-list" data-across>
