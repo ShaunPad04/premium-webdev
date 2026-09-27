@@ -30,13 +30,15 @@ export function SocialStrip() {
       {fb ? (
         <div className="ss-head">
           <a className="ss-follow" href={fb.href} target="_blank" rel="noopener noreferrer">
-            {/* The Facebook mark the footer already uses (2026-09-27,
-                Brad), with a lift on hover; no underline on the words. */}
+            {/* A pill like "Ask us anything" (2026-09-27, Brad), inverted
+                for the white ground: the footer's Facebook mark, the words
+                and an arrow. The mark still lifts on hover. */}
             <span className="ss-follow-mark" aria-hidden="true">
               <SocialMark name="Facebook" />
             </span>
             <span className="ss-follow-text">Follow us</span>
             <span className="sr-only"> on Facebook (opens in a new tab)</span>
+            <svg className="ss-follow-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </a>
         </div>
       ) : null}
