@@ -80,14 +80,11 @@
       "chosen": "Scroll Velocity Text (21st.dev)"
     },
     "visit": {
-      "decided": "2026-09-27",
-      "layout": "Details left (address, open now, hours, email, parking, Get directions); on phones the map card first",
-      "map": "Expanded Map (21st.dev, dev.shejanmahamud): a tilting card that springs open to the greyscale Google embed, requested only once opened",
-      "why": "Carto tiles now need a paid key and OpenStreetMap refuses direct tile loads; Google is the map /privacy already names",
+      "decided": "2026-09-28",
+      "layout": "After 21st.dev Expanded Map, as one listing card: map, address and open-now, one-line rows, Get directions",
       "rejected": [
-        "A: her shopfront beside the details",
-        "C: an \"Open every day\" timetable",
-        "B as built: full map panel with a card over it"
+        "A Location Card (lavikatiyar)",
+        "B Contact Page (efferd)"
       ]
     },
     "whyBBoutique": {

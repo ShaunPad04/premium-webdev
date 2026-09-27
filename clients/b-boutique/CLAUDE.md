@@ -1282,3 +1282,14 @@ kept in components/ui. Large sources: `/img/fabric/*-wide-2400|*-2000.webp`.
 **Motion gotcha:** a range `useTransform` on opacity can be run on the
 accelerated scroll-timeline path and returned wrong values near the end of
 a track; use a function transform when the value must be exact.
+
+## Visit, second round — 2026-09-28
+
+Brad picked **C of three 21st.dev directions: the "Expanded Map" set into one
+listing card** (A "Location Card" with her shopfront, B "Contact Page"
+boxes). `Visit.tsx` + `VisitMap.tsx`: map on top (starts open on phones as a
+lazy iframe; click-to-load on a desktop, as /privacy says), the address with
+open-now, hours / parking / email as one-line rows, Get directions across the
+foot. `ui/expanded-map.tsx` is deleted (git has it). Same day: "Follow us" is
+a section heading; the social tiles hide the arrow on phones so the names fit;
+the FAQ plus circles are gone.

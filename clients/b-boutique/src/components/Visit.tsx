@@ -1,65 +1,65 @@
 import { shop, openingSummary } from "@/lib/shop";
 import { directionsHref, mapEmbedSrc } from "@/lib/nav";
 import { OpenNow } from "./OpenNow";
-import { ExpandedMap } from "./ui/expanded-map";
+import { VisitMap } from "./VisitMap";
+import { Arrow } from "./Arrow";
 
-/* Visit B Boutique (2026-09-27). Brad picked B, "Map", of three
- * 21st-ui-explore directions, then asked for a map from 21st.dev: the
- * details on the left (the address, open now, the hours, email, parking,
- * Get directions) and the Expanded Map card on the right, which opens into
- * the greyscale Google map. On a phone the card comes first.
+/* Visit B Boutique (2026-09-28). Brad picked C of three 21st.dev directions
+ * (A "Location Card" with her shopfront, B "Contact Page" boxes): the
+ * "Expanded Map" set into one listing card, like a shop in Google Maps. The
+ * map on top (open on phones, click-to-load on a desktop), then the address
+ * with open-now, the hours / parking / email as one-line rows, and Get
+ * directions across the foot. It replaced a framed details box beside a
+ * separate map card, which repeated the address and wrapped awkwardly on
+ * a phone.
  *
  * Every value derives from shop.ts, so the address, hours, directions link
  * and JSON-LD cannot disagree. Email, not phone: the site carries no phone
  * number at the client's request. Parking (shop.parking) confirmed via Brad
  * on 2026-09-24. */
-const Arrow = () => (
-  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-);
-
 export function Visit() {
-  const hoursLine = openingSummary().replace(/\.$/, "").replace(/^Every day, /, "");
-  const everyDay = openingSummary().startsWith("Every day");
-
+  const hours = openingSummary().replace(/\.$/, "");
   return (
-    <section id="visit" aria-labelledby="visit-heading" className="vxb">
-      <div className="vxb-info">
-        <div className="vxb-top">
-          <p className="label vxb-eyebrow">Visit B Boutique</p>
-          <OpenNow />
-        </div>
-        <h2 id="visit-heading" className="vxb-address">
-          <span>{shop.street}</span>
-          <span>{shop.town} <span className="vxb-pc">{shop.postcode}</span></span>
-        </h2>
-        <dl className="vxb-list">
-          <div>
-            <dt>Hours</dt>
-            <dd>{everyDay ? `Every day, ${hoursLine}` : openingSummary()}</dd>
+    <section id="visit" aria-labelledby="visit-heading" className="vsc">
+      <p className="vsc-eyebrow">Visit B Boutique</p>
+      <h2 id="visit-heading" className="vsc-h">Come in and see it</h2>
+      <div className="vsc-card">
+        <VisitMap src={mapEmbedSrc} label={shop.name} />
+        <div className="vsc-body">
+          <div className="vsc-top">
+            <p className="vsc-addr">
+              {shop.street}, {shop.town} <span className="vsc-pc">{shop.postcode}</span>
+            </p>
+            <OpenNow />
           </div>
-          <div>
-            <dt>Parking</dt>
-            <dd>
-              <a href={shop.parking.href} target="_blank" rel="noopener noreferrer">
-                {shop.parking.name}
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            </dd>
-          </div>
-          {shop.email ? (
-            <div className="vxb-email">
-              <dt>Email</dt>
-              <dd><a href={`mailto:${shop.email}`}>{shop.email}</a></dd>
+          <dl className="vsc-rows">
+            <div>
+              <dt>Hours</dt>
+              <dd>{hours}</dd>
             </div>
-          ) : null}
-        </dl>
-        <a className="vxb-go" href={directionsHref} target="_blank" rel="noopener noreferrer">
-          Get directions <Arrow />
-          <span className="sr-only"> (opens Google Maps in a new tab)</span>
-        </a>
-      </div>
-      <div className="vxb-map">
-        <ExpandedMap location={shop.name} sub={`${shop.street}, ${shop.town}`} latitude={shop.lat} longitude={shop.lng} embedSrc={mapEmbedSrc} />
+            <div>
+              <dt>Parking</dt>
+              <dd>
+                <a href={shop.parking.href} target="_blank" rel="noopener noreferrer">
+                  {shop.parking.name}
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              </dd>
+            </div>
+            {shop.email ? (
+              <div>
+                <dt>Email</dt>
+                <dd>
+                  <a href={`mailto:${shop.email}`}>{shop.email}</a>
+                </dd>
+              </div>
+            ) : null}
+          </dl>
+          <a className="vsc-go" href={directionsHref} target="_blank" rel="noopener noreferrer">
+            Get directions <Arrow />
+            <span className="sr-only"> (opens Google Maps in a new tab)</span>
+          </a>
+        </div>
       </div>
     </section>
   );

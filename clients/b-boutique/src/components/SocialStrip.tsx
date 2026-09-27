@@ -19,7 +19,7 @@ export function SocialStrip() {
 
   return (
     <section className="ss2" aria-labelledby="ss2-h">
-      <p id="ss2-h" className="ss2-label">Follow us</p>
+      <h2 id="ss2-h" className="ss2-h">Follow us</h2>
       <ul className="ss2-grid">
         {links.map((l) => {
           const img = PHOTOS[l.name];
