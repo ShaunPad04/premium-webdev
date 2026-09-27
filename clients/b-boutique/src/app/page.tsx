@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
-import { HeroTurn } from "@/components/HeroTurn";
-import { spinFor } from "@/lib/spin";
-import { featured, openingSummary, shop } from "@/lib/shop";
-import { FREE_DELIVERY_OVER_P, formatPriceShort } from "@/lib/catalogue";
+import { Hero } from "@/components/Hero";
 import { NewArrivalRail } from "@/components/NewArrivalRail";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import { NewInSlides } from "@/components/NewInSlides";
@@ -42,32 +39,16 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
  * /faq came out). The cinematic statement scene it
  * replaced showed each piece three times with four full buy blocks. */
 export default function Home() {
-  /* The hero is the Fair Isle Jumper turn for now (2026-09-27, Brad chose
-     it over the horses, which are kept in components/Hero.tsx). */
-  const turn = spinFor("fair-isle-jumper", "hero");
   return (
     <>
       <MotionLayer />
-      {/* Solid from the first paint: the hero is white now. */}
-      <Nav solid />
+      <Nav />
       {/* home-rise is only a hook for the home page's section rules now; the
           hero scrolls normally (2026-09-27, Brad). */}
       <main id="main" className="flex-1 home-rise">
-        {turn ? (
-          <HeroTurn
-            frames={turn.frames}
-            generated={turn.generated}
-            name="Fair Isle Jumper"
-            heading={`B Boutique — for every woman who walks in. Independent womenswear and homeware on ${shop.street}, ${shop.town}.`}
-            statement={`Womenswear and homeware, chosen by hand, one piece at a time, on ${shop.street} in ${shop.town}.`}
-            captions={[
-              openingSummary().replace(/\.$/, ""),
-              `${shop.street}, ${shop.town}`,
-              `Free UK delivery over ${formatPriceShort(FREE_DELIVERY_OVER_P)}`,
-            ]}
-            labels={featured.map((f) => f.name)}
-          />
-        ) : null}
+        {/* The horses hero, while the new one (HeroTurn, the Fair Isle turn
+            in a word ring) is being decided (2026-09-27, Brad). */}
+        <Hero />
         <div className="rise">
         {/* The marquee is the first thing up over the hero (2026-09-26,
             Brad): white, carrying the philosophy sentence. The quote section
