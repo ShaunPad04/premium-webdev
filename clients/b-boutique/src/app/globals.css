@@ -4063,88 +4063,39 @@ nav[aria-label="Primary"] { transition: opacity 360ms var(--bb-ease); }
   .prod:focus-within .prod-photo { transform: none; }
 }
 
-/* ── Delivery and returns ──────────────────────────────────────────────────
-   A document, not a marketing page: one measure, generous leading, and no
-   card chrome. The only two devices are the legal-basis footnote and the
-   unfilled slot, and they are deliberately the two things that look
-   different from everything else on the page. */
-.pol {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(34px, 4.4vw, 52px);
-  max-width: 68ch;
-}
-
-.pol-block { scroll-margin-top: 108px; }
-
-.pol-h {
-  font-family: var(--font-display-face), Georgia, serif;
-  font-size: clamp(20px, 2.3vw, 27px);
-  line-height: 1.22;
-  letter-spacing: normal;
-  text-wrap: balance;
-}
-
-.pol-body {
-  margin-top: 14px;
-  font-size: clamp(15px, 1.3vw, 16.5px);
-  line-height: 1.68;
-  color: rgba(14, 11, 12, 0.78);
-}
-
-/* The legal basis. Small, but not hidden — a customer should be able to read
-   which Act a right comes from, and the client should be able to see that the
-   sentence above it was not invented here. Indented off a rule rather than
-   boxed, so it reads as a footnote to the paragraph it follows. */
-.pol-basis {
-  margin-top: 16px;
-  border-left: 2px solid var(--bb-light-border);
-  padding-left: 16px;
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--bb-grey-dark);
-}
-.pol-basis-tag {
-  display: block;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--bb-black);
-  margin-bottom: 5px;
-}
-
-/* An unanswered question, drawn as an unanswered question. Dashed, because a
-   dashed edge reads as provisional in a way a solid one does not, and this is
-   the one place on the site where looking unfinished is the entire point. */
-.pol-slot {
-  margin-top: 14px;
-  border: 1px dashed var(--bb-light-border);
-  padding: 18px 20px;
-}
-.pol-slot-tag {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--red);
-}
-.pol-slot-ask {
-  margin-top: 9px;
-  font-size: 14.5px;
-  line-height: 1.6;
-  color: rgba(14, 11, 12, 0.78);
-}
-
-.pol-close {
-  margin-top: clamp(40px, 5vw, 60px);
-  padding-top: clamp(24px, 3vw, 32px);
-  border-top: 1px solid var(--bb-light-border);
-  max-width: 68ch;
-  font-size: 15px;
-  line-height: 1.65;
-  color: rgba(14, 11, 12, 0.78);
-}
+/* ── Delivery / Returns / Terms / Privacy — 2026-09-27 ─────────────────────
+   Brad picked A of three, each after a real 21st.dev component: "Table of
+   Contents" (hirael). The page's own title, then the policy as a readable
+   article with an on-this-page list held beside it on a desktop; the section
+   in view gets the dark marker (components/PolicyToc.tsx). The legal-basis
+   note and the unfilled slot are still the two things that look different
+   from everything else. (Rejected: B collapsible card, C reader card.) */
+.pol-page { max-width: 1120px; margin: 0 auto; padding: 150px 16px clamp(64px, 8vw, 112px); }
+@media (min-width: 768px) { .pol-page { padding-inline: clamp(32px, 4vw, 72px); } }
+.pol-eyebrow { margin: 0 0 10px; font: 600 11px/1.2 var(--font-body), sans-serif; letter-spacing: .16em; text-transform: uppercase; color: #71717A; }
+.pol-page .pol-title { margin: 0; font-size: clamp(32px, 4vw, 44px) !important; font-weight: 600 !important; text-transform: none !important; letter-spacing: -.02em !important; line-height: 1.1 !important; }
+.pol-lede { margin: 14px 0 0; max-width: 60ch; font-size: 15px; line-height: 1.7; color: #71717A; }
+.pol-grid { display: flex; gap: 64px; margin-top: 48px; align-items: flex-start; }
+.pol-article { min-width: 0; flex: 1; max-width: 68ch; }
+.pol-block { scroll-margin-top: 130px; padding-bottom: 36px; }
+.pol-page .pol-h { margin: 0 0 12px; font-size: 18px !important; font-weight: 600 !important; text-transform: none !important; letter-spacing: -.01em !important; line-height: 1.3 !important; }
+.pol-body { margin: 0 0 12px; font-size: 15px; line-height: 1.75; color: #52525B; }
+.pol-basis { margin: 14px 0 0; padding: 12px 14px; border: 1px solid #E4E4E7; border-radius: 8px; font-size: 13px; line-height: 1.6; color: #71717A; background: #FAFAFA; }
+.pol-basis-tag { display: block; margin-bottom: 4px; font: 600 10px/1.2 var(--font-body), sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #0E0B0C; }
+.pol-slot { padding: 14px 16px; border: 1px dashed #B45309; border-radius: 8px; }
+.pol-slot-tag { margin: 0 0 6px; font: 600 10px/1.2 var(--font-body), sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #B45309; }
+.pol-slot-ask { margin: 0; font-size: 14px; line-height: 1.6; }
+.pol-close { max-width: 60ch; margin: 24px 0 0; font-size: 14px; line-height: 1.7; color: #71717A; }
+.pol-close a { color: #0E0B0C; text-underline-offset: 3px; }
+.pol-aside { display: none; }
+@media (min-width: 900px) { .pol-aside { display: block; position: sticky; top: 130px; width: 220px; flex-shrink: 0; } }
+.pol-toc-label { margin: 0 0 12px; font: 600 10px/1 var(--font-body), sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #71717A; }
+.pol-toc ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; border-left: 1px solid #E4E4E7; }
+.pol-toc a { display: block; margin-left: -1px; padding: 4px 0 4px 16px; border-left: 1px solid transparent; font-size: 14px; color: #71717A; text-decoration: none; transition: color 150ms ease-out, border-color 150ms ease-out; }
+.pol-toc a:hover { color: #0E0B0C; }
+.pol-toc a:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 2px; }
+.pol-toc a[aria-current] { border-left-color: #0E0B0C; color: #0E0B0C; font-weight: 500; }
+@media (prefers-reduced-motion: reduce) { .pol-toc a { transition: none; } }
 
 /* ── Shop search ───────────────────────────────────────────────────────────
    A field on a cream page, not a chrome search bar. One rule at the bottom of
@@ -8323,7 +8274,6 @@ header.fixed { color: #FFFFFF; }
 }
 .hero-cta:is(:hover, :focus-visible)::before { background-position: 140% 0, 0 0; }
 @media (prefers-reduced-motion: reduce) { .hero-cta::before { transition: none; } }
-.ab-principle-t { color: var(--bb-white); }
 /* Contact card links: 21-22px tall measured on phones and tablets, under the
    24px target minimum. Padding makes them 32px without moving the text. */
 
@@ -11047,16 +10997,12 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
    the element in the selector to beat the global h3:not(.sr-only) rule.
    The short FAQ title stays in Hanken capitals: Brad preferred it
    (2026-09-26, "I like this font better"). */
-h3.ab-principle-t,
-h3.pol-h,
 .bag-empty-h {
   font-family: var(--font-display), Georgia, serif;
   font-weight: 400;
   text-transform: none;
   letter-spacing: -0.005em;
 }
-h3.ab-principle-t { font-size: clamp(28px, 3vw, 46px); line-height: 1.05; }
-h3.pol-h { font-size: clamp(20px, 2.3vw, 27px); line-height: 1.22; }
 
 /* Small uppercase labels (eyebrows, captions): five treatments, 9 to 12px,
    weight 500 or 600, tracking .16 to .22em. Now one. Colours stay each

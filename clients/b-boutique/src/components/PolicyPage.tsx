@@ -1,7 +1,6 @@
 import { Nav } from "./Nav";
 import { Footer } from "./Footer";
-import { MotionLayer } from "./MotionLayer";
-import { PageMasthead } from "./PageMasthead";
+import { PolicyToc } from "./PolicyToc";
 import { Visit } from "./Visit";
 import type { Policy } from "@/lib/policies";
 import { policyIsIncomplete } from "@/lib/policies";
@@ -37,44 +36,40 @@ import { shop } from "@/lib/shop";
 export function PolicyPage({ policy }: { policy: Policy }) {
   const incomplete = policyIsIncomplete(policy);
 
+  const idOf = (h: string) => h.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  /* 2026-09-27, Brad picked A of three, after 21st.dev "Table of Contents"
+     (hirael): the title, then the policy as an article with an
+     on-this-page list beside it on a desktop. The dark photo masthead and
+     "In plain English." heading are gone; the intro line stays under the
+     title. */
   return (
     <>
-      <MotionLayer />
-      <Nav />
+      <Nav solid />
       <main id="main" className="flex-1">
-        <PageMasthead
-          eyebrow={policy.eyebrow}
-          title={policy.title}
-          lede={policy.lede}
-        texture="parcel"
-        />
+        <div className="pol-page">
+          <header>
+            <p className="pol-eyebrow">{policy.eyebrow}</p>
+            <h1 className="pol-title">{policy.title}</h1>
+            <p className="pol-lede">{policy.intro}</p>
+            {incomplete ? (
+              /* The same device catalogue.ts, faq.ts and about.ts use: one
+                 notice for as long as any part of the page is unconfirmed.
+                 Worded for whoever is reviewing the build, because that is
+                 who should be reading it. */
+              <p className="page-pending">
+                [Not finished &mdash; the marked sections below are decisions
+                only the shop can make, and are blank on purpose. This page
+                must not go live until they are filled in.]
+              </p>
+            ) : null}
+          </header>
 
-        <section className="page-section" aria-labelledby="pol-h">
-          <div className="page-inner">
-            <div className="page-head">
-              <h2 id="pol-h" className="page-h2">
-                In plain English.
-              </h2>
-              <p className="page-lede">{policy.intro}</p>
-
-              {incomplete ? (
-                /* The same device catalogue.ts, faq.ts and about.ts use: one
-                   notice for as long as any part of the page is unconfirmed.
-                   Worded for whoever is reviewing the build, because that is
-                   who should be reading it — nothing here should reach a
-                   customer in this state. */
-                <p className="page-pending">
-                  [Not finished &mdash; the marked sections below are decisions
-                  only the shop can make, and are blank on purpose. This page
-                  must not go live until they are filled in.]
-                </p>
-              ) : null}
-            </div>
-
-            <div className="pol">
+          <div className="pol-grid">
+            <article className="pol-article">
               {policy.blocks.map((block) => (
-                <section key={block.heading} className="pol-block">
-                  <h3 className="pol-h">{block.heading}</h3>
+                <section key={block.heading} id={idOf(block.heading)} className="pol-block">
+                  <h2 className="pol-h">{block.heading}</h2>
 
                   {block.kind === "required" ? (
                     <div className="pol-slot">
@@ -90,9 +85,7 @@ export function PolicyPage({ policy }: { policy: Policy }) {
                       ))}
                       {block.basis ? (
                         <p className="pol-basis">
-                          <span className="pol-basis-tag">
-                            {block.basisLabel ?? "Your legal right"}
-                          </span>
+                          <span className="pol-basis-tag">{block.basisLabel ?? "Your legal right"}</span>
                           {block.basis}
                         </p>
                       ) : null}
@@ -100,7 +93,6 @@ export function PolicyPage({ policy }: { policy: Policy }) {
                   )}
                 </section>
               ))}
-            </div>
 
             <p className="pol-close">
               {/* Was "ring the shop on" + an email address, then "one room
@@ -114,8 +106,12 @@ export function PolicyPage({ policy }: { policy: Policy }) {
               </a>
               . It goes straight to the shop, not to a call centre.
             </p>
+            </article>
+            <aside className="pol-aside">
+              <PolicyToc items={policy.blocks.map((b) => ({ id: idOf(b.heading), text: b.heading }))} />
+            </aside>
           </div>
-        </section>
+        </div>
 
         <Visit />
       </main>

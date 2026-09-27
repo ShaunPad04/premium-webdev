@@ -1218,3 +1218,15 @@ green strip and the three reassurances in their own box. **CSS only**
 (`.bag-page` rules at the end of globals.css): pricing, delivery, holds and
 the SumUp handover in `Bag.tsx` are untouched. Always label option sheets
 A / B / C with the letter large on each (Brad could not tell them apart).
+
+## Policy pages — 2026-09-27
+
+Delivery, Returns, Terms and Privacy share `PolicyPage.tsx`. Brad picked
+**A of three built from real 21st.dev components: "Table of Contents"
+(hirael)**; B "Privacy Policy Collapsible Card" (cnippet-dev) and C a
+reader card after "Privacy Policy Modal" (ruixen.ui) were the others. The
+title and intro on white, then the policy as one readable column with an
+on-this-page list held beside it on a desktop (`PolicyToc.tsx`); the section
+in view gets the dark marker. Each section has an id from its heading, so
+`/privacy#…` links work. The dark "parcel" masthead and "In plain English."
+are gone; the legal-basis notes and the unfilled-slot device are unchanged.

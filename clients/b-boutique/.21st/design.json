@@ -194,6 +194,20 @@
         "Dark summary",
         "Receipt"
       ]
+    },
+    "policies": {
+      "decided": "2026-09-27",
+      "layout": "After 21st.dev Table of Contents (hirael): title and intro, article with sticky on-this-page list on desktop",
+      "appliesTo": [
+        "/delivery",
+        "/returns",
+        "/terms",
+        "/privacy"
+      ],
+      "rejected": [
+        "B Privacy Policy Collapsible Card (cnippet-dev)",
+        "C Reader card after Privacy Policy Modal (ruixen.ui)"
+      ]
     }
   },
   "typography": {
