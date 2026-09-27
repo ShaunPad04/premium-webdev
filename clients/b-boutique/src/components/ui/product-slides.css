@@ -235,3 +235,31 @@
 @media (hover: hover) and (pointer: fine) { .ps-swatch:hover { transform: scale(1.06); } }
 .ps-swatch:focus-visible { outline: 2px solid var(--ps-ink); outline-offset: 5px; }
 @media (prefers-reduced-motion: reduce) { .ps-swatch { transition: none; } }
+
+/* "View the piece" as the site's other product buttons (2026-09-27, Brad:
+   not in a rectangle): a black pill with an arrow that nudges on hover. */
+.ps-cta {
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ps-ink);
+  color: #FFFFFF;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  transition: background-color 200ms ease;
+}
+.ps-cta svg { transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+@media (hover: hover) { .ps-cta:hover { background: #2A2426; color: #FFFFFF; } }
+.ps-cta:hover svg, .ps-cta:focus-visible svg { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) { .ps-cta svg { transition: none; } }
+
+/* Phones: centred under the model, and only what helps choose: the name,
+   the price, sizes, colours and the button (2026-09-27, Brad: the category
+   and the one-liner repeat what the section already says). */
+@media (max-width: 1023px) {
+  .ps-details { text-align: center; min-height: 0; }
+  .ps-caption, .ps-desc { display: none; }
+  .ps-sizes, .ps-colours { justify-content: center; }
+}

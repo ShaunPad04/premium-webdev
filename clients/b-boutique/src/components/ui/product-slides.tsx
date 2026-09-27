@@ -355,6 +355,7 @@ export function ProductSlides({ slides, label, loop = true, initial = 0, ctaLabe
               {slide.href && (
                 <Link href={size ? `${slide.href}?size=${encodeURIComponent(size)}` : slide.href} className="ps-cta">
                   {ctaLabel}
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </Link>
               )}
             </motion.div>
