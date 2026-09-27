@@ -233,3 +233,18 @@ h3.scw-h {
    set in type.css, which overrides every h3 with !important). */
 .scw h3.scw-h { line-height: 1.08; font-size: clamp(24px, 2vw, 30px); }
 @media (max-width: 1025px) { .scw h3.scw-h { font-size: clamp(20px, 5.4vw, 26px); } }
+
+/* Review fixes (2026-09-27, Brad: "looks terrible").
+   Desktop: the tag is as tall as its longest fabric, and at 480px the
+   velvet's name and care line each took two lines, which left the boucle
+   with a ~100px hole above the pills. At 560px both fit on one line, the
+   three fabrics come out nearly the same height, and the sentence runs the
+   full width of the rules under it instead of stopping short of them. */
+@media (min-width: 1026px) {
+  .scw-left { width: min(560px, 42vw); }
+  .scw .scw-p { max-width: none; }
+}
+/* The Found in arrow follows the last word: as an inline-flex box, a name
+   that wrapped left the arrow stranded at the far edge of the tag. */
+.scw-spec-link { display: inline; }
+.scw-spec-link svg { display: inline-block; margin-left: 8px; vertical-align: -2px; }
