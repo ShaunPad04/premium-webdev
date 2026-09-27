@@ -10927,6 +10927,31 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .vx-cardi-a:focus-visible { outline: none; }
 @media (prefers-reduced-motion: reduce) { .vx-cardi { transition: none; } .vx-cardi--link:hover { transform: none; } }
 
+/* Hero turn trial (HeroTurn.tsx, ?turn=a|b|c, 2026-09-27). */
+.hero-track { position: relative; }
+.ht-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.ht-stick { position: sticky; top: 0; height: 100svh; }
+[data-turn="b"] .hero-track { height: 200svh; }
+[data-turn="b"] .hero-track > .hero { position: sticky; top: 0; }
+.ht-figure { position: absolute; bottom: 0; right: 3vw; height: 86svh; aspect-ratio: 444 / 1248; }
+/* Phones: the title and Shop all fill the middle and foot of the hero, so
+   she stands in the empty heather above them, on the right. */
+@media (max-width: 767px) {
+  .ht-figure { bottom: 50svh; right: 5vw; height: 38svh; }
+  .ht-layer .ht-note { left: 16px; right: 16px; bottom: 52px; max-width: none; text-align: center; }
+}
+.ht-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ht-shadow { position: absolute; left: 12%; right: 12%; bottom: -1.2%; height: 5%; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.5), transparent); filter: blur(6px); }
+.ht-note { position: absolute; right: 3vw; bottom: 10px; max-width: 280px; margin: 0; font-size: 10px; line-height: 1.4; text-align: right; color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7); }
+.turn-stage { position: relative; height: 250svh; background: #FFFFFF; }
+.turn-stage-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; display: grid; place-items: end center; }
+.turn-stage-word {
+  position: absolute; inset: 0; margin: 0; display: grid; place-items: center;
+  font-family: "Bodoni Moda", Georgia, serif; font-size: 21vw; line-height: 0.8; letter-spacing: -0.02em; white-space: nowrap; color: #0E0B0C;
+}
+.ht-canvas--stage { position: relative; inset: auto; height: 88svh; width: auto; aspect-ratio: 444 / 1248; }
+.turn-stage .ht-note { color: rgba(14, 11, 12, 0.72); text-shadow: none; }
+
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───
    Measured on ten routes: only Hanken Grotesk and Bodoni Moda ever render,
    but they were used inconsistently. The rules, restated:

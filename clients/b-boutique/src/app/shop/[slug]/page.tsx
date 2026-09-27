@@ -1,5 +1,4 @@
-import { readdirSync } from "node:fs";
-import path from "node:path";
+import { spinFor } from "@/lib/spin";
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -29,20 +28,6 @@ import { productSchema } from "@/lib/product-schema";
 import { jsonLd } from "@/lib/site";
 import { Price } from "@/components/Price";
 import { Spin360 } from "@/components/Spin360";
-
-/* Turntable frames for this piece, if a folder of them exists. A GENERATED
-   file in the folder marks frames made by AI rather than photographed, and
-   the page says so: the back of the piece is then the model's guess, not a
-   fact about the garment. See Spin360. */
-function spinFor(slug: string) {
-  try {
-    const files = readdirSync(path.join(process.cwd(), "public/img/spin", slug));
-    const frames = files.filter((f) => /^\d+\.webp$/.test(f)).sort().map((f) => `/img/spin/${slug}/${f}`);
-    return frames.length > 1 ? { frames, generated: files.includes("GENERATED") } : null;
-  } catch {
-    return null;
-  }
-}
 
 /* Prerender every product. There are thirteen of them and they change when
    the code changes, so there is nothing to gain from rendering them on
