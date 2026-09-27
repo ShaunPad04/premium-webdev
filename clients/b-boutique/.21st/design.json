@@ -49,7 +49,36 @@
           "name": "Pill tabs over one wide photo (previous)",
           "why": "Brad: terrible on desktop."
         }
+      ],
+      "phone": {
+        "decided": "2026-09-27",
+        "chosen": "B: Swipe cards",
+        "rejected": [
+          "A: 2x2 grid",
+          "C: Index list",
+          "Stacked bands (the phone half of C)"
+        ]
+      },
+      "desktopStyle": {
+        "decided": "2026-09-27",
+        "chosen": "Elastic Gallery look (21st.dev) on the hover panels"
+      }
+    },
+    "upClose": {
+      "decided": "2026-09-27",
+      "desktop": "Circular Split Roll (21st.dev), seven fabrics",
+      "phone": "Image Stack Carousel (21st.dev), five fabrics, throw or tap",
+      "rejected": [
+        "Swing-tag sticky card (previous)",
+        "Phone grid",
+        "Swatch strip",
+        "Scroll wheel",
+        "Fabric index"
       ]
+    },
+    "marquee": {
+      "decided": "2026-09-27",
+      "chosen": "Scroll Velocity Text (21st.dev)"
     }
   }
 }

@@ -57,16 +57,16 @@ export default function Home() {
             Brad): white, carrying the philosophy sentence. The quote section
             (PointOfView) came off the home page; the component is kept. */}
         <NewArrivalRail />
-        {/* Tabs over one photo since 2026-09-27 (Brad); HorizontalRails is
-            kept for a switch back. */}
+        {/* Four category panels since 2026-09-27 (Brad picked C of three). */}
         <CategoryTabs />
+        {/* New arrivals straight after the categories, then the shop owner
+            (2026-09-27, Brad: Hayley came "too soon" right under the
+            categories). Up close follows her. */}
+        <NewInSlides />
+        <OwnerCard />
         {/* Shop the look ("Straight from the window") came off the home
             page on 2026-09-26 at Brad's request; the component is kept. */}
         <UpClose />
-        {/* New In after Up close (2026-09-24, Brad). Step inside was removed
-            the same day at his request. */}
-        <NewInSlides />
-        <OwnerCard />
         <WhyUs />
         {/* Renders nothing until lib/reviews.ts holds her real Google reviews. */}
         <Reviews />

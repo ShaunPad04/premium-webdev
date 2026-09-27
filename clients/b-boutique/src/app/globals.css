@@ -11254,49 +11254,61 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
   .ifn-socials { margin-left: 0; justify-content: center; }
 }
 
-/* Shop by category as four panels (2026-09-27, Brad picked C, "Hover
-   expand"; CategoryTabs.tsx). The panel pointed at or focused opens to the
-   whole portrait with a white Shop pill; the others narrow to strips with
-   the name running up them. Phones stack the four as bands. The heading
-   takes the site's h2 style from type.css.
-   The open/close animates flex-grow, a layout property, against the house
-   rule: accepted for four boxes, and checked under a throttled CPU. */
+/* Shop by category (CategoryTabs.tsx). The heading takes the site's h2
+   style from type.css.
+   Phones and tablets: swipe cards (2026-09-27, Brad picked B of three
+   phone layouts): one 3:4 portrait at a time, the next peeking in, native
+   scroll-snap, each card with its name and a white Shop pill. Every card is
+   a plain link; nothing opens first.
+   Desktop: four panels (Brad picked C, "Hover expand"). The panel pointed
+   at or focused opens to the whole portrait with a white Shop pill; the
+   others narrow to strips with the name running up them. The open/close
+   animates flex-grow, a layout property, against the house rule: accepted
+   for four boxes, and checked under a 4x throttled CPU (60fps median). */
 .ctab { --ctab-ease: cubic-bezier(0.16, 1, 0.3, 1); background: #FFFFFF; color: #0E0B0C; padding-top: clamp(40px, 5vw, 56px); }
 .ctab-inner { padding-inline: 16px; }
 .ctab-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
 .ctab-h { margin: 0; }
 .ctab-all { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: inherit; text-decoration: none; font: 600 12px/1 var(--font-body), sans-serif; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; }
 .ctab-all:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-.ctab-row { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; height: min(150svh, 1100px); }
-.ctab-panel { position: relative; flex: 1 1 0; min-width: 0; min-height: 0; overflow: hidden; border-radius: 14px; background: #3F3F41; transition: flex-grow 800ms var(--ctab-ease); }
-.ctab-panel[data-on] { flex-grow: 4; }
+.ctab-row {
+  list-style: none; margin: 0 -16px; padding: 0 16px; display: flex; gap: 10px;
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 16px; overscroll-behavior-x: contain; scrollbar-width: none;
+}
+.ctab-row::-webkit-scrollbar { display: none; }
+.ctab-panel { position: relative; flex: 0 0 82%; aspect-ratio: 3 / 4; scroll-snap-align: start; overflow: hidden; border-radius: 14px; background: #3F3F41; }
 .ctab-link { position: absolute; inset: 0; display: block; color: #FFFFFF; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 .ctab-link:focus-visible { outline: 2px solid #FFFFFF; outline-offset: -6px; border-radius: inherit; }
 .ctab-link::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(14, 11, 12, 0.6), rgba(14, 11, 12, 0.05) 50%); pointer-events: none; }
 .ctab-pic, .ctab-pic img { display: block; width: 100%; height: 100%; }
 .ctab-pic img { object-fit: cover; object-position: 50% 20%; }
-/* Phones: a closed band is wide and short, so it shows the faces. */
-.ctab-panel:not([data-on]) .ctab-pic img { object-position: 50% 8%; }
 .ctab-label { position: absolute; z-index: 1; left: 16px; bottom: 16px; display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
 .ctab-n { font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.16em; opacity: 0.8; }
-.ctab-name { font-family: "Bodoni Moda", Georgia, serif; font-size: clamp(26px, 2.6vw, 44px); line-height: 1; }
+.ctab-name { font-family: "Bodoni Moda", Georgia, serif; font-size: clamp(26px, 7.4vw, 44px); line-height: 1; }
 .ctab-cta {
-  position: absolute; z-index: 1; right: 16px; bottom: 14px; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px;
+  position: absolute; z-index: 1; right: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px;
   border-radius: 999px; background: #FFFFFF; color: #0E0B0C; font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.12em; text-transform: uppercase;
-  opacity: 0; transform: translateY(8px); transition: opacity 300ms var(--ctab-ease), transform 500ms var(--ctab-ease);
 }
-.ctab-panel[data-on] .ctab-cta { opacity: 1; transform: none; transition-delay: 200ms; }
-@media (min-width: 768px) { .ctab-inner { padding-inline: clamp(32px, 4vw, 72px); } }
+/* "Shop" on a card; "Shop jackets" on a desktop panel, which has room. */
+.ctab-cta-cat { display: none; }
+@media (min-width: 768px) {
+  .ctab-inner { padding-inline: clamp(32px, 4vw, 72px); }
+  .ctab-row { margin-inline: calc(-1 * clamp(32px, 4vw, 72px)); padding-inline: clamp(32px, 4vw, 72px); scroll-padding-inline: clamp(32px, 4vw, 72px); }
+  .ctab-panel { flex-basis: 44%; }
+}
 @media (min-width: 1024px) {
   .ctab-inner { max-width: calc(1520px + 2 * clamp(32px, 4vw, 72px)); margin: 0 auto; }
   .ctab-head { margin-bottom: 24px; }
-  .ctab-row { flex-direction: row; gap: 12px; height: clamp(520px, 74svh, 780px); }
-  .ctab-panel { border-radius: 22px; }
-  .ctab-panel:not([data-on]) .ctab-pic img { object-position: 50% 20%; }
+  .ctab-row { margin: 0; padding: 0; overflow: visible; scroll-snap-type: none; gap: 12px; height: clamp(520px, 74svh, 780px); }
+  .ctab-panel { flex: 1 1 0; min-width: 0; aspect-ratio: auto; border-radius: 22px; transition: flex-grow 800ms var(--ctab-ease); }
+  .ctab-panel[data-on] { flex-grow: 4; }
+  .ctab-name { font-size: clamp(26px, 2.6vw, 44px); }
   .ctab-label { left: 28px; bottom: 26px; }
   /* Closed panels: the name runs up the strip. */
   .ctab-panel:not([data-on]) .ctab-label { left: 50%; bottom: 28px; writing-mode: vertical-rl; transform: translateX(-50%) rotate(180deg); }
-  .ctab-cta { right: 24px; bottom: 22px; min-height: 48px; padding: 0 22px; }
+  .ctab-cta { right: 24px; bottom: 22px; min-height: 48px; padding: 0 22px; opacity: 0; transform: translateY(8px); transition: opacity 300ms var(--ctab-ease), transform 500ms var(--ctab-ease); }
+  .ctab-panel[data-on] .ctab-cta { opacity: 1; transform: none; transition-delay: 200ms; }
+  .ctab-cta-cat { display: inline; }
 }
 @media (prefers-reduced-motion: reduce) { .ctab-panel, .ctab-cta { transition: none !important; } }
 
@@ -11438,3 +11450,109 @@ h3.pol-h { font-size: clamp(20px, 2.3vw, 27px); line-height: 1.22; }
 
 
 
+
+/* Shop owner portrait on phones (2026-09-27, Brad: "too sharp"): inset
+   and rounded like the category bands above it (16px in, 14px corners),
+   instead of square corners 4px from the screen edge. The role and her
+   name move in with it. */
+@media (max-width: 1023px) {
+  .owner-portrait { width: auto; margin-inline: 16px; border-radius: 14px; overflow: hidden; }
+  .owner-eyebrow, .owner .owner-name { margin-inline: 36px; }
+}
+
+/* Up close as the Circular Split Roll (2026-09-27, Brad; home/UpClose.tsx,
+   ui/circular-split-roll.tsx). White, ink type; the material names in the
+   serif, like the category names; the cards take the category radius. */
+.uc3 { background: #FFFFFF; color: #0E0B0C; padding-top: clamp(56px, 7vw, 104px); }
+.uc3-head { padding-inline: 16px; text-align: center; }
+.uc3-eyebrow { margin: 0; color: rgba(14, 11, 12, 0.72); }
+h2.uc3-h { margin: 12px 0 0; }
+h2.uc3-h em { font-style: normal; }
+.csr { background: #FFFFFF; color: #0E0B0C; }
+.csr-left, .csr-grid-title { font-family: "Bodoni Moda", Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+.csr-card { border-radius: 18px; background: #3F3F41; box-shadow: 0 30px 60px -24px rgba(14, 11, 12, 0.35); }
+.csr-grid { padding: 28px 16px clamp(48px, 10vw, 72px); }
+.csr-grid-list { list-style: none; margin: 0 auto; padding: 0; max-width: 1024px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; }
+@media (min-width: 768px) { .csr-grid { padding-inline: clamp(32px, 4vw, 72px); } .csr-grid-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px 20px; } }
+.csr-grid-list .csr-card { border-radius: 14px; box-shadow: none; }
+h3.csr-grid-title { margin: 10px 0 0; text-align: center; font-size: clamp(20px, 5.6vw, 28px) !important; line-height: 1.1; }
+/* Seven fabrics: the odd one out on the last row sits in the middle. */
+.csr-grid-list > li:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; width: calc(50% - 6px); }
+@media (min-width: 768px) {
+  .csr-grid-list > li:last-child:nth-child(odd) { grid-column: auto; justify-self: stretch; width: auto; }
+  .csr-grid-list > li:last-child:nth-child(3n + 1) { grid-column: 2; }
+}
+
+/* New arrivals caption on phones, as the live site has it (2026-09-27,
+   Brad, from a screenshot of bboutiqueclee.com): the category in small
+   capitals, the name in the sans in sentence case, then the price.
+   type.css sets every h3 in the serif with !important, hence the same here. */
+@media (max-width: 767px) {
+  /* #new-in: product-slides.css loads after this file and hides it. */
+  #new-in .ps-caption { display: block; margin: 0 0 10px; }
+  .nis h3.ps-title:not(.sr-only) {
+    font-family: var(--font-body), system-ui, sans-serif !important;
+    font-weight: 400 !important;
+    letter-spacing: -0.01em !important;
+    font-size: 22px;
+    line-height: 1.25;
+  }
+  #new-in .ps-price { margin-top: 12px; }
+}
+/* Up close on phones and tablets: the card pile (image-stack-carousel),
+   2026-09-27, Brad. Desktop keeps the roll; reduced motion gets the grid. */
+.uc3-stack { display: none; }
+@media (max-width: 1025px) {
+  /* overflow-x: clip: the fanned cards behind reach past the screen edge,
+     which widened the whole page on a phone (the header bag was cut off). */
+  .uc3-stack { display: block; padding: 28px 16px clamp(56px, 12vw, 80px); overflow-x: clip; }
+}
+@media (prefers-reduced-motion: reduce) { .uc3-stack { display: none !important; } }
+.isc { display: flex; flex-direction: column; align-items: center; }
+.isc > div:first-child { margin-top: 12px; }
+.isc-card { background: #3F3F41; box-shadow: 0 24px 48px -20px rgba(14, 11, 12, 0.4); }
+.isc-title { margin: 44px 0 0; font-family: "Bodoni Moda", Georgia, serif; font-size: 32px; line-height: 1.1; text-align: center; }
+.uc3-hint { margin: 10px 0 0; text-align: center; font: 600 11px/1.4 var(--font-body), sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(14, 11, 12, 0.64); }
+
+/* Shop by category on desktop after the 21st.dev Elastic Gallery (2026-09-27,
+   Brad). Same four panels and flex-grow accordion; closed panels dim and sit
+   slightly zoomed in, the open one gets a glass tag, its name in capitals and
+   a "Shop ↗" line; closed ones show their name running up the middle. The
+   dim is an ink layer's opacity, not the original's brightness() filter:
+   filter is not something this site animates. Phones keep the swipe cards. */
+.ctab-d, .ctab-v { display: none; }
+@media (min-width: 1024px) {
+  .ctab-panel { transition: flex-grow 700ms cubic-bezier(0.25, 1, 0.5, 1); }
+  .ctab-label, .ctab-cta { display: none; }
+  .ctab-pic img { transform: scale(1.1); transition: transform 1000ms cubic-bezier(0.25, 1, 0.5, 1); }
+  .ctab-panel[data-on] .ctab-pic img { transform: none; }
+  /* The shade: a gradient for the open panel's words, a flat dim for the rest. */
+  .ctab-link::after { background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2) 45%, rgba(0, 0, 0, 0) 75%); opacity: 1; transition: opacity 500ms ease; }
+  .ctab-link::before { content: ""; position: absolute; inset: 0; z-index: 1; background: #000; opacity: 0.5; transition: opacity 500ms ease; pointer-events: none; }
+  .ctab-panel:not([data-on]) .ctab-link::after { opacity: 0; }
+  .ctab-panel[data-on] .ctab-link::before { opacity: 0; }
+  @media (hover: hover) { .ctab-panel:not([data-on]):hover .ctab-link::before { opacity: 0.25; } }
+  .ctab-d {
+    position: absolute; z-index: 2; left: 32px; right: 32px; bottom: 32px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+    opacity: 0; transform: translateY(48px); transition: opacity 500ms ease, transform 500ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  .ctab-panel[data-on] .ctab-d { opacity: 1; transform: none; transition-delay: 200ms; }
+  .ctab-d-tag {
+    padding: 5px 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 999px; background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    font: 600 11px/1.2 var(--font-body), sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #FFFFFF;
+  }
+  .ctab-d-title { font-family: var(--font-body), sans-serif; font-weight: 500; font-size: clamp(40px, 3.6vw, 56px); line-height: 1; letter-spacing: -0.01em; text-transform: uppercase; color: #FFFFFF; white-space: nowrap; }
+  .ctab-d-go { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; font: 600 13px/1 var(--font-body), sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.8); }
+  .ctab-v {
+    display: block; position: absolute; z-index: 2; left: 50%; bottom: 32px; transform: translateX(-50%);
+    writing-mode: vertical-rl; white-space: nowrap; color: #FFFFFF;
+    font: 600 20px/1 var(--font-body), sans-serif; letter-spacing: 0.16em; text-transform: uppercase;
+    opacity: 1; transition: opacity 500ms ease 500ms, transform 500ms ease 500ms;
+  }
+  .ctab-panel[data-on] .ctab-v { opacity: 0; transform: translateX(-50%) scale(0.5); transition-delay: 0ms; }
+}
+@media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
+  .ctab-pic img, .ctab-link::after, .ctab-link::before, .ctab-d, .ctab-v { transition: none !important; }
+}

@@ -33,13 +33,13 @@ test('New In on phones: one piece, no sizes, no arrows', async ({ page }, testIn
   await expect(page.locator('#new-in .ps-step').first()).toBeHidden();
 });
 
-test('Up close: three fabrics, each linking to its piece', async ({ page }) => {
+test('Up close: seven materials, each a close-up named by its material only', async ({ page }) => {
   await page.goto('/', { waitUntil: 'networkidle' });
-  const links = page.locator('.scw .scw-spec-link');
-  await expect(links).toHaveCount(3);
-  expect(await links.evaluateAll((as) => as.map((a) => a.getAttribute('href')))).toEqual([
-    '/shop/cosy-hooded-boucle-coat',
-    '/shop/fair-isle-jumper',
-    '/shop/leopard-embroidered-velvet-bomber',
-  ]);
+  /* The grid is what a screen reader reads (and what phones see); the
+     rolling layer on a desktop is the same seven, decorative. */
+  const names = page.locator('.uc3 .csr-grid-title');
+  await expect(names).toHaveText(['Velvet', 'Bouclé', 'Jacquard knit', 'Lace', 'Tweed check', 'Chunky knit', 'Velour']);
+  const alts = await page.locator('.uc3 .csr-grid img').evaluateAll((els) => els.map((e) => e.getAttribute('alt')));
+  expect(alts.every((a) => a && a.startsWith('Close-up of the '))).toBe(true);
 });
+

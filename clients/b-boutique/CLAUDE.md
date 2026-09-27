@@ -996,9 +996,55 @@ tabs over one widened 16:9 photo, which he called terrible on desktop.
 
 - The panel pointed at or focused opens to the whole portrait with a white
   "Shop <category>" pill; the others narrow to strips, name running up them.
-  Phones stack them as bands: first tap opens, second shops.
+  On a touch screen that wide, the first tap opens, the second shops.
+- **Phones and tablets: swipe cards** (Brad picked B of three phone layouts
+  the same day; A a 2x2 grid, C a list of names with thumbnails). One 3:4
+  portrait at a time (82% wide, 44% on tablets), the next peeking in, native
+  CSS scroll-snap, each card a plain link with its name and a "Shop" pill.
+  The stacked bands it replaced ran ~1100px and showed only faces.
 - Her four real 3:4 portraits (`/img/cat/*-p800|p1200`). The Higgsfield-
   widened 16:9 versions (`*-w1600|w2400`) were deleted with the tabs; git
   has them.
 - Still `#rails`. The open/close animates `flex-grow` (layout), accepted for
   four boxes; reduced motion drops the transition.
+
+- **Desktop since later the same day: the 21st.dev Elastic Gallery look**
+  on the same panels (Brad): closed panels dim (an ink layer's opacity, not
+  the original's brightness() filter) and sit zoomed 1.1, their name running
+  up them in capitals; the open one shows a glass "03 / 04" tag, its name in
+  capitals and "Shop <category> ↗". Link names come from aria-label.
+
+**Home order, 2026-09-27 (Brad):** hero, marquee, Shop by category, New
+arrivals, the shop owner, Up close, Why B Boutique, Reviews, Visit. The
+owner came straight after the categories first, then Brad moved New
+arrivals between them ("Hayley is there so soon"). On phones her
+portrait is inset 16px with 14px corners like the category cards (Brad: the
+square corners looked "too sharp").
+
+## Up close, the marquee, New arrivals — 2026-09-27
+
+- **Up close** (`home/UpClose.tsx`): seven fabric close-ups, each named by
+  its material only (Brad: "only an image of the material, and then a little
+  line like 'velvet'"): Velvet, Bouclé, Jacquard knit, Lace, Tweed check,
+  Chunky knit, Velour. Every one is the Higgsfield macro of a real piece's
+  fabric (assets/fabric, 2026-09-24), cut to 640px squares in
+  `public/img/fabric/roll`. A fabric whose piece leaves the stocklist drops out.
+  - Desktop: the 21st.dev **Circular Split Roll** (`ui/circular-split-roll.tsx`):
+    names and photos roll round two circles, pinned by ScrollTrigger for
+    ~3 screens. GSAP loads on demand; kept in step with Lenis.
+  - Phones and tablets: the 21st.dev **Image Stack Carousel**
+    (`ui/image-stack-carousel.tsx`, on `motion/react`): five of the seven
+    (Brad: seven "takes too long swiping"; tweed and velour left out) in a
+    fanned pile; a throw (far or fast) or a tap flies the card off with a
+    spin and it drops to the back. The pile's section clips its overflow: the
+    fan once widened the whole phone page.
+  - Reduced motion: a plain grid of all seven. The grid is always in the page
+    for screen readers; both moving versions are aria-hidden.
+  - The swing-tag version (`StickyContentWrapper`) is kept in components/ui.
+- **Marquee under the hero** (`NewArrivalRail`): driven by the 21st.dev
+  **Scroll Velocity Text** (`ui/scroll-velocity-text.tsx`): drifts left,
+  speeds up with the scroll, turns round on the way up; only while on screen;
+  still under reduced motion (a change from the original).
+- **New arrivals caption on phones**, as the live site has it (Brad, from a
+  screenshot): category in small capitals, the name in the sans, the price.
+  "View the piece" is kept below it for now; the live site has no button.

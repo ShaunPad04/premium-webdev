@@ -5,18 +5,25 @@ import { useRef, useState } from "react";
 
 import { featured } from "@/lib/shop";
 
-/* Shop by category as four panels (2026-09-27, Brad picked C, "Hover
- * expand", of three 21st-ui-explore directions; A was four portraits in a
- * row, B a list of names beside one photo). It replaced pill tabs over one
- * widened 16:9 photo, which he called terrible on desktop.
- *
- * The panel pointed at, or focused, opens to the whole portrait with a
- * "Shop <category>" pill; the others narrow to strips with the name running
- * up them. Phones stack the four as bands: the first tap opens a closed
- * band, the second (on the open one) shops. Her four real 3:4 portraits;
- * the widened desktop versions were retired with the tabs.
+/* Shop by category (2026-09-27). Desktop: four panels, Brad's pick C
+ * ("Hover expand") of three 21st-ui-explore directions; the panel pointed at
+ * or keyboard-focused opens to the whole portrait with a "Shop <category>"
+ * pill, the others narrow to strips with the name running up them, and on a
+ * touch screen of that width the first tap opens a panel, the second shops.
+ * Phones and tablets: swipe cards, his pick B of three phone layouts: one
+ * 3:4 portrait at a time with the next peeking in (CSS scroll-snap), each a
+ * plain link with its name and a Shop pill. It replaced pill tabs over one
+ * widened 16:9 photo. Her four real 3:4 portraits throughout.
  *
  * Stays at #rails, so every "/#rails" link still lands here. */
+
+/* The open-first tap belongs to the desktop panels only; on a phone each
+   card is a plain link. */
+const desk = () => window.matchMedia("(min-width: 1024px)").matches;
+
+const UpRight = () => (
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+);
 
 const Arrow = () => (
   <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -43,10 +50,11 @@ export function CategoryTabs() {
               <Link
                 href={c.href}
                 className="ctab-link"
+                aria-label={c.name}
                 onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) setOn(i); }}
                 onPointerDown={(e) => { touch.current = e.pointerType !== "mouse"; }}
                 onClick={(e) => {
-                  if (touch.current && i !== on) { e.preventDefault(); setOn(i); }
+                  if (touch.current && i !== on && desk()) { e.preventDefault(); setOn(i); }
                 }}
               >
                 <picture className="ctab-pic">
@@ -58,7 +66,18 @@ export function CategoryTabs() {
                   <span className="ctab-n" aria-hidden="true">{c.number}</span>
                   <span className="ctab-name">{c.name}</span>
                 </span>
-                <span className="ctab-cta" aria-hidden="true">Shop {c.name.toLowerCase()} <Arrow /></span>
+                <span className="ctab-cta" aria-hidden="true">Shop<span className="ctab-cta-cat"> {c.name.toLowerCase()}</span> <Arrow /></span>
+                {/* Desktop, after the 21st.dev Elastic Gallery (Brad,
+                    2026-09-27): a glass tag, the name in capitals and a
+                    "Shop ↗" line on the open panel; the name running up a
+                    closed one. Decorative copies: the link's name is the
+                    category's (aria-label). */}
+                <span className="ctab-d" aria-hidden="true">
+                  <span className="ctab-d-tag">{c.number} / {String(featured.length).padStart(2, "0")}</span>
+                  <span className="ctab-d-title">{c.name}</span>
+                  <span className="ctab-d-go">Shop {c.name.toLowerCase()} <UpRight /></span>
+                </span>
+                <span className="ctab-v" aria-hidden="true">{c.name}</span>
               </Link>
             </li>
           ))}

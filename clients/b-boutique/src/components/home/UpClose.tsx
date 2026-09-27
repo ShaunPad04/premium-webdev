@@ -1,88 +1,56 @@
-import { StickyContentWrapper, type StickyContentItem } from "@/components/ui/sticky-content-wrapper";
+import CircularSplitRoll, { type CircularSplitRollItem } from "@/components/ui/circular-split-roll";
+import { SwipeCards } from "@/components/ui/image-stack-carousel";
 import { stocklist } from "@/lib/stocklist";
 
-/* Up close (2026-09-26, Brad: the 21st.dev sticky content component, three
- * fabrics instead of seven). Each fabric's close-up on one side; on the
- * other, the fabric: what it is and how to look after it, and a link to
- * the piece it comes from. No sizes or colours (Brad, 2026-09-26: the
- * material, not the listing). The words are the stocklist's own: the
- * material sentences lifted from each piece's description, and its care
- * line, so nothing here says more than the product page does.
- * The three are the ones the section has always named: boucle, the
- * knitted-in Fair Isle yoke and embroidered velvet. The vertical image stack
- * and the full-screen version it replaces are kept in components/ui.
+/* Up close (2026-09-27, Brad: the 21st.dev Circular Split Roll, "only an
+ * image of the material, and then a little line like 'velvet'"). Seven
+ * fabric close-ups, each named by its material only, rolling past as the
+ * page scrolls on a desktop. Phones and tablets get the 21st.dev Image
+ * Stack Carousel instead (Brad, same day: the grid "is not good" on a
+ * phone): the seven in a pile, swiped or tapped to the back, the front
+ * one's name under it. Under reduced motion, a plain grid of the same. It replaced the sticky swing-tag version
+ * (StickyContentWrapper, kept in components/ui).
  *
- * The close-ups are generated texture studies of each piece's fabric
- * (assets/fabric); the alt text says whose fabric, not that it is a
- * photograph of the garment. */
-/* `material`: the material sentences of the piece's `full` description in
-   lib/stocklist.ts, trimmed to the cloth. Change them there first. */
-const FRAMES = [
-  {
-    short: "Boucle", src: "boucle", slug: "cosy-hooded-boucle-coat", fabric: "Soft curly boucle",
-    material: "A warm brown boucle with a curly, textured surface, cut into a relaxed cocoon-shaped coat.",
-  },
-  {
-    short: "Jacquard knit", src: "fairisle", slug: "fair-isle-jumper", fabric: "Knitted-in jacquard",
-    material: "The Fair Isle pattern across the yoke is knitted in, not printed, so it keeps its definition wash after wash.",
-  },
-  {
-    short: "Velvet", src: "velvet", slug: "leopard-embroidered-velvet-bomber", fabric: "Velvet, metallic embroidery",
-    material: "Plush velvet, with running leopards embroidered across the front and down the sleeves in metallic gold and tan.",
-  },
+ * Every close-up is a Higgsfield macro generated from that piece's own
+ * product photograph (assets/fabric, 2026-09-24), so each name is the
+ * material of a real piece in her stock; the alt text says whose. Squares
+ * cut from assets/fabric at 640px into public/img/fabric/roll. A fabric
+ * whose piece has left the stocklist drops out. */
+
+const FABRICS = [
+  { id: "velvet", title: "Velvet", slug: "leopard-embroidered-velvet-bomber" },
+  { id: "boucle", title: "Bouclé", slug: "cosy-hooded-boucle-coat" },
+  { id: "fairisle", title: "Jacquard knit", slug: "fair-isle-jumper" },
+  { id: "lace", title: "Lace", slug: "lace-blouse-with-layered-ruffle" },
+  { id: "tweed", title: "Tweed check", slug: "check-tweed-shirt" },
+  { id: "knit", title: "Chunky knit", slug: "chunky-knit-flower-cardigan" },
+  { id: "velour", title: "Velour", slug: "velour-lounge-set" },
 ];
 
-/* Laid out as a specimen (2026-09-27, Brad: "looks unfinished", "about 5
-   different fonts"): a counter, the fabric's name, one sentence, then a
-   ruled sheet with its care and the piece it is found in. No composition
-   row: none of the three has a published fibre content (fabricPublished is
-   false in the stocklist), and a percentage is not something to guess. */
-const wide = (n: string, ext: string) => [1600, 2400, 3200].map((w) => `/img/fabric/${n}-wide-${w}.${ext} ${w}w`).join(", ");
-const tall = (n: string, ext: string) => [800, 1200, 1800].map((w) => `/img/fabric/${n}-tall-${w}.${ext} ${w}w`).join(", ");
-
-const LIVE = FRAMES.filter((f) => stocklist.some((x) => x.slug === f.slug));
-
-const ITEMS: StickyContentItem[] = LIVE.map((f, i) => {
-  const p = stocklist.find((x) => x.slug === f.slug)!;
-  return {
-    kicker: `${String(i + 1).padStart(2, "0")} / ${String(LIVE.length).padStart(2, "0")}`,
-    heading: f.fabric,
-    paragraphs: [f.material],
-    specs: [
-      ...(p.care ? [{ label: "Care", value: p.care }] : []),
-      { label: "Found in", value: p.name, href: `/shop/${p.slug}`, srText: " (view the piece)" },
-    ],
-    /* 4K Higgsfield recreations of the earlier close-ups (2026-09-27, Brad:
-       the old 1728px portraits were soft full-bleed): a tall 9:16 set for
-       portrait screens and a wide 16:9 set for landscape ones, so neither
-       is cropped out of the other. Built by scripts/build-fabric.py. */
-    image: `/img/fabric/${f.src}-wide-1600.jpg`,
-    sources: [
-      { media: "(max-aspect-ratio: 1/1)", type: "image/avif", srcSet: tall(f.src, "avif"), sizes: "max(100vw, 56svh)" },
-      { media: "(max-aspect-ratio: 1/1)", type: "image/webp", srcSet: tall(f.src, "webp"), sizes: "max(100vw, 56svh)" },
-      { type: "image/avif", srcSet: wide(f.src, "avif") },
-      { type: "image/webp", srcSet: wide(f.src, "webp") },
-    ],
-    alt: `Close-up of the fabric of the ${p.name}`,
-  };
+const ITEMS: CircularSplitRollItem[] = FABRICS.flatMap((f) => {
+  const piece = stocklist.find((p) => p.slug === f.slug);
+  return piece
+    ? [{ id: f.id, title: f.title, avif: `/img/fabric/roll/${f.id}.avif`, webp: `/img/fabric/roll/${f.id}.webp`, alt: `Close-up of the ${f.title.toLowerCase()} of the ${piece.name}` }]
+    : [];
 });
+
+/* Five on phones (Brad, 2026-09-27: seven "takes too long swiping"); the
+   desktop roll keeps all seven. Tweed check and velour are the two left out:
+   the five kept are the most different from one another. */
+const PHONE = ITEMS.filter((i) => ["velvet", "boucle", "fairisle", "lace", "knit"].includes(i.id));
 
 export function UpClose() {
   return (
-    <StickyContentWrapper
-      className="ucs2"
-      items={ITEMS}
-      index={LIVE.map((f) => f.short)}
-      labelledBy="uc-h"
-      /* The wide 16:9 set on landscape screens: drawn at the wider of the
-         screen and 1.78 x its height. The tall set carries its own. */
-      sizes="max(100vw, 178svh)"
-      header={
-        <>
-          <p className="label ucs-eyebrow">Up close</p>
-          <h2 id="uc-h" className="ucs-h">Made to be <em>touched.</em></h2>
-        </>
-      }
-    />
+    <section id="up-close" className="uc3" aria-labelledby="uc-h">
+      <div className="uc3-head">
+        <p className="label uc3-eyebrow">Up close</p>
+        <h2 id="uc-h" className="uc3-h">Made to be <em>touched.</em></h2>
+      </div>
+      <CircularSplitRoll items={ITEMS} cardSize={280} />
+      <div className="uc3-stack">
+        <SwipeCards cards={PHONE} />
+        <p className="uc3-hint" aria-hidden="true">Swipe or tap</p>
+      </div>
+    </section>
   );
 }

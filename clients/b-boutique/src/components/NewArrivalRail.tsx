@@ -1,4 +1,5 @@
 import { philosophy } from "@/lib/about";
+import { ScrollVelocityRow } from "@/components/ui/scroll-velocity-text";
 
 /* The band under the hero since 2026-09-23 (Brad's reference): NEW ARRIVAL
  * in the hero's Anton caps, white on black, a red dot between each, moving.
@@ -16,25 +17,23 @@ import { philosophy } from "@/lib/about";
 /* 2026-09-26, Brad (idea A): the philosophy section left the home page and
    its approved sentence (lib/about.ts) runs here in place of NEW ARRIVAL. */
 const WORDS = [philosophy.statement.replace(/\.$/, ""), "One of one", "Cleethorpes"];
-const REPEAT = 4;
-
+/* 2026-09-27, Brad: the 21st.dev Scroll Velocity Text drives it now. It
+   drifts left on its own, speeds up with the scroll and turns round when the
+   reader scrolls back up; it copies the one set to fill the band, so the old
+   four repeats and the doubled CSS track are gone. It stands still under reduced
+   motion. */
 export function NewArrivalRail() {
-  const items = Array.from({ length: REPEAT }).flatMap((_, i) =>
-    WORDS.map((w) => (
-      <span key={`${i}-${w}`} className="stmt-item">
-        <span className="stmt-text">{w}</span>
-        <span className="arr-dot" />
-      </span>
-    )),
-  );
-
   return (
     <div className="stmt-rail arr-rail" aria-hidden="true">
       <div className="stmt-viewport">
-        <div className="stmt-track">
-          <div className="stmt-set">{items}</div>
-          <div className="stmt-set">{items}</div>
-        </div>
+        <ScrollVelocityRow baseVelocity={6} direction={1}>
+          {WORDS.map((w) => (
+            <span key={w} className="stmt-item">
+              <span className="stmt-text">{w}</span>
+              <span className="arr-dot" />
+            </span>
+          ))}
+        </ScrollVelocityRow>
       </div>
     </div>
   );
