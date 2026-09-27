@@ -84,6 +84,15 @@ export function CornerMenu() {
 
     document.addEventListener("keydown", onKey);
 
+    /* The B in the header stays above the panel, so it is a way home from
+       inside the menu (2026-09-27, Brad). Its own link does the navigating;
+       this only closes the panel behind it. Capture phase, because the
+       header's own click handling stops the event bubbling to document. */
+    const onMark = (e: MouseEvent) => {
+      if ((e.target as Element | null)?.closest?.(".navbar-mark")) setOpen(false);
+    };
+    document.addEventListener("click", onMark, true);
+
     // Lock the page and take the rest of it out of the a11y tree.
     /* Locking the body removes a classic (Windows) scrollbar, and the page
        and the fixed header both widen into the space it left: the client saw
@@ -125,6 +134,7 @@ export function CornerMenu() {
 
     return () => {
       document.removeEventListener("keydown", onKey);
+      document.removeEventListener("click", onMark, true);
       document.body.style.overflow = prev;
       document.body.style.paddingRight = prevPad;
       document.documentElement.style.removeProperty("--lock-gap");
