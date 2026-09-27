@@ -120,3 +120,26 @@ h3.scw-h {
   .scw-head { margin-bottom: 16px; }
   .scw-slot { height: 340px; }
 }
+
+/* The tag's index as pills (2026-09-27, Brad: "these should also be
+   pilled"), and the words stacked in one grid cell rather than absolutely
+   placed, so the tag is as tall as its longest fabric: the velvet's care
+   line pushed Found in into the index when the slot was a fixed height. */
+@media (min-width: 1026px) {
+  .scw-slot { display: grid; height: auto; }
+  .scw-content { position: relative; inset: auto; grid-area: 1 / 1; }
+  .scw-index { justify-content: flex-start; gap: 8px; margin-top: 24px; padding-top: 0; border-top: 0; }
+  .scw-index-btn { display: inline-flex; align-items: center; padding: 0 16px; border: 1px solid rgba(14, 11, 12, 0.18); border-radius: 999px; background: #FFFFFF; transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease; }
+  .scw-index-btn:hover { border-color: var(--scw-ink); }
+  .scw-index-btn[aria-current="true"] { background: var(--scw-ink); border-color: var(--scw-ink); color: #FFFFFF; text-decoration: none; }
+  .scw-index-btn:focus-visible { outline-offset: 3px; }
+}
+@media (min-width: 1026px) and (max-width: 1279px) {
+  .scw-index-btn { padding: 0 12px; }
+  .scw-index-btn span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .scw-index-btn { transition: none; } }
+
+/* Found in: no underline (2026-09-27, Brad: "it looks off"); the arrow
+   says it is a link, and it nudges on hover. */
+.scw-spec-link { text-decoration: none; }
