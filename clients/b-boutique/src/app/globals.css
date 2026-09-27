@@ -10971,7 +10971,8 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .vx-cardi dd { overflow-wrap: normal; }
 .vx-cardi {
   position: relative; display: flex; flex-direction: column; gap: 6px;
-  padding: 18px; border-radius: 16px; background: #F7F7F5;
+  /* White with a thin dark line (2026-09-27, Brad), not grey. */
+  padding: 18px; border: 1px solid rgba(14, 11, 12, 0.78); border-radius: 16px; background: #FFFFFF;
   transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1), background-color 300ms ease;
 }
 .vx-ico { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 6px; border-radius: 50%; background: #FFFFFF; color: var(--bb-black); box-shadow: 0 0 0 1px rgba(14, 11, 12, 0.08); }
@@ -10986,6 +10987,22 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .vx-cardi--link:has(.vx-cardi-a:focus-visible) { outline: 2px solid var(--bb-black); outline-offset: 3px; }
 .vx-cardi-a:focus-visible { outline: none; }
 @media (prefers-reduced-motion: reduce) { .vx-cardi { transition: none; } .vx-cardi--link:hover { transform: none; } }
+/* Icons on the right of their label (2026-09-27, Brad): the clock beside
+   "Opening hours", the P beside "Parking". The email card keeps its icon on
+   the left on wider screens, and moves it right on a phone like the others. */
+.vx-cardi:not(:has(a[href^="mailto:"])),
+.vx-cardi:has(a[href^="mailto:"]) {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; row-gap: 6px; align-items: center; align-content: start;
+}
+.vx-cardi .vx-ico { grid-column: 2; grid-row: 1; margin-bottom: 0; }
+.vx-cardi dt { grid-column: 1; grid-row: 1; }
+.vx-cardi dd { grid-column: 1 / -1; }
+@media (min-width: 600px) {
+  .vx-cardi:has(a[href^="mailto:"]) { grid-template-columns: 40px minmax(0, 1fr); column-gap: 14px; row-gap: 2px; }
+  .vx-cardi:has(a[href^="mailto:"]) .vx-ico { grid-column: 1; grid-row: 1 / span 2; }
+  .vx-cardi:has(a[href^="mailto:"]) dt, .vx-cardi:has(a[href^="mailto:"]) dd { grid-column: 2; }
+  .vx-cardi:has(a[href^="mailto:"]) dd { grid-row: 2; }
+}
 
 /* Home hero: the Fair Isle turn inside an orbiting word ring (HeroTurn.tsx,
    2026-09-27, after "Jellyfish Drift"). A tall track and a sticky stage;
