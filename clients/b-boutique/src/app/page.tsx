@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
-import { Hero } from "@/components/Hero";
 import { HeroTurn } from "@/components/HeroTurn";
 import { spinFor } from "@/lib/spin";
+import { openingSummary, shop } from "@/lib/shop";
 import { NewArrivalRail } from "@/components/NewArrivalRail";
 import { HorizontalRails } from "@/components/HorizontalRails";
 import { NewInSlides } from "@/components/NewInSlides";
@@ -41,20 +41,26 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
  * /faq came out). The cinematic statement scene it
  * replaced showed each piece three times with four full buy blocks. */
 export default function Home() {
-  /* The Fair Isle Jumper turn, on trial on the hero (?turn=a|b|c, see
-     HeroTurn). Nothing renders without ?turn. */
+  /* The hero is the Fair Isle Jumper turn for now (2026-09-27, Brad chose
+     it over the horses, which are kept in components/Hero.tsx). */
   const turn = spinFor("fair-isle-jumper", "hero");
   return (
     <>
       <MotionLayer />
-      <Nav />
+      {/* Solid from the first paint: the hero is white now. */}
+      <Nav solid />
       {/* home-rise is only a hook for the home page's section rules now; the
           hero scrolls normally (2026-09-27, Brad). */}
       <main id="main" className="flex-1 home-rise">
-        <div className="hero-track">
-          <Hero />
-          {turn ? <HeroTurn frames={turn.frames} generated={turn.generated} name="Fair Isle Jumper" /> : null}
-        </div>
+        {turn ? (
+          <HeroTurn
+            frames={turn.frames}
+            generated={turn.generated}
+            name="Fair Isle Jumper"
+            hours={openingSummary().replace(/\.$/, "")}
+            heading={`B Boutique — for every woman who walks in. Independent womenswear and homeware on ${shop.street}, ${shop.town}.`}
+          />
+        ) : null}
         <div className="rise">
         {/* The marquee is the first thing up over the hero (2026-09-26,
             Brad): white, carrying the philosophy sentence. The quote section

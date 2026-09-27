@@ -15,9 +15,11 @@ test('the home hero survives a swipe and carries no product dots', async ({ page
   page.on('pageerror', (e) => errors.push(String(e)));
   await page.goto('/', { waitUntil: 'networkidle' });
 
-  /* One frame (the red-field horses, back on 2026-09-26). A swipe must not crash it. */
-  const box = (await page.locator('.hero').boundingBox())!;
-  const y = box.y + box.height * 0.3;
+  /* The hero is the Fair Isle turn under the B Boutique masthead since
+     2026-09-27 (Brad; the horses are kept in components/Hero.tsx). A swipe
+     must not crash it. */
+  const box = (await page.locator('.th').boundingBox())!;
+  const y = box.y + 300;
   for (let i = 0; i < 2; i++) {
     await page.mouse.move(box.x + box.width * 0.7, y);
     await page.mouse.down();
@@ -29,7 +31,11 @@ test('the home hero survives a swipe and carries no product dots', async ({ page
   await expect(page.locator('.lk-look')).toHaveCount(0);
   expect(errors, errors.join('\n')).toEqual([]);
   await expect(page.getByText(/couldn.t load/)).toHaveCount(0);
-  /* The horses frame carries the name and one button (Brad, 26 Sep). */
-  await expect(page.locator('.hero .lm-title')).toBeVisible();
-  await expect(page.locator('.hero .hero-cta')).toBeVisible();
+  /* The page's one h1, and one button. */
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('.th .th-cta')).toBeVisible();
+  /* Scrolled through, she has turned once and stands facing front again. */
+  const travel = await page.evaluate(() => document.querySelector<HTMLElement>('.th')!.offsetHeight - window.innerHeight);
+  for (let s = 0; s < travel + 200; s += 120) { await page.mouse.wheel(0, 120); await page.waitForTimeout(40); }
+  await expect.poll(() => page.evaluate(() => getComputedStyle(document.querySelector('.th-pin')!).getPropertyValue('--p').trim())).toBe('1.0000');
 });
