@@ -1192,3 +1192,15 @@ underline, social buttons rise and fill, Back to top's arrow nudges up).
 The first bio paragraph ("We pride ourselves…") is left off the home page's
 owner card on desktop and phone (the About page keeps it), and "Get in
 touch" is a black pill on desktop.
+
+## Contact — 2026-09-27
+
+Brad picked **A, "Split panel"** of three 21st-ui-explore directions (B
+Email / Instagram / The shop as three framed cards over a framed form, C the
+email address set huge over a centred form), after 21st.dev "Contact Card".
+/contact: her letter-and-flowers photo (`/img/texture/contact`) as a tall
+rounded panel with "Get in touch" in white capitals and the glass "We reply
+by email" tag; beside it the email, Instagram and "Visit the shop" as pills,
+then the unchanged `ContactForm` and its privacy line. The dark masthead and
+the two-pane card are gone (its CSS with them). The ribbon band and Visit
+stay. The meta description said "Call" and now says "Email".

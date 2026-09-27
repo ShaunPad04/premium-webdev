@@ -175,6 +175,14 @@
         "Chapters",
         "Index"
       ]
+    },
+    "contact": {
+      "decided": "2026-09-27",
+      "layout": "Split panel: rounded photo panel with white capitals title and glass tag, contact pills and the form beside; ribbon and Visit below",
+      "rejected": [
+        "B Three framed cards",
+        "C Centred, email set huge"
+      ]
     }
   },
   "typography": {

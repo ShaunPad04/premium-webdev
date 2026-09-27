@@ -2,14 +2,11 @@ import type { Metadata } from "next";
 
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { MotionLayer } from "@/components/MotionLayer";
-import { PageMasthead } from "@/components/PageMasthead";
 import { ContactForm } from "@/components/ContactForm";
 import { RibbonBand } from "@/components/RibbonBand";
 import { Visit } from "@/components/Visit";
 import { addressLines, openingPhrase, shop } from "@/lib/shop";
 import { socials } from "@/lib/nav";
-import { RevealText } from "@/components/RevealText";
 
 const instagram = socials.find((x) => x.name === "Instagram");
 
@@ -17,105 +14,66 @@ export const metadata: Metadata = {
   title: "Contact",
   description:
     /* Derived, for the same reason as the site description: this said
-       "open Tuesday to Sunday" while the shop opened seven days. */
-    `Call B Boutique or send a message. ${addressLines.join(", ")} — open ${openingPhrase()}.`,
+       "open Tuesday to Sunday" while the shop opened seven days. It also said
+       "Call" long after phone numbers came off the site. */
+    `Email B Boutique or send a message. ${addressLines.join(", ")} — open ${openingPhrase()}.`,
   alternates: { canonical: "/contact" },
 };
 
-/* /contact.
+/* /contact — 2026-09-27, Brad picked A "Split panel" of three directions (B
+ * three framed cards, C the email address set huge), after 21st.dev "Contact
+ * Card", in the Shop by category's language: her letter-and-flowers photo as
+ * a tall rounded panel with the title on it, the form beside, and the three
+ * ways to reach the shop as pills above the form. Only confirmed details:
+ * the email, Instagram, the address. No phone (the client's instruction).
  *
- * The phone number is the primary channel and is placed first, because it is
- * the one that definitely works: it was confirmed by the client on 2026-09-06
- * and a phone rings whether or not anybody has wired up an inbox.
- *
- * The form is second, and it is honest about its own state — see ContactForm
- * and app/api/contact/route.ts. Until CONTACT_TO, CONTACT_FROM and
- * RESEND_API_KEY exist in the environment, submitting it produces a plainly
- * worded failure and the phone number rather than a false thank-you. That is
- * a launch blocker by design.
- *
- * No email address is printed anywhere on this page. shop.email is empty and
- * nothing may be guessed into it. */
+ * The form's copy deliberately does not promise where messages go: it has no
+ * inbox until CONTACT_TO / CONTACT_FROM / RESEND_API_KEY are set, and it
+ * reports failure plainly rather than faking a thank-you (locked decision 11). */
 export default function ContactPage() {
-
   return (
     <>
-      <MotionLayer />
-      <Nav />
+      <Nav solid />
       <main id="main" className="flex-1">
-        <PageMasthead
-          eyebrow="Get in touch"
-          title="Contact."
-          /* Deliberately does not promise where the form goes. It has no
-             inbox configured yet, and a masthead claiming otherwise would be
-             the exact thing the form itself is built not to do. */
-          lede="Email the shop, or come in and ask. If it is easier to write, there is a form below."
-          /* No email line in the masthead (2026-09-27, Brad): the "Get in
-             touch" card directly below already gives the address. */
-        texture="contact"
-        />
-
-        {/* One card, two panes (2026-09-23; layout after the "Contact
-            Card" on 21st.dev, the client's pick): how to reach the shop on
-            the left, the message on the right. Only confirmed details: the
-            shop's email, its Instagram and its address. The phone number came
-            off the site at the client's instruction and stays off. */}
-        <section aria-labelledby="contact-form-h" className="page-section">
-          <div className="page-inner">
-            <div className="ccard">
-              <div className="ccard-info">
-                <p className="ccard-eyebrow">Get in touch</p>
-                <RevealText id="contact-form-h" className="ccard-h">
-                  Send a <em>message.</em>
-                </RevealText>
-                <p className="ccard-lede">
-                  Sizes, whether something is still in, or anything you would
-                  rather ask before making the trip. Write it here and we will
-                  come back to you.
-                </p>
-
-                <ul className="ccard-tiles">
-                  <li className="ccard-tile">
-                    <span className="ccard-icon" aria-hidden="true">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5.5" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="1.5" /><path d="M3.5 7l8.5 6 8.5-6" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /></svg>
-                    </span>
-                    <span className="ccard-tile-label">Email</span>
-                    <a className="ccard-tile-value" href={`mailto:${shop.email}`}>
-                      {/* If it has to wrap on a small phone, at the @. */}
-                      {shop.email.split("@")[0]}<wbr />@{shop.email.split("@")[1]}
-                    </a>
-                  </li>
-                  {instagram ? (
-                    <li className="ccard-tile">
-                      <span className="ccard-icon" aria-hidden="true">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" strokeWidth="1.5" /><circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5" /><circle cx="17.2" cy="6.8" r="1" fill="currentColor" /></svg>
-                      </span>
-                      <span className="ccard-tile-label">Instagram</span>
-                      <a className="ccard-tile-value" href={instagram.href} target="_blank" rel="noopener noreferrer">
-                        @bboutique<wbr />cleethorpes
-                      </a>
-                    </li>
-                  ) : null}
-                  <li className="ccard-tile">
-                    <span className="ccard-icon" aria-hidden="true">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /><circle cx="12" cy="10" r="2.3" stroke="currentColor" strokeWidth="1.5" /></svg>
-                    </span>
-                    <span className="ccard-tile-label">The shop</span>
-                    <a className="ccard-tile-value" href="#visit">{addressLines.join(", ")}</a>
-                  </li>
-                </ul>
-
-                <p className="ccard-small">
-                  We reply to the address you give and nothing else. Your
-                  details are used to answer you and are not added to a mailing
-                  list.
-                </p>
-              </div>
-
-              <div className="ccard-form">
-                <ContactForm />
-              </div>
+        <section className="ct" aria-labelledby="ct-title">
+          <div className="ct-photo">
+            <picture>
+              <source media="(max-width: 767px)" type="image/avif" srcSet="/img/texture/contact-m.avif" />
+              <source media="(max-width: 767px)" srcSet="/img/texture/contact-m.webp" />
+              <source type="image/avif" srcSet="/img/texture/contact.avif" />
+              <img src="/img/texture/contact.webp" alt="" fetchPriority="high" />
+            </picture>
+            <div className="ct-over">
+              <span className="hs-tag">We reply by email</span>
+              <h1 id="ct-title" className="ct-title">Get in touch</h1>
+              <p className="ct-sub">
+                Sizes, whether something is still in, or anything you would rather ask before making the trip.
+              </p>
             </div>
+          </div>
+
+          <div>
+            <ul className="ct-pills" aria-label="Other ways to reach the shop">
+              <li>
+                <a href={`mailto:${shop.email}`}>{shop.email}</a>
+              </li>
+              {instagram ? (
+                <li>
+                  <a href={instagram.href} target="_blank" rel="noopener noreferrer">
+                    Instagram<span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                </li>
+              ) : null}
+              <li>
+                <a href="#visit">Visit the shop</a>
+              </li>
+            </ul>
+            <h2 className="ct-h">Send a message</h2>
+            <ContactForm />
+            <p className="ct-small">
+              We reply to the address you give and nothing else. Your details are used to answer you and are not added
+              to a mailing list.
+            </p>
           </div>
         </section>
 
