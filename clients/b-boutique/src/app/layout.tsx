@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { MagneticButtons } from "@/components/MagneticButtons";
 import { PageTransition } from "@/components/PageTransition";
 import { AddedToast } from "@/components/AddedToast";
-import { Bodoni_Moda, Hanken_Grotesk } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref } from "@/lib/nav";
 import { hours, openingPhrase, shop } from "@/lib/shop";
@@ -38,14 +38,9 @@ import "./type.css";
  * on load (/privacy says so).
  *
  * Since 2026-09-26 (Brad, option C) headings are Hanken capitals and the
- * serif is kept for sub-headings and product names: see type.css. */
-const display = Bodoni_Moda({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
+ * serif is kept for sub-headings and product names: see type.css.
+ * Since 2026-09-27 (Brad) Hanken is the only typeface and Bodoni is no
+ * longer loaded; --font-display points at Hanken in type.css. */
 
 const body = Hanken_Grotesk({
   variable: "--font-body",
@@ -201,7 +196,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-GB"
-      className={`${display.variable} ${body.variable} h-full antialiased`}
+      className={`${body.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bone text-onyx">
         {/* Every forward navigation lands at the top of the new page; back

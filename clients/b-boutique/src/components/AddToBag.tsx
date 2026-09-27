@@ -10,6 +10,7 @@ import { SizeGuide } from "./SizeGuide";
 import { shop } from "@/lib/shop";
 import { colourIsKnown, coloursFor, swatchPosition, variantId } from "@/lib/variants";
 import { useColour } from "./ColourChoice";
+import { Arrow } from "@/components/Arrow";
 
 /* Colour, size, then add.
  *
@@ -300,7 +301,7 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
           <span className="roll"><span>{chosenOut ? "Sold out" : "Add to bag"}</span></span>
           {chosenOut ? null : (
             <span className="cf-submit-arrow" aria-hidden="true">
-              &rarr;
+              <Arrow />
             </span>
           )}
         </button>

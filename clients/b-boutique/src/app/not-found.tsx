@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { PageMasthead } from "@/components/PageMasthead";
+import { Arrow } from "@/components/Arrow";
 
 /* The 404. Until 2026-09-23 this was Next's default: a white screen reading
    "404 | This page could not be found" with no header, no footer and no way
@@ -28,13 +29,13 @@ export default function NotFound() {
         <section className="page-section" aria-label="Where to go next">
           <div className="page-inner nf-links">
             <Link href="/clothing" className="nf-link">
-              Shop everything <span aria-hidden="true">&rarr;</span>
+              Shop everything <span aria-hidden="true"><Arrow /></span>
             </Link>
             <Link href="/#new-in" className="nf-link">
-              Just in <span aria-hidden="true">&rarr;</span>
+              Just in <span aria-hidden="true"><Arrow /></span>
             </Link>
             <Link href="/contact" className="nf-link">
-              Contact the shop <span aria-hidden="true">&rarr;</span>
+              Contact the shop <span aria-hidden="true"><Arrow /></span>
             </Link>
           </div>
         </section>

@@ -24,7 +24,7 @@ html:root { --font-display: var(--font-body); }
 
 /* Sub-headings and product names keep the serif, in sentence case. */
 :is(h3, .prod-name, .vx-card-name, .ps-title, .fqx-q-text, .fqx-panel-q, .owner-name):not(.sr-only) {
-  font-family: "Bodoni Moda", Georgia, serif !important;
+  font-family: var(--font-body), sans-serif !important;
   font-weight: 400 !important;
   text-transform: none !important;
   letter-spacing: 0 !important;
@@ -33,7 +33,7 @@ html:root { --font-display: var(--font-body); }
 /* Except the hero's "B Boutique": the serif as it was, in sentence case
    (2026-09-26, Brad: only there). */
 .hero .lm-title {
-  font-family: "Bodoni Moda", Georgia, serif !important;
+  font-family: var(--font-body), sans-serif !important;
   text-transform: none !important;
 }
 
@@ -44,4 +44,14 @@ html:root { --font-display: var(--font-body); }
   font-weight: 500 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.02em !important;
+}
+
+/* One typeface, 2026-09-27 (Brad, from the Shop by category screenshot:
+   "use this font throughout the website"). Hanken Grotesk everywhere; the
+   serif is no longer loaded. The B monogram is a drawn SVG and unaffected.
+   Every "Bodoni Moda" declaration in the stylesheets now names Hanken; this
+   rule is the safety net for anything that still asks for a serif. */
+body, body *:not(svg):not(svg *) {
+  font-family: var(--font-body), system-ui, sans-serif !important;
+  font-style: normal !important;
 }

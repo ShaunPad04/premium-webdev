@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { DELIVERY_P, FREE_DELIVERY_OVER_P, formatPriceShort } from "@/lib/catalogue";
 import { openingPhrase, shop } from "@/lib/shop";
+import { Arrow } from "@/components/Arrow";
 
 /* In the shop, or sent to you: a slim strip (rebuilt 2026-09-23).
  *
@@ -56,7 +57,7 @@ export function Service() {
                 <span className="svs-title">{it.title}</span>
                 <span className="svs-line">{it.line}</span>
               </span>
-              <span className="svs-arrow" aria-hidden="true">&rarr;</span>
+              <span className="svs-arrow" aria-hidden="true"><Arrow /></span>
             </Link>
           </li>
         ))}

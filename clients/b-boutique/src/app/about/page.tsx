@@ -2,12 +2,10 @@ import type { Metadata } from "next";
 
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { MotionLayer } from "@/components/MotionLayer";
 import { Visit } from "@/components/Visit";
-import { StoryScroll } from "@/components/StoryScroll";
+import { AboutRooms } from "@/components/AboutRooms";
 import { principles, shopPhotos, type ShopPhoto } from "@/lib/about";
 import { owner, shop, openingPhrase } from "@/lib/shop";
-import { RevealText } from "@/components/RevealText";
 
 export const metadata: Metadata = {
   title: "About us",
@@ -16,134 +14,97 @@ export const metadata: Metadata = {
   alternates: { canonical: "/about" },
 };
 
-/* /about — rebuilt 2026-09-22.
+/* /about — 2026-09-27, in the Shop by category's own language (Brad picked
+ * that section's look as the one to follow, after three rounds of About
+ * directions were turned down: a story scroll, a serif "luxury" pass, and
+ * five concepts after luxury houses' About pages).
  *
- * The client called the old page "generic and bland" and said it read like an
- * FAQ. It was a dark masthead, a statement, and three numbered question-and-
- * answer rows under "How it works." — an FAQ in all but name, with no
- * photograph of the shop anywhere on the page about the shop.
+ *   1. The shopfront as one rounded dark panel, "About B Boutique" in white
+ *      capitals over it with the glass address tag. Top-anchored so the
+ *      whole fascia, "Accessories & Homeware" included, always shows.
+ *   2. Hayley: her portrait as a panel with her name on it, her words beside.
+ *   3. Inside the shop: her four photos as hover-open panels, exactly like
+ *      the categories (components/AboutRooms.tsx); swipe cards on a phone.
+ *   4. The way we work: three columns, number tag, capitals.
+ *   5. Visit, unchanged.
  *
- * It is now an editorial story told mostly in HER photographs:
- *
- *   1. The title on white. (Her rails photo sat behind it until
- *      2026-09-23, then a generated still life, which came off on
- *      2026-09-27 at Brad's request; her real photographs carry the rest.)
- *   2. Hayley, in her own words (owner.bio — the same copy the home page's
- *      owner card reads).
- *   3. The story (2026-09-27, 21st.dev direction B of three): her photographs
- *      held on the left while the three principles and "Come and see it."
- *      scroll past on the right (components/StoryScroll.tsx). It replaced a
- *      lookbook with a numbered index and a principles band on ink.
- *   4. Visit, unchanged.
- *
- * The marble statement band that sat between 1 and 2 was taken off on
- * 2026-09-23 at the client's request ("the second image section is
- * terrible"). The statement itself still lives on the home page
- * (PointOfView reads the same `philosophy` copy).
- */
+ * Everything on it is her words (owner.bio), her photographs, or derived
+ * from shop.ts. */
 
-function Pic({
-  photo,
-  sizes,
-  className,
-  style,
-  priority = false,
-}: {
-  photo: ShopPhoto;
-  sizes: string;
-  className?: string;
-  style?: React.CSSProperties;
-  priority?: boolean;
-}) {
-  const set = (ext: string) =>
-    photo.widths.map((w) => `/img/about/${photo.name}-${w}.${ext} ${Math.min(w, photo.w)}w`).join(", ");
-  return (
-    <picture>
-      <source type="image/avif" srcSet={set("avif")} sizes={sizes} />
-      <source type="image/webp" srcSet={set("webp")} sizes={sizes} />
-      <img
-        src={`/img/about/${photo.name}-${photo.widths[1] ?? photo.widths[0]}.jpg`}
-        srcSet={set("jpg")}
-        sizes={sizes}
-        width={photo.w}
-        height={photo.h}
-        alt={photo.alt}
-        className={className}
-        style={style}
-        loading={priority ? "eager" : "lazy"}
-        fetchPriority={priority ? "high" : undefined}
-        decoding="async"
-      />
-    </picture>
-  );
-}
+const src = (p: ShopPhoto) => `/img/about/${p.name}-${p.name === "shopfront" ? 1024 : 1920}.webp`;
 
 export default function AboutPage() {
   const { shopfront, railWindow, back, counter } = shopPhotos;
-  const pic = (photo: ShopPhoto) => <Pic photo={photo} sizes="(min-width: 900px) 45vw, 92vw" />;
-  const steps = [
-    ...principles.map((p, i) => ({ n: p.n, title: p.title, body: p.body, pic: pic([shopfront, railWindow, back][i]) })),
-    {
-      n: "04",
-      title: "Come and see it.",
-      body: `On the rail at ${shop.street}, ${shop.town}. Open ${openingPhrase()}.`,
-      pic: pic(counter),
-    },
-  ];
+  const where = `${shop.street}, ${shop.town}`;
 
   return (
     <>
-      <MotionLayer />
       <Nav solid />
       <main id="main" className="flex-1">
-        {/* 1 ── The title, on white. The photograph behind it came off on
-            2026-09-27 (Brad: "remove the big image"). */}
-        <section aria-labelledby="ab-title" className="ab-hero ab-hero--plain">
-          <div className="ab-hero-copy">
-            <p className="label ab-eyebrow">About us</p>
-            <h1 id="ab-title" className="ab-title">
-              The <em>boutique</em>.
-            </h1>
-            <p className="ab-hero-where">
-              {shop.street}, {shop.town}
-            </p>
-          </div>
-        </section>
-
-        {/* 2 ── Hayley, in her own words. */}
-        <section aria-labelledby="ab-owner" className="ab-owner">
-          <div className="ab-owner-inner">
-            <div className="ab-owner-portrait">
-              <picture>
-                <source type="image/avif" srcSet={`/img/owner/${owner.portrait}.avif`} />
-                <source type="image/webp" srcSet={`/img/owner/${owner.portrait}.webp`} />
-                <img
-                  src={`/img/owner/${owner.portrait}.jpg`}
-                  alt={`${owner.firstName} ${owner.lastName}, who owns B Boutique.`}
-                  className="ab-owner-img"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </picture>
+        <div className="hs">
+          <section className="hs-hero" aria-labelledby="hs-title">
+            <picture>
+              <source type="image/avif" srcSet="/img/about/shopfront-640.avif 640w, /img/about/shopfront-1024.avif 1024w" sizes="100vw" />
+              <img src={src(shopfront)} alt={shopfront.alt} fetchPriority="high" />
+            </picture>
+            <div className="hs-hero-d">
+              <span className="hs-tag">{where}</span>
+              <h1 id="hs-title" className="hs-hero-t">About B Boutique</h1>
+              <p className="hs-hero-p">Open {openingPhrase()}</p>
             </div>
-            <div className="ab-owner-body">
-              <p className="label ab-kicker">{owner.role}</p>
-              <RevealText id="ab-owner" className="ab-owner-name">
-                {owner.firstName} <em>{owner.lastName}</em>
-              </RevealText>
-              <blockquote className="ab-quote">
-                {owner.bio.map((para) => (
-                  <p key={para.slice(0, 24)}>{para}</p>
-                ))}
-              </blockquote>
-            </div>
-          </div>
-        </section>
+          </section>
 
-        {/* 3 ── The story: her photographs held, the principles scrolling past. */}
-        <section aria-label="How the shop works" className="ab-story">
-          <StoryScroll steps={steps} />
-        </section>
+          <section className="hs-owner" aria-labelledby="hs-owner">
+            <div className="hs-panel hs-portrait">
+              <img
+                src={`/img/owner/${owner.portrait}.webp`}
+                alt={`${owner.firstName} ${owner.lastName}, who owns B Boutique.`}
+                loading="lazy"
+              />
+              <div className="hs-over">
+                <span className="hs-tag">{owner.role}</span>
+                <h2 id="hs-owner" className="hs-over-t">
+                  {owner.firstName} {owner.lastName}
+                </h2>
+              </div>
+            </div>
+            <div className="hs-bio">
+              <p className="hs-label">In her words</p>
+              {owner.bio.map((para) => (
+                <p key={para.slice(0, 24)}>{para}</p>
+              ))}
+            </div>
+          </section>
+
+          <section className="hs-inside" aria-labelledby="hs-inside">
+            <div className="hs-head">
+              <h2 id="hs-inside" className="hs-h">Inside the shop</h2>
+            </div>
+            <AboutRooms
+              rooms={[
+                { src: src(shopfront), alt: shopfront.alt, caption: shopfront.caption, pos: "50% 0%" },
+                { src: src(railWindow), alt: railWindow.alt, caption: "The rails", pos: "50% 50%" },
+                { src: src(back), alt: back.alt, caption: "Fitting rooms", pos: "50% 50%" },
+                { src: src(counter), alt: counter.alt, caption: counter.caption, pos: "50% 50%" },
+              ]}
+            />
+          </section>
+
+          <section className="hs-way" aria-labelledby="hs-way">
+            <div className="hs-head">
+              <h2 id="hs-way" className="hs-h">The way we work</h2>
+            </div>
+            <ol className="hs-way-list">
+              {principles.map((p) => (
+                <li key={p.n}>
+                  <span className="hs-tag hs-tag--ink" aria-hidden="true">{p.n}</span>
+                  <h3 className="hs-way-t">{p.title.replace(/\.$/, "")}</h3>
+                  <p>{p.body}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </div>
 
         <Visit />
       </main>

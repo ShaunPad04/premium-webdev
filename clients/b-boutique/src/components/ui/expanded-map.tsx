@@ -34,6 +34,9 @@ export function ExpandedMap({ location, sub, latitude, longitude, embedSrc }: {
   useEffect(() => {
     const on = () => setVw(window.innerWidth);
     on();
+    // Phones start with the map open (Brad, 2026-09-27); the iframe is lazy,
+    // so Google is still only asked once Visit nears the screen.
+    if (window.innerWidth < 1024) setOpen(true);
     window.addEventListener("resize", on);
     return () => window.removeEventListener("resize", on);
   }, []);
@@ -69,7 +72,7 @@ export function ExpandedMap({ location, sub, latitude, longitude, embedSrc }: {
         <AnimatePresence>
           {open && (
             <motion.div className="em-map" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: still ? 0 : 0.4, delay: still ? 0 : 0.1 }}>
-              <iframe className="em-frame" src={embedSrc} title="" aria-hidden="true" tabIndex={-1} referrerPolicy="no-referrer-when-downgrade" />
+              <iframe className="em-frame" src={embedSrc} title="" aria-hidden="true" tabIndex={-1} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
               <div className="em-fade" />
             </motion.div>
           )}

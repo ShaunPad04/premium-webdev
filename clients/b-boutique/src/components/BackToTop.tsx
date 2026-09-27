@@ -1,4 +1,5 @@
 "use client";
+import { Arrow } from "@/components/Arrow";
 
 /* The footer's "Back to top". Lenis owns the scroll when it is running, so
    it is asked first; otherwise the browser scrolls, instantly under reduced
@@ -20,7 +21,7 @@ export function BackToTop() {
         document.querySelector<HTMLElement>("body a[href], body button")?.focus({ preventScroll: true });
       }}
     >
-      Back to top <span aria-hidden="true">&uarr;</span>
+      Back to top <span aria-hidden="true"><Arrow up /></span>
     </button>
   );
 }

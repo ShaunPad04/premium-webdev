@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 
 import { featured } from "@/lib/shop";
 import { FlipText } from "./FlipText";
+import { Arrow } from "@/components/Arrow";
 
 /* The featured category rail.
  *
@@ -146,7 +147,7 @@ export function HorizontalRails() {
                 <span className="cats-number">{c.number}</span>
                 <span className="cats-name"><FlipText>{c.name}</FlipText></span>
                 <span className="cats-explore">
-                  Explore <span className="cats-arrow" aria-hidden="true">&rarr;</span>
+                  Explore <span className="cats-arrow" aria-hidden="true"><Arrow /></span>
                 </span>
               </span>
             </Link>

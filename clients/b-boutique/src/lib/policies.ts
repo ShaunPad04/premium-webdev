@@ -382,11 +382,11 @@ const privacy: Policy = {
       heading: "The map, and the one thing that does load from elsewhere",
       kind: "technical",
       body: [
-        "The map of the shop is Google's, and Google may set its own cookies. It loads only when you open it, by tapping the map card where a page shows where the shop is; nothing reaches Google before that. The shop's address is always written out beside it, so you do not need the map to find us.",
+        "The map of the shop is Google's, and Google may set its own cookies. On a computer it loads only when you open it, by clicking the map card where a page shows where the shop is. On a phone the map is already open, so it loads as that part of the page comes into view. Nothing reaches Google before either. The shop's address is always written out beside it, so you do not need the map to find us.",
         "Everything else on the page works whether you open the map or not.",
       ],
       basis:
-        "Read from src/components/ui/expanded-map.tsx — the Google embed is added to the page only once the map card is opened (changed 2026-09-27; from 2026-09-23 it loaded as the Visit section neared the screen).",
+        "Read from src/components/ui/expanded-map.tsx — the Google embed is added to the page only once the map card is open, and it is a lazy iframe. Phones (under 1024px wide) open the card on load, so there it is fetched as the Visit section nears the screen (2026-09-27).",
       basisLabel: "How we know",
     },
     {

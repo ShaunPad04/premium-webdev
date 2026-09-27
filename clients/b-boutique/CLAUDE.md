@@ -1145,17 +1145,41 @@ scales, B does not).
 
 ## About — 2026-09-27
 
-Brad kept the page (trust, search, her shop photos) and picked **B, "Story
-scroll"** of three 21st-ui-explore directions (A a shopfront card opening to
-full width, C a five-photo zoom parallax). After 21st.dev "Scroll Reveal
-Content A" (abui), in `StoryScroll.tsx`: the title, Hayley, then her photos
-held square on the left while the three principles and "04 Come and see it."
-(address and hours) scroll past on the right, a line growing beside them. On
-a phone each passage carries its own photo. It replaced the lookbook
-(`InsideRooms.tsx`, deleted) and the principles band on ink. Frames stay
-square with the top anchored so the whole shopfront sign, "Accessories &
-Homeware" included, always shows. Passages out of view go grey, never faded:
-opacity failed AA contrast.
+Brad kept the page (trust, search, her shop photos). Three rounds were
+turned down the same day: B "Story scroll" (pushed, then "looks cheap"), a
+serif luxury pass on it, and five concepts after luxury houses' About pages
+(Letter, Gallery, Magazine, Chapters, Index). What landed is the page in the
+**Shop by category's own language** (he pointed at that section as the look
+to follow): the shopfront as one rounded dark panel with "About B Boutique"
+in white capitals and the glass address tag; Hayley's portrait as a panel
+with her name on it, her words beside; the four shop photos as hover-open
+panels exactly like the categories (`AboutRooms.tsx`, swipe cards on a
+phone); the principles in three columns. `StoryScroll.tsx` and
+`InsideRooms.tsx` are deleted. The shopfront is always top-anchored so the
+whole fascia, "Accessories & Homeware" included, shows.
+
+## One typeface — 2026-09-27
+
+Brad: "use this font throughout the website" (Hanken, from the Shop by
+category screenshot). **Hanken Grotesk is the only typeface; Bodoni Moda is
+no longer loaded.** Every "Bodoni Moda" declaration in the stylesheets now
+names Hanken, and a rule at the end of `type.css` is the safety net. The B
+monogram is an SVG and unaffected. Hanken has no arrow glyphs, so text
+arrows (which fell back to Arial) are the drawn `Arrow.tsx`. Measured after:
+only Hanken renders on /, /clothing, a product page, /homeware, /contact.
+The earlier sections of this file that say Bodoni or Playfair are history.
+
+## Visit box and the hero on phones — 2026-09-27
+
+- Visit's details sit in a thin black frame with soft corners (14px phone,
+  22px from 768): eyebrow and the open-now pill on one line, the address,
+  then hours / parking / email as a ruled grid, then Get directions. On
+  phones everything in it is centred.
+- **Phones open the map on load** (Brad). The iframe is lazy, so Google is
+  still asked only as Visit nears the screen (measured: 0 requests at load,
+  on both sizes; desktop still waits for a click). /privacy says exactly
+  this; change both together.
+- Hero on phones: the name and Shop all sit higher (padding-bottom 24svh).
 
 ## Home owner card — 2026-09-27
 

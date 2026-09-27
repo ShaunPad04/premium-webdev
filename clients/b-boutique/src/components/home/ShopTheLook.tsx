@@ -6,6 +6,7 @@ import { useState } from "react";
 import { products } from "@/lib/catalogue";
 import { look } from "@/lib/look";
 import { Price } from "@/components/Price";
+import { Arrow } from "@/components/Arrow";
 
 /* Shop the look (2026-09-24, Brad): her shop window with a dot on each
  * piece, and the same pieces listed beside it. The list is the real control
@@ -69,7 +70,7 @@ export function ShopTheLook() {
                   <span className="stl-n" aria-hidden="true">{s.n}</span>
                   <span className="stl-name">{s.p!.name}</span>
                   <span className="stl-price"><Price priceP={s.p!.priceP} slug={s.p!.slug} /></span>
-                  <span className="stl-arrow" aria-hidden="true">&rarr;</span>
+                  <span className="stl-arrow" aria-hidden="true"><Arrow /></span>
                 </Link>
               </li>
             ))}

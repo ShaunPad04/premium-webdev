@@ -10,6 +10,7 @@ import { shop } from "@/lib/shop";
 import { checkoutStatusByReference, sumupIsConfigured } from "@/lib/sumup";
 import { markPaid, releaseOrder } from "@/lib/orders";
 import { confirmOrderToCustomer, notifyShopOfOrder } from "@/lib/mail";
+import { Arrow } from "@/components/Arrow";
 
 export const metadata: Metadata = {
   title: "Checkout",
@@ -180,7 +181,7 @@ export default async function CheckoutSuccessPage({
             <p className="page-body">
               <Link href={paid ? "/clothing" : "/bag"} className="btn-solid">
                 <span className="roll"><span>{paid ? "Back to the shop" : "Back to your bag"}</span></span>{" "}
-                <span aria-hidden="true">&rarr;</span>
+                <span aria-hidden="true"><Arrow /></span>
               </Link>
             </p>
           </div>

@@ -2799,157 +2799,74 @@ body {
 
 .acc-lead-copy .page-body { margin-top: 22px; }
 
-/* ── /about ──────────────────────────────────────────────────────────────
-   Rebuilt 2026-09-22 — see src/app/about/page.tsx for why. Title, Hayley,
-   the story scroll (2026-09-27), Visit. The site's own tokens throughout. */
+/* ── /about — 2026-09-27, in the Shop by category's language ─────────────
+   See src/app/about/page.tsx. Tokens copied from .ctab: 14px corners on a
+   phone, 22px from 1024, the glass tag, the black-to-clear gradient, the
+   700ms flex-grow open. Headings beat type.css's h1/h2 rule on specificity. */
+.hs { max-width: calc(1520px + 2 * clamp(32px, 4vw, 72px)); margin: 0 auto; padding: 106px 16px clamp(72px, 9vw, 128px); }
+.hs img { display: block; width: 100%; }
+.hs figure { margin: 0; }
+@media (min-width: 768px) { .hs { padding-inline: clamp(32px, 4vw, 72px); } }
+.hs-tag { display: inline-block; padding: 5px 12px; border: 1px solid rgba(255, 255, 255, .3); border-radius: 999px; background: rgba(255, 255, 255, .1); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); font: 600 11px/1.2 var(--font-body), sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #fff; }
+.hs-tag--ink { border-color: rgba(14, 11, 12, .2); background: none; color: #0E0B0C; }
+.hs-label { margin: 0 0 18px; font: 600 11px/1.2 var(--font-body), sans-serif; letter-spacing: .16em; text-transform: uppercase; color: rgba(14, 11, 12, .66); }
+.hs-head { margin: clamp(64px, 8vw, 112px) 0 24px; }
+.hs .hs-h { margin: 0; }
 
-/* 1 — The vintage rail, full-bleed. */
-.ab-hero {
-  position: relative;
-  isolation: isolate;
-  min-height: max(560px, 86svh);
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
-  background: var(--bb-black);
-  color: var(--bb-white-pure);
-}
-.ab-hero picture { position: absolute; inset: 0; z-index: -2; }
-.ab-hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* The rail and garments fill the right half; the dark marble on the left
-     is where the title sits. On a phone this keeps the garments in view. */
-  object-position: 68% 50%;
-}
-.ab-hero-scrim {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    linear-gradient(to top, rgba(14, 11, 12, 0.88) 0%, rgba(14, 11, 12, 0.46) 38%, rgba(14, 11, 12, 0.12) 64%, rgba(14, 11, 12, 0.42) 100%);
-}
-.ab-hero-copy {
-  width: 100%;
-  padding: 0 18px clamp(40px, 8vh, 96px);
-}
-@media (min-width: 768px) {
-  .ab-hero-copy { padding-inline: var(--bb-gutter-editorial); }
-}
-.ab-eyebrow { margin: 0 0 18px; color: var(--bb-grey-light); }
-.ab-title {
-  margin: 0;
-  font-family: var(--font-display-face), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(56px, 11vw, 176px);
-  line-height: 0.9;
-  letter-spacing: -0.011em;
-}
-.ab-title em, .ab-owner-name em { font-style: italic; font-synthesis: none; }
-.ab-hero-where {
-  margin: 22px 0 0;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--bb-grey-light);
+/* Hero panel: the shopfront, top anchored so the whole sign shows. */
+.hs-hero { position: relative; overflow: hidden; border-radius: 14px; background: #3F3F41; aspect-ratio: 1; }
+.hs-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
+.hs-hero::after, .hs-panel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, .8), rgba(0, 0, 0, .2) 45%, rgba(0, 0, 0, 0) 75%); pointer-events: none; }
+.hs-hero-d, .hs-over { position: absolute; z-index: 1; left: 20px; right: 20px; bottom: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.hs .hs-hero-t, .hs .hs-over-t { margin: 0; font-weight: 500 !important; font-size: clamp(36px, 5.4vw, 88px) !important; line-height: .95 !important; letter-spacing: -.01em !important; color: #fff; }
+.hs-hero-p { margin: 2px 0 0; font: 600 13px/1 var(--font-body), sans-serif; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .8); }
+@media (min-width: 1024px) {
+  .hs-hero { aspect-ratio: auto; height: clamp(560px, 78svh, 820px); border-radius: 22px; }
+  .hs-hero-d, .hs-over { left: 36px; bottom: 36px; }
 }
 
-/* 2 — Hayley. */
-.ab-owner {
-  background: var(--bb-white);
-  color: var(--bb-black);
-  padding: clamp(72px, 12vh, 150px) 18px;
-}
-@media (min-width: 768px) { .ab-owner { padding-inline: var(--bb-gutter-editorial); } }
-.ab-owner-inner { display: grid; gap: 40px; max-width: 1280px; margin: 0 auto; }
-@media (min-width: 900px) {
-  .ab-owner-inner { grid-template-columns: 5fr 7fr; gap: clamp(48px, 7vw, 120px); align-items: center; }
-}
-.ab-owner-portrait { aspect-ratio: 4 / 5; overflow: hidden; background: var(--bb-grey-light); }
-.ab-owner-img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
-.ab-kicker { margin: 0 0 16px; color: var(--bb-grey-dark); }
-.ab-owner-name {
-  margin: 0;
-  font-family: var(--font-display-face), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(44px, 6vw, 96px);
-  line-height: 0.95;
-  letter-spacing: -0.009em;
-}
-.ab-quote {
-  position: relative;
-  margin: clamp(28px, 4vh, 44px) 0 0;
-  padding: 0;
-  max-width: 44ch;
-}
-/* The opening mark, set in the display face and large, is what tells the
-   reader these are her words rather than the website's. */
-.ab-quote::before {
-  content: "\201C";
-  display: block;
-  height: 0.5em;
-  margin-bottom: 8px;
-  font-family: var(--font-display-face), Georgia, serif;
-  font-size: 88px;
-  line-height: 1;
-  color: var(--bb-rouge);
-}
-.ab-quote p {
-  margin: 0 0 1em;
-  font-size: clamp(16px, 1.25vw, 19px);
-  line-height: 1.7;
-  color: var(--bb-black);
+/* Hayley: portrait panel with the name on it, her words beside. */
+.hs-owner { display: grid; gap: 28px; margin-top: clamp(64px, 8vw, 112px); align-items: center; }
+.hs-panel { position: relative; overflow: hidden; border-radius: 14px; background: #3F3F41; }
+.hs-portrait img { aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; }
+.hs .hs-over-t { font-size: clamp(32px, 3.6vw, 56px) !important; }
+.hs-bio p:not(.hs-label) { margin: 0 0 1em; max-width: 46ch; font-size: clamp(17px, 1.4vw, 20px); line-height: 1.65; }
+@media (min-width: 1024px) {
+  .hs-owner { grid-template-columns: 5fr 6fr; gap: clamp(48px, 7vw, 128px); }
+  .hs-panel { border-radius: 22px; }
 }
 
-/* 3 — The story (components/StoryScroll.tsx), after 21st.dev "Scroll Reveal
-   Content A" (abui). Chosen 2026-09-27 over a full-width reveal and a zoom
-   parallax. Her photographs held on the left while four numbered passages
-   scroll past on the right, a line growing beside them. On a phone each
-   passage carries its own photograph above it. Frames are square with the
-   top anchored, so the full shopfront sign always shows. */
-.rb {
-  display: grid;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 18px clamp(72px, 10vw, 140px);
+/* Inside: hover-open panels, as Shop by category. Phones: swipe cards. */
+.hs-rooms { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: -16px; padding-inline: 16px; }
+.hs-room { position: relative; flex: 0 0 82%; aspect-ratio: 1; margin: 0; overflow: hidden; border-radius: 14px; background: #3F3F41; scroll-snap-align: start; cursor: pointer; outline: none; }
+.hs-room:focus-visible { box-shadow: inset 0 0 0 2px #fff; }
+.hs-room img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hs-room::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, .8), rgba(0, 0, 0, .2) 45%, rgba(0, 0, 0, 0) 75%); }
+.hs-room-d { position: absolute; z-index: 2; left: 20px; bottom: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin: 0; }
+.hs .hs-room-d { font-size: inherit; letter-spacing: 0; text-transform: none; color: #fff; }
+.hs-room-t { font-weight: 500; font-size: clamp(28px, 3.2vw, 52px); line-height: 1; letter-spacing: -.01em; text-transform: uppercase; color: #fff; white-space: nowrap; }
+.hs-room-v { display: none; }
+@media (min-width: 1024px) {
+  .hs-rooms { overflow: visible; margin: 0; padding: 0; height: clamp(480px, 70svh, 720px); }
+  .hs-room { flex: 1 1 0; min-width: 0; aspect-ratio: auto; border-radius: 22px; transition: flex-grow 700ms cubic-bezier(.25, 1, .5, 1); }
+  .hs-room[data-on] { flex-grow: 4; }
+  .hs-room img { transform: scale(1.1); transition: transform 1000ms cubic-bezier(.25, 1, .5, 1); }
+  .hs-room[data-on] img { transform: none; }
+  .hs-room::before { content: ""; position: absolute; inset: 0; z-index: 1; background: #000; opacity: .5; transition: opacity 500ms ease; }
+  .hs-room[data-on]::before { opacity: 0; }
+  .hs-room-d { left: 32px; bottom: 32px; opacity: 0; transform: translateY(48px); transition: opacity 500ms ease, transform 500ms cubic-bezier(.25, 1, .5, 1); }
+  .hs-room[data-on] .hs-room-d { opacity: 1; transform: none; transition-delay: 200ms; }
+  .hs-room-v { display: block; position: absolute; z-index: 2; left: 50%; bottom: 32px; transform: translateX(-50%) rotate(180deg); writing-mode: vertical-rl; white-space: nowrap; color: #fff; font: 600 18px/1 var(--font-body), sans-serif; letter-spacing: .16em; text-transform: uppercase; transition: opacity 400ms ease 400ms; }
+  .hs-room[data-on] .hs-room-v { opacity: 0; transition-delay: 0ms; }
 }
-@media (min-width: 768px) { .rb { padding-inline: var(--bb-gutter-editorial); } }
-.rb-media { display: none; }
-.rb-text { position: relative; padding-left: 28px; }
-.rb-text::before, .rb-line { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--bb-light-border); }
-.rb-line { background: var(--bb-black); transform-origin: top; }
-.rb-step { padding: 32px 0; }
-.rb-step-img { display: block; margin-bottom: 20px; aspect-ratio: 1; overflow: hidden; border-radius: 16px; background: var(--bb-grey-light); }
-.rb-step-img img, .rb-img img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
-.rb-n { margin: 0 0 10px; font-size: 12px; font-weight: 500; color: var(--bb-grey-dark); }
-.rb .rb-title {
-  margin: 0 0 14px;
-  color: inherit;
-  font-family: var(--font-display-face), Georgia, serif !important;
-  font-weight: 400 !important;
-  text-transform: none !important;
-  letter-spacing: -0.01em !important;
-  font-size: clamp(34px, 3.6vw, 58px) !important;
-  line-height: 1.05 !important;
-}
-.rb-body { margin: 0; max-width: 40ch; font-size: 17px; line-height: 1.7; color: var(--bb-grey-dark); }
-@media (min-width: 900px) {
-  .rb { grid-template-columns: 1fr 1fr; gap: clamp(48px, 6vw, 112px); }
-  .rb-media { display: block; position: sticky; top: calc(72px + 8vh); align-self: start; aspect-ratio: 1; max-height: calc(84vh - 72px); margin-top: 8vh; border-radius: 22px; overflow: hidden; background: var(--bb-grey-light); }
-  .rb-img { position: absolute; inset: 0; opacity: 0; transform: scale(1.06); transition: opacity 700ms var(--ease-out, cubic-bezier(.16, 1, .3, 1)), transform 1200ms cubic-bezier(.16, 1, .3, 1); }
-  .rb-img[data-on] { opacity: 1; transform: none; }
-  .rb-step-img { display: none; }
-  /* The passages not in view go grey rather than faded: grey-dark still
-     passes AA, where 35% opacity did not. */
-  .rb-step { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; padding: 0; color: var(--bb-grey-dark); transition: color 500ms cubic-bezier(.16, 1, .3, 1); }
-  .rb-step[data-on] { color: var(--bb-black); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .rb-img, .rb-step { transition: none; }
-  .rb-img { transform: none; }
-}
+
+/* The way we work: three columns, outlined number tag, capitals. */
+.hs-way-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 36px; }
+.hs-way-list li { border-top: 1px solid #0E0B0C; padding-top: 22px; }
+.hs .hs-way-t { margin: 16px 0 12px; font-weight: 500 !important; font-size: clamp(22px, 2vw, 30px) !important; line-height: 1.1 !important; text-transform: uppercase !important; letter-spacing: 0 !important; }
+.hs-way-list p { margin: 0; max-width: 40ch; font-size: 16px; line-height: 1.7; color: #3A3536; }
+@media (min-width: 900px) { .hs-way-list { grid-template-columns: repeat(3, 1fr); gap: clamp(28px, 4vw, 64px); } }
+@media (prefers-reduced-motion: reduce) { .hs-room, .hs-room img, .hs-room::before, .hs-room-d, .hs-room-v { transition: none !important; } }
 
 /* ── Cinematic product scroll (components/ui/cinematic-product-scroll-section)
    The upsell: the three most expensive pieces, each coloured in by the
@@ -10801,7 +10718,7 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .ifn-links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
 .ifn-links li { display: flex; align-items: baseline; gap: 14px; }
 .ifn-n { width: 22px; flex: none; font: 600 10px/1 var(--font-body), sans-serif; letter-spacing: 0.16em; color: rgba(255, 255, 255, 0.55); }
-.ifn-link { font-family: "Bodoni Moda", Georgia, serif; font-weight: 400; font-size: clamp(36px, 9.5vw, 48px); line-height: 1.1; color: #FFFFFF; text-decoration: none; }
+.ifn-link { font-family: var(--font-body), sans-serif; font-weight: 400; font-size: clamp(36px, 9.5vw, 48px); line-height: 1.1; color: #FFFFFF; text-decoration: none; }
 @media (min-width: 1024px) { .ifn-link { font-size: clamp(44px, 4.6vw, 80px); } }
 .ifn-link:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 6px; }
 .ifn-photos { display: none; }
@@ -11069,13 +10986,6 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
    "too close"), in place of the hairline. */
 .home-rise .scw { border-top: 0; margin-top: clamp(48px, 5vw, 72px); }
 
-/* About masthead without its photograph (2026-09-27, Brad): the title on
-   white, in ink. */
-.ab-hero--plain { min-height: 0; background: var(--bg, #FFFFFF); color: var(--bb-black); padding-top: calc(118px + clamp(40px, 6vw, 88px)); }
-.ab-hero--plain::after { content: none; }
-.ab-hero--plain .ab-hero-copy { padding-bottom: clamp(40px, 6vw, 80px); }
-.ab-hero--plain .ab-eyebrow, .ab-hero--plain .ab-hero-where { color: rgba(14, 11, 12, 0.72); }
-
 /* Shop owner on phones and tablets: portrait first (2026-09-27, Brad
    picked A): the portrait full width with the role and her name on it,
    then her words and a black "Get in touch" pill. The same markup, laid
@@ -11170,7 +11080,7 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .ctab-pic img { object-fit: cover; object-position: 50% 20%; }
 .ctab-label { position: absolute; z-index: 1; left: 16px; bottom: 16px; display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
 .ctab-n { font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.16em; opacity: 0.8; }
-.ctab-name { font-family: "Bodoni Moda", Georgia, serif; font-size: clamp(26px, 7.4vw, 44px); line-height: 1; }
+.ctab-name { font-family: var(--font-body), sans-serif; font-size: clamp(26px, 7.4vw, 44px); line-height: 1; }
 .ctab-cta {
   position: absolute; z-index: 1; right: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px;
   border-radius: 999px; background: #FFFFFF; color: #0E0B0C; font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.12em; text-transform: uppercase;
@@ -11313,7 +11223,7 @@ h3.pol-h { font-size: clamp(20px, 2.3vw, 27px); line-height: 1.22; }
     linear-gradient(to top, rgba(14, 11, 12, 0.78), rgba(14, 11, 12, 0) 58%);
 }
 /* The name in the middle, the button under it (Brad, 2026-09-27, from a
-   screenshot): Bodoni by name, since --font-display answers Hanken now. Set
+   screenshot): Hanken, the site's one face since the same day. Set
    to span most of the frame, capped at 200px so it clears the horses on a desktop. */
 .hx-c-mid {
   position: absolute; inset: 0; z-index: 1;
@@ -11323,7 +11233,7 @@ h3.pol-h { font-size: clamp(20px, 2.3vw, 27px); line-height: 1.22; }
   text-align: center;
 }
 .hx-name {
-  font-family: "Bodoni Moda", Georgia, serif;
+  font-family: var(--font-body), sans-serif;
   font-weight: 400;
   font-size: clamp(64px, 17.5vw, 200px);
   line-height: 0.95;
@@ -11333,6 +11243,8 @@ h3.pol-h { font-size: clamp(20px, 2.3vw, 27px); line-height: 1.22; }
   text-shadow: 0 2px 36px rgba(14, 11, 12, 0.35);
 }
 .hx-c-mid .hero-cta { margin-top: 0; }
+/* Phones: the name and button sit higher (Brad, 2026-09-27). */
+@media (max-width: 767px) { .hx-c-mid { padding-bottom: 24svh; } }
 
 
 
@@ -11355,7 +11267,7 @@ h3.pol-h { font-size: clamp(20px, 2.3vw, 27px); line-height: 1.22; }
 h2.uc3-h { margin: 12px 0 0; }
 h2.uc3-h em { font-style: normal; }
 .csr { background: #FFFFFF; color: #0E0B0C; }
-.csr-left, .csr-grid-title { font-family: "Bodoni Moda", Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+.csr-left, .csr-grid-title { font-family: var(--font-body), sans-serif; font-weight: 400; letter-spacing: -0.01em; }
 .csr-card { border-radius: 18px; background: #3F3F41; box-shadow: 0 30px 60px -24px rgba(14, 11, 12, 0.35); }
 .csr-grid { padding: 28px 16px clamp(48px, 10vw, 72px); }
 .csr-grid-list { list-style: none; margin: 0 auto; padding: 0; max-width: 1024px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; }
@@ -11397,7 +11309,7 @@ h3.csr-grid-title { margin: 10px 0 0; text-align: center; font-size: clamp(20px,
 .isc { display: flex; flex-direction: column; align-items: center; }
 .isc > div:first-child { margin-top: 12px; }
 .isc-card { background: #3F3F41; box-shadow: 0 24px 48px -20px rgba(14, 11, 12, 0.4); }
-.isc-title { margin: 44px 0 0; font-family: "Bodoni Moda", Georgia, serif; font-size: 32px; line-height: 1.1; text-align: center; }
+.isc-title { margin: 44px 0 0; font-family: var(--font-body), sans-serif; font-size: 32px; line-height: 1.1; text-align: center; }
 .uc3-hint { margin: 10px 0 0; text-align: center; font: 600 11px/1.4 var(--font-body), sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(14, 11, 12, 0.64); }
 
 /* Shop by category on desktop after the 21st.dev Elastic Gallery (2026-09-27,
@@ -11457,7 +11369,6 @@ h3.csr-grid-title { margin: 10px 0 0; text-align: center; font-size: clamp(20px,
 .vxb-eyebrow { margin: 0; color: rgba(14, 11, 12, 0.72); }
 h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 .vxb-pc { white-space: nowrap; }
-.vxb-hours { margin: 12px 0 0; font-size: 15px; }
 .vxb-list { margin: 20px 0 0; display: grid; gap: 14px; font-size: 15px; }
 .vxb-list > div { display: flex; flex-direction: column; gap: 2px; }
 .vxb-list dt { font: 600 11px/1.9 var(--font-body), sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(14, 11, 12, 0.64); }
@@ -11482,7 +11393,7 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 .em-fade { position: absolute; inset: 0; z-index: 10; background: linear-gradient(to top, rgba(247, 247, 245, 0.95), rgba(247, 247, 245, 0) 45%); }
 .em-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(14, 11, 12, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 11, 12, 0.05) 1px, transparent 1px); background-size: 20px 20px; }
 .em-content { position: relative; z-index: 20; display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding: 22px 24px; }
-.em-name { margin: 0; font-family: "Bodoni Moda", Georgia, serif; font-size: 26px; line-height: 1.1; }
+.em-name { margin: 0; font-family: var(--font-body), sans-serif; font-size: 26px; line-height: 1.1; }
 .em-sub { margin: 4px 0 0; font-size: 13px; color: rgba(14, 11, 12, 0.72); font-variant-numeric: tabular-nums; }
 .em-line { height: 1px; margin-top: 10px; background: linear-gradient(to right, #0E0B0C, rgba(14, 11, 12, 0)); transform-origin: left; }
 .em-hint { margin: 10px 0 0; font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(14, 11, 12, 0.64); }
@@ -11543,7 +11454,7 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 .pdp-crumbs li + li::before { content: "/"; margin: 0 8px; color: rgba(14, 11, 12, 0.4); }
 .pdp-crumbs a { color: inherit; text-decoration: none; }
 .pdp-crumbs a:hover { color: #0E0B0C; text-decoration: underline; text-underline-offset: 3px; }
-.pdp h1.pdp-name { font-family: "Bodoni Moda", Georgia, serif !important; font-weight: 400 !important; text-transform: none !important; letter-spacing: -0.005em !important; font-size: clamp(30px, 2.8vw, 42px) !important; line-height: 1.1 !important; margin-bottom: 14px; }
+.pdp h1.pdp-name { font-family: var(--font-body), sans-serif !important; font-weight: 400 !important; text-transform: none !important; letter-spacing: -0.005em !important; font-size: clamp(30px, 2.8vw, 42px) !important; line-height: 1.1 !important; margin-bottom: 14px; }
 .pdp-price { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 20px; }
 .pdp-save { display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border-radius: 999px; background: #0E0B0C; color: #FFFFFF; font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
 .pdp-pay { justify-content: center; margin-top: 16px; }
@@ -11581,7 +11492,7 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 .hwf-img { display: block; width: 100%; max-width: 520px; margin: 0 auto; aspect-ratio: 1; object-fit: contain; transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1); }
 @media (hover: hover) { .hwf-media:hover .hwf-img { transform: scale(1.03); } }
 .hwf-n { margin: 0 0 10px; font: 500 12px/1 var(--font-body), sans-serif; color: rgba(14, 11, 12, 0.6); }
-.hwf h2.hwf-name { margin: 0 0 12px; font-family: "Bodoni Moda", Georgia, serif !important; font-weight: 400 !important; text-transform: none !important; letter-spacing: 0 !important; font-size: clamp(32px, 3.6vw, 56px) !important; line-height: 1.05 !important; }
+.hwf h2.hwf-name { margin: 0 0 12px; font-family: var(--font-body), sans-serif !important; font-weight: 400 !important; text-transform: none !important; letter-spacing: 0 !important; font-size: clamp(32px, 3.6vw, 56px) !important; line-height: 1.05 !important; }
 .hwf-short { margin: 0 0 16px; max-width: 42ch; font-size: 16px; line-height: 1.6; color: #3A3536; }
 .hwf-price { margin: 0 0 22px; font-size: 18px; }
 .hwf-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 24px; border-radius: 999px; background: #0E0B0C; color: #FFFFFF; text-decoration: none; font: 600 12px/1 var(--font-body), sans-serif; letter-spacing: 0.12em; text-transform: uppercase; transition: background-color 200ms ease; }
@@ -11601,4 +11512,24 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
   .owner-details .owner-cta:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 3px; }
   .owner-cta .owner-cta-ring, .owner-cta:hover .owner-cta-ring, .owner-cta:focus-visible .owner-cta-ring { width: 28px; height: 28px; border: 0; background: transparent; color: #FFFFFF; }
   .owner-cta .owner-cta-label { font-size: 12px; letter-spacing: 0.12em; }
+}
+
+/* Visit: the details in a thin black frame with soft corners (Brad,
+   2026-09-27). Inside: eyebrow and open-now pill on one line, the address,
+   then hours / parking / email as a ruled grid, then the one button. */
+.vxb-info { display: flex; flex-direction: column; border: 1px solid #0E0B0C; border-radius: 14px; padding: 24px 20px; }
+@media (min-width: 768px) { .vxb-info { border-radius: 22px; padding: clamp(32px, 3.4vw, 52px); } }
+.vxb-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.vxb-top .vx-now { margin: 0; padding: 6px 12px; border: 1px solid rgba(14, 11, 12, 0.16); border-radius: 999px; font-size: 12px; }
+.vxb-info h2.vxb-address { margin: 20px 0 28px; }
+.vxb-info .vxb-list { margin: 0; padding-top: 22px; border-top: 1px solid rgba(14, 11, 12, 0.14); grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; }
+.vxb-info .vxb-email { grid-column: 1 / -1; }
+.vxb-info .vxb-go { align-self: flex-start; margin-top: 32px; }
+/* Phones: everything in the box centred (Brad, 2026-09-27). */
+@media (max-width: 767px) {
+  .vxb-info { align-items: center; text-align: center; }
+  .vxb-top { flex-direction: column; gap: 14px; }
+  .vxb-info h2.vxb-address { align-items: center; }
+  .vxb-info .vxb-list { width: 100%; }
+  .vxb-info .vxb-go { align-self: center; }
 }

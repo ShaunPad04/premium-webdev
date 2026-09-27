@@ -26,6 +26,7 @@ import {
 import { useCart } from "@/lib/useCart";
 import { variantId } from "@/lib/variants";
 import { PaymentMarks } from "@/components/PaymentMarks";
+import { Arrow } from "@/components/Arrow";
 
 /* The bag, and the button that starts a payment.
  *
@@ -166,7 +167,7 @@ export function Bag() {
         <p className="page-body">Every piece is chosen by hand, and most are one of one.</p>
         <div className="bag-empty-ctas">
           <Link href="/#new-in" className="btn-solid bag-empty-cta">
-            <span className="roll"><span>See what&rsquo;s new</span></span> <span aria-hidden="true">&rarr;</span>
+            <span className="roll"><span>See what&rsquo;s new</span></span> <span aria-hidden="true"><Arrow /></span>
           </Link>
           <Link href="/clothing" className="bag-empty-all">Shop everything</Link>
         </div>

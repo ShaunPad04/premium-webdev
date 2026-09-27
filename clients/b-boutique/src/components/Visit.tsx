@@ -24,20 +24,19 @@ export function Visit() {
   return (
     <section id="visit" aria-labelledby="visit-heading" className="vxb">
       <div className="vxb-info">
-        <p className="label vxb-eyebrow">Visit B Boutique</p>
+        <div className="vxb-top">
+          <p className="label vxb-eyebrow">Visit B Boutique</p>
+          <OpenNow />
+        </div>
         <h2 id="visit-heading" className="vxb-address">
           <span>{shop.street}</span>
           <span>{shop.town} <span className="vxb-pc">{shop.postcode}</span></span>
         </h2>
-        <OpenNow />
-        <p className="vxb-hours">{everyDay ? `Every day, ${hoursLine}` : openingSummary()}</p>
         <dl className="vxb-list">
-          {shop.email ? (
-            <div>
-              <dt>Email</dt>
-              <dd><a href={`mailto:${shop.email}`}>{shop.email}</a></dd>
-            </div>
-          ) : null}
+          <div>
+            <dt>Hours</dt>
+            <dd>{everyDay ? `Every day, ${hoursLine}` : openingSummary()}</dd>
+          </div>
           <div>
             <dt>Parking</dt>
             <dd>
@@ -47,6 +46,12 @@ export function Visit() {
               </a>
             </dd>
           </div>
+          {shop.email ? (
+            <div className="vxb-email">
+              <dt>Email</dt>
+              <dd><a href={`mailto:${shop.email}`}>{shop.email}</a></dd>
+            </div>
+          ) : null}
         </dl>
         <a className="vxb-go" href={directionsHref} target="_blank" rel="noopener noreferrer">
           Get directions <Arrow />

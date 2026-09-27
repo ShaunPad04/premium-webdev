@@ -11,6 +11,7 @@ import { Price } from "@/components/Price";
 import { Visit } from "@/components/Visit";
 import { isBuyable, productsIn } from "@/lib/catalogue";
 import { categories, shop } from "@/lib/shop";
+import { Arrow } from "@/components/Arrow";
 
 const homeware = categories.find((c) => c.slug === "homeware")!;
 
@@ -78,7 +79,7 @@ export default function HomewarePage() {
                       <p className="hwf-price prod-price--pending">Price to confirm</p>
                     )}
                     <Link href={`/shop/${p.slug}`} className="hwf-btn">
-                      View the piece <span className="sr-only">: {p.name}</span> <span aria-hidden="true">&rarr;</span>
+                      View the piece <span className="sr-only">: {p.name}</span> <span aria-hidden="true"><Arrow /></span>
                     </Link>
                   </div>
                 </article>

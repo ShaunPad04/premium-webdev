@@ -165,11 +165,23 @@
     },
     "about": {
       "decided": "2026-09-27",
-      "layout": "Story scroll (21st.dev Scroll Reveal Content A): title, Hayley, square photos held left while principles and Come and see it scroll right; phone photo above each passage",
+      "layout": "In the Shop by category language: rounded shopfront panel with white capitals and glass tag, Hayley portrait panel with her words, the four shop photos as hover-open panels (swipe on phone), principles in three columns",
       "rejected": [
-        "A Reveal: shopfront card opening to full width",
-        "C Zoom parallax"
+        "Story scroll (shipped, then 'looks cheap')",
+        "Serif luxury pass",
+        "Letter",
+        "Gallery",
+        "Magazine",
+        "Chapters",
+        "Index"
       ]
     }
+  },
+  "typography": {
+    "decided": "2026-09-27",
+    "faces": [
+      "Hanken Grotesk"
+    ],
+    "note": "One typeface site-wide; Bodoni Moda no longer loaded; arrows drawn (Arrow.tsx)"
   }
 }
