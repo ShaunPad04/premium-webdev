@@ -1132,3 +1132,13 @@ words are read from the delivery and returns policies and shop.ts. The
 three-icon row and the "rather see it in person" line went. The links in
 the box must stay underlined (axe: link-in-text-block).
 
+## Homeware — 2026-09-27
+
+Brad picked **B, "Object features"**, of three 21st-ui-explore directions
+(A the Clothing grid, C a row of rounded cards). /homeware: the name large
+and centred with the category note, then one row per piece, alternating
+sides: the photograph, a number, the name in the serif, her `short`
+description, the price and "View the piece". Three sculptural pieces read
+better one at a time; if the range grows past five or six, revisit (A
+scales, B does not).
+

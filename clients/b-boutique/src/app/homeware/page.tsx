@@ -6,9 +6,10 @@ import { Footer } from "@/components/Footer";
 import { SocialStrip } from "@/components/SocialStrip";
 import { ShortFaq } from "@/components/ShortFaq";
 import { MotionLayer } from "@/components/MotionLayer";
-import { ProductGrid } from "@/components/ProductGrid";
+import { ProductPhoto } from "@/components/ProductPhoto";
+import { Price } from "@/components/Price";
 import { Visit } from "@/components/Visit";
-import { productsIn } from "@/lib/catalogue";
+import { isBuyable, productsIn } from "@/lib/catalogue";
 import { categories, shop } from "@/lib/shop";
 
 const homeware = categories.find((c) => c.slug === "homeware")!;
@@ -48,31 +49,52 @@ export default function HomewarePage() {
       <Nav solid />
       <main id="main" className="flex-1">
 
-        <section aria-labelledby="home-items" className="page-section cat-page">
+        {/* Homeware as object features (2026-09-27, Brad picked B of three
+            21st-ui-explore directions; A the Clothing grid, C a row of
+            cards). Three sculptural pieces read better one at a time than
+            as a grid built for forty: each gets a row, alternating sides,
+            with her own one-line description and a way to the piece. */}
+        <section aria-labelledby="home-items" className="page-section cat-page hwf">
           <div className="page-inner">
-            <div className="page-head">
-              {/* The visible heading block came off (2026-09-26, Brad): the
-                  category bar and the pieces are the page. The h1 stays for
-                  screen readers and search engines. */}
-              <h1 id="home-items" className="sr-only">Homeware</h1>
-            </div>
+            <h1 id="home-items" className="hwf-title">{homeware.name}</h1>
+            <p className="hwf-note">{homeware.note}</p>
 
             {items.length ? (
-              <ProductGrid items={items} />
+              items.map((p, i) => (
+                <article key={p.slug} className="hwf-row" data-flip={i % 2 ? "" : undefined} aria-labelledby={`hwf-${p.slug}`}>
+                  {/* The photograph repeats the button's link for a pointer;
+                      one tab stop per piece, so it is hidden from the
+                      keyboard and screen readers. */}
+                  <Link href={`/shop/${p.slug}`} className="hwf-media" tabIndex={-1} aria-hidden="true">
+                    <ProductPhoto photo={p.photo} square alt="" sizes="(min-width: 900px) 45vw, 100vw" className="hwf-img" />
+                  </Link>
+                  <div className="hwf-text">
+                    <p className="hwf-n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</p>
+                    <h2 id={`hwf-${p.slug}`} className="hwf-name">{p.name}</h2>
+                    <p className="hwf-short">{p.short}</p>
+                    {isBuyable(p) ? (
+                      <p className="hwf-price"><Price priceP={p.priceP} slug={p.slug} /></p>
+                    ) : (
+                      <p className="hwf-price prod-price--pending">Price to confirm</p>
+                    )}
+                    <Link href={`/shop/${p.slug}`} className="hwf-btn">
+                      View the piece <span className="sr-only">: {p.name}</span> <span aria-hidden="true">&rarr;</span>
+                    </Link>
+                  </div>
+                </article>
+              ))
             ) : (
-              /* Same honest empty state as a clothing rail: the category
-                 exists, so it renders and says so rather than 404ing. */
-              <p className="page-body">
-                No homeware online at the moment. Email{" "}
-                <a href={`mailto:${shop.email}`} className="cf-fail-link">
-                  {shop.email}
-                </a>{" "}
-                and ask what has just come in, or{" "}
-                <Link href="/clothing" className="cf-fail-link">
-                  see everything in the shop
-                </Link>
-                .
-              </p>
+            <p className="page-body">
+              No homeware online at the moment. Email{" "}
+              <a href={`mailto:${shop.email}`} className="cf-fail-link">
+                {shop.email}
+              </a>{" "}
+              and ask what has just come in, or{" "}
+              <Link href="/clothing" className="cf-fail-link">
+                see everything in the shop
+              </Link>
+              .
+            </p>
             )}
           </div>
         </section>

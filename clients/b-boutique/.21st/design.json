@@ -154,6 +154,14 @@
         "Buy bar",
         "Centred"
       ]
+    },
+    "homeware": {
+      "decided": "2026-09-27",
+      "layout": "Object features: one alternating row per piece with number, serif name, short description, price, View the piece",
+      "rejected": [
+        "A Clothing grid",
+        "C row of rounded cards"
+      ]
     }
   }
 }
