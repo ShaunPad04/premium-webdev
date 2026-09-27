@@ -1,0 +1,9 @@
+visa.svg, mastercard.svg, amex.svg: from the payment-icons package v1.2.1
+(github.com/activemerchant/payment_icons), Mozilla Public License 2.0,
+unmodified. Source: https://www.npmjs.com/package/payment-icons
+
+apple-pay.svg, google-pay.svg: the marks from Simple Icons (CC0-1.0),
+set on a white card at the same 750x471 size as the others.
+
+The marks themselves are trademarks of Visa, Mastercard, American Express,
+Apple and Google, shown only to say these are accepted at checkout.

@@ -10249,13 +10249,7 @@ h2.ucs-h em { font-style: italic; }
 /* Accepted cards under the pay button (2026-09-24). Small, bordered, quiet:
    reassurance, not decoration. */
 .bk-cards { list-style: none; display: flex; gap: 8px; margin: 14px 0 0; padding: 0; }
-.bk-cc { display: grid; place-items: center; width: 46px; height: 30px; border: 1px solid rgba(14, 11, 12, 0.14); border-radius: 5px; background: #FFFFFF; }
-.bk-cc--visa span[aria-hidden] { font: italic 800 13px/1 system-ui, sans-serif; letter-spacing: 0.02em; color: #1A1F71; }
-.bk-cc--amex { background: #1F72CD; border-color: #1F72CD; }
-.bk-cc--amex span[aria-hidden] { font: 800 10px/1 system-ui, sans-serif; letter-spacing: 0.04em; color: #FFFFFF; }
 .bk-cards { flex-wrap: wrap; }
-.bk-cc--wallet { grid-auto-flow: column; gap: 2px; color: var(--bb-black); }
-.bk-cc--wallet span[aria-hidden] { font: 600 11px/1 system-ui, sans-serif; }
 
 /* Swipe rows (2026-09-24). overscroll-behavior-x: none was tried here to
    stop the category row bouncing past its ends, and REMOVED the same day:
@@ -10796,6 +10790,46 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 }
 .spin-stage[data-ready] .spin-progress { opacity: 0; }
 
+/* Follow us with the footer's Facebook mark, in ink, no circle and no
+   underline (SocialStrip.tsx; 2026-09-26 and 27, Brad). On hover the mark
+   lifts, grows a touch and tips. */
+.ss-follow { display: inline-flex; align-items: center; gap: 10px; border-bottom: 0; padding: 6px 0; }
+.ss-follow:hover { opacity: 1; }
+.ss-follow-mark { display: block; width: 22px; height: 22px; color: var(--bb-black); transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1); }
+.ss-follow-mark svg { display: block; width: 100%; height: 100%; }
+.ss-follow:hover .ss-follow-mark, .ss-follow:focus-visible .ss-follow-mark { transform: translateY(-3px) scale(1.12) rotate(-8deg); }
+.ss-follow-text { transition: opacity 200ms ease; }
+.ss-follow:hover .ss-follow-text { opacity: 0.7; }
+@media (prefers-reduced-motion: reduce) {
+  .ss-follow:hover .ss-follow-mark, .ss-follow:focus-visible .ss-follow-mark { transform: none; }
+}
+
+/* Footer social icons: no circle around them (2026-09-26, Brad). The 44px
+   hit area stays; only the ring goes. */
+.wf-social-btn, .wf-social-btn:hover { border-color: transparent; }
+
+/* Short FAQ: questions (and answers) centred (2026-09-26, Brad). A three-
+   column row so the question is centred on the page, not beside the icon. */
+.sfq-q { display: grid; grid-template-columns: 1fr minmax(0, auto) 1fr; }
+.sfq-q > span:first-child { grid-column: 2; text-align: center; }
+.sfq-q > .sfq-icon { grid-column: 3; justify-self: end; }
+.sfq-a { margin-inline: auto; padding: 0 0 22px; text-align: center; }
+
+/* Home page sections are marked off by a hairline rule, all on white
+   (2026-09-26, Brad: "section off", then no cream backgrounds). */
+.home-rise .scw,
+.home-rise .owner,
+.home-rise .why,
+.home-rise .rv,
+.home-rise .vx,
+main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
+
+/* Ways to pay (PaymentMarks): the brands' own badges, small and in a row,
+   in the bag under the pay button and in the footer's bottom row. */
+.pay-marks { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+.pay-marks img { display: block; width: 38px; height: 24px; border-radius: 3px; }
+.bk-cards.pay-marks { margin-top: 14px; }
+
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───
    Measured on ten routes: only Hanken Grotesk and Bodoni Moda ever render,
    but they were used inconsistently. The rules, restated:
@@ -10887,43 +10921,3 @@ h3.pol-h { font-size: clamp(20px, 2.3vw, 27px); line-height: 1.22; }
 .rv-stack-by { display: flex; align-items: center; gap: 12px; text-align: left; }
 .rv-stack-grid { list-style: none; margin: clamp(32px, 5vw, 56px) auto 0; padding: 0 0 clamp(64px, 9vw, 110px); max-width: 1240px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
 .rv-stack-card--flat { display: flex; flex-direction: column; gap: 18px; padding: 22px; border: 1px solid rgba(14, 11, 12, 0.12); border-radius: 16px; background: #FFFFFF; text-align: left; }
-
-/* Follow us with the Facebook mark (SocialStrip.tsx, 2026-09-26, Brad).
-   The mark sits in a hairline circle; on hover it fills black, the f turns
-   white, and it lifts and tips slightly. The underline moves to the words. */
-.ss-follow { display: inline-flex; align-items: center; gap: 12px; border-bottom: 0; padding: 6px 0; }
-.ss-follow:hover { opacity: 1; }
-.ss-follow-text { padding-bottom: 5px; border-bottom: 1px solid currentColor; }
-/* The Facebook logo itself, in its own blue, no circle around it
-   (2026-09-26, Brad). On hover it lifts, grows a touch and tips. */
-.ss-follow-mark { display: block; width: 28px; height: 28px; transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1), filter 450ms cubic-bezier(0.22, 1, 0.36, 1); }
-.ss-follow-mark svg { display: block; width: 100%; height: 100%; }
-.ss-follow:hover .ss-follow-mark, .ss-follow:focus-visible .ss-follow-mark {
-  transform: translateY(-3px) scale(1.12) rotate(-8deg);
-  filter: drop-shadow(0 6px 10px rgba(8, 102, 255, 0.3));
-}
-.ss-follow-text { transition: opacity 200ms ease; }
-.ss-follow:hover .ss-follow-text { opacity: 0.7; }
-@media (prefers-reduced-motion: reduce) {
-  .ss-follow:hover .ss-follow-mark, .ss-follow:focus-visible .ss-follow-mark { transform: none; }
-}
-
-/* Footer social icons: no circle around them (2026-09-26, Brad). The 44px
-   hit area stays; only the ring goes. */
-.wf-social-btn, .wf-social-btn:hover { border-color: transparent; }
-
-/* Short FAQ: questions (and answers) centred (2026-09-26, Brad). A three-
-   column row so the question is centred on the page, not beside the icon. */
-.sfq-q { display: grid; grid-template-columns: 1fr minmax(0, auto) 1fr; }
-.sfq-q > span:first-child { grid-column: 2; text-align: center; }
-.sfq-q > .sfq-icon { grid-column: 3; justify-self: end; }
-.sfq-a { margin-inline: auto; padding: 0 0 22px; text-align: center; }
-
-/* Home page sections are marked off by a hairline rule, all on white
-   (2026-09-26, Brad: "section off", then no cream backgrounds). */
-.home-rise .scw,
-.home-rise .owner,
-.home-rise .why,
-.home-rise .rv,
-.home-rise .vx,
-main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }

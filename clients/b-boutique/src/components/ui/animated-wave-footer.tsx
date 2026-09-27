@@ -4,6 +4,7 @@ import { shop, addressLines, openingPhrase } from "@/lib/shop";
 import { SocialMark } from "../SocialMark";
 import { BackToTop } from "../BackToTop";
 import { BMark } from "../BMark";
+import { PaymentMarks } from "../PaymentMarks";
 
 /* The 21st.dev "Animated Wave Footer", adapted (2026-09-23, Brad).
  *
@@ -125,6 +126,7 @@ export default function AnimatedWaveFooter() {
 
         <div className="wf-meta">
           <p>&copy; {year} B Boutique</p>
+          <PaymentMarks className="wf-pay" />
           <p className="ft-made">
             Made by{" "}
             <a href="https://blacklineagency.co.uk" target="_blank" rel="noopener noreferrer" className="ft-made-link">
