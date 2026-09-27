@@ -1,44 +1,49 @@
 import { socials } from "@/lib/nav";
 import { SocialMark } from "@/components/SocialMark";
 
-/* "Follow us" above the footer. The photograph is a generated mood image
- * (Higgsfield Soul 2.0), a cable knit and jeans on a seaside promenade. It
- * shows no piece she sells, so it links nowhere and its alt text says what
- * it shows. It is not her post, so the section does not pose as a feed.
+/* "Follow us" above the footer, as two tiles (2026-09-27, Brad picked B of
+ * three 21st-ui-explore directions, after 21st.dev "Reveal on hover"): one
+ * photograph per account, the whole tile the link.
  *
- * Full-bleed since 2026-09-27 (Brad picked it for phones, then for
-   desktop too, with the label and pills centred at the foot): the promenade
-   photograph fills the section and the two accounts sit on it as compact black
-   pills, each with its mark and its name. */
-const PHOTO = { img: "follow-casual", alt: "A woman in a cream cable-knit jumper and light jeans walking along a seaside promenade" };
+ * Both photographs are generated mood images (Higgsfield Soul 2.0). Neither
+ * shows a piece she sells or is her post, so the section does not pose as a
+ * feed. They are decoration inside the links (alt=""), so each link is
+ * named by its account alone: the promenade in a cable knit for Instagram,
+ * a black trouser suit against a brown wall for Facebook. */
+const PHOTOS = { Instagram: "follow-casual", Facebook: "follow-suit" } as const;
 
 export function SocialStrip() {
   const links = (["Instagram", "Facebook"] as const)
-    .map((name) => socials.find((s) => s.name === name))
-    .filter((s): s is NonNullable<typeof s> => Boolean(s));
+    .map((name) => ({ name, href: socials.find((s) => s.name === name)?.href }))
+    .filter((l): l is { name: "Instagram" | "Facebook"; href: string } => Boolean(l.href));
 
   return (
     <section className="ss2" aria-labelledby="ss2-h">
-      <picture>
-        <source type="image/avif" srcSet={`/img/look/${PHOTO.img}-800.avif 800w, /img/look/${PHOTO.img}-1200.avif 1200w, /img/look/${PHOTO.img}-1600.avif 1600w`} sizes="100vw" />
-        <source type="image/webp" srcSet={`/img/look/${PHOTO.img}-800.webp 800w, /img/look/${PHOTO.img}-1200.webp 1200w, /img/look/${PHOTO.img}-1600.webp 1600w`} sizes="100vw" />
-        <img className="ss2-media" src={`/img/look/${PHOTO.img}-1200.jpg`} alt={PHOTO.alt} width={1200} height={1500} loading="lazy" decoding="async" />
-      </picture>
-      <div className="ss2-body">
-        <p id="ss2-h" className="ss2-label">Follow us</p>
-        <ul className="ss2-links">
-          {links.map((l) => (
+      <p id="ss2-h" className="ss2-label">Follow us</p>
+      <ul className="ss2-grid">
+        {links.map((l) => {
+          const img = PHOTOS[l.name];
+          return (
             <li key={l.name}>
-              <a className="ss2-pill" href={l.href} target="_blank" rel="noopener noreferrer">
-                <span className="ss2-mark" aria-hidden="true"><SocialMark name={l.name} /></span>
-                <span className="ss2-name">{l.name}</span>
+              <a className="ss2-tile" href={l.href} target="_blank" rel="noopener noreferrer">
+                <picture>
+                  <source type="image/avif" srcSet={`/img/look/${img}-800.avif 800w, /img/look/${img}-1200.avif 1200w`} sizes="(min-width: 1024px) 45vw, 46vw" />
+                  <source type="image/webp" srcSet={`/img/look/${img}-800.webp 800w, /img/look/${img}-1200.webp 1200w`} sizes="(min-width: 1024px) 45vw, 46vw" />
+                  <img className="ss2-media" src={`/img/look/${img}-1200.jpg`} alt="" width={1200} height={1500} loading="lazy" decoding="async" />
+                </picture>
+                <span className="ss2-cap">
+                  <span className="ss2-mark" aria-hidden="true"><SocialMark name={l.name} /></span>
+                  <span className="ss2-name">{l.name}</span>
+                  <span className="ss2-go" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </span>
+                </span>
                 <span className="sr-only"> (opens in a new tab)</span>
-                <svg className="ss2-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </a>
             </li>
-          ))}
-        </ul>
-      </div>
+          );
+        })}
+      </ul>
     </section>
   );
 }

@@ -1067,3 +1067,15 @@ Enter or Space springs it open to the greyscale Google embed.
   git has it. If the embed is blocked, the opened card is blank, but the
   address and Get directions are real text beside it.
 - Why B Boutique and Reviews were reviewed the same day and kept as they are.
+
+## Follow us — 2026-09-27
+
+Brad picked **B, Two tiles** of three 21st-ui-explore directions (A a hover
+list under the @handle, C the names huge over one photo), after 21st.dev
+"Reveal on hover". `SocialStrip.tsx`: one photograph per account, the whole
+tile the link, side by side on phones too. The promenade (cable knit) is
+Instagram, the black trouser suit against a brown wall is Facebook. Both are
+generated mood images, not her posts, so they are `alt=""` inside links named
+by the account. The section needs `width: 100%`: its parent centres its
+children and it shrank to thumbnails without it.
+

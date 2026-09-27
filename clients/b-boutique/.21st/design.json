@@ -98,6 +98,15 @@
     "reviews": {
       "decided": "2026-09-27",
       "note": "Kept as it is (Brad)"
+    },
+    "followUs": {
+      "decided": "2026-09-27",
+      "layout": "Two tiles, one photograph per account (21st.dev \"Reveal on hover\"), side by side on phones",
+      "rejected": [
+        "A: hover list under the @handle",
+        "C: names huge over one full-bleed photo",
+        "Previous: full-bleed photo with two black pills"
+      ]
     }
   }
 }
