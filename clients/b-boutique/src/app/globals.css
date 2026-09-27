@@ -11556,3 +11556,47 @@ h3.csr-grid-title { margin: 10px 0 0; text-align: center; font-size: clamp(20px,
 @media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
   .ctab-pic img, .ctab-link::after, .ctab-link::before, .ctab-d, .ctab-v { transition: none !important; }
 }
+
+/* Visit with the 21st.dev Expanded Map (2026-09-27, Brad; Visit.tsx): the
+   details on the left, the map card on the right; on a phone the card first. */
+.vxb {
+  max-width: calc(1520px + 2 * clamp(32px, 4vw, 72px)); margin: 0 auto;
+  padding: clamp(56px, 6vw, 96px) 16px; display: grid; gap: 32px;
+  background: #FFFFFF; color: #0E0B0C;
+}
+@media (min-width: 768px) { .vxb { padding-inline: clamp(32px, 4vw, 72px); } }
+@media (min-width: 1024px) { .vxb { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(48px, 6vw, 96px); align-items: center; min-height: 620px; } }
+.vxb-map { display: flex; justify-content: center; align-items: center; min-height: 480px; }
+@media (max-width: 1023px) { .vxb-map { min-height: 0; order: -1; } }
+.vxb-eyebrow { margin: 0; color: rgba(14, 11, 12, 0.72); }
+h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
+.vxb-pc { white-space: nowrap; }
+.vxb-hours { margin: 12px 0 0; font-size: 15px; }
+.vxb-list { margin: 20px 0 0; display: grid; gap: 14px; font-size: 15px; }
+.vxb-list > div { display: flex; flex-direction: column; gap: 2px; }
+.vxb-list dt { font: 600 11px/1.9 var(--font-body), sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(14, 11, 12, 0.64); }
+.vxb-list dd { margin: 0; overflow-wrap: anywhere; }
+.vxb-list a { color: inherit; text-underline-offset: 4px; }
+.vxb-go {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; margin-top: 24px; padding: 0 24px; border-radius: 999px;
+  background: #0E0B0C; color: #FFFFFF; text-decoration: none; font: 600 12px/1 var(--font-body), sans-serif; letter-spacing: 0.12em; text-transform: uppercase;
+  transition: background-color 200ms ease;
+}
+.vxb-go svg { transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+@media (hover: hover) { .vxb-go:hover { background: #2A2426; } .vxb-go:hover svg { transform: translateX(3px); } }
+.vxb-go:focus-visible, .vxb-list a:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .vxb-go, .vxb-go svg { transition: none; } }
+
+/* The map card (ui/expanded-map.tsx). */
+.em { position: relative; cursor: pointer; user-select: none; outline: none; }
+.em:focus-visible .em-card { outline: 2px solid #0E0B0C; outline-offset: 4px; }
+.em-card { position: relative; overflow: hidden; border-radius: 22px; border: 1px solid rgba(14, 11, 12, 0.12); background: #F7F7F5; box-shadow: 0 30px 60px -30px rgba(14, 11, 12, 0.35); }
+.em-map { position: absolute; inset: 0; pointer-events: none; }
+.em-frame { position: absolute; inset: -60px 0 0; width: 100%; height: calc(100% + 120px); border: 0; filter: grayscale(1); pointer-events: none; }
+.em-fade { position: absolute; inset: 0; z-index: 10; background: linear-gradient(to top, rgba(247, 247, 245, 0.95), rgba(247, 247, 245, 0) 45%); }
+.em-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(14, 11, 12, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 11, 12, 0.05) 1px, transparent 1px); background-size: 20px 20px; }
+.em-content { position: relative; z-index: 20; display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding: 22px 24px; }
+.em-name { margin: 0; font-family: "Bodoni Moda", Georgia, serif; font-size: 26px; line-height: 1.1; }
+.em-sub { margin: 4px 0 0; font-size: 13px; color: rgba(14, 11, 12, 0.72); font-variant-numeric: tabular-nums; }
+.em-line { height: 1px; margin-top: 10px; background: linear-gradient(to right, #0E0B0C, rgba(14, 11, 12, 0)); transform-origin: left; }
+.em-hint { margin: 10px 0 0; font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(14, 11, 12, 0.64); }

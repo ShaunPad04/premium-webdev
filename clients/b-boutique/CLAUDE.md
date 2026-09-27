@@ -1048,3 +1048,22 @@ square corners looked "too sharp").
 - **New arrivals caption on phones**, as the live site has it (Brad, from a
   screenshot): category in small capitals, the name in the sans, the price.
   "View the piece" is kept below it for now; the live site has no button.
+
+## Visit — 2026-09-27
+
+Brad picked B, "Map", of three 21st-ui-explore directions, then asked for a
+map from 21st.dev. Visit (`components/Visit.tsx`) is now the details on the
+left and the **Expanded Map** card on the right (`ui/expanded-map.tsx`); on a
+phone the card comes first. The card tilts with the pointer and a click,
+Enter or Space springs it open to the greyscale Google embed.
+
+- The component shipped Carto tiles; Carto now needs a paid key and
+  OpenStreetMap refuses sites that load its tiles directly. It shows the
+  Google embed instead, the map /privacy already names. **Google is now
+  requested only once the card is opened** (measured: 0 requests before);
+  /privacy was updated to say so. Do not add a tile provider without
+  editing /privacy.
+- `VisitMap.tsx` (map panel + blocked-embed shopfront fallback) is deleted;
+  git has it. If the embed is blocked, the opened card is blank, but the
+  address and Get directions are real text beside it.
+- Why B Boutique and Reviews were reviewed the same day and kept as they are.
