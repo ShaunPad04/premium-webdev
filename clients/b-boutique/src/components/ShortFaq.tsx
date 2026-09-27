@@ -21,9 +21,13 @@ function block(heading: string): string {
   return policyBySlug("delivery")?.blocks.find((b) => b.heading === heading)?.body[0] ?? "";
 }
 
-/* `all` (the home page): every question, since the /faq page came out on
-   2026-09-27 (Brad: "do we even need an FAQ page if we already have it on
-   the home page?"). Elsewhere: the three that matter while shopping. */
+/* `all` (the home page): the three shopping questions plus holds and gift
+   cards, the two things people ask before coming in. Cut from nine to five
+   on 2026-09-27 (Brad: "we don't need that many questions... overloaded,
+   especially on mobile"). Where and when are left out because the Visit
+   section just above shows the address, map and hours; the rest can go
+   through "Ask us anything". Elsewhere: the three that matter while
+   shopping. */
 export function ShortFaq({ all = false }: { all?: boolean }) {
   const returns = faq.find((f) => f.q.startsWith("Can I return"))?.a;
   const ship = {
@@ -35,12 +39,9 @@ export function ShortFaq({ all = false }: { all?: boolean }) {
     a: `${sizeSummary()} Each piece's page has a size guide with its sizes, its fit note and a UK measurement chart. Between sizes? Email ${shop.email} and ask before you order.`,
   };
   const ret = returns ? { q: "What is your return policy?", a: returns } : null;
-  /* The rest of lib/faq.ts, in its own words: where, when, online, holds,
-     gift cards, alterations. Its size and returns answers are the two
-     above, so they are not repeated. Anything still marked temporary
-     stays off the page. */
-  const general = faq.filter((f) => !f.temporary && !f.q.startsWith("What sizes") && !f.q.startsWith("Can I return"));
-  const items = (all ? [...general, ship, ret, size] : [ship, ret, size]).filter(
+  const inShop = ["Can you hold an item", "Do you sell gift cards"]
+    .map((start) => faq.find((f) => !f.temporary && f.q.startsWith(start)));
+  const items = (all ? [ship, ret, size, ...inShop] : [ship, ret, size]).filter(
     (x): x is { q: string; a: string } => Boolean(x),
   );
 

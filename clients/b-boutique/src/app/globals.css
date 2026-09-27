@@ -10756,6 +10756,53 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 .sfq-q > .sfq-icon { grid-column: 3; justify-self: end; }
 .sfq-a { margin-inline: auto; padding: 0 0 22px; text-align: center; }
 
+/* Short FAQ rows as pills (2026-09-27, Brad: "put these in pill form, like
+   the other things we've done", then: the inside plain, "a metallic shine
+   on the outside of it"). Each question sits in its own pill with a solid
+   fill and a thin brushed-silver edge: the fill is painted on the padding
+   box and a chrome gradient on the border box, so only the outline shines.
+   On hover or keyboard focus a light runs once along the edge. The 28px
+   radius is a full pill at one line and stays rounded when a row opens. */
+.sfq-list { display: flex; flex-direction: column; gap: 10px; border-top: 0; }
+.sfq-item {
+  --pill-fill: #FFFFFF; --pill-ink: var(--bb-black); --pill-sub: #3A3536;
+  position: relative; border: 1.5px solid transparent; border-bottom: 1.5px solid transparent; border-radius: 28px;
+  background:
+    linear-gradient(var(--pill-fill), var(--pill-fill)) padding-box,
+    linear-gradient(115deg, #9A9A9A 0%, #E8E8E8 22%, #FFFFFF 34%, #BDBDBD 52%, #8E8E8E 68%, #E8E8E8 84%, #A8A8A8 100%) border-box;
+  box-shadow: 0 1px 2px rgba(14, 11, 12, 0.06), 0 6px 18px -10px rgba(14, 11, 12, 0.18);
+  color: var(--pill-ink);
+}
+/* The running light: the same ring, masked to the border, a bright band
+   sliding across it. */
+.sfq-item::before {
+  content: ""; position: absolute; inset: -1.5px; border: 1.5px solid transparent; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(110deg, transparent 38%, rgba(255, 255, 255, 0.95) 50%, transparent 62%) border-box;
+  background-size: 300% 100%; background-position: 100% 0;
+  -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) padding-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+}
+.sfq-item:hover::before, .sfq-item:has(.sfq-q:focus-visible)::before {
+  opacity: 1; background-position: 0 0; transition: background-position 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sfq-q { min-height: 56px; padding: 8px 8px 8px 24px; column-gap: 16px; border-radius: 28px; font-weight: 500; color: var(--pill-ink); }
+.sfq-q:focus-visible { outline: 2px solid var(--bb-black); outline-offset: 4px; }
+.sfq-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--pill-ink); color: var(--pill-fill); }
+.sfq-icon::before, .sfq-icon::after { inset: 50% 13px auto; }
+.sfq-a { padding: 2px 24px 24px; color: var(--pill-sub); }
+@media (max-width: 599px) {
+  .sfq-q { padding-left: 18px; font-size: 14px; }
+  .sfq-a { padding-inline: 18px; font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .sfq-item::before { display: none; } }
+/* Windows high contrast drops the icon's background fills, and with them
+   the plus. Draw it in the system text colour inside a ring. */
+@media (forced-colors: active) {
+  .sfq-icon { border: 1px solid CanvasText; }
+  .sfq-icon::before, .sfq-icon::after { forced-color-adjust: none; background: CanvasText; }
+}
+
 /* Home page sections are marked off by a hairline rule, all on white
    (2026-09-26, Brad: "section off", then no cream backgrounds). */
 .home-rise .scw,
@@ -10863,9 +10910,14 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .sfq-more-cta:hover { background: #EDEDED; }
 .sfq-more-cta:hover svg, .sfq-more-cta:focus-visible svg { transform: translateX(3px); }
 .sfq-more-cta:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+/* Phones: a compact card (2026-09-27, Brad: "large"). No icon, tighter
+   padding and type, the button its own width under the words. */
 @media (max-width: 599px) {
-  .sfq-more { flex-wrap: wrap; }
-  .sfq-more-cta { width: 100%; justify-content: center; }
+  .sfq-more { flex-wrap: wrap; gap: 12px; padding: 16px 18px; border-radius: 16px; }
+  .sfq-more-icon { display: none; }
+  .sfq-more-title { font-size: 15px; }
+  .sfq-more-sub { font-size: 13px; line-height: 1.45; }
+  .sfq-more-cta { min-height: 44px; padding: 0 18px; font-size: 13px; }
 }
 @media (prefers-reduced-motion: reduce) { .sfq-more-cta svg { transition: none; } }
 
