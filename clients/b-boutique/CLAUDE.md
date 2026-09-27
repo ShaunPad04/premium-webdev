@@ -1230,3 +1230,12 @@ on-this-page list held beside it on a desktop (`PolicyToc.tsx`); the section
 in view gets the dark marker. Each section has an id from its heading, so
 `/privacy#…` links work. The dark "parcel" masthead and "In plain English."
 are gone; the legal-basis notes and the unfilled-slot device are unchanged.
+
+## 404 — 2026-09-27
+
+Brad picked **C of three built from real 21st.dev components: "not found 2"
+(efferd)**; A "Not Found 404 Page" (hirael) and B "Not Found 06"
+(shadcnui-blocks) were the others. `app/not-found.tsx`: a huge "404" faded
+out at its foot with a CSS mask (still real text; the h1 is labelled "Page
+not found"), one line, "Go home" and "Explore" (to /clothing). The dark
+masthead and "Not on the rails." are gone. Next still sends the 404 status.

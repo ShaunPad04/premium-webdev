@@ -6836,24 +6836,6 @@ html:has(.pdp-viewer[open]) { overflow: hidden; }
   color: rgba(14, 11, 12, 0.72);
 }
 
-/* ── 404 (app/not-found.tsx) ───────────────────────────────────────────── */
-.nf-links { display: flex; flex-wrap: wrap; gap: 12px; }
-.nf-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 48px;
-  padding: 0 24px;
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px var(--bb-black);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--bb-black);
-  transition: background 260ms var(--bb-ease), color 260ms var(--bb-ease);
-}
-.nf-link:hover, .nf-link:focus-visible { background: var(--bb-black); color: var(--bb-white); }
 
 
 /* ── The bag, rebuilt 2026-09-23 (components/Bag.tsx) ─────────────────────
@@ -11439,3 +11421,17 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 .bag-page .bk-trust { padding: 14px 16px; border: 1px solid #E4E4E7; border-radius: 10px; }
 .bag-page .bk-pay { border-radius: 8px !important; }
 @media (max-width: 767px) { .bag-page .bk-card, .bag-page .bk-summary { padding: 16px 14px; } }
+
+/* 404 — 2026-09-27, after 21st.dev "not found 2" (efferd), Brad's pick of
+   three: an oversized 404 that fades out at its foot (a mask, so the type
+   stays real text), one line, two buttons. */
+.nf404 { min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 150px 24px 96px; text-align: center; }
+.nf404 .nf404-h { margin: 0; font-size: clamp(128px, 22vw, 260px) !important; font-weight: 600 !important; letter-spacing: -0.04em !important; line-height: 1 !important; -webkit-mask-image: linear-gradient(to bottom, #000 20%, transparent 80%); mask-image: linear-gradient(to bottom, #000 20%, transparent 80%); }
+.nf404-p { margin: -40px 0 0; max-width: 24rem; font-size: 15px; line-height: 1.6; color: rgba(14, 11, 12, .8); }
+.nf404-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.nf404-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 28px; border-radius: 6px; background: #0E0B0C; color: #fff; font-size: 14px; font-weight: 500; text-decoration: none; transition: background-color 150ms; }
+.nf404-btn:hover { background: #2A2426; }
+.nf404-btn--line { background: #fff; color: #0E0B0C; border: 1px solid #E4E4E7; }
+.nf404-btn--line:hover { background: #F4F4F5; }
+.nf404-btn:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .nf404-btn { transition: none; } }

@@ -3,14 +3,12 @@ import Link from "next/link";
 
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { PageMasthead } from "@/components/PageMasthead";
-import { Arrow } from "@/components/Arrow";
 
-/* The 404. Until 2026-09-23 this was Next's default: a white screen reading
-   "404 | This page could not be found" with no header, no footer and no way
-   back — the one page on the site that looked unfinished. Now it is the
-   site's own masthead and three ways forward. Next still sends the 404
-   status for it. */
+/* The 404 (2026-09-27): Brad picked C of three, each after a real 21st.dev
+   component: "not found 2" (efferd). An oversized 404 fading out at its
+   foot, one line under it, and two ways back. (Rejected: A "Not Found 404
+   Page" by hirael, B "Not Found 06" by shadcnui-blocks.) Next still sends
+   the 404 status for it. */
 export const metadata: Metadata = {
   title: "Page not found",
   robots: { index: false, follow: true },
@@ -19,23 +17,19 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <>
-      <Nav />
+      <Nav solid />
       <main id="main" className="flex-1">
-        <PageMasthead
-          eyebrow="404"
-          title="Not on the rails."
-          lede="That page is not here. It may have sold, moved, or never existed. Everything that is in is one click away."
-        />
-        <section className="page-section" aria-label="Where to go next">
-          <div className="page-inner nf-links">
-            <Link href="/clothing" className="nf-link">
-              Shop everything <span aria-hidden="true"><Arrow /></span>
+        <section className="nf404">
+          <h1 className="nf404-h" aria-label="Page not found">
+            404
+          </h1>
+          <p className="nf404-p">The page you are looking for may have sold, moved, or never existed.</p>
+          <div className="nf404-btns">
+            <Link href="/" className="nf404-btn">
+              Go home
             </Link>
-            <Link href="/#new-in" className="nf-link">
-              Just in <span aria-hidden="true"><Arrow /></span>
-            </Link>
-            <Link href="/contact" className="nf-link">
-              Contact the shop <span aria-hidden="true"><Arrow /></span>
+            <Link href="/clothing" className="nf404-btn nf404-btn--line">
+              Explore
             </Link>
           </div>
         </section>

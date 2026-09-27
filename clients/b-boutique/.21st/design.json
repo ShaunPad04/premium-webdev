@@ -208,6 +208,14 @@
         "B Privacy Policy Collapsible Card (cnippet-dev)",
         "C Reader card after Privacy Policy Modal (ruixen.ui)"
       ]
+    },
+    "notFound": {
+      "decided": "2026-09-27",
+      "layout": "After 21st.dev not found 2 (efferd): oversized masked 404, one line, Go home and Explore",
+      "rejected": [
+        "A Not Found 404 Page (hirael)",
+        "B Not Found 06 (shadcnui-blocks)"
+      ]
     }
   },
   "typography": {
