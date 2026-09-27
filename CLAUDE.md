@@ -122,6 +122,10 @@ in anything presented as finished. One heroic effect per screen.
 
 ## Environment
 
+- Brad works through the Claude Desktop app (locally) and claude.ai/code (cloud), never a
+  terminal. Don't ask him to type slash commands (`/plugin`, `/mcp`...) or `claude ...` into a
+  shell — run the step yourself, and say when a new session is needed for a newly installed
+  plugin, skill or MCP server to load.
 - Claude Code cloud sessions are ephemeral: `~/.claude` is wiped when a container is
   recycled, so only committed work and account-synced skills survive. Never hand-install
   skills into `~/.claude/skills/` — put reusable ones in `account-sync-skills/` and upload
