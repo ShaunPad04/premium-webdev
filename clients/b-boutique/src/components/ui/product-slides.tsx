@@ -86,7 +86,9 @@ function geometry(w: number, vh: number, wide: boolean): Geo {
     const H = Math.round(Math.max(380, Math.min(560, vh * 0.62)));
     return { H, I: Math.round(H * 0.8), spread: Math.round(w * 0.34), s: 0.7 };
   }
-  const I = Math.round(Math.min(300, w * 0.6));
+  /* Phones: one piece at a time (the neighbours are hidden in CSS), so it
+     takes most of the width (2026-09-27, was 0.6 of it). */
+  const I = Math.round(Math.min(340, w * 0.8));
   return { I, H: Math.round(I * 1.25), spread: Math.round(w * 0.42), s: 0.66 };
 }
 
@@ -352,12 +354,28 @@ export function ProductSlides({ slides, label, loop = true, initial = 0, ctaLabe
                   ))}
                 </div>
               )}
-              {slide.href && (
-                <Link href={size ? `${slide.href}?size=${encodeURIComponent(size)}` : slide.href} className="ps-cta">
-                  {ctaLabel}
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                </Link>
-              )}
+              {/* Previous and next either side of the button. Shown on
+                  phones only (2026-09-27, Brad's pick for New In on mobile:
+                  one piece at a time, arrows either side); on larger
+                  screens the neighbours are clicked directly. */}
+              <div className="ps-cta-row">
+                {n > 1 && (loop || active > 0) ? (
+                  <button type="button" className="ps-step" aria-label="Previous piece" onClick={() => go(active - 1)}>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M19 12H5M11 5l-7 7 7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </button>
+                ) : null}
+                {slide.href && (
+                  <Link href={size ? `${slide.href}?size=${encodeURIComponent(size)}` : slide.href} className="ps-cta">
+                    {ctaLabel}
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </Link>
+                )}
+                {n > 1 && (loop || active < n - 1) ? (
+                  <button type="button" className="ps-step" aria-label="Next piece" onClick={() => go(active + 1)}>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </button>
+                ) : null}
+              </div>
             </motion.div>
           </AnimatePresence>
         </div>

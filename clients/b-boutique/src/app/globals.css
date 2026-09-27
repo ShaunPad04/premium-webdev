@@ -11118,6 +11118,31 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 @keyframes ir-run-reverse { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) { .ir-track { animation: none; } }
 
+/* Follow us, full-bleed (SocialStrip.tsx, 2026-09-27, Brad's pick): one
+   photograph edge to edge, a shade at the foot, and the two accounts as
+   wide white pills with their marks and names, black on white. */
+.ss2 { position: relative; height: min(100svh, 900px); min-height: 560px; overflow: hidden; background: #0E0B0C; color: #FFFFFF; }
+.ss2-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+.ss2::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(14, 11, 12, 0) 45%, rgba(14, 11, 12, 0.62)); pointer-events: none; }
+.ss2-body { position: absolute; z-index: 1; left: clamp(20px, 5vw, 72px); right: clamp(20px, 5vw, 72px); bottom: clamp(24px, 6svh, 64px); max-width: 440px; }
+.ss2 .ss2-label { margin: 0 0 14px; font: 600 11px/1.4 var(--font-body); letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); }
+.ss2-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+/* Black and compact, side by side (2026-09-27, Brad: "like that ... just
+   replace the current colour and size"). */
+.ss2-pill {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 20px 0 16px; border-radius: 999px;
+  background: #0E0B0C; color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 600;
+  transition: background-color 200ms ease;
+}
+.ss2-pill:hover { background: #2A2426; }
+.ss2-pill:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+.ss2-mark { display: grid; place-items: center; width: 18px; height: 18px; color: #FFFFFF; }
+.ss2-mark svg { width: 18px; height: 18px; }
+.ss2-arrow { display: none; }
+@media (prefers-reduced-motion: reduce) { .ss2-pill, .ss2-arrow { transition: none; } }
+@media (min-width: 768px) { .ss2--phone { display: none; } }
+@media (max-width: 767px) { .ss--desktop { display: none; } }
+
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───
    Measured on ten routes: only Hanken Grotesk and Bodoni Moda ever render,
    but they were used inconsistently. The rules, restated:
