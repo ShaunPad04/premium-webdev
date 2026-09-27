@@ -10,9 +10,46 @@
     "motion": "Desktop only: on scroll-out the frame closes into the category card's shape (clip-path, CSS scroll timeline). Static on phones and under reduced motion."
   },
   "rejected": [
-    { "name": "A: Framed shop interior", "why": "Not picked." },
-    { "name": "B: New-in piece beside the brand", "why": "Not picked." },
-    { "name": "Vaer-style two-line statement on C", "why": "Tried; Brad asked for the centred name instead." }
+    {
+      "name": "A: Framed shop interior",
+      "why": "Not picked."
+    },
+    {
+      "name": "B: New-in piece beside the brand",
+      "why": "Not picked."
+    },
+    {
+      "name": "Vaer-style two-line statement on C",
+      "why": "Tried; Brad asked for the centred name instead."
+    }
   ],
-  "fallbacks": ["A new pale Vaer-style frame", "The horses re-rendered in a pale field"]
+  "fallbacks": [
+    "A new pale Vaer-style frame",
+    "The horses re-rendered in a pale field"
+  ],
+  "sections": {
+    "shopByCategory": {
+      "decided": "2026-09-27",
+      "decidedBy": "Brad",
+      "chosen": {
+        "name": "C: Hover expand",
+        "component": "src/components/CategoryTabs.tsx",
+        "idea": "Four panels of the real 3:4 portraits; the one pointed at or focused opens with a Shop pill, the others narrow to named strips. Phones stack them; first tap opens, second shops."
+      },
+      "rejected": [
+        {
+          "name": "A: Four doors",
+          "why": "Not picked."
+        },
+        {
+          "name": "B: The index",
+          "why": "Not picked."
+        },
+        {
+          "name": "Pill tabs over one wide photo (previous)",
+          "why": "Brad: terrible on desktop."
+        }
+      ]
+    }
+  }
 }

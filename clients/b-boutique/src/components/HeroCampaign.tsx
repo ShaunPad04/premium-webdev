@@ -16,13 +16,9 @@ import { Cta, sources, Where } from "./HeroStrips";
  * alt="" and the sr-only h1 carries the page's meaning. The visible name is
  * a <p>: type.css sets every visible h1 in 38px capitals, !important.
  *
- * Motion: on desktop, as the hero scrolls away, the frame closes in to the
- * exact shape of the category card below it (same width, same 22px corners),
- * at full strength. Vaer's move is a shrink and fade; on a red frame the fade
- * read as a washed-out box (Brad), so it became "leave as one of the page's
- * own cards". CSS scroll timeline, clip-path only, no pin. Brad overrode
- * locked decision 8 ("no hero scale") for it. Nothing moves on phones or
- * under reduced motion. */
+ * Motion: none. It stays full size as the page scrolls past (Brad,
+ * 2026-09-27, taking back the scroll-out to the category card's shape he
+ * had asked for earlier that day). */
 
 const heading = `B Boutique — for every woman who walks in. Independent womenswear and homeware on ${shop.street}, ${shop.town}.`;
 
@@ -37,8 +33,6 @@ export function HeroCampaign() {
           ))}
           <img src="/img/hero/horses-m.jpg" alt="" fetchPriority="high" decoding="async" />
         </picture>
-        {/* Inside the frame, so the words close in with the photograph and
-            can never hang off its edge onto the white page. */}
         <div className="hx-c-mid">
           <p className="hx-name" aria-hidden="true">B Boutique</p>
           <Cta />

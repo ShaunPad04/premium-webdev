@@ -111,7 +111,7 @@ costs a review cycle and risks undoing a deliberate fix.
 | 6 | **The focus ring is `currentColor`.** | A fixed token cannot work: the ring runs over a black header, a photograph, a cool-white FAQ and a black footer. `var(--gold)` went black-on-black over the hero the moment gold was retired. Focusable text already contrasts with its own background, so borrowing its colour inherits that. Do not introduce a special focus colour. |
 | 7 | **Hero parallax: ~32px desktop, ~11px mobile.** | Same travel eats far more of a taller crop seen through a shorter window, hence the two figures. |
 | 9 | **The address is confirmed: 18 Sea View Street, Cleethorpes, DN35 8EZ.** | Client-confirmed 2026-09-02. The original brief said DN35 8HY; that is wrong and must never return. Neither may "6 Market Street", which belongs to a different project. Every address on the site derives from `shop.ts` — change it there or nowhere. The **parking claim** ("on-street parking at the top, Market Place car park a two-minute walk") was a separate, still-UNVERIFIED claim and has now been removed from both Visit and the FAQ. Do not reinstate it, or invent parking availability, prices, walking times, street rules or car park names, until the client confirms it in their own words. |
-| 8 | **No hero scale, no hero pinning.** *Scale overridden by Brad 2026-09-27 for the desktop scroll-out, see "The campaign hero"; no pinning still holds.* | The 140vh sticky track is gone: it moved nothing for 40vh and put a blank spacer before the band under the hero. The hero is exactly 100svh and the band begins at its bottom edge. (That band carried brand logos when this was written; it is the statement rail now, and the decision is unaffected.) |
+| 8 | **No hero scale, no hero pinning.** *(Overridden for a desktop scroll-out on 2026-09-27, then restored by Brad the same day: the hero has no scroll motion.)* | The 140vh sticky track is gone: it moved nothing for 40vh and put a blank spacer before the band under the hero. The hero is exactly 100svh and the band begins at its bottom edge. (That band carried brand logos when this was written; it is the statement rail now, and the decision is unaffected.) |
 | 10 | ~~**The phone number is confirmed: 07305534342.**~~ **SUPERSEDED 2026-09-21: phone numbers are REMOVED from the website at the client's instruction.** `shop.phone` is now `""`, which is the single switch — every phone on the site derived from it, so nothing else needed editing to remove them and one line restores them. The number itself is preserved in the comment in `shop.ts` rather than deleted, because taking it off the site is a display decision while re-confirming a number is a conversation. **Email is now the only route to the shop from the website**, so `bboutiquecleethorpes@gmail.com` carries more weight than before, not less: it is the FAQ's primary action, the contact masthead, the empty-search fallback, the out-of-stock fallback and the contact-form failure. | Given by the client in chat, 2026-09-06. It lives in `shop.ts` and nowhere else; `phoneDisplay` groups it as `07305 534342` for reading while `tel:` links use the raw digits. **Email confirmed 2026-09-20: bboutiquecleethorpes@gmail.com**, and she asked for it to be SHOWN on the site rather than kept behind the form. Setting it does not wire up the contact form — that still needs `CONTACT_TO`, `CONTACT_FROM` and `RESEND_API_KEY`. |
 | 11 | **The contact form must never report success without a send.** | `/api/contact` answers 503 `not_configured` until `CONTACT_TO`, `CONTACT_FROM` and `RESEND_API_KEY` all exist, and the form shows a plainly worded failure plus a way to reach the shop. **That was "plus the phone number" until 2026-09-21**, when phone numbers came off the site (row 10); it is the email address now. The rule this row protects is unchanged and is NOT about which channel is printed: the form must never report success without a send, and must never leave somebody with no way through. Do not "fix" this by faking a thank-you, by removing the form, or by pointing it at a guessed address. Setting those three variables is a launch BLOCKER; see `.env.example`. |
 | 12 | **Money is integers in pence, everywhere.** | `0.1 + 0.2` is not `0.3` in binary floating point, and a basket totalling £74.99999999 is a rounding bug waiting to be charged to somebody. Prices are `priceP` integers from the catalogue to the provider; the single division is `formatPrice` for display, and one more at the very edge where SumUp's API wants a decimal. Never store, add or compare money as pounds. |
@@ -974,11 +974,9 @@ the brand); the decision is in `.21st/design.json`.
   one "Shop all" (`Cta`), and "Open every day · the street" at the foot
   (`Where`). The Vaer-template two-line statement was tried and taken off.
   The name is capped at 200px so it clears the horses on a desktop.
-- **Scroll-out** (desktop, motion allowed, CSS scroll timeline): the frame
-  closes into the category card's shape (.ctab-frame width, 22px corners,
-  16px foot gap), full strength, clip-path only. A Vaer-style shrink and
-  fade read as "a washed-out box" on the red. Nothing moves on phones or
-  under reduced motion. This is what overrode locked decision 8.
+- **No scroll motion.** A desktop scroll-out (the frame closing into the
+  category card's shape) was built and then taken back by Brad the same
+  day: "it shouldn't get any smaller". Locked decision 8 holds again.
 - **LCP.** The 4K phone files at q52 measured 8.6-8.9s simulated LCP vs 7.6s
   for the old files (Lighthouse mobile, n=3 interleaved). The 900 and 1200
   phone steps went to AVIF q46 (220 / 355 KB): median 7.8s.
@@ -988,3 +986,19 @@ the brand); the decision is in `.21st/design.json`.
 Same day: on a phone the header logo, menu and bag hide the instant search
 opens (and stay hidden while it fades out); the added-to-bag toast keeps
 "View bag (n)" on one line.
+
+## Shop by category — 2026-09-27
+
+`components/CategoryTabs.tsx` (the name is historical) is now four panels,
+Brad's pick **C, Hover expand** of three 21st-ui-explore directions (A four
+portraits in a row, B a list of names beside one photo). It replaced pill
+tabs over one widened 16:9 photo, which he called terrible on desktop.
+
+- The panel pointed at or focused opens to the whole portrait with a white
+  "Shop <category>" pill; the others narrow to strips, name running up them.
+  Phones stack them as bands: first tap opens, second shops.
+- Her four real 3:4 portraits (`/img/cat/*-p800|p1200`). The Higgsfield-
+  widened 16:9 versions (`*-w1600|w2400`) were deleted with the tabs; git
+  has them.
+- Still `#rails`. The open/close animates `flex-grow` (layout), accepted for
+  four boxes; reduced motion drops the transition.
