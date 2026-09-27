@@ -9937,62 +9937,9 @@ body:has(main .fqx) .wf { --ft-from: #F7F7F5; }
    back to it. */
 @view-transition { navigation: none; }
 
-/* ── The page rises over the hero (2026-09-24, Brad) ──────────────────────
- * Reference: fuel.framer.website. The hero stays put (sticky) and the rest
- * of the page comes up over it on a slanted top edge, low on the left and
- * high on the right, while the hero behind it darkens. All of it is a CSS scroll timeline on the rising panel
- * (named, and scoped to <main> so the hero can read it too): no script, and
- * nothing runs when the browser lacks scroll timelines or the reader asked
- * for less motion, in which case the page simply scrolls as it did. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .home-rise { timeline-scope: --rise; }
-    .home-rise > .hero { position: sticky; top: 0; z-index: 0; }
-    .home-rise > .rise {
-      --slant: clamp(70px, 9vw, 170px);
-      position: relative;
-      z-index: 1;
-      view-timeline: --rise block;
-    }
-    /* The slanted edge (2026-09-24, second pass, Brad: "it's already there
-       pre-scroll"). The wedge used to sit ABOVE the panel, so on load it
-       already cut into the bottom of the hero. It now sits INSIDE the
-       panel's own top, in a transparent band the hero shows through: at
-       rest the panel's top edge is the bottom of the screen and nothing is
-       visible; the slant appears only once the panel starts to rise, and
-       scrolls away with it, as on the reference. */
-    .home-rise > .rise { padding-top: var(--slant); }
-    .home-rise > .rise::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: calc(var(--slant) + 1px);
-      /* White: the panel's first section is the philosophy quote, on white
-         (2026-09-24, Brad: the edge should rise white, like the reference). */
-      background: #FFFFFF;
-      clip-path: polygon(0 100%, 100% 0, 100% 100%, 0 100%);
-      pointer-events: none;
-    }
-    /* The hero dims behind the panel as it is covered. An overlay rather
-       than a filter: a filter over the WebGL hero would repaint it every
-       frame on a phone. */
-    .home-rise > .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 50;
-      background: #0E0B0C;
-      opacity: 0;
-      pointer-events: none;
-      animation: rise-dim linear both;
-      animation-timeline: --rise;
-      animation-range: entry 0% entry 100%;
-    }
-  }
-}
-@keyframes rise-dim { to { opacity: 0.6; } }
+/* The page used to rise over a sticky hero on a slanted edge (2026-09-24).
+   Removed 2026-09-27 (Brad: "just make it generic ... for the hero"): the
+   hero now scrolls away like any other section. */
 
 /* Up close words, centred (2026-09-24, Brad: "should this not be in the
    middle of the picture, so it stands out"). Centred on the close-up over
@@ -10682,8 +10629,6 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
 .arr-rail .arr-dot { background: rgba(255, 255, 255, 0.45); }
 /* No slanted white wedge (Brad: "it should only be the marquee"): the
    marquee is the first thing up over the hero. */
-.home-rise > .rise { padding-top: 0; }
-.home-rise > .rise::before { display: none; }
 .home-rise > .rise > .arr-rail { border-top: 0; }
 
 /* Follow: plain underlined words to their Facebook page, not a pill
@@ -10857,6 +10802,21 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
   .owner-name .owner-surname::before { content: " "; }
   .owner-bio-text + .owner-bio-text { grid-column: 1; grid-row: 3; margin: 18px 0 0; max-width: 52ch; }
   .owner-details .owner-cta { grid-column: 1; grid-row: 4; margin-top: 28px; justify-self: start; }
+}
+
+/* Category row on phones and tablets: a swipe pager, not a scroller
+   (2026-09-27, Brad: no pulling past the ends, no white). HorizontalRails
+   moves the row with a transform; the browser keeps vertical panning. */
+@media (max-width: 1023px) {
+  .cats { overflow: hidden; background: var(--bb-black); }
+  .cats-rail {
+    overflow: visible; padding: 0; scroll-snap-type: none;
+    touch-action: pan-y;
+    transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+@media (max-width: 1023px) and (prefers-reduced-motion: reduce) {
+  .cats-rail { transition: none; }
 }
 
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───

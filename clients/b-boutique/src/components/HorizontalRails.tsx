@@ -19,12 +19,9 @@ import { FlipText } from "./FlipText";
  * five cards: no radius, no shadow, no border, no padding around the image.
  *
  * ── Mobile ────────────────────────────────────────────────────────────────
- * Five narrow columns on a phone is five slivers. It becomes a snap rail at
- * 78vw per card, and because there is no hover on touch, the card nearest the
- * centre of the rail takes its colour back. Swipe and one
- * photograph comes alive as the last one settles back — no tap required, which
- * is the point: a colour reveal you have to discover is a colour reveal nobody
- * sees.
+ * Four narrow columns on a phone is four slivers. It becomes a swipe pager at
+ * 78vw per card (see the effect below), and because there is no hover on
+ * touch, the card in view takes its colour back.
  *
  * The pinned horizontal ScrollTrigger that used to drive this section is gone
  * with the eight-card track it moved. Five cards fit; there is nothing left to
@@ -42,40 +39,75 @@ export function HorizontalRails() {
     const cards = [...el.querySelectorAll<HTMLElement>("[data-card]")];
     if (!cards.length) return;
 
-    /* Nearest card to the centre of the rail, measured directly.
+    /* A pager, not a scroller (2026-09-27, Brad: "you shouldn't be able to
+     * pull it at all ... it should just be sat in one nice spot, and no
+     * white should show"). The row used to be a native snap scroller, and
+     * iOS let it be dragged past either end, showing the white page behind,
+     * or left between two cards. The native fix, overscroll-behavior-x,
+     * was tried on 2026-09-24 and removed: on iOS it also trapped the
+     * page's vertical scroll.
      *
-     * The first attempt used an IntersectionObserver with the viewport
-     * pinched to its middle 20% and threshold 0.5, and it never fired once:
-     * a card is 78vw wide, so it can cover at most 20/78 = 26% of itself
-     * inside that band and the 50% threshold is unreachable. IO reports how
-     * MUCH of a card is visible, and the question here is WHICH card is
-     * closest — those are different questions, and only one of them has an
-     * answer that survives a change to the card width.
-     *
-     * So: compare centres. Exact, independent of card size, and correct on
-     * first paint rather than only after a scroll event. */
-    let frame = 0;
-    const pick = () => {
-      frame = 0;
-      const mid = el.scrollLeft + el.clientWidth / 2;
-      let best = 0;
-      let bestDist = Infinity;
-      cards.forEach((c, i) => {
-        const centre = c.offsetLeft + c.offsetWidth / 2;
-        const d = Math.abs(centre - mid);
-        if (d < bestDist) { bestDist = d; best = i; }
-      });
-      cards.forEach((c, i) => { c.dataset.live = i === best ? "true" : "false"; });
+     * So the row does not scroll at all. The browser keeps vertical panning
+     * (touch-action: pan-y in CSS); a sideways swipe moves exactly one card
+     * with an eased glide. The first and last cards sit flush with the
+     * screen edges and the middle ones are centred, so there is never a
+     * gap, and a swipe past either end does nothing. The live card takes
+     * its colour back, as before. */
+    let index = 0;
+    const place = (i: number) => {
+      index = Math.max(0, Math.min(cards.length - 1, i));
+      const c = cards[index];
+      const view = el.parentElement?.clientWidth ?? window.innerWidth;
+      const max = Math.max(0, el.scrollWidth - view);
+      const x = Math.max(0, Math.min(max, c.offsetLeft - (view - c.offsetWidth) / 2));
+      el.style.transform = `translate3d(${-x}px, 0, 0)`;
+      cards.forEach((card, n) => { card.dataset.live = n === index ? "true" : "false"; });
     };
-    const onScroll = () => { if (!frame) frame = requestAnimationFrame(pick); };
 
-    pick();
-    el.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
+    let start: { x: number; y: number; t: number } | null = null;
+    let swiped = false;
+    const down = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+      start = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+      swiped = false;
+    };
+    const up = (e: PointerEvent) => {
+      if (!start) return;
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+      const fast = Math.abs(dx) / Math.max(1, e.timeStamp - start.t) > 0.35;
+      start = null;
+      if (Math.abs(dx) < Math.abs(dy) || (Math.abs(dx) < 40 && !fast) || Math.abs(dx) < 12) return;
+      swiped = true;
+      place(index + (dx < 0 ? 1 : -1));
+    };
+    const cancel = () => { start = null; };
+    // A swipe that ends on a card is not a tap on its link.
+    const click = (e: MouseEvent) => {
+      if (swiped) { e.preventDefault(); e.stopPropagation(); swiped = false; }
+    };
+    // Tabbing to a card brings it into view.
+    const focus = (e: FocusEvent) => {
+      const i = cards.findIndex((c) => c.contains(e.target as Node));
+      if (i >= 0) place(i);
+    };
+    const resize = () => place(index);
+
+    place(0);
+    el.addEventListener("pointerdown", down);
+    el.addEventListener("pointerup", up);
+    el.addEventListener("pointercancel", cancel);
+    el.addEventListener("click", click, true);
+    el.addEventListener("focusin", focus);
+    window.addEventListener("resize", resize, { passive: true });
     return () => {
-      el.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (frame) cancelAnimationFrame(frame);
+      el.removeEventListener("pointerdown", down);
+      el.removeEventListener("pointerup", up);
+      el.removeEventListener("pointercancel", cancel);
+      el.removeEventListener("click", click, true);
+      el.removeEventListener("focusin", focus);
+      window.removeEventListener("resize", resize);
+      el.style.transform = "";
       cards.forEach((c) => delete c.dataset.live);
     };
   }, []);

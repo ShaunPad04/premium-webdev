@@ -42,9 +42,8 @@ export default function Home() {
     <>
       <MotionLayer />
       <Nav />
-      {/* home-rise: the hero holds still and the rest of the page slides up
-          over it on a slanted edge that levels out (2026-09-24, Brad's
-          reference: fuel.framer.website). CSS only; see globals.css. */}
+      {/* home-rise is only a hook for the home page's section rules now; the
+          hero scrolls normally (2026-09-27, Brad). */}
       <main id="main" className="flex-1 home-rise">
         <Hero />
         <div className="rise">

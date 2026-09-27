@@ -215,21 +215,9 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLd(localBusinessSchema()) }}
         />
-        <a
-          href="#main"
-          /* fixed, not absolute, and above the header rather than under it.
-             As an absolutely-positioned z-50 element it had two failures, both
-             measured: at the top of the page it rendered BEHIND the z-[60]
-             header, so elementFromPoint at its own centre returned the
-             wordmark link — a click on the visible skip control hit the wrong
-             target; and because it scrolled with the document, focusing it
-             after any scrolling put it at y -3584, so keyboard focus simply
-             vanished off the top of the screen. Neither is visible until
-             someone tabs, which is exactly who this control is for. */
-          className="sr-only focus:not-sr-only focus:fixed focus:z-[70] focus:m-4 focus:rounded-full focus:bg-onyx focus:px-5 focus:py-3 focus:text-bone"
-        >
-          Skip to content
-        </a>
+        {/* No skip link (2026-09-27, Brad asked for it gone). Keyboard and
+            screen-reader users still reach the content through the page's
+            landmarks: <header>, <nav>, <main id="main"> and <footer>. */}
         {/* No cart provider. The bag is an external store read through
             useSyncExternalStore, so every component that needs it subscribes
             directly and there is nothing to thread through the tree. See the

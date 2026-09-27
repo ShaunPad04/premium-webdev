@@ -286,10 +286,9 @@ export function ScrollReset() {
       }
 
       /* Accessibility: a fragment link is supposed to move focus as well as
-         the viewport, and preventDefault() has just taken that away. The
-         skip link is the one that matters most — it goes to #main, and a
-         keyboard user who lands there without focus is back where they
-         started. preventScroll, because the scroll is already handled. */
+         the viewport, and preventDefault() has just taken that away: a
+         keyboard user who lands on a section without focus is back where
+         they started. preventScroll, because the scroll is already handled. */
       const el = target as HTMLElement;
       if (!el.hasAttribute("tabindex") && !/^(a|button|input|select|textarea)$/i.test(el.tagName)) {
         el.setAttribute("tabindex", "-1");
