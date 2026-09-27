@@ -144,8 +144,12 @@ for (const name of slides) {
     /* 46, not 54 (2026-09-23): the MADRID frame is a dense red texture
        and cost 154 KB at 54, which measured as a later simulated LCP than
        the frame it replaced. 46 is 101 KB, PSNR 33.4 vs 35.4 dB, and no
-       difference could be seen at 2x zoom. */
-    small.clone().avif({ quality: 52, effort: 6 }).toFile(`public/img/hero/${name}-s.avif`),
+       difference could be seen at 2x zoom.
+       Back to 46 (2026-09-27) for the GPT Image 2.5 4K re-render: its finer
+       heather cost 283 KB at 52 (old frame 223 KB) and measured +1.0-1.3s
+       simulated LCP against the old files on the same build (Lighthouse
+       mobile, n=3 each: 8.6-8.9s vs 7.6s). 46 is 220 KB. */
+    small.clone().avif({ quality: 46, effort: 6 }).toFile(`public/img/hero/${name}-s.avif`),
     small.clone().webp({ quality: 74 }).toFile(`public/img/hero/${name}-s.webp`),
   ]);
 
@@ -155,7 +159,8 @@ for (const name of slides) {
   {
     const mid = sharp(port).resize({ width: 1200, withoutEnlargement: true });
     await Promise.all([
-      mid.clone().avif({ quality: 52, effort: 6 }).toFile(`public/img/hero/${name}-s1200.avif`),
+      /* 46 again since 2026-09-27, with the -s step above: 450 -> 355 KB. */
+      mid.clone().avif({ quality: 46, effort: 6 }).toFile(`public/img/hero/${name}-s1200.avif`),
       mid.clone().webp({ quality: 74 }).toFile(`public/img/hero/${name}-s1200.webp`),
     ]);
   }

@@ -10209,6 +10209,11 @@ h2.ucs-h em { font-style: italic; }
 .atx { top: auto; bottom: 24px; animation-name: atx-up; }
 .atx-actions { flex-wrap: nowrap; gap: 14px; }
 .atx-keep { font-size: 12px; white-space: nowrap; }
+/* One line: "View bag (1)" wrapped to two on a phone (2026-09-27, Brad). */
+.atx-view { white-space: nowrap; flex: 0 0 auto; }
+/* The row may wrap instead, on the narrowest phones (320px), so Keep
+   shopping drops under the button rather than off the card. */
+.atx-actions { flex-wrap: wrap; row-gap: 8px; }
 /* Opening quote mark in ink, not red (2026-09-24, Brad). */
 .pov-statement > span[aria-hidden]::before { color: inherit; }
 
@@ -10575,8 +10580,12 @@ h2.wf-h, .wf-link, .wf-address, .wf-social-btn { color: var(--bb-black); }
    under it keeps its fill: that is text that has to be read. */
 .sdock-form { background: transparent; box-shadow: none; }
 .sdock-close, .sdock-close:hover { background: transparent; }
+/* Keyed on the form, not data-open, so they stay out while it fades away
+   too; and at once, with no transition (2026-09-27, Brad: the logo's
+   320ms visibility fade left it showing through the field for a moment). */
 @media (max-width: 1023px) {
-  .navbar:has(.sdock[data-open]) > :not(.navbar-search) { visibility: hidden; }
+  .navbar:has(.sdock-form) > :not(.navbar-search),
+  .navbar:has(.sdock-form) > :not(.navbar-search) * { visibility: hidden; transition: none; }
 }
 
 /* Catalogue pages without the photograph band (2026-09-26, Brad): the solid
@@ -11392,3 +11401,70 @@ h3.pol-h { font-size: clamp(20px, 2.3vw, 27px); line-height: 1.22; }
 .rv-stack-by { display: flex; align-items: center; gap: 12px; text-align: left; }
 .rv-stack-grid { list-style: none; margin: clamp(32px, 5vw, 56px) auto 0; padding: 0 0 clamp(64px, 9vw, 110px); max-width: 1240px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
 .rv-stack-card--flat { display: flex; flex-direction: column; gap: 18px; padding: 22px; border: 1px solid rgba(14, 11, 12, 0.12); border-radius: 16px; background: #FFFFFF; text-align: left; }
+
+/* ── The campaign hero (2026-09-27, Brad's pick "C" of three) ──────────────
+   components/HeroCampaign.tsx, laid out after the Vaer template's desktop
+   hero: a two-line statement at the foot, one small line, the frame full
+   bleed. One motion beat: on desktop the frame shrinks and fades into the
+   page as the hero scrolls away. */
+.hx p { margin: 0; }
+.hx-c {
+  position: relative; isolation: isolate; height: clamp(620px, 100svh, 1050px);
+  overflow: hidden; background: var(--bg); color: #fff;
+  view-timeline: --hx-hero block;
+}
+/* The frame carries the dark ground and both shadows, so the ground is
+   there before the photograph arrives (the white type is never on white)
+   and the shadows shrink with it. */
+/* Where the hero ends up as it scrolls away: the exact width and corners of
+   the category card below it (.ctab-frame, 91.9% of the page, max 1520px,
+   22px), so it leaves as one of the page's own cards rather than a new shape. */
+.hx-c { --hx-card-x: max(4.05%, calc((100% - 1520px) / 2)); }
+.hx-c-frame { position: absolute; inset: 0; background: var(--inverse-bg); }
+.hx-c-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+/* Ink shadows only, top (for the see-through header) and foot (for the type).
+   Measured with the text hidden, see HeroCampaign.tsx. */
+.hx-c-frame::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(14, 11, 12, 0.5), rgba(14, 11, 12, 0) 180px),
+    linear-gradient(to top, rgba(14, 11, 12, 0.78), rgba(14, 11, 12, 0) 58%);
+}
+/* The name in the middle, the button under it (Brad, 2026-09-27, from a
+   screenshot): Bodoni by name, since --font-display answers Hanken now. Set
+   to span most of the frame, capped at 200px so it clears the horses on a desktop. */
+.hx-c-mid {
+  position: absolute; inset: 0; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  gap: clamp(22px, 3.4svh, 40px);
+  padding: 0 16px clamp(88px, 11svh, 130px);
+  text-align: center;
+}
+.hx-name {
+  font-family: "Bodoni Moda", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(64px, 17.5vw, 200px);
+  line-height: 0.95;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  color: #fff;
+  text-shadow: 0 2px 36px rgba(14, 11, 12, 0.35);
+}
+.hx-c-mid .hero-cta { margin-top: 0; }
+
+/* Scrolling away (desktop, motion allowed, scroll timelines supported;
+   anything else gets the still hero): the frame closes in to the category
+   card's shape, full strength, no fade (Brad, 2026-09-27: the Vaer-style
+   fade read as a washed-out box on a red frame). Brad overrode locked
+   decision 8 for this on 2026-09-27; no pin, a clip-path only. */
+@keyframes hx-to-card {
+  from { clip-path: inset(0 0 0 0 round 0px); }
+  to { clip-path: inset(0 var(--hx-card-x) 16px var(--hx-card-x) round 22px); }
+}
+@supports (animation-timeline: view()) {
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .hx-c-frame { animation: hx-to-card linear both; animation-timeline: --hx-hero; animation-range: exit 0% exit 45%; }
+  }
+}
+
+

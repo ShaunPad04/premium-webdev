@@ -8,7 +8,7 @@ import { LuminaInteractiveList, LuminaTitle, type LuminaSlide } from "@/componen
  * pick from 21st.dev, in its centred layout). The photographs are
  * pre-encoded by scripts/build-hero.mjs from assets/hero. */
 
-const sources = (file: string) => [
+export const sources = (file: string) => [
   /* 1920 / 2560 / 3840 (the 4K frame): a laptop takes 1920, retina and 4K
      screens take the larger steps. The frame is full-bleed, so 100vw. */
   { media: "(min-width: 1024px)", type: "image/avif", srcSet: `/img/hero/${file}-d1920.avif 1920w, /img/hero/${file}-d2560.avif 2560w, /img/hero/${file}-d.avif 3840w`, sizes: "100vw" },

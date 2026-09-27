@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
-import { Inter } from "next/font/google";
 
-import { HeroTurn } from "@/components/HeroTurn";
-import { spinFor } from "@/lib/spin";
-import { featured, openingSummary, shop } from "@/lib/shop";
-import { FREE_DELIVERY_OVER_P, formatPriceShort } from "@/lib/catalogue";
+import { HeroCampaign } from "@/components/HeroCampaign";
 import { NewArrivalRail } from "@/components/NewArrivalRail";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { NewInSlides } from "@/components/NewInSlides";
@@ -43,40 +39,19 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
  * long FAQ (the full one is back above the footer since 2026-09-27, when
  * /faq came out). The cinematic statement scene it
  * replaced showed each piece three times with four full buy blocks. */
-/* Inter Black for the hero's word ring only (2026-09-27, Brad: "use the
-   font in the jellyfish example"). Self-hosted by next/font; one weight. */
-const heroFont = Inter({ weight: "900", subsets: ["latin"], display: "swap", variable: "--font-hero" });
-
 export default function Home() {
-  /* The hero is the Fair Isle Jumper turn for now (2026-09-27, Brad chose
-     it over the horses, which are kept in components/Hero.tsx). */
-  const turn = spinFor("fair-isle-jumper", "hero");
   return (
     <>
       <MotionLayer />
-      {/* Solid from the first paint: the hero is white now. */}
-      <Nav solid />
+      {/* See-through over the hero photograph, solid once the reader scrolls. */}
+      <Nav />
       {/* home-rise is only a hook for the home page's section rules now; the
           hero scrolls normally (2026-09-27, Brad). */}
       <main id="main" className="flex-1 home-rise">
-        {turn ? (
-          <div className={heroFont.variable}>
-            <HeroTurn
-              video="/img/spin/fair-isle-jumper/video/turn"
-              poster="/img/spin/fair-isle-jumper/video/poster.webp"
-              generated={turn.generated}
-              name="Fair Isle Jumper"
-                heading={`B Boutique — for every woman who walks in. Independent womenswear and homeware on ${shop.street}, ${shop.town}.`}
-              statement={`Womenswear and homeware, chosen by hand, one piece at a time, on ${shop.street} in ${shop.town}.`}
-              captions={[
-                openingSummary().replace(/\.$/, ""),
-                `${shop.street}, ${shop.town}`,
-                `Free UK delivery over ${formatPriceShort(FREE_DELIVERY_OVER_P)}`,
-              ]}
-              labels={featured.map((f) => f.name)}
-            />
-          </div>
-        ) : null}
+        {/* The campaign hero since 2026-09-27 (Brad's pick, C of three), in
+            place of the Fair Isle turn, which is kept in HeroTurn.tsx with its
+            Inter word-ring font. */}
+        <HeroCampaign />
         <div className="rise">
         {/* The marquee is the first thing up over the hero (2026-09-26,
             Brad): white, carrying the philosophy sentence. The quote section
