@@ -1,0 +1,18 @@
+{
+  "project": "B Boutique",
+  "surface": "Home hero",
+  "decided": "2026-09-27",
+  "decidedBy": "Brad",
+  "chosen": {
+    "name": "C: The Campaign",
+    "idea": "One full-bleed campaign frame (the horses in a red field, GPT Image 2.5 4K), the name in Bodoni in the middle, one Shop all button, opening hours and street at the foot.",
+    "component": "src/components/HeroCampaign.tsx",
+    "motion": "Desktop only: on scroll-out the frame closes into the category card's shape (clip-path, CSS scroll timeline). Static on phones and under reduced motion."
+  },
+  "rejected": [
+    { "name": "A: Framed shop interior", "why": "Not picked." },
+    { "name": "B: New-in piece beside the brand", "why": "Not picked." },
+    { "name": "Vaer-style two-line statement on C", "why": "Tried; Brad asked for the centred name instead." }
+  ],
+  "fallbacks": ["A new pale Vaer-style frame", "The horses re-rendered in a pale field"]
+}
