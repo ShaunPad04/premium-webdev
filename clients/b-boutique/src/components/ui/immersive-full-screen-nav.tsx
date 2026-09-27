@@ -4,8 +4,8 @@ import gsap from "gsap";
 import Link from "next/link";
 import { useEffect, useRef, type RefObject } from "react";
 
-import { MENU, directionsHref, socials } from "@/lib/nav";
-import { addressLines, openingSummary, phoneDisplay, shop } from "@/lib/shop";
+import { MENU, socials } from "@/lib/nav";
+import { addressLines, openingSummary } from "@/lib/shop";
 import { SocialMark } from "@/components/SocialMark";
 
 /* The menu as a full-screen panel (2026-09-27, Brad: "let's try this menu
@@ -136,6 +136,7 @@ export default function ImmersiveMenuPanel({
       role="dialog"
       aria-modal="true"
       aria-label="Menu"
+      tabIndex={-1}
       inert={!open}
       className="ifn fixed inset-0 z-50 overflow-y-auto bg-[#0A0A0A] text-white"
       style={{ clipPath: CLIP_TOP, visibility: "hidden" }}
@@ -166,13 +167,8 @@ export default function ImmersiveMenuPanel({
             </address>
             <p className="ifn-meta">{openingSummary()}</p>
           </div>
-          <div className="ifn-foot-col" data-ifn-foot>
-            {shop.email ? <a href={`mailto:${shop.email}`} className="ifn-meta ifn-a">{shop.email}</a> : null}
-            {shop.phone ? <a href={`tel:${shop.phone.replace(/\s+/g, "")}`} className="ifn-meta ifn-a">{phoneDisplay}</a> : null}
-            <a href={directionsHref} target="_blank" rel="noopener noreferrer" className="ifn-meta ifn-a">
-              Find us<span className="sr-only"> (opens Google Maps in a new tab)</span> &#8599;&#xFE0E;
-            </a>
-          </div>
+          {/* No email or "Find us" here (2026-09-27, Brad): the marks sit
+              under the address and hours instead. */}
           {socials.length ? (
             <ul className="ifn-socials" data-ifn-foot aria-label="Follow B Boutique">
               {socials.map((s) => (

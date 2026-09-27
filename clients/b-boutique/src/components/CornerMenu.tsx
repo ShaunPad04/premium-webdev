@@ -114,9 +114,12 @@ export function CornerMenu() {
        is the only thing CornerMenu needs from it. */
     document.body.setAttribute("data-menu-open", "");
 
-    // Move focus into the panel.
+    /* Move focus into the panel: onto the dialog itself, not its first link
+       (2026-09-27, Brad: on an iPhone a ring appeared round "Womenswear"
+       though he had only tapped the menu). Keyboard users reach the first
+       link with their first Tab; screen readers hear the dialog's name. */
     const t = window.setTimeout(
-      () => panel.current?.querySelector<HTMLElement>("a[href]")?.focus(),
+      () => panel.current?.focus({ preventScroll: true }),
       reduced ? 0 : 260,
     );
 

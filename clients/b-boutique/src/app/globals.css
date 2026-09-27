@@ -10928,6 +10928,27 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .ifn-social:hover { transform: translateY(-3px); }
 .ifn-a:focus-visible, .ifn-social:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .ifn-photo img, .ifn-social { transition: none; } }
+/* More air (2026-09-27, Brad: "squished ... more spaced out and more
+   structured"). Clear space under the header before the first link, even
+   steps between the links, sized by the screen's height as well as its
+   width so all seven sit on a short phone; the foot is the address and
+   hours with the two marks beneath, no email and no "Find us". */
+.ifn:focus { outline: none; }
+.ifn-inner { padding-top: 164px; gap: 44px; }
+@media (min-width: 1024px) { .ifn-inner { padding-top: 164px; padding-bottom: 26px; gap: 30px; } }
+@media (max-height: 700px) { .ifn-inner { padding-top: 128px; padding-bottom: 12px; gap: 18px; } .ifn-foot { padding-top: 18px; gap: 10px; } }
+.ifn-main { align-items: flex-start; }
+.ifn-links { gap: clamp(6px, 1.4svh, 14px); }
+.ifn-link { font-size: clamp(28px, min(9.5vw, 5.2svh), 48px); line-height: 1.05; }
+@media (min-width: 1024px) { .ifn-link { font-size: clamp(40px, min(4.6vw, 6svh), 80px); } }
+.ifn-n { position: relative; top: -0.35em; }
+.ifn-foot { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 18px; padding-top: 28px; }
+/* The menu's links in the site's sans capitals, not the serif (2026-09-27,
+   Brad: "change the font"), matching the headings and Up close. */
+.ifn-link { font-family: var(--font-body), sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.01em; font-size: clamp(26px, min(8.4vw, 4.8svh), 44px); line-height: 1.08; }
+@media (min-width: 1024px) { .ifn-link { font-size: clamp(36px, min(4vw, 5.6svh), 68px); } }
+.ifn-foot-col { gap: 6px; }
+.ifn-socials { gap: 4px; margin-left: -12px; }
 
 /* Visit, softer (2026-09-27, Brad: "bland"; the map "shouldn't be an
    exact square"). Rounded map and card, the open-now line as a pill, and
@@ -10986,10 +11007,11 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
    ring (HeroTurn.tsx, 2026-09-27, after "Jellyfish Drift"). One screen, no
    scroll track. HeroTurn turns .th-stage and sets each word's opacity from
    the video's clock; nothing here is driven by scroll.
-   Ground: plain white (2026-09-27, Brad, after trying stone and four
-   others). No grain: measured, it cost more dropped frames than
+   Ground: white glowing out to charcoal at the edges (2026-09-27, Brad:
+   the shape of the white-to-oxblood preview, in the charcoal of the
+   marquee below). No grain: measured, it cost more dropped frames than
    anything else on the stage. */
-.th { --th-ink: #0E0B0C; --th-muted: rgba(14, 11, 12, 0.72); --th-bg: #FFFFFF; position: relative; }
+.th { --th-ink: #0E0B0C; --th-muted: rgba(14, 11, 12, 0.72); --th-bg: radial-gradient(125% 125% at 50% 10%, #FFFFFF 40%, #3A3837 100%); position: relative; }
 .th-pin { --r: min(640px, 60vw); position: relative; height: 100svh; min-height: 560px; overflow: hidden; color: var(--th-ink); background: var(--th-bg); }
 
 /* The ring. */
@@ -11137,6 +11159,59 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .ss2-mark svg { width: 18px; height: 18px; }
 .ss2-arrow { display: none; }
 @media (prefers-reduced-motion: reduce) { .ss2-pill, .ss2-arrow { transition: none; } }
+
+/* White space between the category row and Up close (2026-09-27, Brad:
+   "too close"), in place of the hairline. */
+.home-rise .scw { border-top: 0; margin-top: clamp(48px, 5vw, 72px); }
+
+/* About masthead without its photograph (2026-09-27, Brad): the title on
+   white, in ink. */
+.ab-hero--plain { min-height: 0; background: var(--bg, #FFFFFF); color: var(--bb-black); padding-top: calc(118px + clamp(40px, 6vw, 88px)); }
+.ab-hero--plain::after { content: none; }
+.ab-hero--plain .ab-hero-copy { padding-bottom: clamp(40px, 6vw, 80px); }
+.ab-hero--plain .ab-eyebrow, .ab-hero--plain .ab-hero-where { color: rgba(14, 11, 12, 0.72); }
+
+/* Shop owner on phones and tablets: portrait first (2026-09-27, Brad
+   picked A): the portrait full width with the role and her name on it,
+   then her words and a black "Get in touch" pill. The same markup, laid
+   out with display: contents as on the desktop. */
+@media (max-width: 1023px) {
+  .owner { padding-block: 0 clamp(48px, 10vw, 72px); }
+  .owner-inner { display: grid; padding: 0; }
+  .owner-layout, .owner-body, .owner-details, .owner-bio { display: contents; }
+  .owner-portrait { grid-area: 1 / 1; width: 100%; max-width: none; aspect-ratio: 4 / 5; }
+  .owner-portrait::after { content: ""; position: absolute; inset: 45% 0 0; background: linear-gradient(to bottom, rgba(14, 11, 12, 0), rgba(14, 11, 12, 0.72)); pointer-events: none; }
+  .owner-eyebrow { grid-area: 1 / 1; align-self: end; z-index: 1; margin: 0 20px 64px; color: rgba(255, 255, 255, 0.85); }
+  .owner .owner-name { grid-area: 1 / 1; align-self: end; z-index: 1; margin: 0 20px 20px; color: #FFFFFF; font-size: clamp(36px, 10vw, 46px) !important; line-height: 1.05 !important; }
+  .owner-name br { display: none; }
+  .owner-name .owner-surname::before { content: " "; }
+  .owner-bio-text { grid-column: 1; margin: 0; padding-inline: 20px; }
+  .owner-bio-text:first-child { grid-row: 2; margin-top: 24px; color: var(--bb-black); }
+  .owner-bio-text + .owner-bio-text { grid-row: 3; margin-top: 14px; }
+  .owner-details .owner-cta {
+    grid-column: 1; grid-row: 4; justify-self: start; margin: 24px 20px 0;
+    min-height: 48px; padding: 0 22px; gap: 10px; border-radius: 999px; background: var(--bb-black); color: #FFFFFF;
+  }
+  .owner-cta .owner-cta-ring { order: 2; width: auto; height: auto; border: 0; background: none; color: inherit; }
+  .owner-cta .owner-cta-label { order: 1; color: inherit; }
+}
+
+/* Shop owner on desktop, softened (2026-09-27, Brad: after New In "a big
+   head in a square" looked out of place). The portrait sits inside the
+   page's margins with rounded corners, like the other photographs, framed
+   so her whole head shows, with her words beside it. */
+@media (min-width: 1024px) {
+  .owner { padding-block: clamp(72px, 7vw, 112px); }
+  .owner-inner {
+    max-width: 1320px; margin-inline: auto; padding-inline: clamp(40px, 5vw, 72px);
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr); column-gap: clamp(48px, 6vw, 96px);
+    min-height: 0;
+  }
+  .owner-portrait { height: auto; aspect-ratio: 4 / 5; max-height: 78svh; border-radius: 22px; overflow: hidden; align-self: center; }
+  .owner-portrait .owner-img { object-position: 50% 12%; }
+  .owner-eyebrow, .owner .owner-name, .owner-bio-text, .owner-details .owner-cta { padding-inline: 0; margin-inline: 0; }
+  .owner-bio-text { max-width: 52ch; }
+}
 
 /* ── One type system (2026-09-26, Brad: "the fonts are all different") ───
    Measured on ten routes: only Hanken Grotesk and Bodoni Moda ever render,

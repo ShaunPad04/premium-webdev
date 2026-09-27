@@ -20,7 +20,7 @@
   text-transform: uppercase;
   color: var(--ps-muted);
 }
-.ps-hint-tap { display: none; }
+.ps-hint-tap, .ps-hint-swipe { display: none; }
 @media (hover: none) {
   .ps-hint-click { display: none; }
   .ps-hint-tap { display: inline; }
@@ -274,7 +274,20 @@
    screens keep the centre stage with the neighbours either side, until a
    desktop direction is chosen. */
 @media (max-width: 767px) {
-  .nis .ps-hint, .nis .ps-sizes, .nis .ps-colours, .nis .ps-thumbs, .nis .ps-caption, .nis .ps-desc { display: none; }
+  .nis .ps-sizes, .nis .ps-colours, .nis .ps-thumbs, .nis .ps-caption, .nis .ps-desc { display: none; }
   .nis .ps-slide:not(.is-active) { visibility: hidden; }
   .nis .ps-cta-row { display: flex; align-items: center; justify-content: center; }
 }
+
+/* New In on phones: say it swipes (2026-09-27, Brad), in place of "Tap the
+   pieces", with the arrows easing out and back. */
+@media (max-width: 767px) {
+  .nis .ps-hint-tap, .nis .ps-hint-click { display: none; }
+  .nis .ps-hint-swipe { display: inline-flex; align-items: center; gap: 10px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .nis .ps-hint-swipe svg:first-child { animation: ps-nudge-l 1.8s ease-in-out infinite; }
+    .nis .ps-hint-swipe svg:last-child { animation: ps-nudge-r 1.8s ease-in-out infinite; }
+  }
+}
+@keyframes ps-nudge-l { 0%, 100% { transform: none; } 50% { transform: translateX(-4px); } }
+@keyframes ps-nudge-r { 0%, 100% { transform: none; } 50% { transform: translateX(4px); } }

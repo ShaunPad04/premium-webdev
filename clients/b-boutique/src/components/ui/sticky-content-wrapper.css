@@ -228,3 +228,8 @@ h3.scw-h {
   .scw-slot::before { top: -24px; }
   .scw .scw-p { font-size: 15px; }
 }
+
+/* The fabric's name at a size to go with its sans capitals (the face is
+   set in type.css, which overrides every h3 with !important). */
+.scw h3.scw-h { line-height: 1.08; font-size: clamp(24px, 2vw, 30px); }
+@media (max-width: 1025px) { .scw h3.scw-h { font-size: clamp(20px, 5.4vw, 26px); } }

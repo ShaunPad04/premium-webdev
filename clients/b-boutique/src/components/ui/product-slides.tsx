@@ -188,6 +188,11 @@ export function ProductSlides({ slides, label, loop = true, initial = 0, ctaLabe
       <p className="ps-hint" aria-hidden="true">
         <span className="ps-hint-click">Click on the pieces</span>
         <span className="ps-hint-tap">Tap the pieces</span>
+        <span className="ps-hint-swipe">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M19 12H5M11 5l-7 7 7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          Swipe for more
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </span>
       </p>
 
       <div className="ps-grid">

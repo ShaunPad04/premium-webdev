@@ -36,3 +36,12 @@ html:root { --font-display: var(--font-body); }
   font-family: "Bodoni Moda", Georgia, serif !important;
   text-transform: none !important;
 }
+
+/* And the Up close fabric names: the sans capitals of the section's own
+   title (2026-09-27, Brad: the serif names "look weird"). */
+.scw h3.scw-h:not(.sr-only) {
+  font-family: var(--font-body), sans-serif !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+}

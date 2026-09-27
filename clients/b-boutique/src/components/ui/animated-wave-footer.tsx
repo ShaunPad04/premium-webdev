@@ -95,10 +95,19 @@ export default function AnimatedWaveFooter() {
                 <span key={line}>{line}</span>
               ))}
             </address>
-            <a href={`mailto:${shop.email}`} className="wf-link wf-email">{shop.email}</a>
 
             {socials.length > 0 ? (
-              <ul className="wf-social" aria-label="Follow B Boutique">
+              <ul className="wf-social" aria-label="Follow or email B Boutique">
+                {/* Email as a mark beside the two accounts (2026-09-27, Brad),
+                    in place of the address written out. */}
+                {shop.email ? (
+                  <li>
+                    <a href={`mailto:${shop.email}`} className="wf-social-btn">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.7" /><path d="m4 7 8 6 8-6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      <span className="sr-only">Email {shop.email}</span>
+                    </a>
+                  </li>
+                ) : null}
                 {socials.map((s) => (
                   <li key={s.name}>
                     <a href={s.href} target="_blank" rel="noopener noreferrer" className="wf-social-btn">

@@ -25,9 +25,9 @@ export const metadata: Metadata = {
  *
  * It is now an editorial story told mostly in HER photographs:
  *
- *   1. A vintage still life, full-bleed, with the title set over it. (Her
- *      rails photo until 2026-09-23, replaced at the client's request with
- *      a generated image; her real photographs carry the rest of the page.)
+ *   1. The title on white. (Her rails photo sat behind it until
+ *      2026-09-23, then a generated still life, which came off on
+ *      2026-09-27 at Brad's request; her real photographs carry the rest.)
  *   2. Hayley, in her own words (owner.bio — the same copy the home page's
  *      owner card reads).
  *   3. Inside the shop: five of her photographs in one 4:5 lookbook column,
@@ -82,18 +82,6 @@ function Pic({
   );
 }
 
-/* A generated vintage still life, not her shop (see scripts/build-about.mjs).
-   Decorative, so alt="": describing it would present an invented rail as
-   something a customer could find at 18 Sea View Street. */
-const vintage: ShopPhoto = {
-  name: "vintage",
-  widths: [1280, 1920, 2560],
-  w: 3856,
-  h: 2160,
-  alt: "",
-  caption: "",
-};
-
 export default function AboutPage() {
   const { shopfront, railWindow, back, counter } = shopPhotos;
   /* One 3:2 frame for every room; `pos` keeps each subject in it. */
@@ -107,12 +95,11 @@ export default function AboutPage() {
   return (
     <>
       <MotionLayer />
-      <Nav />
+      <Nav solid />
       <main id="main" className="flex-1">
-        {/* 1 ── The vintage rail, and the title over it. */}
-        <section aria-labelledby="ab-title" className="ab-hero">
-          <Pic photo={vintage} sizes="100vw" className="ab-hero-img" priority />
-          <div className="ab-hero-scrim" aria-hidden="true" />
+        {/* 1 ── The title, on white. The photograph behind it came off on
+            2026-09-27 (Brad: "remove the big image"). */}
+        <section aria-labelledby="ab-title" className="ab-hero ab-hero--plain">
           <div className="ab-hero-copy">
             <p className="label ab-eyebrow">About us</p>
             <h1 id="ab-title" className="ab-title">
