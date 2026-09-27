@@ -137,7 +137,7 @@ export default function ImmersiveMenuPanel({
       aria-modal="true"
       aria-label="Menu"
       inert={!open}
-      className="ifn fixed inset-0 z-50 overflow-y-auto bg-[#0E0B0C] text-white"
+      className="ifn fixed inset-0 z-50 overflow-y-auto bg-[#0A0A0A] text-white"
       style={{ clipPath: CLIP_TOP, visibility: "hidden" }}
     >
       <div ref={inner} className="ifn-inner">

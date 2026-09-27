@@ -143,3 +143,88 @@ h3.scw-h {
 /* Found in: no underline (2026-09-27, Brad: "it looks off"); the arrow
    says it is a link, and it nudges on hover. */
 .scw-spec-link { text-decoration: none; }
+
+/* Phones and tablets: the tag on the cloth (2026-09-27, Brad picked B of
+   three). The fabric fills the whole sticky screen; the section title sits
+   on it in white; the white swing tag, with its eyelet, rests at the foot
+   with the fabric's name, care, where it is found and the three fabrics as
+   pills. Scrolling still steps through the three with the image wipe. The
+   description sentence is left to the desktop tag, as in the mock-up, so
+   the photograph keeps most of the screen. */
+@media (max-width: 1025px) {
+  .scw-right {
+    position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; margin: 0; border-radius: 0;
+  }
+  /* A soft shade under the title so white type holds on any cloth. */
+  .scw-right::after {
+    content: ""; position: absolute; inset: 0 0 auto; height: 42%; z-index: 20; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(14, 11, 12, 0.55), rgba(14, 11, 12, 0));
+  }
+  .scw-left {
+    position: static; z-index: 5; width: auto; height: auto; margin: 0 12px 12px;
+    padding: 30px 18px 14px; background: #FFFFFF; border-radius: 22px;
+    box-shadow: 0 20px 50px -18px rgba(14, 11, 12, 0.45);
+  }
+  .scw-head {
+    position: absolute; z-index: 5; top: calc(72px + 20px); left: var(--scw-gutter); right: var(--scw-gutter); margin: 0;
+  }
+  .scw-head .ucs-eyebrow, .scw-head .ucs-h { color: #FFFFFF; text-shadow: 0 1px 14px rgba(14, 11, 12, 0.35); }
+  .scw-slot { position: relative; display: grid; flex: none; }
+  .scw-slot::before {
+    content: ""; position: absolute; top: -20px; left: 50%; width: 12px; height: 12px; margin-left: -6px;
+    border-radius: 50%; background: #E9E8E5; box-shadow: inset 0 1px 2px rgba(14, 11, 12, 0.25);
+  }
+  .scw-content { position: relative; inset: auto; grid-area: 1 / 1; }
+  .scw .scw-p { display: none; }
+  .scw-kicker { margin-bottom: 4px; }
+  .scw-specs { margin-top: 10px; max-width: none; }
+  .scw-index {
+    display: flex; flex-wrap: nowrap; gap: 6px; max-width: none; margin-top: 12px; padding-top: 0; border-top: 0;
+  }
+  .scw-index-btn {
+    display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; white-space: nowrap;
+    border: 1px solid rgba(14, 11, 12, 0.18); border-radius: 999px; background: #FFFFFF;
+  }
+  .scw-index-btn span { display: none; }
+  .scw-index-btn[aria-current="true"] { background: var(--scw-ink); border-color: var(--scw-ink); color: #FFFFFF; text-decoration: none; }
+}
+@media (max-width: 1025px) and (max-height: 740px) {
+  .scw-left { padding-top: 26px; }
+  .scw-index-btn { min-height: 36px; }
+}
+
+/* Desktop: the cloth full-bleed too (2026-09-27, Brad picked option 1 to
+   match the phone). The fabric fills the sticky screen, the title sits on
+   it in white at the top left, and the swing tag rests at the bottom right
+   with the words, the specs and the three pills. Scrolling steps through
+   the fabrics exactly as before: the photograph wipes up to the next, the
+   tag's words slide over, the black pill moves along. */
+@media (min-width: 1026px) {
+  .scw-right { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; }
+  .scw-right::after {
+    content: ""; position: absolute; inset: 0 0 auto; height: 36%; z-index: 20; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(14, 11, 12, 0.5), rgba(14, 11, 12, 0));
+  }
+  .scw-left {
+    position: static; z-index: 5; width: min(480px, 38vw); height: auto; align-self: flex-end;
+    margin: 0 clamp(32px, 5vw, 72px) clamp(28px, 6svh, 56px) auto; padding: 44px 36px 26px;
+  }
+  .scw-left::before { display: none; }
+  .scw-head {
+    position: absolute; z-index: 5; top: calc(72px + clamp(32px, 6svh, 56px)); left: clamp(32px, 5vw, 72px);
+    margin: 0; text-align: left;
+  }
+  .scw-head .ucs-eyebrow, .scw-head .ucs-h { color: #FFFFFF; text-shadow: 0 1px 14px rgba(14, 11, 12, 0.35); }
+  .scw-slot { position: relative; }
+  .scw-slot::before {
+    content: ""; position: absolute; top: -28px; left: 50%; width: 14px; height: 14px; margin-left: -7px;
+    border-radius: 50%; background: #E9E8E5; box-shadow: inset 0 1px 2px rgba(14, 11, 12, 0.25);
+  }
+  .scw-index { margin-top: 20px; }
+}
+/* Short desktop screens: a slimmer tag so the title above keeps clear. */
+@media (min-width: 1026px) and (max-height: 820px) {
+  .scw-left { padding: 36px 30px 18px; margin-bottom: 20px; }
+  .scw-slot::before { top: -24px; }
+  .scw .scw-p { font-size: 15px; }
+}

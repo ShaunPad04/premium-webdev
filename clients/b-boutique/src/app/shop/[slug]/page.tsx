@@ -14,15 +14,12 @@ import { ProductGallery } from "@/components/ProductGallery";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
 import {
-  DELIVERY_P,
-  FREE_DELIVERY_OVER_P,
-  formatPriceShort,
   isBuyable,
   productBySlug,
   products,
   relatedTo,
 } from "@/lib/catalogue";
-import { openingPhrase, owner, shop } from "@/lib/shop";
+import { owner, shop } from "@/lib/shop";
 import { productSchema } from "@/lib/product-schema";
 import { jsonLd } from "@/lib/site";
 import { Price } from "@/components/Price";
@@ -264,35 +261,28 @@ export default async function ProductPage({
                   online orders, and nothing verifies anything. So the
                   layout is his and every word is hers, read from the same
                   constants the bag and checkout use. */}
-              <ul className="pdp-perks">
+              {/* Side by side, the name only (2026-09-27, Brad: "it should just say
+                  UK delivery, returns, try it on in the shop"). Each goes where
+                  the details are: the delivery and returns pages, and the
+                  shop's address and hours further down this page. */}
+              <ul className="pdp-perks pdp-perks--row">
                 <li>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3v3h-7M6 18a1.8 1.8 0 1 0 0-.01M17 18a1.8 1.8 0 1 0 0-.01" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  <div>
-                    <p className="pdp-perk-t">UK delivery</p>
-                    <p className="pdp-perk-d">
-                      {formatPriceShort(DELIVERY_P)} by Royal Mail, next business day. Free over{" "}
-                      {formatPriceShort(FREE_DELIVERY_OVER_P)}.
-                    </p>
-                  </div>
+                  <Link href="/delivery" className="pdp-perk">
+                    <span className="pdp-perk-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3v3h-7M6 18a1.8 1.8 0 1 0 0-.01M17 18a1.8 1.8 0 1 0 0-.01" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                    <span className="pdp-perk-t">UK delivery</span>
+                  </Link>
                 </li>
                 <li>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 7H4V2M4.3 7A8.5 8.5 0 1 1 3.5 12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  <div>
-                    <p className="pdp-perk-t">Returns</p>
-                    <p className="pdp-perk-d">
-                      Send it back within 14 days, or bring it into the shop.{" "}
-                      <Link href="/returns" className="pdp-ask">Returns in full</Link>
-                    </p>
-                  </div>
+                  <Link href="/returns" className="pdp-perk">
+                    <span className="pdp-perk-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 7H4V2M4.3 7A8.5 8.5 0 1 1 3.5 12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                    <span className="pdp-perk-t">Returns</span>
+                  </Link>
                 </li>
                 <li>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  <div>
-                    <p className="pdp-perk-t">Try it on in the shop</p>
-                    <p className="pdp-perk-d">
-                      {shop.street}, {shop.town}. Open {openingPhrase()}.
-                    </p>
-                  </div>
+                  <Link href="#visit" className="pdp-perk">
+                    <span className="pdp-perk-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                    <span className="pdp-perk-t">Try it on in the shop</span>
+                  </Link>
                 </li>
               </ul>
 
