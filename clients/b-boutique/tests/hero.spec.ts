@@ -34,8 +34,9 @@ test('the home hero survives a swipe and carries no product dots', async ({ page
   /* The page's one h1, and one button. */
   await expect(page.locator('h1')).toHaveCount(1);
   await expect(page.locator('.th .th-cta')).toBeVisible();
-  /* Scrolled through, she has turned once and stands facing front again. */
-  const travel = await page.evaluate(() => document.querySelector<HTMLElement>('.th')!.offsetHeight - window.innerHeight);
-  for (let s = 0; s < travel + 200; s += 120) { await page.mouse.wheel(0, 120); await page.waitForTimeout(40); }
-  await expect.poll(() => page.evaluate(() => getComputedStyle(document.querySelector('.th-pin')!).getPropertyValue('--p').trim())).toBe('1.0000');
+  /* She turns on her own (the stacked-alpha video drawn to a canvas), and
+     the note saying the turn is generated stays on the page until the
+     client has checked the back of the jumper against the real garment. */
+  await expect(page.locator('.th-canvas[data-ready]')).toHaveCount(1, { timeout: 20_000 });
+  await expect(page.locator('.th-note')).toBeVisible();
 });

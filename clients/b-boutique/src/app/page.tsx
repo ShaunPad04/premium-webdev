@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
+import { Inter } from "next/font/google";
+
 import { HeroTurn } from "@/components/HeroTurn";
 import { spinFor } from "@/lib/spin";
 import { featured, openingSummary, shop } from "@/lib/shop";
@@ -41,6 +43,10 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
  * long FAQ (the full one is back above the footer since 2026-09-27, when
  * /faq came out). The cinematic statement scene it
  * replaced showed each piece three times with four full buy blocks. */
+/* Inter Black for the hero's word ring only (2026-09-27, Brad: "use the
+   font in the jellyfish example"). Self-hosted by next/font; one weight. */
+const heroFont = Inter({ weight: "900", subsets: ["latin"], display: "swap", variable: "--font-hero" });
+
 export default function Home() {
   /* The hero is the Fair Isle Jumper turn for now (2026-09-27, Brad chose
      it over the horses, which are kept in components/Hero.tsx). */
@@ -54,19 +60,22 @@ export default function Home() {
           hero scrolls normally (2026-09-27, Brad). */}
       <main id="main" className="flex-1 home-rise">
         {turn ? (
-          <HeroTurn
-            frames={turn.frames}
-            generated={turn.generated}
-            name="Fair Isle Jumper"
-            heading={`B Boutique — for every woman who walks in. Independent womenswear and homeware on ${shop.street}, ${shop.town}.`}
-            statement={`Womenswear and homeware, chosen by hand, one piece at a time, on ${shop.street} in ${shop.town}.`}
-            captions={[
-              openingSummary().replace(/\.$/, ""),
-              `${shop.street}, ${shop.town}`,
-              `Free UK delivery over ${formatPriceShort(FREE_DELIVERY_OVER_P)}`,
-            ]}
-            labels={featured.map((f) => f.name)}
-          />
+          <div className={heroFont.variable}>
+            <HeroTurn
+              video="/img/spin/fair-isle-jumper/video/turn"
+              poster="/img/spin/fair-isle-jumper/video/poster.webp"
+              generated={turn.generated}
+              name="Fair Isle Jumper"
+                heading={`B Boutique — for every woman who walks in. Independent womenswear and homeware on ${shop.street}, ${shop.town}.`}
+              statement={`Womenswear and homeware, chosen by hand, one piece at a time, on ${shop.street} in ${shop.town}.`}
+              captions={[
+                openingSummary().replace(/\.$/, ""),
+                `${shop.street}, ${shop.town}`,
+                `Free UK delivery over ${formatPriceShort(FREE_DELIVERY_OVER_P)}`,
+              ]}
+              labels={featured.map((f) => f.name)}
+            />
+          </div>
         ) : null}
         <div className="rise">
         {/* The marquee is the first thing up over the hero (2026-09-26,
