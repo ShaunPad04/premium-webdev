@@ -11607,3 +11607,23 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 .fc-legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 20px; }
 .fc-meta .ft-top-btn { color: inherit; }
 @media (prefers-reduced-motion: reduce) { .fc-link, .fc-social-btn { transition: none; } }
+
+/* Clothing and its categories (ClothingShelf.tsx, 2026-09-27, Brad: A with
+   B's side menu). The title large with its count; on a desktop a sticky
+   category list on the left and the pieces three across; on a phone the
+   category row pinned under the header. */
+.shelf-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: clamp(20px, 2.4vw, 36px); }
+.shelf h1.shelf-title { margin: 0; font-size: clamp(40px, 6vw, 88px) !important; line-height: 1 !important; }
+.shelf-count { margin: 0; flex: none; font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(14, 11, 12, 0.64); }
+@media (min-width: 1024px) {
+  .shelf-body { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: clamp(32px, 4vw, 72px); align-items: start; }
+  .shelf-side { position: sticky; top: 104px; }
+  .shelf-side .catbar { border: 0; padding: 0; margin: 0; }
+  .shelf-side .catbar-list { flex-direction: column; flex-wrap: nowrap; gap: 2px; }
+  .shelf-side .catbar-link { width: 100%; justify-content: space-between; border: 0; border-radius: 10px; padding: 10px 14px; min-height: 40px; font-size: 12px; }
+  .shelf-side .catbar-link:not([aria-current="page"]):hover { background: #F4F2EF; }
+  .shelf-grid .prod-grid { grid-template-columns: repeat(3, 1fr); gap: 48px 28px; }
+}
+@media (max-width: 1023px) {
+  .shelf-side { position: sticky; top: 72px; z-index: 5; margin-inline: calc(-1 * var(--bb-gutter-editorial)); padding: 10px var(--bb-gutter-editorial) 0; background: rgba(255, 255, 255, 0.94); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+}

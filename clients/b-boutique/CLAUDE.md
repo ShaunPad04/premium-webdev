@@ -1108,3 +1108,14 @@ after load, and it kept the old, shorter limit. `SmoothScroll.tsx` now
 passes `content: document.body`. Measured: wheel reaches the bottom on the
 home page and /contact at 1440 and 390.
 
+## Clothing and its categories — 2026-09-27
+
+Brad picked **A, "Title and sticky filter"**, of three 21st-ui-explore
+directions, with B's side menu ("a but i also like this"; B also had feature
+tiles, C a row per category). `components/ClothingShelf.tsx` is shared by
+/clothing and /clothing/[category]: the page name large with its count
+("40 pieces"), then on a desktop the CategoryBar as a sticky list on the
+left and the pieces three across; on a phone the CategoryBar row pinned
+under the header (top 72px). The h1 is visible again (it had been sr-only
+since 2026-09-26).
+

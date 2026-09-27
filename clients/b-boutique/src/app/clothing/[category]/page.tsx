@@ -7,10 +7,10 @@ import { Footer } from "@/components/Footer";
 import { SocialStrip } from "@/components/SocialStrip";
 import { ShortFaq } from "@/components/ShortFaq";
 import { MotionLayer } from "@/components/MotionLayer";
-import { CategoryBar } from "@/components/CategoryBar";
+import { ClothingShelf } from "@/components/ClothingShelf";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
-import { pendingPriceNotice, productsIn } from "@/lib/catalogue";
+import { productsIn } from "@/lib/catalogue";
 import { clothingCards, RETIRED_CATEGORIES } from "@/lib/pages";
 import { shop } from "@/lib/shop";
 
@@ -80,53 +80,37 @@ export default async function CategoryPage({
       <Nav solid />
       <main id="main" className="flex-1">
 
-        <section aria-labelledby="cat-items" className="page-section cat-page">
-          <div className="page-inner">
-            <div className="page-head">
-              {/* The visible heading block came off (2026-09-26, Brad): the
-                  category bar and the pieces are the page. The h1 stays for
-                  screen readers and search engines. */}
-              <h1 id="cat-items" className="sr-only">{card.name}</h1>
-              {pendingPriceNotice() ? (
-                <p className="page-pending">{pendingPriceNotice()}</p>
-              ) : null}
-            </div>
+        {/* The sibling rails sit beside the pieces (see ClothingShelf), so
+            moving from Coats to Knitwear never means scrolling past every
+            coat first. */}
+        <ClothingShelf title={card.name} current={card.slug} count={items.length}>
+          {items.length ? (
+            <ProductGrid items={items} />
+          ) : (
+            /* An honest empty state rather than a page that looks broken,
+               and never a 404 — the client asked for exactly this: "worst
+               case you click one and it has no products, it shouldn't 404".
+               A category that exists and is empty is information; a 404 is
+               a dead end that reads as a bug.
 
-            {/* The sibling rails, at the TOP. They used to be a section at
-                the bottom of this page, under the grid — so moving from
-                Coats to Knitwear meant scrolling past every coat first. The
-                same bar heads /clothing, so the whole set is one tap from
-                any of them. See CategoryBar.tsx. */}
-            <CategoryBar current={card.slug} />
-
-            {items.length ? (
-              <ProductGrid items={items} />
-            ) : (
-              /* An honest empty state rather than a page that looks broken,
-                 and never a 404 — the client asked for exactly this: "worst
-                 case you click one and it has no products, it shouldn't 404".
-                 A category that exists and is empty is information; a 404 is
-                 a dead end that reads as a bug.
-
-                 "Ring the shop" was here until 2026-09-22 and was wrong: the
-                 phone number came off the site on 2026-09-21 (locked decision
-                 10), which makes email the only route. A dead end that also
-                 points at a channel the site no longer publishes is two
-                 defects in one sentence. */
-              <p className="page-body">
-                Nothing on this rail at the moment. Email{" "}
-                <a href={`mailto:${shop.email}`} className="cf-fail-link">
-                  {shop.email}
-                </a>{" "}
-                and ask what has just come in, or{" "}
-                <Link href="/clothing" className="cf-fail-link">
-                  see everything in the shop
-                </Link>
-                .
-              </p>
-            )}
-          </div>
-        </section>
+               "Ring the shop" was here until 2026-09-22 and was wrong: the
+               phone number came off the site on 2026-09-21 (locked decision
+               10), which makes email the only route. A dead end that also
+               points at a channel the site no longer publishes is two
+               defects in one sentence. */
+            <p className="page-body">
+              Nothing on this rail at the moment. Email{" "}
+              <a href={`mailto:${shop.email}`} className="cf-fail-link">
+                {shop.email}
+              </a>{" "}
+              and ask what has just come in, or{" "}
+              <Link href="/clothing" className="cf-fail-link">
+                see everything in the shop
+              </Link>
+              .
+            </p>
+          )}
+        </ClothingShelf>
 
         <Visit />
       </main>

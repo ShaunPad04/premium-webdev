@@ -132,5 +132,19 @@
         "Previous: four-column wave footer"
       ]
     }
+  },
+  "pages": {
+    "clothing": {
+      "decided": "2026-09-27",
+      "layout": "Title and count; desktop sticky side category list, pieces three across; phone pinned category row (A with B's side menu)",
+      "appliesTo": [
+        "/clothing",
+        "/clothing/[category]"
+      ],
+      "rejected": [
+        "B feature tiles",
+        "C a row per category"
+      ]
+    }
   }
 }

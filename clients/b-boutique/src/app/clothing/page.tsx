@@ -5,10 +5,9 @@ import { Footer } from "@/components/Footer";
 import { SocialStrip } from "@/components/SocialStrip";
 import { ShortFaq } from "@/components/ShortFaq";
 import { MotionLayer } from "@/components/MotionLayer";
-import { CategoryBar } from "@/components/CategoryBar";
+import { ClothingShelf } from "@/components/ClothingShelf";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
-import { pendingPriceNotice } from "@/lib/catalogue";
 import { clothingProducts } from "@/lib/pages";
 
 export const metadata: Metadata = {
@@ -50,25 +49,9 @@ export default function ClothingPage() {
       <Nav solid />
       <main id="main" className="flex-1">
 
-        <section aria-labelledby="clothing-all" className="page-section cat-page">
-          <div className="page-inner">
-            <div className="page-head">
-              {/* The visible heading block came off (2026-09-26, Brad): the
-                  category bar and the pieces are the page. The h1 stays for
-                  screen readers and search engines. */}
-              <h1 id="clothing-all" className="sr-only">Clothing</h1>
-              {pendingPriceNotice() ? (
-                <p className="page-pending">{pendingPriceNotice()}</p>
-              ) : null}
-            </div>
-
-            {/* The categories, as a filter above the stock rather than nine
-                large photographs in front of it. See CategoryBar.tsx. */}
-            <CategoryBar current="all" />
-
-            <ProductGrid items={items} />
-          </div>
-        </section>
+        <ClothingShelf title="Clothing" current="all" count={items.length}>
+          <ProductGrid items={items} />
+        </ClothingShelf>
 
         <Visit />
       </main>
