@@ -1119,3 +1119,16 @@ left and the pieces three across; on a phone the CategoryBar row pinned
 under the header (top 72px). The h1 is visible again (it had been sr-only
 since 2026-09-26).
 
+## Product page — 2026-09-27
+
+Three directions (big photo, a buy bar, centred) were shown; Brad asked for
+it to "look more ecommerce style", so the page became the standard shop
+layout: a Home / Clothing / Category breadcrumb, colourway thumbnails beside
+the photograph (`GalleryThumbs.tsx`, under it on a phone; they drive the same
+shared colour as the swatches), the name in the serif, "Save £x" beside the
+price (from `wasPriceP`, so it vanishes with the sale), the payment marks
+under the buy buttons, and one delivery / returns / try-it-on box whose
+words are read from the delivery and returns policies and shop.ts. The
+three-icon row and the "rather see it in person" line went. The links in
+the box must stay underlined (axe: link-in-text-block).
+

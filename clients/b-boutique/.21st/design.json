@@ -145,6 +145,15 @@
         "B feature tiles",
         "C a row per category"
       ]
+    },
+    "product": {
+      "decided": "2026-09-27",
+      "layout": "E-commerce: breadcrumb, colourway thumbnails, serif name, save badge, payment marks, delivery/returns/try-on box, folds",
+      "rejected": [
+        "Big photo",
+        "Buy bar",
+        "Centred"
+      ]
     }
   }
 }

@@ -14,15 +14,21 @@ import { ProductGallery } from "@/components/ProductGallery";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
 import {
+  formatPriceShort,
   isBuyable,
+  wasPriceP,
   productBySlug,
   products,
   relatedTo,
 } from "@/lib/catalogue";
-import { owner, shop } from "@/lib/shop";
+import { openingPhrase, owner, shop } from "@/lib/shop";
 import { productSchema } from "@/lib/product-schema";
 import { jsonLd } from "@/lib/site";
 import { Price } from "@/components/Price";
+import { GalleryThumbs } from "@/components/GalleryThumbs";
+import { PaymentMarks } from "@/components/PaymentMarks";
+import { clothingCards } from "@/lib/pages";
+import { policyBySlug } from "@/lib/policies";
 
 /* Prerender every product. There are thirteen of them and they change when
    the code changes, so there is nothing to gain from rendering them on
@@ -58,6 +64,13 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const related = relatedTo(product);
+  const cat = clothingCards.find((c) => c.name === product.category);
+  const dept = cat ? { name: "Clothing", href: "/clothing" } : { name: "Homeware", href: "/homeware" };
+  const was = isBuyable(product) ? wasPriceP(product.priceP, product.slug) : null;
+  const block = (slug: string, heading: string) =>
+    policyBySlug(slug)?.blocks.find((b) => b.heading.startsWith(heading)) ?? null;
+  const deliveryLine = [block("delivery", "What delivery costs")?.body[0], block("delivery", "When it is sent")?.body[0]].filter(Boolean).join(" ");
+  const returnsLine = block("returns", "You have 14 days")?.heading ?? "";
 
   return (
     <>
@@ -81,16 +94,19 @@ export default async function ProductPage({
           {/* Every colourway, switchable. See ProductGallery — 22 of the 54
               photographs were sitting unused because this was one <picture>. */}
           <ProductGallery product={product} />
+          <GalleryThumbs product={product} />
 
           <div className="pdp-body">
             <div className="pdp-inner">
-              <p className="pdp-cat">
-                <Link href="/shop" className="pdp-back">
-                  Shop
-                </Link>
-                <span aria-hidden="true"> / </span>
-                {product.category}
-              </p>
+              {/* The trail back (2026-09-27, Brad: "more ecommerce style"):
+                  home, the department, the category, each a real page. */}
+              <nav aria-label="Breadcrumb" className="pdp-crumbs">
+                <ol>
+                  <li><Link href="/">Home</Link></li>
+                  <li><Link href={dept.href}>{dept.name}</Link></li>
+                  {cat ? <li><Link href={`/clothing/${cat.slug}`}>{cat.name}</Link></li> : null}
+                </ol>
+              </nav>
 
               <h1 id="pdp-name" className="pdp-name">
                 {product.name}
@@ -99,7 +115,10 @@ export default async function ProductPage({
               {/* Same rule as the grid: a placeholder is not a price, and
                   this is the page where somebody decides to spend money. */}
               {isBuyable(product) ? (
-                <p className="pdp-price"><Price priceP={product.priceP} slug={product.slug} /></p>
+                <p className="pdp-price">
+                  <Price priceP={product.priceP} slug={product.slug} />
+                  {was ? <span className="pdp-save">Save {formatPriceShort(was - product.priceP)}</span> : null}
+                </p>
               ) : (
                 <p className="pdp-price pdp-price--pending">Price to confirm</p>
               )}
@@ -138,7 +157,10 @@ export default async function ProductPage({
                   transaction is withheld, because the one number needed to
                   make it honest is missing. */}
               {isBuyable(product) ? (
-                <AddToBag product={product} />
+                <>
+                  <AddToBag product={product} />
+                  <PaymentMarks className="pdp-pay" />
+                </>
               ) : (
                 <p className="pdp-note">
                   This one is in the shop but not yet priced online. Email{" "}
@@ -148,6 +170,26 @@ export default async function ProductPage({
                   and ask, or come and see it on the rail.
                 </p>
               )}
+
+              {/* Delivery, returns and the shop, spelled out under the buy
+                  block (2026-09-27, Brad: "more ecommerce style"). Every word
+                  is read from the delivery and returns policies and shop.ts,
+                  the same sources the bag and checkout use, so this cannot
+                  promise a service the shop does not run. */}
+              <ul className="pdp-service">
+                <li>
+                  <span className="pdp-service-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3v3h-7M6 18a1.8 1.8 0 1 0 0-.01M17 18a1.8 1.8 0 1 0 0-.01" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                  <span><strong>Delivery</strong> {deliveryLine} <Link href="/delivery">Delivery information</Link></span>
+                </li>
+                <li>
+                  <span className="pdp-service-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 7H4V2M4.3 7A8.5 8.5 0 1 1 3.5 12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                  <span><strong>Returns</strong> {returnsLine}. <Link href="/returns">How returns work</Link></span>
+                </li>
+                <li>
+                  <span className="pdp-service-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                  <span><strong>Try it on</strong> On the rail at {shop.street}, {shop.town}, open {openingPhrase()}. <Link href="#visit">Find the shop</Link></span>
+                </li>
+              </ul>
 
               {/* ── The detail, folded ──────────────────────────────────────
                   The client asked for this: "a nice drop down of like
@@ -252,44 +294,6 @@ export default async function ProductPage({
                 </details>
               </div>
 
-              {/* Three service lines, under the folds since 2026-09-24 (Brad: it reads more professional). First placed under the buy block (2026-09-24, Brad's
-                  reference). The reference said "Fast shipping / express
-                  and standard", "Seamless returns / easy returns and
-                  exchanges" and "Authenticity guaranteed / 100% verified".
-                  None of those is true here as written: there is one
-                  service (Royal Mail, next business day), no exchanges on
-                  online orders, and nothing verifies anything. So the
-                  layout is his and every word is hers, read from the same
-                  constants the bag and checkout use. */}
-              {/* Side by side, the name only (2026-09-27, Brad: "it should just say
-                  UK delivery, returns, try it on in the shop"). Each goes where
-                  the details are: the delivery and returns pages, and the
-                  shop's address and hours further down this page. */}
-              <ul className="pdp-perks pdp-perks--row">
-                <li>
-                  <Link href="/delivery" className="pdp-perk">
-                    <span className="pdp-perk-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3v3h-7M6 18a1.8 1.8 0 1 0 0-.01M17 18a1.8 1.8 0 1 0 0-.01" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-                    <span className="pdp-perk-t">UK delivery</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/returns" className="pdp-perk">
-                    <span className="pdp-perk-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 7H4V2M4.3 7A8.5 8.5 0 1 1 3.5 12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-                    <span className="pdp-perk-t">Returns</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#visit" className="pdp-perk">
-                    <span className="pdp-perk-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11zM12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-                    <span className="pdp-perk-t">Try it on in the shop</span>
-                  </Link>
-                </li>
-              </ul>
-
-              <p className="pdp-note">
-                If you would rather see it in person before deciding, it is on
-                the rail at 18 Sea View Street.
-              </p>
             </div>
           </div>
         </section>

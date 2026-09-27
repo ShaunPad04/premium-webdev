@@ -11627,3 +11627,45 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 @media (max-width: 1023px) {
   .shelf-side { position: sticky; top: 72px; z-index: 5; margin-inline: calc(-1 * var(--bb-gutter-editorial)); padding: 10px var(--bb-gutter-editorial) 0; background: rgba(255, 255, 255, 0.94); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 }
+
+/* Product page, e-commerce layout (2026-09-27, Brad: "it should look more
+   ecommerce style"). A breadcrumb trail, colourway thumbnails beside the
+   photograph (under it on a phone), the name in the serif, the saving
+   beside the price, the payment marks under the buy buttons and delivery,
+   returns and the shop spelled out in one box. */
+.pdp-crumbs { margin-bottom: 18px; }
+.pdp-crumbs ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 0; font-size: 12px; color: rgba(14, 11, 12, 0.64); }
+.pdp-crumbs li + li::before { content: "/"; margin: 0 8px; color: rgba(14, 11, 12, 0.4); }
+.pdp-crumbs a { color: inherit; text-decoration: none; }
+.pdp-crumbs a:hover { color: #0E0B0C; text-decoration: underline; text-underline-offset: 3px; }
+.pdp h1.pdp-name { font-family: "Bodoni Moda", Georgia, serif !important; font-weight: 400 !important; text-transform: none !important; letter-spacing: -0.005em !important; font-size: clamp(30px, 2.8vw, 42px) !important; line-height: 1.1 !important; margin-bottom: 14px; }
+.pdp-price { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 20px; }
+.pdp-save { display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border-radius: 999px; background: #0E0B0C; color: #FFFFFF; font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
+.pdp-pay { justify-content: center; margin-top: 16px; }
+.pdp-service { list-style: none; margin: 28px 0 0; padding: 4px 18px; border: 1px solid rgba(14, 11, 12, 0.14); border-radius: 14px; }
+.pdp-service li { display: grid; grid-template-columns: 22px 1fr; gap: 14px; align-items: start; padding: 14px 0; font-size: 14px; line-height: 1.55; color: #3A3536; }
+.pdp-service li + li { border-top: 1px solid rgba(14, 11, 12, 0.1); }
+.pdp-service strong { display: block; margin-bottom: 2px; color: #0E0B0C; font-weight: 600; }
+.pdp-service a { color: #0E0B0C; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; white-space: nowrap; }
+.pdp-service-ico { color: #0E0B0C; padding-top: 1px; }
+.pdp-folds { margin-top: 28px; }
+
+/* Thumbnails: a strip down the left of the photograph on a desktop, a row
+   under it on a phone. */
+.pdp-thumbs { display: flex; gap: 8px; padding: 12px var(--bb-gutter-editorial) 0; }
+.pdp-thumb { flex: none; width: 64px; aspect-ratio: 4 / 5; padding: 0; border: 1px solid rgba(14, 11, 12, 0.14); border-radius: 8px; overflow: hidden; background: #FFFFFF; cursor: pointer; opacity: 0.7; transition: opacity 200ms ease, border-color 200ms ease; }
+.pdp-thumb[data-on] { opacity: 1; border-color: #0E0B0C; }
+.pdp-thumb:hover { opacity: 1; }
+.pdp-thumb:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 2px; }
+.pdp-thumb-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 1023px) {
+  .pdp-thumbs { order: 1; }
+  .pdp-body { order: 2; }
+}
+@media (min-width: 1024px) {
+  .pdp-thumbs { order: -1; flex-direction: column; padding: 0; margin-top: 16px; position: sticky; top: calc(var(--header-h) + 32px); }
+  .pdp-thumb { width: 72px; }
+  .pdp { gap: clamp(20px, 2vw, 32px) !important; }
+  .pdp-body { margin-left: clamp(20px, 3vw, 72px); }
+}
+@media (prefers-reduced-motion: reduce) { .pdp-thumb { transition: none; } }
