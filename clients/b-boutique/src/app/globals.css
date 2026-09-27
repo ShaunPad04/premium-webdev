@@ -2800,11 +2800,8 @@ body {
 .acc-lead-copy .page-body { margin-top: 22px; }
 
 /* ── /about ──────────────────────────────────────────────────────────────
-   Rebuilt 2026-09-22 — see src/app/about/page.tsx for why. Five movements,
-   alternating ground: photograph, paper, paper-alt, ink, paper. (The marble
-   statement band was removed 2026-09-23.) The shop itself is black and gold
-   marble, gold rails and a mustard wall, so this page borrows gold ONCE (the
-   principle numerals) and never as a fill; everything else is the site's own tokens. */
+   Rebuilt 2026-09-22 — see src/app/about/page.tsx for why. Title, Hayley,
+   the story scroll (2026-09-27), Visit. The site's own tokens throughout. */
 
 /* 1 — The vintage rail, full-bleed. */
 .ab-hero {
@@ -2906,145 +2903,52 @@ body {
   color: var(--bb-black);
 }
 
-/* 4 — Inside the shop: a lookbook (components/InsideRooms.tsx).
-   Rebuilt 2026-09-23; the offset five-size spread read as unorganised. One
-   frame (3:2 since the same evening: her photos hold ~960px of real detail
-   and a 4:5 crop kept under half of it), one column, one rhythm; the title and a numbered index held
-   beside it on a desktop. */
-.ab-inside {
-  background: var(--bone);
-  color: var(--bb-black);
-  padding: clamp(72px, 12vh, 150px) 18px;
+/* 3 — The story (components/StoryScroll.tsx), after 21st.dev "Scroll Reveal
+   Content A" (abui). Chosen 2026-09-27 over a full-width reveal and a zoom
+   parallax. Her photographs held on the left while four numbered passages
+   scroll past on the right, a line growing beside them. On a phone each
+   passage carries its own photograph above it. Frames are square with the
+   top anchored, so the full shopfront sign always shows. */
+.rb {
+  display: grid;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 18px clamp(72px, 10vw, 140px);
 }
-@media (min-width: 768px) { .ab-inside { padding-inline: var(--bb-gutter-editorial); } }
-.ab-inside-head { margin: 0 0 clamp(32px, 5vh, 56px); }
-.ab-h2 {
-  margin: 0;
-  font-family: var(--font-display-face), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(40px, 5.2vw, 84px);
-  line-height: 1;
-  letter-spacing: -0.009em;
+@media (min-width: 768px) { .rb { padding-inline: var(--bb-gutter-editorial); } }
+.rb-media { display: none; }
+.rb-text { position: relative; padding-left: 28px; }
+.rb-text::before, .rb-line { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--bb-light-border); }
+.rb-line { background: var(--bb-black); transform-origin: top; }
+.rb-step { padding: 32px 0; }
+.rb-step-img { display: block; margin-bottom: 20px; aspect-ratio: 1; overflow: hidden; border-radius: 16px; background: var(--bb-grey-light); }
+.rb-step-img img, .rb-img img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
+.rb-n { margin: 0 0 10px; font-size: 12px; font-weight: 500; color: var(--bb-grey-dark); }
+.rb .rb-title {
+  margin: 0 0 14px;
+  color: inherit;
+  font-family: var(--font-display-face), Georgia, serif !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: -0.01em !important;
+  font-size: clamp(34px, 3.6vw, 58px) !important;
+  line-height: 1.05 !important;
 }
-.ab-rooms { display: grid; gap: 0; max-width: 1280px; margin: 0 auto; }
-.ab-rooms-index { display: none; }
-.ab-rooms-list { display: grid; gap: clamp(48px, 9vh, 112px); }
-
-.ab-room { margin: 0; scroll-margin-top: 120px; }
-.ab-room-frame { aspect-ratio: 3 / 2; overflow: hidden; background: var(--bb-grey-light); }
-.ab-room-frame picture { display: block; width: 100%; height: 100%; }
-.ab-room-img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.ab-room figcaption {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--bb-light-border);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--bb-black);
-}
-.ab-rooms-n {
-  font-family: var(--font-display-face), Georgia, serif;
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: var(--bb-grey-dark);
-}
-
+.rb-body { margin: 0; max-width: 40ch; font-size: 17px; line-height: 1.7; color: var(--bb-grey-dark); }
 @media (min-width: 900px) {
-  .ab-rooms { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(48px, 7vw, 120px); align-items: start; }
-  .ab-rooms-side { position: sticky; top: 124px; }
-  .ab-rooms-list { max-width: 560px; justify-self: end; width: 100%; }
-  .ab-room figcaption { display: none; }
-  .ab-rooms-index { display: block; list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--bb-light-border); }
-  .ab-rooms-index a {
-    display: flex;
-    align-items: baseline;
-    gap: 18px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--bb-light-border);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--bb-grey-dark);
-    transition: color 320ms var(--bb-ease), padding-left 420ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .ab-rooms-index a[aria-current] { color: var(--bb-black); padding-left: 14px; }
-  .ab-rooms-index a[aria-current] .ab-rooms-n { color: var(--bb-rouge); }
-  @media (hover: hover) and (pointer: fine) { .ab-rooms-index a:hover { color: var(--bb-black); } }
+  .rb { grid-template-columns: 1fr 1fr; gap: clamp(48px, 6vw, 112px); }
+  .rb-media { display: block; position: sticky; top: calc(72px + 8vh); align-self: start; aspect-ratio: 1; max-height: calc(84vh - 72px); margin-top: 8vh; border-radius: 22px; overflow: hidden; background: var(--bb-grey-light); }
+  .rb-img { position: absolute; inset: 0; opacity: 0; transform: scale(1.06); transition: opacity 700ms var(--ease-out, cubic-bezier(.16, 1, .3, 1)), transform 1200ms cubic-bezier(.16, 1, .3, 1); }
+  .rb-img[data-on] { opacity: 1; transform: none; }
+  .rb-step-img { display: none; }
+  /* The passages not in view go grey rather than faded: grey-dark still
+     passes AA, where 35% opacity did not. */
+  .rb-step { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; padding: 0; color: var(--bb-grey-dark); transition: color 500ms cubic-bezier(.16, 1, .3, 1); }
+  .rb-step[data-on] { color: var(--bb-black); }
 }
-
-/* The reveal: armed by the component only when motion is allowed. */
-.ab-rooms.is-armed .ab-room-frame {
-  clip-path: inset(9% 9% 9% 9%);
-  transition: clip-path 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.ab-rooms.is-armed .ab-room-img {
-  transform: scale(1.14);
-  transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.ab-rooms.is-armed .ab-room figcaption {
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 600ms var(--bb-ease) 350ms, transform 600ms var(--bb-ease) 350ms;
-}
-.ab-rooms.is-armed .ab-room.is-in .ab-room-frame { clip-path: inset(0 0 0 0); }
-.ab-rooms.is-armed .ab-room.is-in .ab-room-img { transform: scale(1); }
-.ab-rooms.is-armed .ab-room.is-in figcaption { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
-  .ab-rooms-index a { transition: none; }
-}
-
-/* 5 — The way we work, on ink, beside the boucle. */
-.ab-way {
-  display: grid;
-  background: var(--bb-black);
-  color: var(--bb-white-pure);
-}
-@media (min-width: 900px) { .ab-way { grid-template-columns: 5fr 7fr; } }
-.ab-way-media { position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
-@media (min-width: 900px) { .ab-way-media { aspect-ratio: auto; min-height: 100%; } }
-.ab-way-media picture { position: absolute; inset: 0; }
-.ab-way-img { width: 100%; height: 100%; object-fit: cover; }
-.ab-way-body { padding: clamp(64px, 11vh, 140px) 18px; }
-@media (min-width: 768px) { .ab-way-body { padding-inline: clamp(32px, 6vw, 110px); } }
-.ab-way .ab-kicker { color: var(--bb-grey-light); }
-.ab-principles { list-style: none; margin: clamp(24px, 4vh, 40px) 0 0; padding: 0; }
-.ab-principle {
-  display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
-  gap: 6px 16px;
-  padding: clamp(24px, 4vh, 40px) 0;
-  border-top: 1px solid var(--bb-dark-border);
-}
-.ab-principle:last-child { border-bottom: 1px solid var(--bb-dark-border); }
-.ab-principle-n {
-  grid-row: 1 / 3;
-  padding-top: 0.5em;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: var(--bb-rouge-lift);  /* was gold; the theme has none (2026-09-23). 5.3:1 on ink */
-}
-.ab-principle-t {
-  margin: 0;
-  font-family: var(--font-display-face), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(28px, 3vw, 46px);
-  line-height: 1.05;
-  letter-spacing: -0.006em;
-}
-.ab-principle-b {
-  margin: 8px 0 0;
-  max-width: 52ch;
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--bb-grey-light);
+  .rb-img, .rb-step { transition: none; }
+  .rb-img { transform: none; }
 }
 
 /* ── Cinematic product scroll (components/ui/cinematic-product-scroll-section)
@@ -11631,8 +11535,9 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 /* Product page, e-commerce layout (2026-09-27, Brad: "it should look more
    ecommerce style"). A breadcrumb trail, colourway thumbnails beside the
    photograph (under it on a phone), the name in the serif, the saving
-   beside the price, the payment marks under the buy buttons and delivery,
-   returns and the shop spelled out in one box. */
+   beside the price and the payment marks under the buy buttons. The
+   delivery / returns / try-on box came off the same day (Brad); /delivery
+   and /returns stay linked from the footer and the bag. */
 .pdp-crumbs { margin-bottom: 18px; }
 .pdp-crumbs ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 0; font-size: 12px; color: rgba(14, 11, 12, 0.64); }
 .pdp-crumbs li + li::before { content: "/"; margin: 0 8px; color: rgba(14, 11, 12, 0.4); }
@@ -11642,12 +11547,6 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 .pdp-price { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 20px; }
 .pdp-save { display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border-radius: 999px; background: #0E0B0C; color: #FFFFFF; font: 600 11px/1 var(--font-body), sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
 .pdp-pay { justify-content: center; margin-top: 16px; }
-.pdp-service { list-style: none; margin: 28px 0 0; padding: 4px 18px; border: 1px solid rgba(14, 11, 12, 0.14); border-radius: 14px; }
-.pdp-service li { display: grid; grid-template-columns: 22px 1fr; gap: 14px; align-items: start; padding: 14px 0; font-size: 14px; line-height: 1.55; color: #3A3536; }
-.pdp-service li + li { border-top: 1px solid rgba(14, 11, 12, 0.1); }
-.pdp-service strong { display: block; margin-bottom: 2px; color: #0E0B0C; font-weight: 600; }
-.pdp-service a { color: #0E0B0C; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; white-space: nowrap; }
-.pdp-service-ico { color: #0E0B0C; padding-top: 1px; }
 .pdp-folds { margin-top: 28px; }
 
 /* Thumbnails: a strip down the left of the photograph on a desktop, a row
@@ -11689,3 +11588,17 @@ h2.vxb-address { margin: 12px 0 16px; display: flex; flex-direction: column; }
 .hwf-btn:hover { background: #2A2426; }
 .hwf-btn:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .hwf-img, .hwf-btn { transition: none; } }
+
+/* "Get in touch" as a pill on a desktop (2026-09-27, Brad), like the site's
+   other buttons: black, the label and the arrow inside it. */
+@media (min-width: 1024px) {
+  .owner-details .owner-cta {
+    gap: 10px; min-height: 48px; padding: 0 12px 0 24px; border-radius: 999px;
+    background: #0E0B0C; color: #FFFFFF; text-decoration: none;
+    flex-direction: row-reverse; transition: background-color 200ms ease;
+  }
+  .owner-details .owner-cta:hover { background: #2A2426; }
+  .owner-details .owner-cta:focus-visible { outline: 2px solid #0E0B0C; outline-offset: 3px; }
+  .owner-cta .owner-cta-ring, .owner-cta:hover .owner-cta-ring, .owner-cta:focus-visible .owner-cta-ring { width: 28px; height: 28px; border: 0; background: transparent; color: #FFFFFF; }
+  .owner-cta .owner-cta-label { font-size: 12px; letter-spacing: 0.12em; }
+}

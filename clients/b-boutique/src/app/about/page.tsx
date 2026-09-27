@@ -4,9 +4,9 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { MotionLayer } from "@/components/MotionLayer";
 import { Visit } from "@/components/Visit";
-import { InsideRooms } from "@/components/InsideRooms";
+import { StoryScroll } from "@/components/StoryScroll";
 import { principles, shopPhotos, type ShopPhoto } from "@/lib/about";
-import { owner, shop } from "@/lib/shop";
+import { owner, shop, openingPhrase } from "@/lib/shop";
 import { RevealText } from "@/components/RevealText";
 
 export const metadata: Metadata = {
@@ -30,21 +30,17 @@ export const metadata: Metadata = {
  *      2026-09-27 at Brad's request; her real photographs carry the rest.)
  *   2. Hayley, in her own words (owner.bio — the same copy the home page's
  *      owner card reads).
- *   3. Inside the shop: five of her photographs in one 4:5 lookbook column,
- *      with a sticky numbered index (components/InsideRooms.tsx).
- *   4. Three principles, beside a boucle macro (the second AI texture).
- *   5. Visit, unchanged.
+ *   3. The story (2026-09-27, 21st.dev direction B of three): her photographs
+ *      held on the left while the three principles and "Come and see it."
+ *      scroll past on the right (components/StoryScroll.tsx). It replaced a
+ *      lookbook with a numbered index and a principles band on ink.
+ *   4. Visit, unchanged.
  *
  * The marble statement band that sat between 1 and 2 was taken off on
  * 2026-09-23 at the client's request ("the second image section is
  * terrible"). The statement itself still lives on the home page
  * (PointOfView reads the same `philosophy` copy).
- *
- * The rule for the generated image is recorded in
- * scripts/build-about.mjs: it shows no shop, product or person, so it
- * cannot say anything untrue about the business. It carries alt="":
- * it is decoration, and describing them would announce a picture that
- * tells a screen-reader user nothing about B Boutique. */
+ */
 
 function Pic({
   photo,
@@ -84,12 +80,15 @@ function Pic({
 
 export default function AboutPage() {
   const { shopfront, railWindow, back, counter } = shopPhotos;
-  /* One 3:2 frame for every room; `pos` keeps each subject in it. */
-  const rooms = [
-    { photo: shopfront, pos: "50% 0%" },
-    { photo: railWindow, pos: "50% 50%" },
-    { photo: back, pos: "50% 50%" },
-    { photo: counter, pos: "50% 50%" },
+  const pic = (photo: ShopPhoto) => <Pic photo={photo} sizes="(min-width: 900px) 45vw, 92vw" />;
+  const steps = [
+    ...principles.map((p, i) => ({ n: p.n, title: p.title, body: p.body, pic: pic([shopfront, railWindow, back][i]) })),
+    {
+      n: "04",
+      title: "Come and see it.",
+      body: `On the rail at ${shop.street}, ${shop.town}. Open ${openingPhrase()}.`,
+      pic: pic(counter),
+    },
   ];
 
   return (
@@ -141,72 +140,9 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* 3 ── Inside the shop: a lookbook, index held beside it. */}
-        <section aria-labelledby="ab-inside" className="ab-inside">
-          <InsideRooms
-            rooms={rooms.map((r, i) => ({ id: `room-${i + 1}`, n: String(i + 1).padStart(2, "0"), caption: r.photo.caption }))}
-            head={
-              <div className="ab-inside-head">
-                <p className="label ab-kicker">Inside</p>
-                <RevealText id="ab-inside" className="ab-h2">
-                  18 Sea View Street.
-                </RevealText>
-              </div>
-            }
-          >
-            {rooms.map((r, i) => (
-              <figure key={r.photo.name} id={`room-${i + 1}`} className="ab-room">
-                <div className="ab-room-frame">
-                  <Pic
-                    photo={r.photo}
-                    sizes="(min-width: 900px) 560px, 92vw"
-                    className="ab-room-img"
-                    style={{ objectPosition: r.pos }}
-                  />
-                </div>
-                <figcaption>
-                  <span className="ab-rooms-n">{String(i + 1).padStart(2, "0")}</span>
-                  {r.photo.caption}
-                </figcaption>
-              </figure>
-            ))}
-          </InsideRooms>
-        </section>
-
-        {/* 4 ── Three principles, beside the boucle. */}
-        <section aria-labelledby="ab-way" className="ab-way">
-          <div className="ab-way-media" aria-hidden="true">
-            <picture>
-              <source
-                type="image/avif"
-                srcSet="/img/about/boucle-640.avif 640w, /img/about/boucle-960.avif 960w, /img/about/boucle-1280.avif 1280w"
-                sizes="(min-width: 900px) 36vw, 100vw"
-              />
-              <source
-                type="image/webp"
-                srcSet="/img/about/boucle-640.webp 640w, /img/about/boucle-960.webp 960w, /img/about/boucle-1280.webp 1280w"
-                sizes="(min-width: 900px) 36vw, 100vw"
-              />
-              <img src="/img/about/boucle-960.jpg" alt="" className="ab-way-img" loading="lazy" decoding="async" width={2160} height={2688} />
-            </picture>
-          </div>
-          <div className="ab-way-body">
-            <p className="label ab-kicker">The way we work</p>
-            <h2 id="ab-way" className="sr-only">
-              The way we work
-            </h2>
-            <ol className="ab-principles">
-              {principles.map((p) => (
-                <li key={p.n} className="ab-principle">
-                  <span className="ab-principle-n" aria-hidden="true">
-                    {p.n}
-                  </span>
-                  <h3 className="ab-principle-t">{p.title}</h3>
-                  <p className="ab-principle-b">{p.body}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
+        {/* 3 ── The story: her photographs held, the principles scrolling past. */}
+        <section aria-label="How the shop works" className="ab-story">
+          <StoryScroll steps={steps} />
         </section>
 
         <Visit />

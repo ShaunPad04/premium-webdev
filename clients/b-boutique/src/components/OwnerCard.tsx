@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { ScrollWords } from "@/components/ScrollWords";
 import { owner, ownerPending, shop } from "@/lib/shop";
 
 /* Hayley Brown, Shop Owner.
@@ -145,19 +144,16 @@ export function OwnerCard() {
                   somewhere else, and marking it up as a quote would imply a
                   source to attribute. */}
               <div className="owner-bio">
-                {owner.bio.length ? (
-                  owner.bio.map((para, i) =>
-                    /* Her first line, the one set large on a desktop,
-                       reveals word by word as it scrolls up (2026-09-27,
-                       Brad). */
-                    i === 0 ? (
-                      <ScrollWords key={para.slice(0, 32)} text={para} className="owner-bio-text" />
-                    ) : (
-                      <p key={para.slice(0, 32)} className="owner-bio-text">
-                        {para}
-                      </p>
-                    ),
-                  )
+                {/* Her first paragraph ("We pride ourselves on...") came
+                    off the home page on 2026-09-27 (Brad, desktop and phone);
+                    it is still on /about and in each product's "Our
+                    commitment". */}
+                {owner.bio.length > 1 ? (
+                  owner.bio.slice(1).map((para) => (
+                    <p key={para.slice(0, 32)} className="owner-bio-text">
+                      {para}
+                    </p>
+                  ))
                 ) : (
                   <p className="owner-bio-ask">
                     A line or two from Hayley about the shop — in her own

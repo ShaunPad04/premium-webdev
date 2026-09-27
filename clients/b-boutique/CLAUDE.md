@@ -1127,10 +1127,10 @@ layout: a Home / Clothing / Category breadcrumb, colourway thumbnails beside
 the photograph (`GalleryThumbs.tsx`, under it on a phone; they drive the same
 shared colour as the swatches), the name in the serif, "Save £x" beside the
 price (from `wasPriceP`, so it vanishes with the sale), the payment marks
-under the buy buttons, and one delivery / returns / try-it-on box whose
-words are read from the delivery and returns policies and shop.ts. The
-three-icon row and the "rather see it in person" line went. The links in
-the box must stay underlined (axe: link-in-text-block).
+under the buy buttons, then the description folds. The three-icon row and
+the "rather see it in person" line went. A delivery / returns / try-it-on
+box came off the same day at Brad's request; delivery and returns stay one
+click away in the bag and the footer.
 
 ## Homeware — 2026-09-27
 
@@ -1142,3 +1142,23 @@ description, the price and "View the piece". Three sculptural pieces read
 better one at a time; if the range grows past five or six, revisit (A
 scales, B does not).
 
+
+## About — 2026-09-27
+
+Brad kept the page (trust, search, her shop photos) and picked **B, "Story
+scroll"** of three 21st-ui-explore directions (A a shopfront card opening to
+full width, C a five-photo zoom parallax). After 21st.dev "Scroll Reveal
+Content A" (abui), in `StoryScroll.tsx`: the title, Hayley, then her photos
+held square on the left while the three principles and "04 Come and see it."
+(address and hours) scroll past on the right, a line growing beside them. On
+a phone each passage carries its own photo. It replaced the lookbook
+(`InsideRooms.tsx`, deleted) and the principles band on ink. Frames stay
+square with the top anchored so the whole shopfront sign, "Accessories &
+Homeware" included, always shows. Passages out of view go grey, never faded:
+opacity failed AA contrast.
+
+## Home owner card — 2026-09-27
+
+The first bio paragraph ("We pride ourselves…") is left off the home page's
+owner card on desktop and phone (the About page keeps it), and "Get in
+touch" is a black pill on desktop.
