@@ -147,8 +147,32 @@ export default function ImmersiveMenuPanel({
       return;
     }
 
+    /* Touch screens (2026-09-28, Brad: "on the phone it looks and feels
+       laggy"). The 1s clip-path curtain is repainted on every frame on a
+       phone and its ease-in-out start reads as a delay. Phones get a
+       transform-only drop instead (composited), fast out of the gate
+       (expo.out, 500ms), links following at once. Desktop keeps the curtain. */
+    if (!mouse) {
+      if (open) {
+        gsap.set(el, { visibility: "visible", autoAlpha: 1, clipPath: CLIP_OPEN, yPercent: -100 });
+        gsap.set(body, { scale: 1, opacity: 1 });
+        gsap.set(links, { y: 24, opacity: 0 });
+        gsap.set(foot, { opacity: 0 });
+        gsap.timeline()
+          .to(el, { yPercent: 0, duration: 0.5, ease: "expo.out", force3D: true })
+          .to(links, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out", stagger: 0.04 }, 0.08)
+          .to(foot, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.25);
+      } else {
+        gsap.to(el, {
+          yPercent: -100, duration: 0.35, ease: "power3.in", force3D: true,
+          onComplete: () => { gsap.set(el, { visibility: "hidden", clipPath: CLIP_TOP, yPercent: 0 }); },
+        });
+      }
+      return;
+    }
+
     if (open) {
-      gsap.set(el, { visibility: "visible", autoAlpha: 1, clipPath: CLIP_TOP });
+      gsap.set(el, { visibility: "visible", autoAlpha: 1, clipPath: CLIP_TOP, yPercent: 0 });
       gsap.set(body, { scale: 1, opacity: 1 });
       gsap.set(links, { y: 40, opacity: 0 });
       gsap.set(foot, { y: 14, opacity: 0 });
@@ -163,7 +187,7 @@ export default function ImmersiveMenuPanel({
       tl.to(body, { scale: 0.96, opacity: 0.4, duration: 0.6, ease: "power2.in" }, 0)
         .to(el, { clipPath: CLIP_BOTTOM, duration: 0.9, ease: "power4.inOut" }, 0);
     }
-  }, [open, reduced, panel]);
+  }, [open, reduced, panel, mouse]);
 
   return (
     <div

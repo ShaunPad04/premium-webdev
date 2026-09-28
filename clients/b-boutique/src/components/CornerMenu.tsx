@@ -94,6 +94,19 @@ export function CornerMenu() {
     };
     document.addEventListener("click", onMark, true);
 
+    /* Any link in the panel closes it, caught on the window in the capture
+       phase (2026-09-28). A link to the page already open (/#faq, /#visit,
+       /#new-in from the home page, Womenswear from /clothing) is scrolled by
+       ScrollReset, which stops the click there so next/link does not
+       navigate twice; the link's own onClick={close} then never ran and the
+       menu stayed open over the page, locked. The window listener runs
+       before ScrollReset's document one. */
+    const onLink = (e: MouseEvent) => {
+      const t = e.target as Element | null;
+      if (t?.closest?.("a[href]") && panel.current?.contains(t)) setOpen(false);
+    };
+    window.addEventListener("click", onLink, true);
+
     // Lock the page and take the rest of it out of the a11y tree.
     /* Locking the body removes a classic (Windows) scrollbar, and the page
        and the fixed header both widen into the space it left: the client saw
@@ -136,6 +149,7 @@ export function CornerMenu() {
     return () => {
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("click", onMark, true);
+      window.removeEventListener("click", onLink, true);
       document.body.style.overflow = prev;
       document.body.style.paddingRight = prevPad;
       document.documentElement.style.removeProperty("--lock-gap");
