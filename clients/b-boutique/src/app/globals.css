@@ -9275,3 +9275,23 @@ h3.csr-grid-title { margin: 10px 0 0; text-align: center; font-size: 24px !impor
   cursor: pointer;
 }
 .st-gate-remember { cursor: pointer; }
+
+/* Phones (2026-09-28 live check). Up close: "Jacquard knit" wrapped inside
+   the one-line title box and lost "knit". The title stays on one line; the
+   link is a size down to make room. Reviews: "5.0 on Google" and "Read them
+   on Google" each broke over two lines; the rating keeps its line and the
+   link takes the next, without the dot between them. */
+@media (max-width: 767px) {
+  .ucg-title { font-size: 28px; min-width: 0; }
+  .ucg-title span { white-space: nowrap; }
+  .ucg-link { flex: none; font-size: 12px !important; }
+  .rv-summary { flex-wrap: wrap; row-gap: 8px; }
+  .rv-summary > span, .rv-summary-link { white-space: nowrap; }
+  .rv-summary > span[aria-hidden="true"] { display: none; }
+  .rv-summary-link { flex-basis: 100%; text-align: center; }
+}
+/* Touch screens: the quick-add bar sits on the photo's white backdrop and
+   read as loose text; a hairline gives it the edge of a control. */
+@media (hover: none), (pointer: coarse) {
+  .qa { border-top: 1px solid rgba(14, 11, 12, 0.12); }
+}
