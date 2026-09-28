@@ -1,3 +1,4 @@
+import "@/app/offhome.css";
 import type { Metadata } from "next";
 import { products } from "@/lib/catalogue";
 import { openingPlan } from "@/lib/opening-stock";

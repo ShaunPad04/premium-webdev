@@ -1,3 +1,4 @@
+import "@/app/offhome.css";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";

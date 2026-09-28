@@ -1,3 +1,4 @@
+import "@/app/offhome.css";
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/site";
 

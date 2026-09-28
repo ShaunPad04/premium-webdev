@@ -1,0 +1,7 @@
+/* Every page except / and the 404 imports this (2026-09-28). The rules only
+   those pages use were split out of globals.css so the home page's first
+   paint does not wait for them. type.css comes again after them because it
+   has the last word over every heading rule, and these now load after the
+   layout's copy of it. */
+@import "./offhome-rules.css";
+@import "./type.css";
