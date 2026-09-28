@@ -13,8 +13,7 @@ import { swatchPosition } from "@/lib/variants";
 import { ProductPhoto } from "@/components/ProductPhoto";
 import { Price } from "@/components/Price";
 import { RevealText } from "@/components/RevealText";
-import { ProductSlides } from "@/components/Deferred";
-import type { ProductSlide } from "@/components/ui/product-slides";
+import { ProductSlides, type ProductSlide } from "@/components/ui/product-slides";
 
 /* Measured slot: the model is 304-448px wide from 1024px up (62% of the
    screen's height, 4:5), and at most 60% of the screen below that. */
