@@ -9258,3 +9258,20 @@ h3.csr-grid-title { margin: 10px 0 0; text-align: center; font-size: 24px !impor
   .prod:has(.prod-photo--alt):hover .prod-photo:not(.prod-photo--alt),
   .prod:has(.prod-photo--alt):focus-within .prod-photo:not(.prod-photo--alt) { opacity: 1; }
 }
+
+/* /stock "Keep me signed in" (2026-09-28): a site-wide input rule set
+   appearance:none on it, so the tick never showed and the box read as
+   untappable (it was ticked all along). A native checkbox again, in ink. */
+.st-gate .st-gate-remember input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  accent-color: #0E0B0C;
+  cursor: pointer;
+}
+.st-gate-remember { cursor: pointer; }
