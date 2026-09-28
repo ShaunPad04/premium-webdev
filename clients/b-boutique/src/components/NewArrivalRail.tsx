@@ -1,5 +1,5 @@
 import { philosophy } from "@/lib/about";
-import { ScrollVelocityRow } from "@/components/ui/scroll-velocity-text";
+import { ScrollVelocityRow } from "@/components/Deferred";
 
 /* The band under the hero since 2026-09-23 (Brad's reference): NEW ARRIVAL
  * in the hero's Anton caps, white on black, a red dot between each, moving.

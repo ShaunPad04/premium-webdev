@@ -1,4 +1,5 @@
-import { UpCloseTilt, type Fabric } from "@/components/home/UpCloseTilt";
+import { UpCloseTilt } from "@/components/Deferred";
+import type { Fabric } from "@/components/home/UpCloseTilt";
 import { stocklist } from "@/lib/stocklist";
 
 /* Up close (2026-09-27, Brad: "only an image of the material, and then a
