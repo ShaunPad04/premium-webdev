@@ -33,25 +33,24 @@ test('New In on phones: one piece, no sizes, no arrows', async ({ page }, testIn
   await expect(page.locator('#new-in .ps-step').first()).toBeHidden();
 });
 
-test('Up close: seven materials, each a close-up named by its material only', async ({ page }) => {
+test('Up close: eight materials, each a close-up named by its material only', async ({ page }) => {
   await page.goto('/', { waitUntil: 'networkidle' });
-  /* The Scroll Gallery (2026-09-27): seven full-bleed slides in order, each
-     image described by its material and piece; the band names the one in
-     view and links to its garment. */
-  /* The slides render their photographs only once the gallery is near
-     (2026-09-28), so bring it close first. */
+  /* The tilted grid (2026-09-28): eight cards in order, each a link to its
+     garment, named by its material, the image described by material and
+     piece. The cards render their photographs only once the grid is near,
+     so bring it close first. */
   await page.evaluate(() => {
     const y = document.querySelector<HTMLElement>('.uc3')!.getBoundingClientRect().top + scrollY - innerHeight;
     const l = (window as unknown as { __lenis?: { scrollTo: (y: number, o: object) => void } }).__lenis;
     if (l) l.scrollTo(y, { immediate: true });
     else scrollTo(0, y);
   });
-  await expect(page.locator('.uc3 .ucg-slide img')).toHaveCount(7);
-  const alts = await page.locator('.uc3 .ucg-slide img').evaluateAll((els) => els.map((e) => e.getAttribute('alt')));
-  expect(alts).toHaveLength(7);
-  const order = ['velvet', 'bouclé', 'jacquard knit', 'lace', 'tweed check', 'chunky knit', 'velour'];
-  alts.forEach((a, i) => expect(a).toMatch(new RegExp(`^Close-up of the ${order[i]} of the `)));
-  await expect(page.locator('.uc3 .ucg-title')).toHaveText('Velvet');
-  await expect(page.locator('.uc3 .ucg-link')).toHaveAttribute('href', '/shop/leopard-embroidered-velvet-bomber');
+  await expect(page.locator('.uc3 .uct-card img')).toHaveCount(8);
+  const order = ['Velvet', 'Bouclé', 'Fair Isle knit', 'Lace & ruffle', 'Tweed check', 'Chunky knit', 'Velour', 'Faux feather'];
+  await expect(page.locator('.uc3 .uct-name')).toHaveText(order);
+  const alts = await page.locator('.uc3 .uct-card img').evaluateAll((els) => els.map((e) => e.getAttribute('alt')));
+  alts.forEach((a, i) => expect(a).toMatch(new RegExp(`^${order[i]} close-up, from the `)));
+  await expect(page.locator('.uc3 .uct-tile').first()).toHaveAttribute('href', '/shop/leopard-embroidered-velvet-bomber');
+  await expect(page.locator('.uc3 .uct-tile').last()).toHaveAttribute('href', '/shop/faux-feather-sleeveless-jumper');
 });
 

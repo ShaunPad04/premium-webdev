@@ -65,15 +65,38 @@
       }
     },
     "upClose": {
-      "decided": "2026-09-27",
-      "layout": "After 21st.dev Scroll Gallery (soralabs): pinned full-bleed fabric wipes with name band and Shop the piece",
+      "decided": "2026-09-28",
+      "decidedBy": "Brad",
+      "chosen": {
+        "name": "C: Tilted grid",
+        "component": "src/components/home/UpCloseTilt.tsx",
+        "idea": "After 21st.dev ScrollTiltedGrid (ruixen.ui): eight 3:4 fabric cards in two columns rise tipped back, settle flat mid-screen and tip away as the page scrolls. Transforms and opacity only; flat until near."
+      },
       "rejected": [
-        "B Stacking Cards (danielpetho)",
-        "C Immersive Scroll Gallery (ishamsu)",
-        "Name list",
-        "Sideways strip",
-        "Bento"
-      ]
+        {
+          "name": "A: Woven words (Image Text, animbits)",
+          "why": "Not picked."
+        },
+        {
+          "name": "B: Zoom parallax (efferd)",
+          "why": "Not picked."
+        },
+        {
+          "name": "The Loupe (Lens) and Fabric to garment (Pixelated Image Reveal)",
+          "why": "Brad asked for scroll-driven only."
+        }
+      ],
+      "previous": {
+        "decided": "2026-09-27",
+        "layout": "After 21st.dev Scroll Gallery (soralabs): pinned full-bleed fabric wipes with name band and Shop the piece",
+        "rejected": [
+          "B Stacking Cards (danielpetho)",
+          "C Immersive Scroll Gallery (ishamsu)",
+          "Name list",
+          "Sideways strip",
+          "Bento"
+        ]
+      }
     },
     "marquee": {
       "decided": "2026-09-27",

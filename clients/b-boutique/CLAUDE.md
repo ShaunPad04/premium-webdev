@@ -1362,3 +1362,34 @@ untouched. What changed, and why it must not be undone:
   commit by Brad; live checks all passed (indexable, canonicals, sitemap,
   redirects, 122 page loads, bag, menu). Vercel Authentication on previews
   is OFF at Brad's request (previews stay noindex).
+
+## Up close, fourth round — 2026-09-28
+
+Brad asked for something scroll-driven and picked **C, the tilted grid**
+(after 21st.dev "ScrollTiltedGrid", ruixen.ui) of three: A the material
+names set huge and filled with their cloth (after "Image Text", animbits),
+B a zoom-parallax collage (efferd). A lens and a pixel reveal were shown
+first and dropped when he asked for scroll-driven only.
+`home/UpCloseTilt.tsx`: two columns of 3:4 cards that rise tipped back,
+settle flat mid-screen and tip away; transforms and opacity only (the
+original's scrubbed blur/brightness filter is left out). The Scroll Gallery
+(`UpCloseGallery.tsx`) is kept.
+
+- **Eight cards, not seven** (Brad: "there's 1 at the end"). The eighth is
+  **Faux feather**, a GPT Image 2.5 macro made from her own photograph of
+  the beige Faux Feather Sleeveless Jumper (`assets/fabric/feather-tall.jpg`).
+- **Names checked against each image** (Brad): "Jacquard knit" became
+  **Fair Isle knit** (the pattern shown; her piece is the Fair Isle Jumper)
+  and "Lace" became **Lace & ruffle** (the card is mostly the ruffle). The
+  velour macro shows a swirl her crushed velour only hints at; the name
+  "Velour" is right, the picture could be remade closer.
+- **Images**: one 3:4 centre crop per fabric at 600/900/1200
+  (`scripts/build-fabric.py`), sized to the card. The old tall/square files
+  were picked by width and a landscape source was stretched in a portrait
+  card. A phone now loads ~440 KB for all eight (was ~1 MB for seven).
+- **First paint**: cards render flat until the grid is within ~1,000px, then
+  the tilt switches on with the photos. Server-rendered 3D tilts cost the
+  home page 95 -> 93 on Lighthouse mobile (n=3 each, same machine); flat,
+  it measures 95 again. Keep it that way.
+- Reduced motion: a still grid, enforced in CSS as well. `.uc3` clips
+  sideways overflow (the cards slide in from 30% to the side).
