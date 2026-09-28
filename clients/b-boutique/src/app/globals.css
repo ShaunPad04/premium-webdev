@@ -2410,8 +2410,11 @@ html:has(.pdp-viewer[open]) { overflow: hidden; }
   /* pointer-events: none is the resting state so a line still waiting out
      its animation-delay cannot catch a tap meant for the one showing. */
   .announce-item { grid-area: 1 / 1; clip-path: inset(0 0 100% 0); pointer-events: none; animation: announce-cycle 15s infinite var(--bb-ease); }
-  .announce-item:nth-child(2) { animation-delay: 5s; }
-  .announce-item:nth-child(3) { animation-delay: 10s; }
+  /* Negative delays start every line mid-cycle, so the second and third
+     wipe in as the one before leaves (at 5s and 10s) from the first pass,
+     instead of popping in when a positive delay ran out. */
+  .announce-item:nth-child(2) { animation-delay: -10s; }
+  .announce-item:nth-child(3) { animation-delay: -5s; }
   .announce-item:first-child { clip-path: inset(0); pointer-events: auto; }
   /* The link is the one thing a keyboard can land on; while it has focus
      the cycle holds on it, on top, so the focus ring is never on nothing. */
