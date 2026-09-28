@@ -41,7 +41,9 @@ const SRC = "assets/product";
 const OUT = "public/img/product";
 
 /** See the note above. Anything wider than the source would be an upscale. */
-const WIDTHS = [640, 960, 1280];
+/* 400 added 2026-09-28: a phone grid slot is ~320px at DPR 1.75, and 640
+   was twice what it needed. */
+const WIDTHS = [400, 640, 960, 1280];
 
 /* AVIF first because it is what nearly every current browser takes, and it
    is roughly 30% smaller than WebP at a matched appearance on this kind of

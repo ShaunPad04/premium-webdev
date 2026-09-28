@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type Room = { src: string; alt: string; caption: string; pos: string };
+type Room = { src: string; avif: string; webp: string; alt: string; caption: string; pos: string };
 
 /* The shop's rooms as Shop by category's panels: the one pointed at or
    focused opens, the others narrow to strips with their name running up. */
@@ -20,7 +20,11 @@ export function AboutRooms({ rooms }: { rooms: Room[] }) {
           onFocus={() => setOn(i)}
           onClick={() => setOn(i)}
         >
-          <img src={r.src} alt={r.alt} loading="lazy" style={{ objectPosition: r.pos }} />
+          <picture>
+            <source type="image/avif" srcSet={r.avif} sizes="(min-width: 1024px) 60vw, 84vw" />
+            <source type="image/webp" srcSet={r.webp} sizes="(min-width: 1024px) 60vw, 84vw" />
+            <img src={r.src} alt={r.alt} loading="lazy" decoding="async" style={{ objectPosition: r.pos }} />
+          </picture>
           <figcaption className="hs-room-d">
             <span className="hs-tag">
               {String(i + 1).padStart(2, "0")} / {String(rooms.length).padStart(2, "0")}

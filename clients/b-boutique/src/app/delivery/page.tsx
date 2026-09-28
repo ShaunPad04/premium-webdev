@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/site";
 
 import { PolicyPage } from "@/components/PolicyPage";
 import { policyBySlug } from "@/lib/policies";
 
 const policy = policyBySlug("delivery")!;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
+  path: "/delivery",
   title: "Delivery",
   description:
     "How an order from B Boutique, 18 Sea View Street, Cleethorpes, is sent — and the delivery rights UK law gives you when you buy online.",
-  alternates: { canonical: "/delivery" },
-};
+});
 
 /* /delivery — one of the two pages a UK shop selling at a distance has to
  * have. See lib/policies.ts for the rule governing what may and may not be

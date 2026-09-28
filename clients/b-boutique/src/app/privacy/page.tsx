@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/site";
 
 import { PolicyPage } from "@/components/PolicyPage";
 import { policyBySlug } from "@/lib/policies";
 
 const policy = policyBySlug("privacy")!;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
+  path: "/privacy",
   title: "Privacy",
   description:
     "What the B Boutique website collects, what it does not, and your rights under UK data protection law.",
-  alternates: { canonical: "/privacy" },
-};
+});
 
 /* /privacy — the one page on a website that can be checked against the
  * website itself. Almost every block is `technical`: a claim about what this

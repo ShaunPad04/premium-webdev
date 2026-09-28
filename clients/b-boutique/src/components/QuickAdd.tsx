@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import type { Product } from "@/lib/catalogue";
-import { useCart } from "@/lib/useCart";
+import { MAX_QTY, useCart } from "@/lib/useCart";
 import { variantId } from "@/lib/variants";
 
 /* Add to bag from the grid, for the pieces where that is an honest offer.
@@ -38,10 +38,10 @@ import { variantId } from "@/lib/variants";
  * real gate and it re-checks server-side before taking a card.
  */
 
-type State = "idle" | "checking" | "added" | "out" | "failed";
+type State = "idle" | "checking" | "added" | "out" | "full" | "failed";
 
 export function QuickAdd({ product }: { product: Product }) {
-  const { add } = useCart();
+  const { add, lines } = useCart();
   const [state, setState] = useState<State>("idle");
 
   const size = product.sizes[0];
@@ -53,12 +53,19 @@ export function QuickAdd({ product }: { product: Product }) {
       const r = await fetch(
         `/api/availability?slug=${encodeURIComponent(product.slug)}`,
       );
-      const d: { variants?: Record<string, { state: string }> } = r.ok
+      const d: { variants?: Record<string, { state: string }>; limits?: Record<string, number> } = r.ok
         ? await r.json()
         : {};
-      const v = d.variants?.[variantId(product.slug, size, colour)];
-      if (v?.state === "out") {
+      const vid = variantId(product.slug, size, colour);
+      if (d.variants?.[vid]?.state === "out") {
         setState("out");
+        return;
+      }
+      /* The same limit the product page's quantity respects: a one-of-one
+         pressed twice must not put two in the bag. */
+      const inBag = lines.find((l) => variantId(l.slug, l.size, l.colour) === vid)?.qty ?? 0;
+      if (inBag >= Math.min(MAX_QTY, d.limits?.[vid] ?? MAX_QTY)) {
+        setState("full");
         return;
       }
     } catch {
@@ -95,7 +102,7 @@ export function QuickAdd({ product }: { product: Product }) {
          garment lands in the bag on a page the customer did not ask for. */
       onPointerDown={(e) => e.stopPropagation()}
     >
-      {state === "checking" ? "Checking…" : state === "added" ? "Added" : "Add to bag"}
+      {state === "checking" ? "Checking…" : state === "added" ? "Added" : state === "full" ? "In your bag" : "Add to bag"}
     </button>
   );
 }

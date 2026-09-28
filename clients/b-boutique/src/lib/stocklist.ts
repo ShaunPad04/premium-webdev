@@ -977,6 +977,9 @@ export function pieceBySlug(slug: string): StockPiece | undefined {
  *  So the answer is COUNTED rather than written. It cannot drift from the
  *  rail, and when she buys a piece that runs to an 18 the sentence says so by
  *  itself. */
+/** "a 12", but "an 8", "an 11" and "an 18": the article follows the sound. */
+const art = (n: number) => `${/^(8|11|18)$/.test(String(n)) ? "an" : "a"} ${n}`;
+
 export function sizeSummary(): string {
   const oneSize = stocklist.filter((p) => p.sizes.length === 1 && p.sizes[0] === "One size");
   const lettered = stocklist.filter((p) => p.sizes.length > 1);
@@ -996,10 +999,10 @@ export function sizeSummary(): string {
   if (oneSize.length) {
     parts.push(
       caps.length
-        ? `Most of what is in at the moment is one size, cut to fit up to a ${
+        ? `Most of what is in at the moment is one size, cut to fit up to ${
             caps.length === 1
-              ? caps[0]
-              : `${caps.slice(0, -1).join(", a ")} or a ${caps[caps.length - 1]}`
+              ? art(caps[0])
+              : `${caps.slice(0, -1).map(art).join(", ")} or ${art(caps[caps.length - 1])}`
           }`
         : "Most of what is in at the moment is one size",
     );

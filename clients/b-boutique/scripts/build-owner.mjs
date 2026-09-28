@@ -93,3 +93,15 @@ console.log(
   `source ${meta.width}x${meta.height} -> crop ${width}x${height} at top ${TOP}\n` +
     `  avif ${kb(a.size)}   webp ${kb(w.size)}   jpg ${kb(j.size)}`,
 );
+
+/* A 640 step as well (2026-09-28), so a srcset can give a phone at DPR 1-2
+   or a small slot less than the 1120 file; 1120 stays for DPR 3. Same crop,
+   same encoders. */
+const small = sharp(SRC)
+  .extract({ left: 0, top: TOP, width, height })
+  .resize({ width: 640 });
+const [sa, sw] = await Promise.all([
+  small.clone().avif({ quality: 62, effort: 6 }).toFile("public/img/owner/hayley-640.avif"),
+  small.clone().webp({ quality: 80 }).toFile("public/img/owner/hayley-640.webp"),
+]);
+console.log(`  640: avif ${kb(sa.size)}   webp ${kb(sw.size)}`);

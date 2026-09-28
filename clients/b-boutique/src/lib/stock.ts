@@ -233,7 +233,7 @@ export type Reason =
 
 export type AdjustResult =
   | { ok: true; qty: number }
-  | { ok: false; code: "not_configured" | "unknown_variant" | "would_go_negative"; qty?: number };
+  | { ok: false; code: "not_configured" | "unknown_variant" | "uncounted" | "would_go_negative"; qty?: number };
 
 export async function adjust(
   id: string,
@@ -264,13 +264,26 @@ export async function adjust(
      clamping, because clamping hides a real disagreement about what is in the
      shop. */
   try {
-    const rows = (await q`
-      INSERT INTO stock (id, slug, size, colour, qty)
-      VALUES (${id}, ${v.slug}, ${v.size}, ${v.colour}, ${Math.max(delta, 0)})
-      ON CONFLICT (id) DO UPDATE
-        SET qty = stock.qty + ${delta}, updated_at = now()
-      RETURNING qty
-    `) as { qty: number }[];
+    /* An online reservation only ever takes from a counted line. The upsert
+       below would create a row at 0 for a line nobody has counted, which
+       then shows the piece as sold out after its first online sale and,
+       when an abandoned checkout is released, writes a count nobody took.
+       "Never counted" stays never counted; orders.ts records it unreserved. */
+    const reserving = reason === "sold-online" && delta < 0;
+    const rows = (reserving
+      ? await q`
+          UPDATE stock SET qty = stock.qty + ${delta}, updated_at = now()
+          WHERE id = ${id} AND qty IS NOT NULL
+          RETURNING qty
+        `
+      : await q`
+          INSERT INTO stock (id, slug, size, colour, qty)
+          VALUES (${id}, ${v.slug}, ${v.size}, ${v.colour}, ${Math.max(delta, 0)})
+          ON CONFLICT (id) DO UPDATE
+            SET qty = stock.qty + ${delta}, updated_at = now()
+          RETURNING qty
+        `) as { qty: number }[];
+    if (rows.length === 0) return { ok: false, code: "uncounted" };
 
     const qty = Number(rows[0].qty);
     await q`

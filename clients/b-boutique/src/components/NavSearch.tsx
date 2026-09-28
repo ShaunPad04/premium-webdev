@@ -118,7 +118,7 @@ export function NavSearch() {
           setOpen(false);
           router.push(`/shop/${hit.slug}`);
         }}
-        placeholder="Coats, knitwear, a silk dress…"
+        placeholder="Coats, knitwear, a knit dress…"
         controls={panelId}
         triggerRef={trigger}
       />

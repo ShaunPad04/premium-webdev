@@ -8,6 +8,7 @@ import {
   releaseOrder,
   toOrderLine,
   type CustomerDetails,
+  type DeliveryMethod,
 } from "@/lib/orders";
 import { coloursFor, variantId } from "@/lib/variants";
 
@@ -101,6 +102,7 @@ type Line = {
  *  these four checks are exactly that and nothing more. */
 function readCustomer(
   raw: unknown,
+  collect: boolean,
 ): { ok: true; value: CustomerDetails } | { ok: false; error: string } {
   const c = (raw ?? {}) as Record<string, unknown>;
   const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
@@ -115,12 +117,16 @@ function readCustomer(
     phone: str(c.phone).slice(0, 20),
   };
 
-  if (value.name.length < 2) return { ok: false, error: "Please give the name the parcel goes to." };
+  if (value.name.length < 2) return { ok: false, error: "Please give the name the order is for." };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.email))
     return { ok: false, error: "Please give an email address we can send the confirmation to." };
-  if (value.address.length < 10)
+  /* Click & collect: nothing is posted, so no address is asked for or kept. */
+  if (collect) {
+    value.address = "";
+    value.postcode = "";
+  } else if (value.address.length < 10)
     return { ok: false, error: "Please give the full address, including the house number and street." };
-  if (value.postcode.length < 5) return { ok: false, error: "Please give the postcode." };
+  if (!collect && value.postcode.length < 5) return { ok: false, error: "Please give the postcode." };
   if (value.phone) {
     const digits = value.phone.replace(/\D/g, "").length;
     if (!/^[0-9+()\-\s]+$/.test(value.phone) || digits < 10 || digits > 15)
@@ -156,9 +162,9 @@ const MAX_LINES = 25;
 const MAX_QTY = 6;
 
 export async function POST(request: NextRequest) {
-  let body: { lines?: unknown; customer?: unknown };
+  let body: { lines?: unknown; customer?: unknown; method?: unknown };
   try {
-    body = (await request.json()) as { lines?: unknown; customer?: unknown };
+    body = (await request.json()) as { lines?: unknown; customer?: unknown; method?: unknown };
   } catch {
     return Response.json(
       { ok: false, error: "Could not read that request." },
@@ -177,7 +183,9 @@ export async function POST(request: NextRequest) {
      A payment taken with no name and no address is money the shop cannot
      turn into a parcel, and the bag's own copy of these checks is a
      courtesy — anything a browser validates, a browser can skip. */
-  const customer = readCustomer(body.customer);
+  /* Anything but "collect" is posted, and priced as posted. */
+  const method: DeliveryMethod = body.method === "collect" ? "collect" : "post";
+  const customer = readCustomer(body.customer, method === "collect");
   if (!customer.ok) {
     return Response.json({ ok: false, error: customer.error }, { status: 400 });
   }
@@ -296,13 +304,17 @@ export async function POST(request: NextRequest) {
    * rail is empty, and it stops the sale. */
   try {
     const counts = await countsFor(priced.map((l) => l.variant));
+    /* Summed per variant, not per line: two lines for the same garment (a
+       hand-made request) must not each pass against the same one piece. */
+    const wanted = new Map<string, number>();
+    for (const l of priced) wanted.set(l.variant, (wanted.get(l.variant) ?? 0) + l.qty);
     if (counts) {
       for (const line of priced) {
         /* Never counted: the master list's total for the colour is still a
            ceiling nobody can buy past (2026-09-25). */
         const have = counts.get(line.variant) ?? listedTotal(line.slug, line.colour, line.size) ?? undefined;
         if (have === undefined) continue;
-        if (have < line.qty) {
+        if (have < wanted.get(line.variant)!) {
           return Response.json(
             {
               ok: false,
@@ -338,7 +350,9 @@ export async function POST(request: NextRequest) {
 
   /* Delivery is worked out here, on the server, from the server-priced
      subtotal — never taken from the browser. Same function the bag uses. */
-  const totalP = subtotalP + deliveryFor(subtotalP);
+  /* Collection is free; posting is the same function the bag uses. */
+  const deliveryP = method === "collect" ? 0 : deliveryFor(subtotalP);
+  const totalP = subtotalP + deliveryP;
 
   const apiKey = process.env.SUMUP_API_KEY;
   const merchantCode = process.env.SUMUP_MERCHANT_CODE;
@@ -367,6 +381,7 @@ export async function POST(request: NextRequest) {
      reservation taken after payment is not a reservation at all. */
   const order = await createPendingOrder({
     reference,
+    method,
     customer: customer.value,
     lines: priced.map((l) =>
       toOrderLine({
@@ -380,7 +395,7 @@ export async function POST(request: NextRequest) {
       }),
     ),
     subtotalP,
-    deliveryP: deliveryFor(subtotalP),
+    deliveryP,
     totalP,
   });
 
@@ -426,10 +441,9 @@ export async function POST(request: NextRequest) {
         purpose: "CHECKOUT",
         /* Without this there is no hosted payment page in the response. */
         hosted_checkout: { enabled: true },
-        description: priced
+        description: `${method === "collect" ? "Click & collect: " : ""}${priced
           .map((l) => `${l.qty} x ${describe(l)}`)
-          .join(", ")
-          .slice(0, 255),
+          .join(", ")}`.slice(0, 255),
         /* Where the customer lands. `return_url` is SumUp's server callback
            and is deliberately not set — see the note at the top. */
         redirect_url: `${siteUrl}/checkout/success?ref=${reference}`,

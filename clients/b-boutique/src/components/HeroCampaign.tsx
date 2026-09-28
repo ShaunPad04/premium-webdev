@@ -1,5 +1,6 @@
 import { shop } from "@/lib/shop";
 import { Cta, sources, Where } from "./HeroStrips";
+import { HeroName } from "./HeroName";
 
 /* The home hero since 2026-09-27: "C, the Campaign", Brad's pick of three
  * directions (A framed shop interior, B new-in piece beside the brand, C one
@@ -34,7 +35,7 @@ export function HeroCampaign() {
           <img src="/img/hero/horses-m.jpg" alt="" fetchPriority="high" decoding="async" />
         </picture>
         <div className="hx-c-mid">
-          <p className="hx-name" aria-hidden="true">B Boutique</p>
+          <HeroName />
           <Cta />
         </div>
         <Where />

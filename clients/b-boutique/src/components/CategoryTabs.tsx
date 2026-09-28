@@ -50,7 +50,6 @@ export function CategoryTabs() {
               <Link
                 href={c.href}
                 className="ctab-link"
-                aria-label={c.name}
                 onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) setOn(i); }}
                 onPointerDown={(e) => { touch.current = e.pointerType !== "mouse"; }}
                 onClick={(e) => {
@@ -62,16 +61,21 @@ export function CategoryTabs() {
                   <source type="image/webp" srcSet={`/img/cat/${c.slug}-p800.webp 800w, /img/cat/${c.slug}-p1200.webp 1200w`} sizes="(min-width: 1024px) 60vw, 100vw" />
                   <img src={`/img/cat/${c.slug}-p800.webp`} alt="" loading="lazy" decoding="async" draggable={false} />
                 </picture>
-                <span className="ctab-label">
-                  <span className="ctab-n" aria-hidden="true">{c.number}</span>
+                {/* The link's name: every visible label below is a decorative
+                    copy that some screen size hides. */}
+                <span className="sr-only">{c.name}</span>
+                <span className="ctab-label" aria-hidden="true">
+                  <span className="ctab-n">{c.number}</span>
                   <span className="ctab-name">{c.name}</span>
                 </span>
                 <span className="ctab-cta" aria-hidden="true">Shop<span className="ctab-cta-cat"> {c.name.toLowerCase()}</span> <Arrow /></span>
                 {/* Desktop, after the 21st.dev Elastic Gallery (Brad,
                     2026-09-27): a glass tag, the name in capitals and a
                     "Shop ↗" line on the open panel; the name running up a
-                    closed one. Decorative copies: the link's name is the
-                    category's (aria-label). */}
+                    closed one. Decorative copies: the link is named by the
+                    sr-only span above (no aria-label, 2026-09-28: a label
+                    that left out the visible "Shop" failed Lighthouse's
+                    label-in-name check). */}
                 <span className="ctab-d" aria-hidden="true">
                   <span className="ctab-d-tag">{c.number} / {String(featured.length).padStart(2, "0")}</span>
                   <span className="ctab-d-title">{c.name}</span>

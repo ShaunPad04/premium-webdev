@@ -38,6 +38,15 @@ test('Up close: seven materials, each a close-up named by its material only', as
   /* The Scroll Gallery (2026-09-27): seven full-bleed slides in order, each
      image described by its material and piece; the band names the one in
      view and links to its garment. */
+  /* The slides render their photographs only once the gallery is near
+     (2026-09-28), so bring it close first. */
+  await page.evaluate(() => {
+    const y = document.querySelector<HTMLElement>('.uc3')!.getBoundingClientRect().top + scrollY - innerHeight;
+    const l = (window as unknown as { __lenis?: { scrollTo: (y: number, o: object) => void } }).__lenis;
+    if (l) l.scrollTo(y, { immediate: true });
+    else scrollTo(0, y);
+  });
+  await expect(page.locator('.uc3 .ucg-slide img')).toHaveCount(7);
   const alts = await page.locator('.uc3 .ucg-slide img').evaluateAll((els) => els.map((e) => e.getAttribute('alt')));
   expect(alts).toHaveLength(7);
   const order = ['velvet', 'bouclé', 'jacquard knit', 'lace', 'tweed check', 'chunky knit', 'velour'];

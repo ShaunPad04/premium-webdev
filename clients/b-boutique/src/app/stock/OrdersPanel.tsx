@@ -87,13 +87,21 @@ export function OrdersPanel({ orders }: { orders: Order[] }) {
               ))}
             </ul>
 
-            <address className="ord-addr">
-              {o.name}
-              {"\n"}
-              {o.address}
-              {"\n"}
-              {o.postcode}
-            </address>
+            {o.method === "collect" ? (
+              <p className="ord-addr">
+                <strong>Click &amp; collect</strong>
+                {"\n"}
+                {o.name}
+              </p>
+            ) : (
+              <address className="ord-addr">
+                {o.name}
+                {"\n"}
+                {o.address}
+                {"\n"}
+                {o.postcode}
+              </address>
+            )}
 
             {/* A tel: link, because this screen is on her phone and the
                 reason the number exists is so she can ring from it. Only
@@ -111,7 +119,7 @@ export function OrdersPanel({ orders }: { orders: Order[] }) {
               onClick={() => post(o.reference)}
               disabled={busy === o.reference}
             >
-              {busy === o.reference ? "Saving…" : "Posted"}
+              {busy === o.reference ? "Saving…" : o.method === "collect" ? "Collected" : "Posted"}
             </button>
 
             {failed === o.reference ? (

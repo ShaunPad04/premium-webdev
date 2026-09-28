@@ -1293,3 +1293,61 @@ open-now, hours / parking / email as one-line rows, Get directions across the
 foot. `ui/expanded-map.tsx` is deleted (git has it). Same day: "Follow us" is
 a section heading; the social tiles hide the arrow on phones so the names fit;
 the FAQ plus circles are gone.
+
+## Pre-launch QA — 2026-09-28 (overnight, Brad asleep)
+
+Full QA of every route at 390/768/1280/1920 against a local production build
+(the preview is behind Vercel login). Nothing committed or pushed; production
+untouched. What changed, and why it must not be undone:
+
+- **SEO.** Every page has its own title (template `%s | B Boutique
+  Cleethorpes`, long product names take `| B Boutique`), description (≤160),
+  canonical, `og:title/description/url/image` and a Twitter card, through
+  `pageMeta()` in `lib/site.ts` (Next merges `openGraph` shallowly, so a page
+  without it shared the layout's title everywhere). Share image: her
+  shopfront, whole fascia in frame (`/img/og-shopfront.jpg`, 1024x536);
+  products share their own photo. `app/manifest.ts` + `/icon-192|512.png`.
+- **Structured data.** ClothingStore gained `@id`, `url`, `image`, `logo`,
+  `email`, `sameAs` (Instagram, Facebook), `priceRange` (derived from the
+  catalogue). Offers carry `shippingDetails` (from DELIVERY_P /
+  FREE_DELIVERY_OVER_P, GB) and `hasMerchantReturnPolicy` (14 days, by post,
+  customer pays). No `deliveryTime`: she confirmed posting next business day,
+  not Royal Mail's transit. BreadcrumbList on product pages; FAQPage on the
+  home FAQ (the visible questions, word for word).
+- **GEO.** `/llms.txt` (route handler, static), built from shop.ts, the
+  catalogue and the delivery constants: facts, pages, every piece with its
+  current price. No was-prices, no stock.
+- **Hero name.** "B Boutique" in the home hero is SVG outlines of the same
+  Bodoni Moda 400 glyphs (`HeroName.tsx`, shaped with HarfBuzz from the file
+  next/font served), and Bodoni is no longer loaded at all. Pixel-compared
+  before/after at 390 and 1440: identical. The font swap was what Lighthouse
+  timed as the phone LCP.
+- **Click & collect** (Brad's list): "Royal Mail, next business day (£4.35,
+  free over £120)" or "Collect from 18 Sea View Street, Cleethorpes (free,
+  ready the same day during opening hours)". Collect hides the address, the
+  server prices delivery at 0 and keeps no address, `orders.method` column
+  (additive ALTER, default 'post'), both emails, the result card and the
+  staff orders screen ("Collected") say so, and /delivery has a paragraph.
+- **Bugs fixed.** Add to bag with no colour on a one-size piece did nothing
+  visible (error now under the choices). Sold out is shown before a colour is
+  picked when every colour is gone. QuickAdd respects stock limits.
+  Checkout sums quantities per variant. An online reservation no longer
+  creates a stock row at 0 for a line nobody counted (`adjust`, reason
+  sold-online). Tablet sideways scroll on the home category row. About's
+  invalid placeholder GIF. `launch-check` colour check (never ran) and its
+  Windows path. "a 18" → "an 18". /delivery prices from the constants;
+  returns said "a phone call is enough" (no phone on the site); privacy's
+  "sets no cookies" now names the staff sign-in cookie; bag links Terms and
+  Privacy; contact links Privacy.
+- **Performance.** Up close photos: responsive AVIF/WebP (portrait crops on
+  phones), rendered only when the gallery is within ~1,000px (they sat inside
+  Chrome's lazy-load distance and downloaded with the hero). About photos and
+  the owner portrait have srcsets (new `hayley-640`). Product grids load
+  their first row at high priority; the hover photo is not downloaded on
+  touch screens. 743 CSS rules for classes no file uses were removed from
+  globals.css (305 KB → 239 KB built); every route screenshotted before and
+  after at 390 and 1440, with and without motion: identical.
+- **Not done, deliberately.** Unused components (Service, CornerMenuPanel,
+  CategoryGrid, PieceGrid, HorizontalRails, cinematic-product-scroll-section,
+  lib/statements) are left: locked decision 4. The staff cookie's path is
+  unchanged: widening an auth cookie is Brad's call (see the report).

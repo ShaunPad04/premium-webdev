@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/site";
 
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
@@ -7,12 +8,12 @@ import { AboutRooms } from "@/components/AboutRooms";
 import { principles, shopPhotos, type ShopPhoto } from "@/lib/about";
 import { owner, shop, openingPhrase } from "@/lib/shop";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
+  path: "/about",
   title: "About us",
   description:
     "B Boutique is an independent shop at 18 Sea View Street, Cleethorpes. Womenswear and homeware, chosen a piece at a time.",
-  alternates: { canonical: "/about" },
-};
+});
 
 /* /about — 2026-09-27, in the Shop by category's own language (Brad picked
  * that section's look as the one to follow, after three rounds of About
@@ -32,6 +33,13 @@ export const metadata: Metadata = {
  * from shop.ts. */
 
 const src = (p: ShopPhoto) => `/img/about/${p.name}-${p.name === "shopfront" ? 1024 : 1920}.webp`;
+/* Every width that was built, so a phone gets the 960 and a desktop panel
+   the 1440 rather than every screen the 1920 (2026-09-28). */
+const widths = (p: ShopPhoto) => (p.name === "shopfront" ? [640, 960, 1024] : [960, 1440, 1920]);
+const srcSet = (p: ShopPhoto, ext: string) => widths(p).map((w) => `/img/about/${p.name}-${w}.${ext} ${w}w`).join(", ");
+const room = (p: ShopPhoto, caption: string, pos: string) => ({
+  src: src(p), avif: srcSet(p, "avif"), webp: srcSet(p, "webp"), alt: p.alt, caption, pos,
+});
 
 export default function AboutPage() {
   const { shopfront, railWindow, back, counter } = shopPhotos;
@@ -45,7 +53,7 @@ export default function AboutPage() {
           <section className="hs-hero" aria-labelledby="hs-title">
             <picture>
               {/* Phones: no hero panel (Brad, 2026-09-27: "looks odd"), so no download either. */}
-              <source media="(max-width: 767px)" srcSet="data:image/gif;base64,R0lGODlhAQABAAAAACw=" />
+              <source media="(max-width: 767px)" srcSet="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
               <source type="image/avif" srcSet="/img/about/shopfront-640.avif 640w, /img/about/shopfront-1024.avif 1024w" sizes="100vw" />
               <img src={src(shopfront)} alt={shopfront.alt} fetchPriority="high" />
             </picture>
@@ -58,11 +66,16 @@ export default function AboutPage() {
 
           <section className="hs-owner" aria-labelledby="hs-owner">
             <div className="hs-panel hs-portrait">
-              <img
-                src={`/img/owner/${owner.portrait}.webp`}
-                alt={`${owner.firstName} ${owner.lastName}, who owns B Boutique.`}
-                loading="lazy"
-              />
+              <picture>
+                <source type="image/avif" srcSet={`/img/owner/${owner.portrait}-640.avif 640w, /img/owner/${owner.portrait}.avif 1120w`} sizes="(min-width: 1024px) 40vw, 92vw" />
+                <source type="image/webp" srcSet={`/img/owner/${owner.portrait}-640.webp 640w, /img/owner/${owner.portrait}.webp 1120w`} sizes="(min-width: 1024px) 40vw, 92vw" />
+                <img
+                  src={`/img/owner/${owner.portrait}.webp`}
+                  alt={`${owner.firstName} ${owner.lastName}, who owns B Boutique.`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
               <div className="hs-over">
                 <span className="hs-tag">{owner.role}</span>
                 <h2 id="hs-owner" className="hs-over-t">
@@ -84,10 +97,10 @@ export default function AboutPage() {
             </div>
             <AboutRooms
               rooms={[
-                { src: src(shopfront), alt: shopfront.alt, caption: shopfront.caption, pos: "50% 0%" },
-                { src: src(railWindow), alt: railWindow.alt, caption: "The rails", pos: "50% 50%" },
-                { src: src(back), alt: back.alt, caption: "Fitting rooms", pos: "50% 50%" },
-                { src: src(counter), alt: counter.alt, caption: counter.caption, pos: "50% 50%" },
+                room(shopfront, shopfront.caption, "50% 0%"),
+                room(railWindow, "The rails", "50% 50%"),
+                room(back, "Fitting rooms", "50% 50%"),
+                room(counter, counter.caption, "50% 50%"),
               ]}
             />
           </section>

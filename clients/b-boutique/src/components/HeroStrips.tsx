@@ -16,8 +16,9 @@ export const sources = (file: string) => [
   { media: "(min-width: 1024px)", type: "image/jpeg", srcSet: `/img/hero/${file}-d.jpg` },
   /* Cover-cropped from a 9:16 portrait, so on a phone the frame is as wide
      as the screen or 0.56 of its height, whichever is larger. */
-  { type: "image/avif", srcSet: `/img/hero/${file}-s.avif 900w, /img/hero/${file}-s1200.avif 1200w, /img/hero/${file}-m.avif 1536w, /img/hero/${file}-s1800.avif 1800w`, sizes: "max(100vw, 56svh)" },
-  { type: "image/webp", srcSet: `/img/hero/${file}-s.webp 900w, /img/hero/${file}-s1200.webp 1200w, /img/hero/${file}-m.webp 1536w, /img/hero/${file}-s1800.webp 1800w`, sizes: "max(100vw, 56svh)" },
+  /* 720 step (2026-09-28): the common 412px phone at 1.75x needs ~721px. */
+  { type: "image/avif", srcSet: `/img/hero/${file}-s720.avif 720w, /img/hero/${file}-s.avif 900w, /img/hero/${file}-s1200.avif 1200w, /img/hero/${file}-m.avif 1536w, /img/hero/${file}-s1800.avif 1800w`, sizes: "max(100vw, 56svh)" },
+  { type: "image/webp", srcSet: `/img/hero/${file}-s720.webp 720w, /img/hero/${file}-s.webp 900w, /img/hero/${file}-s1200.webp 1200w, /img/hero/${file}-m.webp 1536w, /img/hero/${file}-s1800.webp 1800w`, sizes: "max(100vw, 56svh)" },
 ];
 
 const SLIDES: LuminaSlide[] = [

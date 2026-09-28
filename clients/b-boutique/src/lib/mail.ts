@@ -1,7 +1,7 @@
 import "server-only";
 
 import { formatPrice } from "./catalogue";
-import { shop } from "./shop";
+import { openingPhrase, shop } from "./shop";
 import type { Order } from "./orders";
 
 /* Sending email.
@@ -77,6 +77,9 @@ function lineList(order: Order): string {
     .join("\n");
 }
 
+/** The shop's address, for click & collect orders in both emails. */
+const collectLine = () => `${shop.street}, ${shop.town}, ${shop.postcode}`;
+
 /** Tell the shop. This is the thing that answers "how would she know?" —
  *  without it an order sits in a database nobody has opened. */
 export async function notifyShopOfOrder(order: Order): Promise<boolean> {
@@ -87,7 +90,7 @@ export async function notifyShopOfOrder(order: Order): Promise<boolean> {
     to,
     /* The reference is in the subject so she can search her inbox for it when
        a customer rings up quoting it. */
-    subject: `New online order ${order.reference} — ${formatPrice(order.totalP)}`,
+    subject: `New online order ${order.reference}${order.method === "collect" ? " (collect)" : ""} — ${formatPrice(order.totalP)}`,
     /* Reply goes straight to the customer. When somebody needs telling their
        piece has sold, the shop should be one tap from saying so. */
     replyTo: order.email,
@@ -97,13 +100,17 @@ export async function notifyShopOfOrder(order: Order): Promise<boolean> {
       `WHAT TO PACK`,
       lineList(order),
       ``,
-      `POST IT TO`,
-      `  ${order.name}`,
-      ...order.address.split("\n").map((l) => `  ${l}`),
-      `  ${order.postcode}`,
+      ...(order.method === "collect"
+        ? [`CLICK & COLLECT: keep it at the counter for`, `  ${order.name}`]
+        : [
+            `POST IT TO`,
+            `  ${order.name}`,
+            ...order.address.split("\n").map((l) => `  ${l}`),
+            `  ${order.postcode}`,
+          ]),
       ``,
       `Subtotal   ${formatPrice(order.subtotalP)}`,
-      `Delivery   ${formatPrice(order.deliveryP)}`,
+      `${order.method === "collect" ? "Collection" : "Delivery  "} ${formatPrice(order.deliveryP)}`,
       `Total      ${formatPrice(order.totalP)}`,
       ``,
       `Reference  ${order.reference}`,
@@ -116,7 +123,9 @@ export async function notifyShopOfOrder(order: Order): Promise<boolean> {
       `counted. Any line marked "not counted" has NOT moved, because nobody`,
       `has counted that size yet — check the rail before you post it.`,
       ``,
-      `Mark it posted on the shop's own page when it goes in the post.`,
+      order.method === "collect"
+        ? `Mark it posted on the shop's own page when it has been collected.`
+        : `Mark it posted on the shop's own page when it goes in the post.`,
     ].join("\n"),
   });
 }
@@ -135,18 +144,26 @@ export async function confirmOrderToCustomer(order: Order): Promise<boolean> {
       lineList(order).replace(/ {3}\*\* not counted.*$/gm, ""),
       ``,
       `Subtotal   ${formatPrice(order.subtotalP)}`,
-      `Delivery   ${formatPrice(order.deliveryP)}`,
+      `${order.method === "collect" ? "Collection" : "Delivery  "} ${formatPrice(order.deliveryP)}`,
       `Total      ${formatPrice(order.totalP)}`,
       ``,
-      `Going to`,
-      `  ${order.name}`,
-      ...order.address.split("\n").map((l) => `  ${l}`),
-      `  ${order.postcode}`,
+      ...(order.method === "collect"
+        ? [
+            `Collect it from`,
+            `  ${collectLine()}`,
+            `  Open ${openingPhrase()}. It is ready the same day during opening hours.`,
+          ]
+        : [
+            `Going to`,
+            `  ${order.name}`,
+            ...order.address.split("\n").map((l) => `  ${l}`),
+            `  ${order.postcode}`,
+          ]),
       ``,
       `Your reference is ${order.reference}. Please quote it if you get in touch.`,
       ``,
       `Everything in the shop is picked one piece at a time, so your order is`,
-      `packed by hand. It goes by Royal Mail.`,
+      order.method === "collect" ? `set aside by hand for you.` : `packed by hand. It goes by Royal Mail.`,
       ``,
       /* The 14-day cancellation right has to be given in a durable medium —
          an email the customer keeps — not only on a web page they visited

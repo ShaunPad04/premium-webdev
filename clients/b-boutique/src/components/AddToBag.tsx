@@ -121,8 +121,14 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
   /* Sold out only counts as sold out for a colour that has been chosen. With
      two colours and nothing picked, no size is out — it depends which one. */
   const sizeOut = (s: string) => colour !== null && stateOf(s, colour) === "out";
+  /* Every size of every colour gone: sold out whatever is picked, so say so
+     before a colour is chosen too (it used to wait for one). */
+  const everyOut =
+    colours.length > 0 &&
+    colours.every((c) => product.sizes.every((s) => stateOf(s, c) === "out"));
   const allOut =
-    colour !== null && product.sizes.every((s) => stateOf(s, colour) === "out");
+    everyOut ||
+    (colour !== null && product.sizes.every((s) => stateOf(s, colour) === "out"));
   const restockable =
     colour !== null &&
     product.sizes.some(
@@ -235,11 +241,6 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
               );
             })}
           </div>
-          {error ? (
-            <p className="cf-error" id={`${uid}-err`}>
-              {error}
-            </p>
-          ) : null}
         </fieldset>
       ) : (
         /* "One size" on its own answers nothing — one size to WHAT? The
@@ -257,6 +258,15 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
         </div>
       )}
 
+      {/* Once, under the choices, so "choose a colour" shows on a one-size
+          piece too (it lived inside the size list, which one-size pieces do
+          not have, and the button did nothing visible). */}
+      {error ? (
+        <p className="cf-error" id={`${uid}-err`} role="alert">
+          {error}
+        </p>
+      ) : null}
+
       {allOut ? (
         /* The address is not typed in here. It comes from `shop.ts`, the one
            place the shop's contact details live — a second copy is a second
@@ -264,7 +274,7 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
            2026-09-22: this said "call the shop on" in front of an email
            address, left over from when phone numbers came off the site. */
         <p className="atb-out" role="status">
-          Sold out{colourChoice ? ` in ${colour}` : ""}.{" "}
+          Sold out{colourChoice && colour !== null && !everyOut ? ` in ${colour}` : ""}.{" "}
           {restockable
             ? "This one can be re-ordered — email the shop at "
             : "Email the shop at "}

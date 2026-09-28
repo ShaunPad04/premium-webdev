@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/site";
 
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
@@ -10,12 +11,12 @@ import { ProductGrid } from "@/components/ProductGrid";
 import { Visit } from "@/components/Visit";
 import { clothingProducts } from "@/lib/pages";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
+  path: "/clothing",
   title: "Clothing",
   description:
-    "Coats, jackets, knitwear, trousers, tops, skirts, co-ords and dresses at B Boutique, 18 Sea View Street, Cleethorpes. Chosen a piece at a time, and available online or on the rail.",
-  alternates: { canonical: "/clothing" },
-};
+    "Womenswear from B Boutique, 18 Sea View Street, Cleethorpes: coats, knitwear, trousers, tops, co-ords and dresses. Buy online with UK delivery or in the shop.",
+});
 
 /* /clothing — what is on the rails.
  *
@@ -50,7 +51,7 @@ export default function ClothingPage() {
       <main id="main" className="flex-1">
 
         <ClothingShelf title="Clothing" current="all" count={items.length}>
-          <ProductGrid items={items} />
+          <ProductGrid items={items} lead={3} />
         </ClothingShelf>
 
         <Visit />

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta, siteDescription } from "@/lib/site";
 import { Nav } from "@/components/Nav";
 
 import { HeroCampaign } from "@/components/HeroCampaign";
@@ -16,7 +17,7 @@ import { ShortFaq } from "@/components/ShortFaq";
 import { MotionLayer } from "@/components/MotionLayer";
 
 /* Every other page names its own canonical; the home page did not. */
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+export const metadata: Metadata = pageMeta({ path: "/", description: siteDescription });
 
 /* The home page, cut from ~17 screens to about half that (2026-09-24, Brad,
  * after the homepage critique). It answered the same questions four or five

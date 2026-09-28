@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { MagneticButtons } from "@/components/MagneticButtons";
 import { PageTransition } from "@/components/PageTransition";
 import { AddedToast } from "@/components/AddedToast";
-import { Bodoni_Moda, Hanken_Grotesk } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
-import { directionsHref } from "@/lib/nav";
-import { hours, openingPhrase, shop } from "@/lib/shop";
-import { SITE_ORIGIN, jsonLd } from "@/lib/site";
+import { directionsHref, socials } from "@/lib/nav";
+import { hours, shop } from "@/lib/shop";
+import { formatPriceShort, isBuyable, products } from "@/lib/catalogue";
+import { SHARE_IMAGE, SITE_ORIGIN, absolute, jsonLd, siteDescription } from "@/lib/site";
 import "./globals.css";
 import "./type.css";
 
@@ -42,15 +43,9 @@ import "./type.css";
  * Since 2026-09-27 (Brad) Hanken is the only typeface and Bodoni is no
  * longer loaded; --font-display points at Hanken in type.css. */
 
-/* Bodoni Moda, for the hero's "B Boutique" and nothing else (Brad,
-   2026-09-27). One weight, upright only. */
-const heroName = Bodoni_Moda({
-  variable: "--font-hero-name",
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal"],
-  display: "swap",
-});
+/* The hero's "B Boutique" is Bodoni Moda (Brad, 2026-09-27), drawn as
+   outlines in HeroName.tsx since 2026-09-28 rather than loaded as a font:
+   one line did not justify a font file and a late swap on the LCP. */
 
 const body = Hanken_Grotesk({
   variable: "--font-body",
@@ -63,21 +58,14 @@ const body = Hanken_Grotesk({
    for a day after the client confirmed she opens seven days — sitting
    directly beside JSON-LD that correctly listed all seven. Every shared link
    and every search result carried the wrong one. */
-const description =
-  `An independent boutique on Sea View Street, Cleethorpes. Womenswear ` +
-  `and homeware, chosen one piece at a time. ` +
-  `Open ${openingPhrase()}.`;
+const description = siteDescription;
 
 /* Indexing is OFF until someone deliberately turns it on.
  *
- * This site is a concept build on a public production URL. It carries
- * twenty-six invented prices, FAQ answers still reading CLIENT TO CONFIRM,
- * and LocalBusiness structured data naming the real shop at its real address.
- * (The placeholder testimonials that used to head this list are gone — the
- * review rail was deleted on 2026-09-21. Nothing else on it has moved.)
- * Google cannot tell a demo from a shopfront: indexed, it would answer
- * "opening hours for B Boutique" with copy nobody has approved, and a wrong
- * answer attached to a real business is worse than no answer.
+ * Production sets ALLOW_INDEXING=true; previews do not, so a preview URL is
+ * never indexed beside the real domain. Google cannot tell a draft from a
+ * shopfront, and a wrong answer attached to a real business is worse than
+ * no answer.
  *
  * Default-deny rather than default-allow, because the failure modes are not
  * symmetric. Forgetting to switch this ON costs a redeploy. Forgetting to
@@ -134,8 +122,8 @@ export const metadata: Metadata = {
      site is already a deliberate link where one is wanted. */
   formatDetection: { address: false, telephone: false, email: false, date: false },
   title: {
-    default: "B Boutique — Womenswear & Homeware, Sea View Street, Cleethorpes",
-    template: "%s — B Boutique, Cleethorpes",
+    default: "B Boutique | Womenswear & Homeware in Cleethorpes",
+    template: "%s | B Boutique Cleethorpes",
   },
   description,
   /* Google Search Console's HTML-tag ownership check. The token is Search
@@ -145,20 +133,28 @@ export const metadata: Metadata = {
     : undefined,
   keywords: [
     "boutique Cleethorpes",
-    "womens clothing Cleethorpes",
+    "women's clothing Cleethorpes",
     "Sea View Street shops",
     "independent boutique North East Lincolnshire",
     "homeware Cleethorpes",
   ],
   openGraph: {
-    title: "B Boutique — Sea View Street, Cleethorpes",
+    title: "B Boutique | Womenswear & Homeware in Cleethorpes",
     description,
+    url: "/",
     type: "website",
     locale: "en_GB",
     siteName: "B Boutique",
+    images: [SHARE_IMAGE],
   },
+  twitter: { card: "summary_large_image", images: [SHARE_IMAGE.url] },
   robots,
 };
+
+function priceRange() {
+  const p = products.filter(isBuyable).map((x) => x.priceP);
+  return `${formatPriceShort(Math.min(...p))}–${formatPriceShort(Math.max(...p))}`;
+}
 
 /* Schema.org. For a shop people have to physically find, this is not
    decoration — it is what puts the hours and the pin in Google. */
@@ -166,8 +162,17 @@ function localBusinessSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "ClothingStore",
+    "@id": absolute("/#store"),
     name: shop.name,
+    alternateName: "B Boutique Cleethorpes",
+    url: absolute("/"),
     description,
+    image: [absolute(SHARE_IMAGE.url)],
+    logo: absolute("/apple-icon.png"),
+    email: shop.email || undefined,
+    sameAs: socials.map((s) => s.href),
+    /* Derived from the catalogue, so it follows the stock. */
+    priceRange: priceRange(),
     address: {
       "@type": "PostalAddress",
       streetAddress: shop.street,
@@ -206,7 +211,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-GB"
-      className={`${heroName.variable} ${body.variable} h-full antialiased`}
+      className={`${body.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bone text-onyx">
         {/* Every forward navigation lands at the top of the new page; back

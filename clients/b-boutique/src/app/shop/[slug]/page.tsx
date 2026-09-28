@@ -22,14 +22,14 @@ import {
   relatedTo,
 } from "@/lib/catalogue";
 import { owner, shop } from "@/lib/shop";
-import { productSchema } from "@/lib/product-schema";
-import { jsonLd } from "@/lib/site";
+import { breadcrumbSchema, productSchema } from "@/lib/product-schema";
+import { jsonLd, pageMeta } from "@/lib/site";
 import { Price } from "@/components/Price";
 import { GalleryThumbs } from "@/components/GalleryThumbs";
 import { PaymentMarks } from "@/components/PaymentMarks";
 import { clothingCards } from "@/lib/pages";
 
-/* Prerender every product. There are thirteen of them and they change when
+/* Prerender every product. There are forty-odd of them and they change when
    the code changes, so there is nothing to gain from rendering them on
    demand and a fast static page to gain from not doing so. */
 export function generateStaticParams() {
@@ -44,13 +44,17 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = productBySlug(slug);
   if (!product) return { title: "Not found" };
-  return {
-    title: product.name,
-    /* Deliberately does not put the price in the description. It is invented,
-       and a price in a search result outlives the page it came from. */
-    description: `${product.name} — ${product.category} at B Boutique, 18 Sea View Street, Cleethorpes.`,
-    alternates: { canonical: `/shop/${product.slug}` },
-  };
+  /* No price in the description: a price in a search result outlives the
+     page it came from. The template adds " | B Boutique Cleethorpes"; a long
+     name takes the shorter brand suffix so the title stays under 60. */
+  const title = product.name.length + 26 > 60 ? { absolute: `${product.name} | B Boutique` } : product.name;
+  const lead = product.short.replace(/\.?$/, ".");
+  return pageMeta({
+    path: `/shop/${product.slug}`,
+    title,
+    description: `${lead} ${product.category === "Homeware" ? "Homeware" : "Womenswear"} from B Boutique, Cleethorpes. UK delivery or collection.`,
+    image: { url: `/img/product/${product.photo}-1280.jpg`, alt: `${product.name} in ${product.colourways[0].colour}` },
+  });
 }
 
 export default async function ProductPage({
@@ -66,6 +70,11 @@ export default async function ProductPage({
   const cat = clothingCards.find((c) => c.name === product.category);
   const dept = cat ? { name: "Clothing", href: "/clothing" } : { name: "Homeware", href: "/homeware" };
   const was = isBuyable(product) ? wasPriceP(product.priceP, product.slug) : null;
+  const trail = [
+    { name: "Home", href: "/" },
+    dept,
+    ...(cat ? [{ name: cat.name, href: `/clothing/${cat.slug}` }] : []),
+  ];
 
   return (
     <>
@@ -74,6 +83,12 @@ export default async function ProductPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(productSchema(product)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(breadcrumbSchema([...trail, { name: product.name, href: `/shop/${product.slug}` }])),
+        }}
       />
       <MotionLayer />
       {/* The one route with no PageMasthead — it opens on the split layout,
@@ -97,9 +112,9 @@ export default async function ProductPage({
                   home, the department, the category, each a real page. */}
               <nav aria-label="Breadcrumb" className="pdp-crumbs">
                 <ol>
-                  <li><Link href="/">Home</Link></li>
-                  <li><Link href={dept.href}>{dept.name}</Link></li>
-                  {cat ? <li><Link href={`/clothing/${cat.slug}`}>{cat.name}</Link></li> : null}
+                  {trail.map((t) => (
+                    <li key={t.href}><Link href={t.href}>{t.name}</Link></li>
+                  ))}
                 </ol>
               </nav>
 

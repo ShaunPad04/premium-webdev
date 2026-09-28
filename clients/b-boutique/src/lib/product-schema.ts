@@ -1,5 +1,5 @@
 import type { Product } from "./catalogue";
-import { isBuyable } from "./catalogue";
+import { DELIVERY_P, FREE_DELIVERY_OVER_P, isBuyable } from "./catalogue";
 import { shop } from "./shop";
 import { absolute } from "./site";
 
@@ -66,6 +66,33 @@ function seller() {
  *  widest build is the one worth indexing. */
 const imageUrl = (photo: string) => absolute(`/img/product/${photo}-1280.jpg`);
 
+/** Delivery and returns as the policy pages state them (confirmed by her,
+ *  2026-09-20): Royal Mail within the UK, free from the threshold; 14 days to return by post, the customer paying return postage.
+ *  Built from the same constants the bag charges, so they cannot drift. */
+const pounds = (p: number) => (p / 100).toFixed(2);
+function shipping(priceP: number) {
+  return {
+    "@type": "OfferShippingDetails",
+    shippingRate: {
+      "@type": "MonetaryAmount",
+      value: priceP >= FREE_DELIVERY_OVER_P ? "0.00" : pounds(DELIVERY_P),
+      currency: "GBP",
+    },
+    shippingDestination: { "@type": "DefinedRegion", addressCountry: "GB" },
+    /* No deliveryTime: she confirmed posting the next business day, not how
+       long Royal Mail takes, and a transit time here would be a promise. */
+  };
+}
+const returnPolicy = {
+  "@type": "MerchantReturnPolicy",
+  applicableCountry: "GB",
+  returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+  merchantReturnDays: 14,
+  returnMethod: "https://schema.org/ReturnByMail",
+  returnFees: "https://schema.org/ReturnFeesCustomerResponsibility",
+  merchantReturnLink: absolute("/returns"),
+};
+
 function offer(product: Product) {
   return {
     "@type": "Offer",
@@ -76,6 +103,8 @@ function offer(product: Product) {
     price: (product.priceP / 100).toFixed(2),
     priceCurrency: "GBP",
     seller: seller(),
+    shippingDetails: shipping(product.priceP),
+    hasMerchantReturnPolicy: returnPolicy,
   };
 }
 
@@ -129,6 +158,22 @@ export function productSchema(product: Product) {
       ...(c.priceConfirmed && priced
         ? { offers: { ...offer(product), price: (c.priceP / 100).toFixed(2) } }
         : {}),
+    })),
+  };
+}
+
+/** The trail the product page shows, as a BreadcrumbList, so search results
+ *  can print "Clothing › Knitwear" instead of a bare URL. Same items as the
+ *  visible trail, plus the page itself as the last step. */
+export function breadcrumbSchema(items: { name: string; href: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.name,
+      item: absolute(it.href),
     })),
   };
 }

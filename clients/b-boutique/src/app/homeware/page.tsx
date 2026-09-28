@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/site";
 import Link from "next/link";
 
 import { Nav } from "@/components/Nav";
@@ -15,12 +16,12 @@ import { Arrow } from "@/components/Arrow";
 
 const homeware = categories.find((c) => c.slug === "homeware")!;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
+  path: "/homeware",
   title: "Homeware",
   description:
-    "Homeware at B Boutique, 18 Sea View Street, Cleethorpes — available online or in the shop.",
-  alternates: { canonical: "/homeware" },
-};
+    "Ceramic vases and jars from B Boutique, 18 Sea View Street, Cleethorpes. A few pieces online with UK delivery, and more on the shelves in the shop.",
+});
 
 /* /homeware — the category's own page, built 2026-09-22.
  *
@@ -32,8 +33,8 @@ export const metadata: Metadata = {
  * one had been left as an anchor.
  *
  * It lists what the catalogue holds in Homeware — the Tomato Vase, the Banana
- * Jar and the Bell Vase today — through the same ProductGrid the clothing
- * rails use, so prices, quick-add and the "Price to confirm" state all come
+ * Jar and the Bell Vase today — one feature row each (see below), with the
+ * shared Price component, so prices and the "Price to confirm" state come
  * from the one place. It is not under /clothing because a clothing page
  * listing ceramic vases is not a clothing page (see lib/pages.ts).
  *
@@ -67,7 +68,7 @@ export default function HomewarePage() {
                       one tab stop per piece, so it is hidden from the
                       keyboard and screen readers. */}
                   <Link href={`/shop/${p.slug}`} className="hwf-media" tabIndex={-1} aria-hidden="true">
-                    <ProductPhoto photo={p.photo} square alt="" sizes="(min-width: 900px) 45vw, 100vw" className="hwf-img" />
+                    <ProductPhoto photo={p.photo} square priority={i === 0} alt={`${p.name}, ${p.colourways[0].colour}`} sizes="(min-width: 900px) 45vw, 100vw" className="hwf-img" />
                   </Link>
                   <div className="hwf-text">
                     <p className="hwf-n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</p>
@@ -84,6 +85,10 @@ export default function HomewarePage() {
                   </div>
                 </article>
               ))
+            ) : null}
+            {items.length ? (
+              /* Brad, 2026-09-28: the online range is a sample of the shelves. */
+              <p className="hwf-more">A few pieces online, more on the shelves at {shop.street}.</p>
             ) : (
             <p className="page-body">
               No homeware online at the moment. Email{" "}

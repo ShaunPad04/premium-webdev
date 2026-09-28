@@ -30,8 +30,9 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = new URL('..', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('..', import.meta.url)); // not .pathname: that broke on Windows paths with spaces
 const SRC = join(ROOT, 'src');
 
 const read = (p) => (existsSync(join(ROOT, p)) ? readFileSync(join(ROOT, p), 'utf8') : '');
@@ -192,17 +193,18 @@ if (remote > 0) {
    a real business — the same regulations that cover a price, and arguably
    worse, because it pressures the purchase rather than merely describing it.
    So the site must not print a number until a person has counted it. */
-const variants = read('src/lib/variants.ts');
-const colourTable = variants.slice(
-  variants.indexOf('const colours'),
-  variants.indexOf('export function colourFor'),
-);
-const coloursSet = (colourTable.match(/"[a-z0-9-]+"\s*:/g) ?? []).length;
-const productCount = (read('src/lib/catalogue.ts').match(/priceP:\s*\d+/g) ?? []).length;
-if (coloursSet < productCount) {
+/* Colours live on each colourway in the stock list (variants.ts builds its
+   table from them). The old check parsed a colours table and a price pattern
+   that no longer exist, found 0 of 0, and so could never fire. */
+const stockSrc = read('src/lib/stocklist.ts');
+const colourValues = [...stockSrc.matchAll(/\bcolour:\s*"([^"]*)"/g)].map((m) => m[1]);
+const blankColours = colourValues.filter((c) => c.trim() === '').length;
+if (colourValues.length === 0 || blankColours > 0) {
   block(
-    `${productCount - coloursSet} of ${productCount} pieces have no confirmed colour`,
-    'src/lib/variants.ts — the colours table is keyed by slug and filled from what the client says, in her words. Do NOT read a colour off a photograph: the artwork is a generated stand-in, and this project has already had a "satin skirt" that was a matte brown pencil skirt.',
+    colourValues.length === 0
+      ? 'no colourways found in src/lib/stocklist.ts (the check could not read them)'
+      : `${blankColours} of ${colourValues.length} colourways have no confirmed colour`,
+    'src/lib/stocklist.ts — every colourway names its colour in her words. Do NOT read a colour off a photograph: this project has already had a "satin skirt" that was a matte brown pencil skirt.',
   );
 }
 

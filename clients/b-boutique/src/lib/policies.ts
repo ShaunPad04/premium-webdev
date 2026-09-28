@@ -1,4 +1,5 @@
-import { addressLines, shop } from "./shop";
+import { addressLines, openingPhrase, shop } from "./shop";
+import { DELIVERY_P, FREE_DELIVERY_OVER_P, formatPriceShort } from "./catalogue";
 
 /** Delivery and returns.
  *
@@ -117,8 +118,15 @@ const delivery: Policy = {
       heading: "What delivery costs",
       kind: "derived",
       body: [
-        "\u00a34.35 on any order, and free when you spend \u00a3120 or more.",
+        `${formatPriceShort(DELIVERY_P)} on any order, and free when you spend ${formatPriceShort(FREE_DELIVERY_OVER_P)} or more.`,
         "The charge is shown in your bag before you pay, so there is nothing added at the last step.",
+      ],
+    },
+    {
+      heading: "Click and collect",
+      kind: "derived",
+      body: [
+        `Rather collect it? Choose "Collect from ${shop.street}" at checkout and there is no delivery charge. Your order is ready the same day during opening hours: ${openingPhrase()}.`,
       ],
     },
     {
@@ -172,7 +180,7 @@ const returns: Policy = {
       kind: "statutory",
       body: [
         "Because you bought online rather than in the shop, you can cancel the order for any reason at all — you do not have to have a reason, and nothing needs to be wrong with it. The 14 days run from the day you receive the order, not the day you place it.",
-        "Tell us within those 14 days that you are cancelling. A phone call is enough. You then have a further 14 days from telling us to get the pieces back to us.",
+        `Tell us within those 14 days that you are cancelling. An email to ${shop.email} is enough. You then have a further 14 days from telling us to get the pieces back to us.`,
         "You are allowed to handle something the way you would in a shop — try a coat on, see how it hangs. If it comes back worn beyond that, we may reduce your refund to reflect the loss in value.",
       ],
       basis:
@@ -358,14 +366,15 @@ const privacy: Policy = {
     "Most of this page is not a promise — it is a description of what this website is made of, and each part names the file it was read out of so it can be checked rather than believed. Where the law gives you a right instead, the page says so.",
   blocks: [
     {
-      heading: "This site sets no cookies and does not track you",
+      heading: "No cookies for shoppers, and no tracking",
       kind: "technical",
       body: [
-        "There is no analytics, no advertising pixel, no tracking script and no cookie banner, because there is nothing to consent to. We do not know who you are, where you came from, or which pages you looked at.",
+        "Browsing and buying set no cookies. There is no analytics, no advertising pixel, no tracking script and no cookie banner, because there is nothing to consent to. We do not know who you are, where you came from, or which pages you looked at.",
+        "The one cookie this site can set is for the shop's own staff: signing in to the private stock page stores a sign-in cookie, sent only to that page. It is strictly necessary for that sign-in, and no customer ever receives it.",
         "This is not a promise about the future — it is a statement about what the site is made of today, and it was checked against the code rather than assumed.",
       ],
       basis:
-        "Verified by searching the whole of src/ for cookie, analytics, gtag, googletagmanager, plausible and fbq. No match.",
+        "Verified by searching the whole of src/ for cookie, analytics, gtag, googletagmanager, plausible and fbq. The only cookie is the staff sign-in in src/lib/stock-auth.ts, set on the /stock path alone.",
       basisLabel: "How we know",
     },
     {
@@ -394,7 +403,7 @@ const privacy: Policy = {
       kind: "technical",
       body: [
         "What you put in your bag is saved on your own device and is not sent to us. Clear your browser data and it is gone; use a different phone and it was never there.",
-        "It only leaves your device when you press Checkout, and then as the list of pieces and sizes together with the delivery details you have just typed, so the order can be priced and posted.",
+        "It only leaves your device when you press Secure checkout, and then as the list of pieces and sizes together with the delivery details you have just typed, so the order can be priced and posted.",
         /* The delivery details are deliberately NOT saved beside the bag —
            see the note in Bag.tsx. A list of garments surviving on a shared
            or family computer is one thing; somebody's home address is

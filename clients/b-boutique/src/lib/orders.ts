@@ -89,8 +89,12 @@ export type OrderLine = {
 
 export type OrderStatus = "pending" | "paid" | "failed" | "released";
 
+/** Posted by Royal Mail, or collected from the shop. */
+export type DeliveryMethod = "post" | "collect";
+
 export type Order = {
   reference: string;
+  method: DeliveryMethod;
   status: OrderStatus;
   name: string;
   email: string;
@@ -129,6 +133,9 @@ const SCHEMA = [
      INSERT failing on a missing column. Default '' so older rows read as
      "not given", which is what they are. */
   `ALTER TABLE orders ADD COLUMN IF NOT EXISTS phone TEXT NOT NULL DEFAULT ''`,
+  /* Added 2026-09-28 with click & collect, the same way: every older row
+     was posted. */
+  `ALTER TABLE orders ADD COLUMN IF NOT EXISTS method TEXT NOT NULL DEFAULT 'post'`,
   /* She reads this newest first, filtered to what still needs doing. */
   `CREATE INDEX IF NOT EXISTS orders_status_created ON orders (status, created_at DESC)`,
 ];
@@ -155,6 +162,7 @@ export async function ensureOrderSchema(): Promise<boolean> {
 function rowToOrder(r: Record<string, unknown>): Order {
   return {
     reference: String(r.reference),
+    method: r.method === "collect" ? "collect" : "post",
     status: String(r.status) as OrderStatus,
     name: String(r.name),
     email: String(r.email),
@@ -194,6 +202,7 @@ export type CustomerDetails = {
  *  checkout if the shelf has emptied underneath it. */
 export async function createPendingOrder(input: {
   reference: string;
+  method: DeliveryMethod;
   customer: CustomerDetails;
   lines: Omit<OrderLine, "reserved">[];
   subtotalP: number;
@@ -228,7 +237,7 @@ export async function createPendingOrder(input: {
     /* Never counted, so there is no row and nothing to hold. Recorded as
        unreserved rather than refused — the same position the checkout's own
        stock check already takes on an uncounted line. */
-    if (result.code === "unknown_variant" || result.code === "not_configured") {
+    if (result.code === "uncounted" || result.code === "unknown_variant" || result.code === "not_configured") {
       held.push({ ...line, reserved: false });
       continue;
     }
@@ -241,9 +250,9 @@ export async function createPendingOrder(input: {
   }
 
   const rows = (await q`
-    INSERT INTO orders (reference, name, email, address, postcode, phone,
+    INSERT INTO orders (reference, method, name, email, address, postcode, phone,
                         lines, subtotal_p, delivery_p, total_p)
-    VALUES (${input.reference}, ${input.customer.name}, ${input.customer.email},
+    VALUES (${input.reference}, ${input.method}, ${input.customer.name}, ${input.customer.email},
             ${input.customer.address}, ${input.customer.postcode},
             ${input.customer.phone},
             ${JSON.stringify(held)}::jsonb,

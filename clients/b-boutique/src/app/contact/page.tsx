@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { pageMeta } from "@/lib/site";
 
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
@@ -10,15 +12,15 @@ import { socials } from "@/lib/nav";
 
 const instagram = socials.find((x) => x.name === "Instagram");
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
+  path: "/contact",
   title: "Contact",
   description:
     /* Derived, for the same reason as the site description: this said
        "open Tuesday to Sunday" while the shop opened seven days. It also said
        "Call" long after phone numbers came off the site. */
-    `Email B Boutique or send a message. ${addressLines.join(", ")} — open ${openingPhrase()}.`,
-  alternates: { canonical: "/contact" },
-};
+    `Email B Boutique or send a message. ${addressLines.join(", ")}, open ${openingPhrase()}.`,
+});
 
 /* /contact — 2026-09-27, Brad picked A "Split panel" of three directions (B
  * three framed cards, C the email address set huge), after 21st.dev "Contact
@@ -72,7 +74,7 @@ export default function ContactPage() {
             <ContactForm />
             <p className="ct-small">
               We reply to the address you give and nothing else. Your details are used to answer you and are not added
-              to a mailing list.
+              to a mailing list. See our <Link href="/privacy">privacy notice</Link>.
             </p>
           </div>
         </section>

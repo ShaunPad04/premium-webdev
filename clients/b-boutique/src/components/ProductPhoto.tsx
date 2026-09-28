@@ -36,7 +36,7 @@
 /** The widths scripts/build-product.mjs emits. Kept in step with it by hand;
  *  there are two of them and a build step that generated this file would be
  *  more machinery than the problem deserves. */
-const WIDTHS = [640, 960, 1280] as const;
+const WIDTHS = [400, 640, 960, 1280] as const;
 
 const set = (photo: string, ext: string) =>
   WIDTHS.map((w) => `/img/product/${photo}-${w}.${ext} ${w}w`).join(", ");

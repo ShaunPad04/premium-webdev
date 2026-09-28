@@ -22,11 +22,15 @@ const SIZES = "(min-width: 1024px) 448px, 60vw";
 export function NewInSlides() {
   const slides: ProductSlide[] = newIn.map((piece) => {
     const stock = stocklist.find((p) => p.slug === piece.slug);
+    const altFor = (img: string) => {
+      const c = stock?.colourways.find((w) => w.image === img)?.colour;
+      return c ? `${piece.name} in ${c}` : piece.name;
+    };
     const photo = (name: string, sizes = SIZES) => (
       <ProductPhoto
         photo={name}
         square={piece.category === "Homeware"}
-        alt=""
+        alt={altFor(name)}
         sizes={sizes}
         className="absolute inset-0 h-full w-full object-cover"
       />

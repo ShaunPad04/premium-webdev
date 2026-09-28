@@ -153,6 +153,14 @@ for (const name of slides) {
     small.clone().webp({ quality: 74 }).toFile(`public/img/hero/${name}-s.webp`),
   ]);
 
+  /* A 720 step (2026-09-28): a 412px phone at 1.75x needs ~721px, and got
+     the 900. Same encoder settings as the 900. */
+  const s720 = sharp(port).resize({ width: 720, withoutEnlargement: true });
+  await Promise.all([
+    s720.clone().avif({ quality: 46, effort: 6 }).toFile(`public/img/hero/${name}-s720.avif`),
+    s720.clone().webp({ quality: 74 }).toFile(`public/img/hero/${name}-s720.webp`),
+  ]);
+
   /* A 1200 phone step (2026-09-23): with a 4K source the 1536 phone file
      is ~460 KB, and a DPR 2.6-3 phone (1071-1170 device px) was being sent
      it. 1200 at q46 covers those screens at a fraction of the weight. */

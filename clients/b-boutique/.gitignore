@@ -46,3 +46,6 @@ next-env.d.ts
 .lighthouse/
 test-results/
 playwright-report/
+
+# QA screenshots (2026-09-28): local review set, not shipped
+/qa-screenshots/

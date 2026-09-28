@@ -48,7 +48,7 @@ export function Bag() {
      the + here stops where the product page's does. One request per piece;
      a failed one leaves the bag's own cap, and checkout checks again. */
   const [limits, setLimits] = useState<Record<string, number>>({});
-  const { lines, count, subtotalP, deliveryP, totalP, setQty, remove } =
+  const { lines, count, subtotalP, deliveryP: postP, setQty, remove } =
     useCart();
   const slugsKey = [...new Set(lines.map((l) => l.slug))].sort().join(",");
   useEffect(() => {
@@ -73,6 +73,10 @@ export function Bag() {
      it in the browser of a shared or family computer is a different kind of
      thing entirely. It lives for one checkout and goes when the tab does. */
   const [details, setDetails] = useState<Details>(EMPTY_DETAILS);
+  /* Click & collect costs nothing; the server prices it the same way. */
+  const collect = details.method === "collect";
+  const deliveryP = collect ? 0 : postP;
+  const totalP = subtotalP + deliveryP;
 
   /* Lines on their way out.
    *
@@ -233,11 +237,12 @@ export function Bag() {
             colour: l.colour,
             qty: l.qty,
           })),
+          method: details.method,
           customer: {
             name: details.name.trim(),
             email: details.email.trim(),
-            address: fullAddress(details),
-            postcode: details.postcode.trim(),
+            address: collect ? "" : fullAddress(details),
+            postcode: collect ? "" : details.postcode.trim(),
             phone: details.phone.trim(),
           },
         }),
@@ -401,7 +406,7 @@ export function Bag() {
             <h2 id="bk-delivery" className="bk-card-h">
               <span className="bk-num">02</span>Delivery details
             </h2>
-            <p className="bk-lede">We post within the UK only, by Royal Mail, next business day.</p>
+            <p className="bk-lede">Posted by Royal Mail within the UK, or collected from the shop.</p>
             <DeliveryDetails
               value={details}
               onChange={(next) => {
@@ -426,7 +431,7 @@ export function Bag() {
               <dd><span key={subtotalP} className="bk-roll">{formatPrice(subtotalP)}</span></dd>
             </div>
             <div>
-              <dt>Delivery</dt>
+              <dt>{collect ? "Collection" : "Delivery"}</dt>
               <dd><span key={deliveryP} className="bk-roll">{deliveryP === 0 ? "Free" : formatPrice(deliveryP)}</span></dd>
             </div>
             {savingsP > 0 ? (
@@ -452,7 +457,7 @@ export function Bag() {
 
           {/* How far off free delivery: information that might change what
               somebody does next, so above the button. */}
-          <FreeDelivery subtotalP={subtotalP} />
+          {collect ? null : <FreeDelivery subtotalP={subtotalP} />}
 
           <button ref={payRef} type="button" className="bk-pay" onClick={checkout} disabled={busy} aria-busy={busy || undefined}>
             {busy ? (
@@ -483,7 +488,7 @@ export function Bag() {
               hosted page (lib/sumup.ts), never on this site. */}
           <ul className="bk-trust">
             <li>Payment is taken on SumUp&rsquo;s secure page. Your card details never reach this site.</li>
-            <li>Royal Mail, next business day. Free over {formatPriceShort(FREE_DELIVERY_OVER_P)}.</li>
+            <li>Royal Mail, next business day. Free over {formatPriceShort(FREE_DELIVERY_OVER_P)}, or collect free from the shop.</li>
             <li>14 days to change your mind.</li>
           </ul>
 
@@ -494,10 +499,10 @@ export function Bag() {
           <p className="bag-legal">
             B Boutique is not VAT registered, so there is no VAT to add. Before
             you buy, please read our{" "}
-            <Link href="/delivery" className="bag-legal-link">delivery</Link>{" "}
-            and{" "}
-            <Link href="/returns" className="bag-legal-link">returns</Link>{" "}
-            terms.
+            <Link href="/delivery" className="bag-legal-link">delivery</Link>,{" "}
+            <Link href="/returns" className="bag-legal-link">returns</Link> and{" "}
+            <Link href="/terms" className="bag-legal-link">terms of sale</Link>, and how we use your details in our{" "}
+            <Link href="/privacy" className="bag-legal-link">privacy notice</Link>.
           </p>
         </aside>
       </div>

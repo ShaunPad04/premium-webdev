@@ -4,7 +4,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { ClearBag } from "@/components/ClearBag";
 import { checkoutStatusByReference, sumupIsConfigured } from "@/lib/sumup";
-import { markPaid, releaseOrder } from "@/lib/orders";
+import { markPaid, orderByReference, releaseOrder } from "@/lib/orders";
 import { confirmOrderToCustomer, notifyShopOfOrder } from "@/lib/mail";
 import { ResultCard } from "@/components/CheckoutResult";
 
@@ -103,13 +103,20 @@ export default async function CheckoutSuccessPage({
      neither is the third case, handled by the else branches below. */
   const refused = status === "FAILED" || status === "EXPIRED";
 
+  /* Click & collect orders get the shop's address instead of "we will be in
+     touch about getting it to you". A lookup that fails says the posted
+     version, which is still true of every order in spirit. */
+  const collect = paid && ref
+    ? (await orderByReference(ref).catch(() => null))?.method === "collect"
+    : false;
+
   return (
     <>
       <Nav solid />
       {/* Only on a confirmed payment. */}
       {paid ? <ClearBag /> : null}
       <main id="main" className="flex-1">
-        <ResultCard state={paid ? "paid" : refused ? "refused" : "unknown"} reference={ref} configured={configured} />
+        <ResultCard state={paid ? "paid" : refused ? "refused" : "unknown"} reference={ref} configured={configured} collect={collect} />
       </main>
       <Footer />
     </>

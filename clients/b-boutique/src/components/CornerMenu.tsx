@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { createPortal } from "react-dom";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
@@ -27,6 +27,8 @@ const CornerMenuPanel = dynamic(() => import("./ui/immersive-full-screen-nav"), 
    over the photograph, near-black once scrolled — so it no longer needs to
    know which. The `scrolled` prop it used to take was only ever there to flip
    the chip between bone and onyx, and the chip is gone. */
+const noSubscribe = () => () => {};
+
 export function CornerMenu() {
   const [open, setOpen] = useState(false);
   /* The overlay is portalled to <body>, and a portal needs a DOM target that
@@ -34,8 +36,7 @@ export function CornerMenu() {
      server sends no panel markup at all, which is correct: a closed dialog
      has nothing to say to a crawler, and every link in it is already in the
      footer. */
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useSyncExternalStore(noSubscribe, () => true, () => false);
   const [armed, setArmed] = useState(false);
   const arm = useCallback(() => setArmed(true), []);
   useEffect(() => {

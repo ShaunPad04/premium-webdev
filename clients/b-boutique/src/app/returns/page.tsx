@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/site";
 
 import { PolicyPage } from "@/components/PolicyPage";
 import { policyBySlug } from "@/lib/policies";
 
 const policy = policyBySlug("returns")!;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
+  path: "/returns",
   title: "Returns",
   description:
     "Changing your mind, faulty pieces, and the 14-day cancellation right you have when you buy online from B Boutique, Cleethorpes.",
-  alternates: { canonical: "/returns" },
-};
+});
 
 /* /returns — the other required page, and the more dangerous of the two.
  * A returns window published here is enforceable against the shop, so the

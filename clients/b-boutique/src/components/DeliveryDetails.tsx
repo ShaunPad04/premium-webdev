@@ -2,6 +2,9 @@
 
 import { useId } from "react";
 
+import { DELIVERY_P, FREE_DELIVERY_OVER_P, formatPriceShort } from "@/lib/catalogue";
+import { openingPhrase, shop } from "@/lib/shop";
+
 /* Where the parcel goes.
  *
  * ── Why this did not exist until now ─────────────────────────────────────
@@ -40,7 +43,11 @@ import { useId } from "react";
  * number with a digit missing, which is the typo that actually happens.
  */
 
+/** Posted, or collected from the shop (click & collect, 2026-09-28). */
+export type Method = "post" | "collect";
+
 export type Details = {
+  method: Method;
   name: string;
   email: string;
   /** House number and street. */
@@ -54,6 +61,7 @@ export type Details = {
 };
 
 export const EMPTY_DETAILS: Details = {
+  method: "post",
   name: "",
   email: "",
   line1: "",
@@ -78,9 +86,16 @@ export type DetailsField = "name" | "email" | "line1" | "town" | "postcode" | "p
 
 /** The first field that is wrong, and what to say about it. */
 export function firstProblem(d: Details): { field: DetailsField; message: string } | null {
-  if (d.name.trim().length < 2) return { field: "name", message: "Please give the name the parcel goes to." };
+  const collect = d.method === "collect";
+  if (d.name.trim().length < 2)
+    return { field: "name", message: collect ? "Please give the name the order is for." : "Please give the name the parcel goes to." };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email.trim()))
     return { field: "email", message: "Please give an email address we can send the confirmation to." };
+  /* Collecting: no address to check, and none is sent. */
+  if (collect) {
+    const phone = phoneProblem(d.phone);
+    return phone ? { field: "phone", message: phone } : null;
+  }
   if (d.line1.trim().length < 3)
     return { field: "line1", message: "Please give the house number and street." };
   if (d.town.trim().length < 2) return { field: "town", message: "Please give the town or city." };
@@ -174,23 +189,57 @@ export function DeliveryDetails({
     );
   };
 
+  const collect = value.method === "collect";
+  const option = (m: Method, title: string, detail: string) => (
+    <label className="dd-opt" data-on={value.method === m ? "" : undefined}>
+      <input
+        type="radio"
+        name={`${uid}-method`}
+        value={m}
+        checked={value.method === m}
+        onChange={() => onChange({ ...value, method: m })}
+        disabled={disabled}
+      />
+      <span className="dd-opt-text">
+        <span className="dd-opt-title">{title}</span>
+        <span className="dd-opt-detail">{detail}</span>
+      </span>
+    </label>
+  );
+
   return (
     <div className="dd">
-      <h2 className="dd-heading">Where is it going?</h2>
-      {/* Said once, plainly, before the fields rather than after them. UK
-          delivery only is the client's own confirmed term and a customer who
-          reads it here does not get as far as typing a Dublin address. */}
-      <p className="dd-note">
-        We post within the UK only, by Royal Mail, next business day.
-      </p>
+      {/* Click & collect (Brad, 2026-09-28). UK-only posting is said in the
+          first option, before any address is typed. */}
+      <fieldset className="dd-method">
+        <legend className="cf-label">How would you like it?</legend>
+        {option(
+          "post",
+          "Royal Mail, next business day",
+          `${formatPriceShort(DELIVERY_P)}, free over ${formatPriceShort(FREE_DELIVERY_OVER_P)}. UK addresses only.`,
+        )}
+        {option(
+          "collect",
+          `Collect from ${shop.street}, ${shop.town}`,
+          "Free, ready the same day during opening hours.",
+        )}
+      </fieldset>
 
       {row("name", "Name", { autoComplete: "name", maxLength: 100 })}
       {row("email", "Email", { type: "email", inputMode: "email", autoComplete: "email", maxLength: 200 },
         "For your order confirmation. Nothing else is sent to it.")}
-      {row("line1", "Address line 1", { autoComplete: "address-line1", maxLength: 200, placeholder: "House number and street" }, undefined, "dd-wide")}
-      {row("line2", "Address line 2 (optional)", { autoComplete: "address-line2", maxLength: 200, placeholder: "Flat, building or area" }, undefined, undefined, false)}
-      {row("town", "Town or city", { autoComplete: "address-level2", maxLength: 100 })}
-      {row("postcode", "Postcode", { autoComplete: "postal-code", maxLength: 12 })}
+      {collect ? (
+        <p className="dd-collect dd-wide">
+          Collect from {shop.street}, {shop.town} {shop.postcode}. Open {openingPhrase()}.
+        </p>
+      ) : (
+        <>
+          {row("line1", "Address line 1", { autoComplete: "address-line1", maxLength: 200, placeholder: "House number and street" }, undefined, "dd-wide")}
+          {row("line2", "Address line 2 (optional)", { autoComplete: "address-line2", maxLength: 200, placeholder: "Flat, building or area" }, undefined, undefined, false)}
+          {row("town", "Town or city", { autoComplete: "address-level2", maxLength: 100 })}
+          {row("postcode", "Postcode", { autoComplete: "postal-code", maxLength: 12 })}
+        </>
+      )}
       {/* "(optional)" is in the label itself: a screen reader announces the
           label, and nothing else on this form marks required-ness. */}
       {row("phone", "Phone (optional)", { type: "tel", inputMode: "tel", autoComplete: "tel", maxLength: 20 },

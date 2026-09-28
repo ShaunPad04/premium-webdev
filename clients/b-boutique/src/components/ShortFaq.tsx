@@ -5,6 +5,7 @@ import { faq } from "@/lib/faq";
 import { policyBySlug } from "@/lib/policies";
 import { shop } from "@/lib/shop";
 import { sizeSummary } from "@/lib/stocklist";
+import { jsonLd } from "@/lib/site";
 
 /* A short FAQ above the footer (2026-09-25, Brad, after the Radian theme's:
  * centred "Need help?" and three questions in hairline rows with a plus).
@@ -53,6 +54,24 @@ export function ShortFaq({ all = false }: { all?: boolean }) {
     <section id={all ? "faq" : undefined} className="sfq" aria-labelledby="sfq-h">
       <p className="sfq-eyebrow">Need help?</p>
       <h2 id="sfq-h" className="sfq-title">Frequently asked questions</h2>
+      {/* The same questions as structured data, once (home page only), so
+          search and AI answers can quote them word for word. */}
+      {all ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: jsonLd({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: items.map((it) => ({
+                "@type": "Question",
+                name: it.q,
+                acceptedAnswer: { "@type": "Answer", text: it.a },
+              })),
+            }),
+          }}
+        />
+      ) : null}
       <div className="sfq-list">
         {items.map((it) => (
           <FaqItem key={it.q} q={it.q} a={it.a} />

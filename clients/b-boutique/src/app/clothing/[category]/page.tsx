@@ -13,6 +13,7 @@ import { Visit } from "@/components/Visit";
 import { productsIn } from "@/lib/catalogue";
 import { clothingCards, RETIRED_CATEGORIES } from "@/lib/pages";
 import { shop } from "@/lib/shop";
+import { pageMeta } from "@/lib/site";
 
 /* /clothing/[category] — one rail.
  *
@@ -40,11 +41,11 @@ export async function generateMetadata({
   const { category } = await params;
   const card = cardFor(category);
   if (!card) return { title: "Not found" };
-  return {
-    title: card.name,
-    description: `${card.name} at B Boutique, 18 Sea View Street, Cleethorpes. ${card.note}`,
-    alternates: { canonical: `/clothing/${card.slug}` },
-  };
+  return pageMeta({
+    path: `/clothing/${card.slug}`,
+    title: `${card.name} for women`,
+    description: `${card.name} at B Boutique, 18 Sea View Street, Cleethorpes. ${card.note} Buy online with UK delivery or in the shop.`,
+  });
 }
 
 export default async function CategoryPage({
@@ -85,7 +86,7 @@ export default async function CategoryPage({
             coat first. */}
         <ClothingShelf title={card.name} current={card.slug} count={items.length}>
           {items.length ? (
-            <ProductGrid items={items} />
+            <ProductGrid items={items} lead={3} />
           ) : (
             /* An honest empty state rather than a page that looks broken,
                and never a 404 — the client asked for exactly this: "worst

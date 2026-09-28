@@ -73,8 +73,8 @@ export function OwnerCard() {
                  it fills exactly and her face cannot be re-cropped by a
                  later change to the CSS. */
               <picture>
-                <source type="image/avif" srcSet={`/img/owner/${owner.portrait}.avif`} />
-                <source type="image/webp" srcSet={`/img/owner/${owner.portrait}.webp`} />
+                <source type="image/avif" srcSet={`/img/owner/${owner.portrait}-640.avif 640w, /img/owner/${owner.portrait}.avif 1120w`} sizes="(min-width: 768px) 420px, 92vw" />
+                <source type="image/webp" srcSet={`/img/owner/${owner.portrait}-640.webp 640w, /img/owner/${owner.portrait}.webp 1120w`} sizes="(min-width: 768px) 420px, 92vw" />
                 <img
                   src={`/img/owner/${owner.portrait}.jpg`}
                   /* Names her and her role. It does not describe her
@@ -119,7 +119,7 @@ export function OwnerCard() {
             <div className="owner-details">
               <Link
                 href="/contact"
-                aria-label={`Contact ${fullName}`}
+                aria-label={`Get in touch with ${fullName}`}
                 className="owner-cta"
               >
                 <span className="owner-cta-ring">

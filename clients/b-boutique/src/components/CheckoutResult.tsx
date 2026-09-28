@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { shop } from "@/lib/shop";
+import { openingPhrase, shop } from "@/lib/shop";
 
 export type CheckoutState = "paid" | "refused" | "unknown";
 
@@ -8,7 +8,17 @@ export type CheckoutState = "paid" | "refused" | "unknown";
    page decides the state (it asks SumUp; it never trusts the URL); this only
    says it. Nothing here shows an amount or a barcode: the page knows the
    reference and the status, and says nothing it cannot back. */
-export function checkoutCopy(state: CheckoutState, configured: boolean) {
+export function checkoutCopy(state: CheckoutState, configured: boolean, collect = false) {
+  /* Click & collect (2026-09-28): the same card, saying where to come. */
+  if (state === "paid" && collect)
+    return {
+      title: "Thank you.",
+      lede: `Your payment has gone through. Your order is set aside for you at ${shop.street}, ${shop.town}, ready the same day during opening hours.`,
+      status: "Paid, to collect",
+      nextH: "Collecting it",
+      next: `Come to ${shop.street}, ${shop.town} ${shop.postcode}, open ${openingPhrase()}, and give your name or the reference below. If anything in your order has gone since you added it, we will refund it straight away and get in touch, rather than substitute it.`,
+      cta: { href: "/clothing", label: "Back to the shop" },
+    };
   if (state === "paid")
     return {
       title: "Thank you.",
@@ -57,8 +67,8 @@ const Email = ({ reference }: { reference?: string }) => (
 
 /* The result page, after 21st.dev "Order Confirmation Card" (kavikatiyar):
    Brad's pick of three on 2026-09-27 (B a ticket, C an alert box). */
-export function ResultCard({ state, reference, configured }: { state: CheckoutState; reference?: string; configured: boolean }) {
-  const c = checkoutCopy(state, configured);
+export function ResultCard({ state, reference, configured, collect = false }: { state: CheckoutState; reference?: string; configured: boolean; collect?: boolean }) {
+  const c = checkoutCopy(state, configured, collect);
   return (
     <div className="cr-a">
       <div className="cr-a-card" data-state={state} aria-live="polite">
@@ -68,6 +78,9 @@ export function ResultCard({ state, reference, configured }: { state: CheckoutSt
         <dl className="cr-a-rows">
           {reference ? <div><dt>Reference</dt><dd className="cr-mono">{reference}</dd></div> : null}
           <div><dt>Status</dt><dd>{c.status}</dd></div>
+          {state === "paid" && collect ? (
+            <div><dt>Collect from</dt><dd>{shop.street}, {shop.town} {shop.postcode}</dd></div>
+          ) : null}
           <div><dt>Questions</dt><dd><a href={`mailto:${shop.email}`}>Email the shop</a></dd></div>
         </dl>
         <Link href={c.cta.href} className="cr-btn cr-btn--full">{c.cta.label}</Link>

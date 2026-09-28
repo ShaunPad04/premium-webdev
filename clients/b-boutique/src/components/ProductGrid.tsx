@@ -41,8 +41,13 @@ import { Price } from "@/components/Price";
 export function ProductGrid({
   items,
   morph = true,
+  lead = 0,
 }: {
   items: Product[];
+  /* How many cards from the top load at once, at high priority (2026-09-28):
+     on /clothing the first row IS the page's largest paint, and lazy-loading
+     it made the browser find it late. Zero where the grid is below the fold. */
+  lead?: number;
   /* Whether these cards take part in the grid → product morph.
    *
    * ── Why this is a prop and not just always on ───────────────────────────
@@ -79,10 +84,11 @@ export function ProductGrid({
               <ProductPhoto
                 photo={p.photo}
                 square={square}
-                /* Decorative: the name is in real text directly beneath, so
-                   alt text here would be announced twice and the data holds
-                   nothing more useful to say without inventing it. */
-                alt=""
+                /* Name and colour, straight from the stock list (Brad,
+                   2026-09-28: alt from product data on every product image).
+                   The hover photo below stays alt="": it repeats this one. */
+                alt={`${p.name} in ${p.colourways[0].colour}`}
+                priority={i < lead}
                 sizes={sizes}
                 className="prod-photo absolute inset-0 h-full w-full object-cover"
               />
