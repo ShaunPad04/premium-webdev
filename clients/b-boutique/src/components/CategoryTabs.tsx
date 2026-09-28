@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { featured } from "@/lib/shop";
 
@@ -31,6 +31,16 @@ const Arrow = () => (
 
 export function CategoryTabs() {
   const [on, setOn] = useState(0);
+  /* The four photographs are requested once the page is interactive
+     (2026-09-28): the row sits just below the hero, inside Chrome's own
+     lazy-load distance, so "loading=lazy" still fetched ~120 KB of them
+     while a phone was painting the hero. Nobody reaches the row before
+     hydration; until then each card shows its own dark ground. */
+  const [pics, setPics] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setPics(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
   /* A tap fires pointerenter just before click, which would open the panel
      and then follow the link in one go. Hover opens for a mouse only; a
      touch or pen press is remembered so its click can open instead. Focus
@@ -56,11 +66,13 @@ export function CategoryTabs() {
                   if (touch.current && i !== on && desk()) { e.preventDefault(); setOn(i); }
                 }}
               >
-                <picture className="ctab-pic">
-                  <source type="image/avif" srcSet={`/img/cat/${c.slug}-p800.avif 800w, /img/cat/${c.slug}-p1200.avif 1200w`} sizes="(min-width: 1024px) 60vw, 100vw" />
-                  <source type="image/webp" srcSet={`/img/cat/${c.slug}-p800.webp 800w, /img/cat/${c.slug}-p1200.webp 1200w`} sizes="(min-width: 1024px) 60vw, 100vw" />
-                  <img src={`/img/cat/${c.slug}-p800.webp`} alt="" loading="lazy" decoding="async" draggable={false} />
-                </picture>
+                {pics ? (
+                  <picture className="ctab-pic">
+                    <source type="image/avif" srcSet={`/img/cat/${c.slug}-p800.avif 800w, /img/cat/${c.slug}-p1200.avif 1200w`} sizes="(min-width: 1024px) 60vw, 100vw" />
+                    <source type="image/webp" srcSet={`/img/cat/${c.slug}-p800.webp 800w, /img/cat/${c.slug}-p1200.webp 1200w`} sizes="(min-width: 1024px) 60vw, 100vw" />
+                    <img src={`/img/cat/${c.slug}-p800.webp`} alt="" loading="lazy" decoding="async" draggable={false} />
+                  </picture>
+                ) : null}
                 {/* The link's name: every visible label below is a decorative
                     copy that some screen size hides. */}
                 <span className="sr-only">{c.name}</span>

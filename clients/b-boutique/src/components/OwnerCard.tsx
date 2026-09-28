@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { AfterPaint } from "./AfterPaint";
+
 import { owner, ownerPending, shop } from "@/lib/shop";
 
 /* Hayley Brown, Shop Owner.
@@ -72,26 +74,28 @@ export function OwnerCard() {
                  cropped to this frame's 3:4 by scripts/build-owner.mjs, so
                  it fills exactly and her face cannot be re-cropped by a
                  later change to the CSS. */
-              <picture>
-                <source type="image/avif" srcSet={`/img/owner/${owner.portrait}-640.avif 640w, /img/owner/${owner.portrait}.avif 1120w`} sizes="(min-width: 768px) 420px, 92vw" />
-                <source type="image/webp" srcSet={`/img/owner/${owner.portrait}-640.webp 640w, /img/owner/${owner.portrait}.webp 1120w`} sizes="(min-width: 768px) 420px, 92vw" />
-                <img
-                  src={`/img/owner/${owner.portrait}.jpg`}
-                  /* Names her and her role. It does not describe her
-                     appearance, her age or her clothes — none of that is the
-                     information a reader needs here, and a photograph of a
-                     real person is not a place to narrate. */
-                  alt={`${fullName}, ${owner.role.toLowerCase()} of ${shop.name}`}
-                  width={487}
-                  height={649}
-                  /* Lazy: she is seven sections down. Eager, this 83KB
-                     portrait went out alongside the hero and delayed the
-                     hero title (the page's LCP) on a phone. */
-                  loading="lazy"
-                  decoding="async"
-                  className="owner-img"
-                />
-              </picture>
+              <AfterPaint>
+                <picture>
+                  <source type="image/avif" srcSet={`/img/owner/${owner.portrait}-640.avif 640w, /img/owner/${owner.portrait}.avif 1120w`} sizes="(min-width: 768px) 420px, 92vw" />
+                  <source type="image/webp" srcSet={`/img/owner/${owner.portrait}-640.webp 640w, /img/owner/${owner.portrait}.webp 1120w`} sizes="(min-width: 768px) 420px, 92vw" />
+                  <img
+                    src={`/img/owner/${owner.portrait}.jpg`}
+                    /* Names her and her role. It does not describe her
+                       appearance, her age or her clothes — none of that is the
+                       information a reader needs here, and a photograph of a
+                       real person is not a place to narrate. */
+                    alt={`${fullName}, ${owner.role.toLowerCase()} of ${shop.name}`}
+                    width={487}
+                    height={649}
+                    /* Lazy: she is seven sections down. Eager, this 83KB
+                       portrait went out alongside the hero and delayed the
+                       hero title (the page's LCP) on a phone. */
+                    loading="lazy"
+                    decoding="async"
+                    className="owner-img"
+                  />
+                </picture>
+              </AfterPaint>
             ) : (
               /* Not a grey box pretending to be a photograph, and not a
                  stranger's face. An empty frame that says what it is

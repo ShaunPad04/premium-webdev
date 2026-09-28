@@ -9295,3 +9295,17 @@ h3.csr-grid-title { margin: 10px 0 0; text-align: center; font-size: 24px !impor
 @media (hover: none), (pointer: coarse) {
   .qa { border-top: 1px solid rgba(14, 11, 12, 0.12); }
 }
+
+/* Hero blur-up (HeroPhoto.tsx, 2026-09-28): the blurred placeholder under
+   the photograph, portrait on phones and landscape on a desktop, matching
+   the sources; the photograph fades in over it once it has loaded. */
+.hx-c-blur {
+  position: absolute; inset: 0;
+  background: var(--ph-p) center / cover no-repeat;
+  /* No CSS blur filter: an 18x32 image stretched full-screen is already soft,
+     and the filter cost a first-paint frame (measured FCP 1.5 -> 1.7s). */
+}
+@media (min-width: 1024px) { .hx-c-blur { background-image: var(--ph-l); } }
+.hx-c-photo img { opacity: 0; transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1); }
+.hx-c-photo[data-loaded] img { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .hx-c-photo img { transition: none; } }
