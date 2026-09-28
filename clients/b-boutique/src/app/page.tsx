@@ -9,7 +9,7 @@ import { NewInSlides } from "@/components/NewInSlides";
 import { WhyUs } from "@/components/home/WhyUs";
 import { UpClose } from "@/components/home/UpClose";
 import { OwnerCard } from "@/components/OwnerCard";
-import { Reviews } from "@/components/home/Reviews";
+import { Reviews } from "@/components/Deferred";
 import { Visit } from "@/components/Visit";
 import { Footer } from "@/components/Footer";
 import { SocialStrip } from "@/components/SocialStrip";
