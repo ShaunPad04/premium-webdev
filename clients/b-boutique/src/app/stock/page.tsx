@@ -20,6 +20,10 @@ import { StockNotReady } from "./StockNotReady";
 export const metadata: Metadata = {
   title: "Stock",
   robots: { index: false, follow: false, nocache: true },
+  /* Its own manifest, so the home-screen icon opens here (see
+     stock/manifest.webmanifest/route.ts). */
+  manifest: "/stock/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "B Stock", statusBarStyle: "black" },
 };
 
 /* Stock changes constantly and a cached copy of it is worse than useless —

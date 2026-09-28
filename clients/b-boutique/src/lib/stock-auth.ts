@@ -120,7 +120,11 @@ export async function signIn(
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     /* Scoped to /stock: the cookie is never sent with a request for the shop
-       itself, so a customer browsing the site never carries it. */
+       itself, so a customer browsing the site never carries it. The staff
+       endpoints live under it (/stock/api, /stock/api/orders) for exactly
+       that reason: until 2026-09-28 they were /api/stock and /api/orders,
+       which this cookie never reached, so every save came back
+       "not signed in". */
     path: "/stock",
     maxAge: ttl,
   });

@@ -5,7 +5,7 @@ import { isSignedIn, stockAuthIsConfigured } from "@/lib/stock-auth";
 
 /** Changes to an order, from the shop's own page.
  *
- *  ── Same rule as /api/stock ──────────────────────────────────────────────
+ *  ── Same rule as /stock/api ──────────────────────────────────────────────
  *  Authorisation is checked on the request, every time, and never inferred
  *  from the page having rendered a button. This one matters more than the
  *  stock board did: these rows carry customers' names and home addresses, so

@@ -127,7 +127,7 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
     setBusy({ id, action });
     setProblem("");
     try {
-      const res = await fetch("/api/stock", {
+      const res = await fetch("/stock/api", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, id, ...extra }),
@@ -197,9 +197,9 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
       <header className="st-top">
         <div className="st-top-row">
           <h1 className="st-title">Stock</h1>
-          <form action="/api/stock" method="post" onSubmit={(e) => {
+          <form action="/stock/api" method="post" onSubmit={(e) => {
             e.preventDefault();
-            void fetch("/api/stock", {
+            void fetch("/stock/api", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ action: "sign-out" }),

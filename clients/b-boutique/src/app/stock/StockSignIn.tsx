@@ -21,7 +21,7 @@ export function StockSignIn() {
     if (!value) return;
     setState("sending");
     try {
-      const res = await fetch("/api/stock", {
+      const res = await fetch("/stock/api", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "sign-in", passphrase: value, remember }),

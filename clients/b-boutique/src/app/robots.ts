@@ -7,7 +7,7 @@ import { absolute } from "@/lib/site";
  * read that tag — see the note on `robots` in app/layout.tsx. */
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/", disallow: "/api/" },
+    rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/stock/api/"] },
     sitemap: absolute("/sitemap.xml"),
   };
 }

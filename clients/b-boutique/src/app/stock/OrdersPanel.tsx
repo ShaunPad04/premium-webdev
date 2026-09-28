@@ -35,7 +35,7 @@ export function OrdersPanel({ orders }: { orders: Order[] }) {
     setBusy(reference);
     setFailed(null);
     try {
-      const res = await fetch("/api/orders", {
+      const res = await fetch("/stock/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "posted", reference }),
