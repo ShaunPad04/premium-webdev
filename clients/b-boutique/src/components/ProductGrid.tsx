@@ -3,6 +3,8 @@ import Link from "@/components/Link";
 
 import type { Product } from "@/lib/catalogue";
 import { canQuickAdd, isBuyable } from "@/lib/catalogue";
+import { AfterPaint } from "./AfterPaint";
+import { HoverPhoto } from "./HoverPhoto";
 import { ProductPhoto } from "./ProductPhoto";
 import { QuickAdd } from "./QuickAdd";
 import { Price } from "@/components/Price";
@@ -79,8 +81,13 @@ export function ProductGrid({
         /* The next colourway along, where there is one. */
         const alt = p.colourways.length > 1 ? p.colourways[1] : null;
 
-        const media = (
-          <span className="prod-media">
+        /* The first screen's cards load with the page; the rest once it has
+           painted (AfterPaint). Inside Chrome's lazy-load distance they all
+           started at once, and on /clothing twenty below-the-fold photos were
+           counted into the largest paint (2026-09-28, PageSpeed). Four covers
+           a phone's first two rows and a desktop's first row. */
+        const eager = lead > 0 && i < Math.max(lead, 4);
+        const photo = (
               <ProductPhoto
                 photo={p.photo}
                 square={square}
@@ -92,15 +99,12 @@ export function ProductGrid({
                 sizes={sizes}
                 className="prod-photo absolute inset-0 h-full w-full object-cover"
               />
-              {alt ? (
-                <ProductPhoto
-                  photo={alt.image}
-                  square={square}
-                  alt=""
-                  sizes={sizes}
-                  className="prod-photo prod-photo--alt absolute inset-0 h-full w-full object-cover"
-                />
-              ) : null}
+        );
+        const media = (
+          <span className="prod-media">
+              {eager ? photo : <AfterPaint>{photo}</AfterPaint>}
+              {/* Hover screens only, after the first paint (HoverPhoto.tsx). */}
+              {alt ? <HoverPhoto photo={alt.image} square={square} sizes={sizes} /> : null}
               {canQuickAdd(p) ? <QuickAdd product={p} /> : null}
           </span>
         );

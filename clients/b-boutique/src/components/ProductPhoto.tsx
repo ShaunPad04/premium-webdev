@@ -64,10 +64,12 @@ export function ProductPhoto({
     <picture>
       <source type="image/avif" srcSet={set(photo, "avif")} sizes={sizes} />
       <source type="image/webp" srcSet={set(photo, "webp")} sizes={sizes} />
+      {/* The JPEG is the fallback for a browser with neither AVIF nor WebP,
+          so one file, not a srcset: its four-width list was ~300 bytes per
+          photo, twice over (HTML and hydration data), that no current
+          browser reads (2026-09-28). */}
       <img
         src={`/img/product/${photo}-960.jpg`}
-        srcSet={set(photo, "jpg")}
-        sizes={sizes}
         alt={alt}
         width={square ? 2048 : 1856}
         height={square ? 2048 : 2304}

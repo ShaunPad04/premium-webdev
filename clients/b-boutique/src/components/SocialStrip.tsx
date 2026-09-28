@@ -1,5 +1,6 @@
 import { socials } from "@/lib/nav";
 import { SocialMark } from "@/components/SocialMark";
+import { AfterPaint } from "@/components/AfterPaint";
 
 /* "Follow us" above the footer, as two tiles (2026-09-27, Brad picked B of
  * three 21st-ui-explore directions, after 21st.dev "Reveal on hover"): one
@@ -26,11 +27,16 @@ export function SocialStrip() {
           return (
             <li key={l.name}>
               <a className="ss2-tile" href={l.href} target="_blank" rel="noopener noreferrer">
+                {/* After the first paint: at the foot of a short page it sat
+                    inside Chrome's lazy-load distance and was counted into
+                    the largest paint (2026-09-28). The tile keeps its shape. */}
+                <AfterPaint>
                 <picture>
                   <source type="image/avif" srcSet={`/img/look/${img}-800.avif 800w, /img/look/${img}-1200.avif 1200w`} sizes="(min-width: 1024px) 45vw, 46vw" />
                   <source type="image/webp" srcSet={`/img/look/${img}-800.webp 800w, /img/look/${img}-1200.webp 1200w`} sizes="(min-width: 1024px) 45vw, 46vw" />
                   <img className="ss2-media" src={`/img/look/${img}-1200.jpg`} alt="" width={1200} height={1500} loading="lazy" decoding="async" />
                 </picture>
+                </AfterPaint>
                 <span className="ss2-cap">
                   <span className="ss2-mark" aria-hidden="true"><SocialMark name={l.name} /></span>
                   <span className="ss2-name">{l.name}</span>
