@@ -2402,25 +2402,30 @@ html:has(.pdp-viewer[open]) { overflow: hidden; }
   white-space: nowrap;
 }
 
-/* Phone: the three lines share one grid cell and cross-fade, 5s each. */
+/* Phone: the three lines share one grid cell and take turns, 5s each. Each
+   wipes up into view and away with a clip (2026-09-28), never a fade: text
+   caught mid-fade is text at partial contrast, and PageSpeed's contrast
+   audit failed the strip (accessibility 96) whenever it sampled one. */
 @media (max-width: 899px) {
   /* pointer-events: none is the resting state so a line still waiting out
      its animation-delay cannot catch a tap meant for the one showing. */
-  .announce-item { grid-area: 1 / 1; opacity: 0; pointer-events: none; animation: announce-cycle 15s infinite; }
+  .announce-item { grid-area: 1 / 1; clip-path: inset(0 0 100% 0); pointer-events: none; animation: announce-cycle 15s infinite var(--bb-ease); }
   .announce-item:nth-child(2) { animation-delay: 5s; }
   .announce-item:nth-child(3) { animation-delay: 10s; }
-  .announce-item:first-child { opacity: 1; pointer-events: auto; }
+  .announce-item:first-child { clip-path: inset(0); pointer-events: auto; }
   /* The link is the one thing a keyboard can land on; while it has focus
      the cycle holds on it, on top, so the focus ring is never on nothing. */
-  .announce-list:focus-within .announce-item { animation-play-state: paused; opacity: 0; }
-  .announce-list:focus-within .announce-item:first-child { opacity: 1; z-index: 1; }
+  .announce-list:focus-within .announce-item { animation-play-state: paused; clip-path: inset(0 0 100% 0); }
+  .announce-list:focus-within .announce-item:first-child { clip-path: inset(0); z-index: 1; }
 }
 /* pointer-events rides the cycle, so a tap only lands on the line that is
-   showing: the stacked lines would otherwise cover the delivery link. */
+   showing: the stacked lines would otherwise cover the delivery link. In
+   from below, out over the top; 96.5% resets a hidden line to below. */
 @keyframes announce-cycle {
-  0%, 30% { opacity: 1; pointer-events: auto; }
-  34%, 96% { opacity: 0; pointer-events: none; }
-  100% { opacity: 1; pointer-events: auto; }
+  0%, 30% { clip-path: inset(0); pointer-events: auto; }
+  34%, 96% { clip-path: inset(0 0 100% 0); pointer-events: none; }
+  96.5% { clip-path: inset(100% 0 0 0); pointer-events: none; }
+  100% { clip-path: inset(0); pointer-events: auto; }
 }
 @media (max-width: 899px) and (prefers-reduced-motion: reduce) {
   .announce-item { animation: none; visibility: hidden; }
