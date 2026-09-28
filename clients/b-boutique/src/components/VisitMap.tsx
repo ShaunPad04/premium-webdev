@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 /* The map at the top of the Visit card (2026-09-28, after 21st.dev
    "Expanded Map" by dev.shejanmahamud, set into one listing card). On a
@@ -8,7 +8,12 @@ import { useState, useSyncExternalStore } from "react";
    phone it starts open and the lazy iframe loads as Visit nears the screen.
    Nothing reaches Google before either. The server renders it closed; a
    phone opens it once hydrated (a media query store, not setState in an
-   effect). */
+   effect).
+
+   On a phone the embed's src is set only once the map is within ~600px of
+   the screen (2026-09-28). loading="lazy" alone uses Chrome's own distance,
+   which on a slow connection is thousands of pixels: on /about the embed
+   started while the page was still painting. */
 const PHONE = "(max-width: 1023px)";
 const subscribe = (cb: () => void) => {
   const m = window.matchMedia(PHONE);
@@ -19,8 +24,17 @@ const subscribe = (cb: () => void) => {
 export function VisitMap({ src, label }: { src: string; label: string }) {
   const [clicked, setClicked] = useState(false);
   const phone = useSyncExternalStore(subscribe, () => window.matchMedia(PHONE).matches, () => false);
+  const frame = useRef<HTMLIFrameElement>(null);
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    const el = frame.current;
+    if (!el || near) return;
+    const io = new IntersectionObserver(([e]) => e.isIntersecting && setNear(true), { rootMargin: "600px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [near, phone]);
   return clicked || phone ? (
-    <iframe className="vsc-map" src={src} title={`Map of ${label}`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+    <iframe ref={frame} className="vsc-map" src={clicked || near ? src : undefined} title={`Map of ${label}`} referrerPolicy="no-referrer-when-downgrade" />
   ) : (
     <button type="button" className="vsc-map vsc-map--closed" onClick={() => setClicked(true)}>
       <span className="vsc-pin" aria-hidden="true">

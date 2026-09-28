@@ -105,3 +105,15 @@ const [sa, sw] = await Promise.all([
   small.clone().webp({ quality: 80 }).toFile("public/img/owner/hayley-640.webp"),
 ]);
 console.log(`  640: avif ${kb(sa.size)}   webp ${kb(sw.size)}`);
+
+/* 800 too (2026-09-28): a 412px phone at DPR 1.75 asks for ~660px, which
+   skipped past 640 to the 1120 file (83 KB) on the About page, where she is
+   the largest thing on the first screen. */
+const mid = sharp(SRC)
+  .extract({ left: 0, top: TOP, width, height })
+  .resize({ width: 800 });
+const [ma, mw] = await Promise.all([
+  mid.clone().avif({ quality: 62, effort: 6 }).toFile("public/img/owner/hayley-800.avif"),
+  mid.clone().webp({ quality: 80 }).toFile("public/img/owner/hayley-800.webp"),
+]);
+console.log(`  800: avif ${kb(ma.size)}   webp ${kb(mw.size)}`);

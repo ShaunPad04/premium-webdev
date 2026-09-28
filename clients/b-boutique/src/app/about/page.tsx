@@ -65,12 +65,14 @@ export default function AboutPage() {
           <section className="hs-owner" aria-labelledby="hs-owner">
             <div className="hs-panel hs-portrait">
               <picture>
-                <source type="image/avif" srcSet={`/img/owner/${owner.portrait}-640.avif 640w, /img/owner/${owner.portrait}.avif 1120w`} sizes="(min-width: 1024px) 40vw, 92vw" />
-                <source type="image/webp" srcSet={`/img/owner/${owner.portrait}-640.webp 640w, /img/owner/${owner.portrait}.webp 1120w`} sizes="(min-width: 1024px) 40vw, 92vw" />
+                <source type="image/avif" srcSet={`/img/owner/${owner.portrait}-640.avif 640w, /img/owner/${owner.portrait}-800.avif 800w, /img/owner/${owner.portrait}.avif 1120w`} sizes="(min-width: 1024px) 40vw, 92vw" />
+                <source type="image/webp" srcSet={`/img/owner/${owner.portrait}-640.webp 640w, /img/owner/${owner.portrait}-800.webp 800w, /img/owner/${owner.portrait}.webp 1120w`} sizes="(min-width: 1024px) 40vw, 92vw" />
                 <img
                   src={`/img/owner/${owner.portrait}.webp`}
                   alt={`${owner.firstName} ${owner.lastName}, who owns B Boutique.`}
-                  loading="lazy"
+                  /* Eager and first in the queue: with the hero photo gone
+                     she is the largest thing on a phone's first screen. */
+                  fetchPriority="high"
                   decoding="async"
                 />
               </picture>

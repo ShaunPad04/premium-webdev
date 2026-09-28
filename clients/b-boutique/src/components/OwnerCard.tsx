@@ -76,8 +76,8 @@ export function OwnerCard() {
                  later change to the CSS. */
               <AfterPaint>
                 <picture>
-                  <source type="image/avif" srcSet={`/img/owner/${owner.portrait}-640.avif 640w, /img/owner/${owner.portrait}.avif 1120w`} sizes="(min-width: 768px) 420px, 92vw" />
-                  <source type="image/webp" srcSet={`/img/owner/${owner.portrait}-640.webp 640w, /img/owner/${owner.portrait}.webp 1120w`} sizes="(min-width: 768px) 420px, 92vw" />
+                  <source type="image/avif" srcSet={`/img/owner/${owner.portrait}-640.avif 640w, /img/owner/${owner.portrait}-800.avif 800w, /img/owner/${owner.portrait}.avif 1120w`} sizes="(min-width: 768px) 420px, 92vw" />
+                  <source type="image/webp" srcSet={`/img/owner/${owner.portrait}-640.webp 640w, /img/owner/${owner.portrait}-800.webp 800w, /img/owner/${owner.portrait}.webp 1120w`} sizes="(min-width: 768px) 420px, 92vw" />
                   <img
                     src={`/img/owner/${owner.portrait}.jpg`}
                     /* Names her and her role. It does not describe her
