@@ -1349,5 +1349,16 @@ untouched. What changed, and why it must not be undone:
   after at 390 and 1440, with and without motion: identical.
 - **Not done, deliberately.** Unused components (Service, CornerMenuPanel,
   CategoryGrid, PieceGrid, HorizontalRails, cinematic-product-scroll-section,
-  lib/statements) are left: locked decision 4. The staff cookie's path is
-  unchanged: widening an auth cookie is Brad's call (see the report).
+  lib/statements) are left: locked decision 4.
+- **Staff stock page fixed, same day (live).** Saves never worked: the
+  sign-in cookie is scoped to /stock but Sold / Count / Posted went to
+  /api/stock and /api/orders. The endpoints are now /stock/api and
+  /stock/api/orders (cookie still /stock-only). /stock has its own manifest
+  ("B Stock", start_url /stock) so Add to Home Screen opens the stock page.
+  STOCK_PASSPHRASE was reset on 2026-09-28 to a PIN Brad chose (the old
+  value was write-only in Vercel and nobody had it). Verified on the live
+  site: new PIN signs in, a signed-in request reaches the handler.
+- **Launched 2026-09-28**: client/b-boutique fast-forwarded to the tested
+  commit by Brad; live checks all passed (indexable, canonicals, sitemap,
+  redirects, 122 page loads, bag, menu). Vercel Authentication on previews
+  is OFF at Brad's request (previews stay noindex).
