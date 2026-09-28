@@ -2,7 +2,7 @@ import "@/app/offhome.css";
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import Link from "@/components/Link";
 
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";

@@ -1,6 +1,6 @@
 import "@/app/offhome.css";
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { pageMeta } from "@/lib/site";
 
 import { Nav } from "@/components/Nav";

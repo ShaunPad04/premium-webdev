@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 
 import { DELIVERY_P, FREE_DELIVERY_OVER_P, formatPriceShort } from "@/lib/catalogue";
 import { openingPhrase, shop } from "@/lib/shop";

@@ -1,7 +1,7 @@
 "use client";
 
 import gsap from "gsap";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { useEffect, useRef, useState, useSyncExternalStore, type RefObject } from "react";
 
 import { MENU, socials } from "@/lib/nav";

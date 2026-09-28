@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { createPortal } from "react-dom";
 import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 
+import { afterPaint } from "@/lib/painted";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 /* The panel, and the motion library it animates with, load on their own:
@@ -39,10 +40,20 @@ export function CornerMenu() {
   const mounted = useSyncExternalStore(noSubscribe, () => true, () => false);
   const [armed, setArmed] = useState(false);
   const arm = useCallback(() => setArmed(true), []);
+  /* Idle after the first paint (lib/painted.ts): an idle callback alone can
+     run before a slow phone has painted, and the panel's code then counted
+     against the first screen. */
   useEffect(() => {
     const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number; cancelIdleCallback?: (h: number) => void };
-    const h = w.requestIdleCallback ? w.requestIdleCallback(arm, { timeout: 4000 }) : window.setTimeout(arm, 2500);
-    return () => (w.cancelIdleCallback ?? window.clearTimeout)(h);
+    let h: number | undefined;
+    let live = true;
+    afterPaint().then(() => {
+      if (live) h = w.requestIdleCallback ? w.requestIdleCallback(arm, { timeout: 4000 }) : window.setTimeout(arm, 2500);
+    });
+    return () => {
+      live = false;
+      if (h !== undefined) (w.cancelIdleCallback ?? window.clearTimeout)(h);
+    };
   }, [arm]);
   const reduced = usePrefersReducedMotion();
   const panelId = useId();

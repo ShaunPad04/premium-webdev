@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 import { RevealText } from "@/components/RevealText";
 
 /* Homeware on the home page (rebuilt 2026-09-23).

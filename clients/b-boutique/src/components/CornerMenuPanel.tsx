@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/Link";
 import { AnimatePresence, motion } from "motion/react";
 import type { RefObject } from "react";
 

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 import { footerNav, socials } from "@/lib/nav";
 import { shop, openingPhrase } from "@/lib/shop";
 import { SocialMark } from "../SocialMark";

@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+import { usePainted } from "@/lib/painted";
 
 /* The hero photograph, blur-up (2026-09-28, after PageSpeed mobile 75 on
  * the live site: Speed Index 4.7s, LCP 5.3s).
@@ -8,8 +10,8 @@ import { useEffect, useState } from "react";
  * The frame paints at once with a ~400-byte blur of the same horses
  * (PLACEHOLDER below, 18x32 / 32x18 JPEG, drawn soft by CSS), so the first
  * paint already looks like the hero. The real photograph (the same files,
- * same quality: HeroStrips sources) is requested two frames after the page
- * has hydrated, so it no longer competes with the stylesheet, font and
+ * same quality: HeroStrips sources) is requested once the first screen
+ * has painted, so it no longer competes with the stylesheet, font and
  * scripts for a phone's first bytes, and fades in over the blur when it
  * lands. Without JavaScript the <noscript> copy loads it the ordinary way. */
 export const PLACEHOLDER = {
@@ -20,14 +22,10 @@ export const PLACEHOLDER = {
 type Source = { media?: string; type: string; srcSet: string; sizes?: string };
 
 export function HeroPhoto({ sources, fallback }: { sources: Source[]; fallback: string }) {
-  const [go, setGo] = useState(false);
+  /* Once the first screen has painted (lib/painted.ts), not two frames after
+     hydration: on a slow phone those frames come before the paint. */
+  const go = usePainted();
   const [loaded, setLoaded] = useState(false);
-  useEffect(() => {
-    let id = requestAnimationFrame(() => {
-      id = requestAnimationFrame(() => setGo(true));
-    });
-    return () => cancelAnimationFrame(id);
-  }, []);
   const pic = (onLoad?: () => void) => (
     <picture className="hx-c-photo" data-loaded={loaded || !onLoad ? "" : undefined}>
       {sources.map((s) => (

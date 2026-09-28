@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 
 import { clothingCounts } from "@/lib/pages";
 import { CatbarScroll } from "./CatbarScroll";

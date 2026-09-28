@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 /* Shared by the static stack (drawn on the server) and the live one (the
    motion library, loaded later), so the two draw exactly the same cards. */
 export type StackItem = {

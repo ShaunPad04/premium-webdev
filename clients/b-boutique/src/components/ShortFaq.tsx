@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 
 import { FaqItem } from "@/components/FaqItem";
 import { faq } from "@/lib/faq";

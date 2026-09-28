@@ -2,12 +2,15 @@
 
 import { lazy, type ComponentType } from "react";
 
+import { afterPaint } from "@/lib/painted";
+
 /* The four home sections that animate with `motion` (2026-09-28, PageSpeed).
  *
  * Unchanged components, loaded later. The server still renders each one's
  * full HTML, so the first paint is the same; in the browser React leaves
  * that HTML as it is and attaches the component once its code has arrived,
- * after the first paint instead of before it. The animation code is the
+ * after the first paint instead of before it (the paint itself,
+ * lib/painted.ts, not a frame). The animation code is the
  * same code: only when it downloads has moved. Imported directly anywhere
  * else on the home page, a section would pull `motion` back into the
  * first-paint scripts. */
@@ -20,7 +23,7 @@ function deferred<P extends object>(server: ComponentType<P> | null, load: () =>
   const Lazy = lazy(() =>
     server
       ? ({ then: (ok: (m: { default: ComponentType<P> }) => void) => ok({ default: server }) } as unknown as Promise<{ default: ComponentType<P> }>)
-      : load().then((c) => ({ default: c })),
+      : afterPaint().then(load).then((c) => ({ default: c })),
   );
   /* No <Suspense> of its own: React outlines a finished boundary that holds
      images or follows 12.8 KB of page (streams it to the end of the HTML and

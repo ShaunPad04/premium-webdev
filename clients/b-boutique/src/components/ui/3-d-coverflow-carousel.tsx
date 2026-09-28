@@ -33,7 +33,7 @@
  *     (AVIF/WebP/JPEG at measured sizes) instead of inline styles, system
  *     fonts, gold and remote images. */
 
-import Link from "next/link";
+import Link from "@/components/Link";
 import { useCallback, useRef, useState } from "react";
 
 import { newIn } from "@/lib/shop";

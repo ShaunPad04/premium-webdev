@@ -22,7 +22,7 @@
  *   - Snapping pauses the site's smooth scroll (Lenis) while it runs, and
  *     ScrollTrigger is kept in step with it. */
 
-import Link from "next/link";
+import Link from "@/components/Link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import "./sticky-content-wrapper.css";

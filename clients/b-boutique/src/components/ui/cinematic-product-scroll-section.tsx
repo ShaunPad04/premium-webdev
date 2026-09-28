@@ -31,7 +31,7 @@
  *     animates.
  */
 
-import Link from "next/link";
+import Link from "@/components/Link";
 import { useEffect, useRef, useState } from "react";
 import { animate, stagger } from "animejs";
 

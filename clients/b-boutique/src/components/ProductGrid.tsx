@@ -1,5 +1,5 @@
 import { ViewTransition } from "react";
-import Link from "next/link";
+import Link from "@/components/Link";
 
 import type { Product } from "@/lib/catalogue";
 import { canQuickAdd, isBuyable } from "@/lib/catalogue";
