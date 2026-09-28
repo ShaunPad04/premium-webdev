@@ -51,12 +51,9 @@ export default function AboutPage() {
       <main id="main" className="flex-1">
         <div className="hs">
           <section className="hs-hero" aria-labelledby="hs-title">
-            <picture>
-              {/* Phones: no hero panel (Brad, 2026-09-27: "looks odd"), so no download either. */}
-              <source media="(max-width: 767px)" srcSet="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-              <source type="image/avif" srcSet="/img/about/shopfront-640.avif 640w, /img/about/shopfront-1024.avif 1024w" sizes="100vw" />
-              <img src={src(shopfront)} alt={shopfront.alt} fetchPriority="high" />
-            </picture>
+            {/* No photo panel at any size (Brad, 2026-09-27/28): only the
+                page's h1 and hours, hidden visually, stay. The shopfront is
+                still the first of the rooms below. */}
             <div className="hs-hero-d">
               <span className="hs-tag">{where}</span>
               <h1 id="hs-title" className="hs-hero-t">About B Boutique</h1>

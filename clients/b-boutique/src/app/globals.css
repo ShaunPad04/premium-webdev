@@ -1843,13 +1843,12 @@ body {
   .hs-hero-d, .hs-over { left: 36px; bottom: 36px; }
 }
 
-/* Phones: the hero panel goes (Brad, 2026-09-27: "on mobile it looks
-   odd"); its h1 stays for screen readers, and Hayley opens the page. */
-@media (max-width: 767px) {
-  .hs-hero { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .hs .hs-owner { margin-top: 0; }
-  .hs { padding-top: 140px; }
-}
+/* The hero panel is gone at every size (Brad: "on mobile it looks odd",
+   2026-09-27; "why is this still on desktop", 2026-09-28). Its h1 stays for
+   search and screen readers, and Hayley opens the page. */
+.hs-hero { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.hs .hs-owner { margin-top: 0; }
+.hs { padding-top: 140px; }
 
 /* Hayley: portrait panel with the name on it, her words beside. */
 .hs-owner { display: grid; gap: 28px; margin-top: clamp(64px, 8vw, 112px); align-items: center; }
