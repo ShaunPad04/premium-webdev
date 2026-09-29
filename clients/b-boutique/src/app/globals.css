@@ -4371,7 +4371,10 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .why:has([data-across-track]) { padding-block: 0; }
 [data-across-track] .across-pin {
   position: sticky; top: 0; height: 100svh; overflow: hidden;
-  display: flex; align-items: center; padding-top: 64px;
+  /* Content at the top of the held screen, not centred (Brad, 2026-09-29):
+     centred, a phone showed ~170px of empty grey above the heading. The
+     padding clears the fixed header while the section is held. */
+  display: flex; align-items: flex-start; padding-top: calc(var(--header-h) + 16px);
 }
 [data-across-track] .why-inner { width: 100%; }
 [data-across-track] .why-list {
@@ -4895,7 +4898,7 @@ h2.uc3-h em { font-style: normal; }
 /* Spacing: the section boxes carry the padding, their first wrappers none. */
 .home-rise #rails.ctab, .home-rise #new-in, .home-rise #owner, .home-rise #up-close,
 .home-rise #rv, .home-rise #visit, .ss2, .sfq { padding-top: var(--sec-pad) !important; padding-bottom: var(--sec-pad) !important; }
-.home-rise #why .across-pin { padding-top: var(--sec-pad) !important; }
+/* (was padding-top: var(--sec-pad) !important; the held screen now sets its own, clear of the header) */
 .home-rise #why { padding-bottom: var(--sec-pad) !important; }
 
 /* Container: every section's content starts on the same left edge. */
@@ -4990,7 +4993,7 @@ h2.uc3-h em { font-style: normal; }
 .rv-summary, .rv-summary * { font-size: 14px !important; }
 .sfq-q, .sfq-q span { font-size: 16px !important; }
 @media (max-width: 767px) { .ctab-name { font-size: 32px !important; } }
-.home-rise .why .across-pin { padding-top: var(--sec-pad) !important; }
+/* (was padding-top: var(--sec-pad) !important; the held screen now sets its own, clear of the header) */
 /* Phones: the owner portrait sits in the container now, not inset again. */
 @media (max-width: 1023px) { .home-rise .owner-portrait { margin-inline: 0 !important; } }
 /* On phones "Shop owner" sits over her portrait: it stays white there. */
@@ -5005,7 +5008,9 @@ h2.uc3-h em { font-style: normal; }
    three; home/UpCloseGallery.tsx). The heading keeps the section's padding;
    the gallery itself runs edge to edge, pinned under the 72px header. */
 .home-rise #up-close { padding-bottom: 0 !important; }
-.home-rise #up-close .uc3-head { margin-bottom: var(--sec-pad); }
+/* Heading to cards: the grid's own top padding only (Brad, 2026-09-29: the
+   whole-section gap here, 96px on a desktop, read as a break). */
+.home-rise #up-close .uc3-head { margin-bottom: 0; }
 .ucg { position: relative; }
 .ucg-stick { position: sticky; top: 72px; height: calc(100svh - 72px); overflow: hidden; background: #0E0B0C; }
 .ucg-slide { position: absolute; inset: 0; overflow: hidden; }
@@ -5157,7 +5162,10 @@ h2.uc3-h em { font-style: normal; }
    not widen a phone page; clip leaves the page's own scrolling alone. */
 .uc3 { overflow-x: clip; }
 .uct {
-  max-width: 880px; margin: 0 auto; padding: 12vh var(--gutter) 16vh;
+  /* Top padding tightened from 12vh (Brad, 2026-09-29: too much space under
+     'Made to be touched'), and the foot from 16vh; the cards' own rise and
+     fall supply the rest. */
+  max-width: 880px; margin: 0 auto; padding: clamp(32px, 4vw, 56px) var(--gutter) clamp(40px, 6vw, 80px);
   display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 3vw, 40px);
 }
 .uct-tile { display: block; perspective: 900px; color: #0E0B0C; text-decoration: none; }
