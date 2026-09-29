@@ -28,7 +28,7 @@
  * Built 2026-09-26 for Brad from screenshots of the reference (the Framer
  * pages themselves are blocked from the build environment). */
 
-import Link from "next/link";
+import Link from "@/components/Link";
 import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, type Transition } from "motion/react";
 import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
