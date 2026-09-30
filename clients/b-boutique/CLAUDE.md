@@ -1429,10 +1429,11 @@ pushed live on his instruction.
   each checked against her photo. Product cards: model first, the piece on
   its own on hover. No quick "Add to bag" on product cards (`QuickAdd.tsx`
   kept). Add to bag / Buy now labels share one centre line.
-- **Why B Boutique**: desktop is one still row of the four strongest reasons
-  (no pin); phones scroll across all seven. The pinned layout is scoped by
-  CSS media query, NOT by script: a script switch moved the row after load
-  and measured a 0.84 layout shift on desktop.
+- **Why B Boutique**: all seven scroll across while the section holds, on
+  every screen (desktop was a still row of four from 09-29 to 09-30; Brad
+  wanted the pan back). The pinned layout is plain CSS, NOT switched by
+  script: a script switch moved the row after load and measured a 0.84
+  layout shift on desktop. With it in CSS, desktop CLS is 0.
 - **Reviews**: desktop shows all four cards side by side, slightly fanned;
   phones keep the scroll pile. The empty lower half of the pile's frame is
   covered by pulling Visit up over it (phones).
@@ -1476,3 +1477,8 @@ pushed live on his instruction.
   93-95 against the lossless master, identical at 100%. Desktop Lighthouse
   unchanged (97): the video starts after the first paint. Phones keep the
   9:16 clip. The masters are not in the repo; re-encode from Brad's file.
+- **New arrivals flicker on iPhone, 2026-09-30.** A card photo flickered
+  while it loaded mid-scroll: the packshot's `mix-blend-mode: multiply`
+  blended against the whole sliding sheet over the pinned hero video.
+  `.ccard-media` has `isolation: isolate`, so it blends with the card's
+  grey only. Keep it if the cards change.
