@@ -4868,9 +4868,11 @@ h2.stl-h em { font-style: italic; }
 
 
 /* ── Size guide (2026-09-25, preview) ───────────────────────────────────── */
-.atb-sizes { position: relative; }
+/* On a wrapper round the fieldset, not the fieldset (Safari measures a
+   fieldset's box from below its legend). */
+.atb-sizes-wrap { position: relative; }
 
-.atb-sizes > .sg-open { position: absolute; top: 0; right: 0; }
+.atb-sizes-wrap > .sg-open { position: absolute; top: -5px; right: 0; z-index: 1; }
 
 .atb-onesize { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 6px; }
 

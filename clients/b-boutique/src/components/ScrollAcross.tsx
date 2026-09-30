@@ -59,19 +59,34 @@ export function ScrollAcross({ className, children, upTo }: { className?: string
       row.style.transform = `translate3d(${-progress * distance}px, 0, 0)`;
     };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(move); };
-    const onResize = () => { measure(); move(); };
+
+    /* Where CSS scroll-driven animations exist, the compositor moves the row
+       (globals.css, `across`), so it keeps pace with the scroll even when a
+       phone throttles scripts (iOS Low Power Mode: 30fps). The script only
+       supplies the lengths: the view timeline's cover range starts with the
+       track's top at the screen's foot, so the slide runs from
+       innerHeight - stick to that plus the distance across. */
+    const css = CSS.supports("animation-timeline: view()");
+    const lengths = () => {
+      t.style.setProperty("--across-dist", `${distance}px`);
+      t.style.setProperty("--across-from", `${window.innerHeight - stick}px`);
+      t.style.setProperty("--across-to", `${window.innerHeight - stick + distance}px`);
+    };
+    const onResize = () => { measure(); if (css) lengths(); else move(); };
 
     measure();
-    move();
+    if (css) { lengths(); t.dataset.css = ""; } else move();
     const ro = new ResizeObserver(onResize);
     ro.observe(row);
-    window.addEventListener("scroll", onScroll, { passive: true });
+    if (!css) window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
     return () => {
       ro.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (frame) cancelAnimationFrame(frame);
+      delete t.dataset.css;
+      ["--across-dist", "--across-from", "--across-to"].forEach((k) => t.style.removeProperty(k));
       t.style.height = "";
       row.style.transform = "";
     };

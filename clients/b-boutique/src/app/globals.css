@@ -5578,3 +5578,55 @@ main.home-rise ~ .sfq .sfq-more-cta:hover { background: #F1EFED; }
   .home-rise .hx-c { margin: 0; height: 100svh; min-height: 0; max-height: none; border-radius: 0; top: 0; }
   .home-rise .hx-c-mid { padding-top: var(--header-h); }
 }
+
+/* Scroll-linked motion run by the browser's compositor, not by script
+   (2026-09-30, Brad: components felt laggy on an iPhone in Low Power Mode,
+   which caps script-driven animation at 30fps while the page itself scrolls
+   at full rate). Only where CSS scroll-driven animations exist; elsewhere
+   the script paths (motion in UpCloseTilt, ScrollAcross) still run. */
+
+/* Up close: the same curves as UpCloseTilt's function transforms, sampled
+   every 5% of each card's pass through the screen (view(): its top meeting
+   the screen's foot to its foot leaving the top, as the script's offsets). */
+@supports (animation-timeline: view()) {
+  .uct-tile { view-timeline: --uct block; }
+  .uct-card--css { animation: uct-tilt linear both; animation-timeline: --uct; }
+  @media (prefers-reduced-motion: reduce) { .uct-card--css { animation: none; } }
+}
+@keyframes uct-tilt {
+  0% { transform: translateX(calc(var(--side) * 30%)) translateY(60%) rotate(calc(var(--side) * -4deg)) rotateX(60deg) skewX(calc(var(--side) * 12deg)); opacity: 0.25; }
+  5% { transform: translateX(calc(var(--side) * 21.87%)) translateY(43.74%) rotate(calc(var(--side) * -2.916deg)) rotateX(43.74deg) skewX(calc(var(--side) * 8.748deg)); opacity: 0.453; }
+  10% { transform: translateX(calc(var(--side) * 15.36%)) translateY(30.72%) rotate(calc(var(--side) * -2.048deg)) rotateX(30.72deg) skewX(calc(var(--side) * 6.144deg)); opacity: 0.616; }
+  15% { transform: translateX(calc(var(--side) * 10.29%)) translateY(20.58%) rotate(calc(var(--side) * -1.372deg)) rotateX(20.58deg) skewX(calc(var(--side) * 4.116deg)); opacity: 0.743; }
+  20% { transform: translateX(calc(var(--side) * 6.48%)) translateY(12.96%) rotate(calc(var(--side) * -0.864deg)) rotateX(12.96deg) skewX(calc(var(--side) * 2.592deg)); opacity: 0.838; }
+  25% { transform: translateX(calc(var(--side) * 3.75%)) translateY(7.5%) rotate(calc(var(--side) * -0.5deg)) rotateX(7.5deg) skewX(calc(var(--side) * 1.5deg)); opacity: 0.906; }
+  30% { transform: translateX(calc(var(--side) * 1.92%)) translateY(3.84%) rotate(calc(var(--side) * -0.256deg)) rotateX(3.84deg) skewX(calc(var(--side) * 0.768deg)); opacity: 0.952; }
+  35% { transform: translateX(calc(var(--side) * 0.81%)) translateY(1.62%) rotate(calc(var(--side) * -0.108deg)) rotateX(1.62deg) skewX(calc(var(--side) * 0.324deg)); opacity: 0.98; }
+  40% { transform: translateX(calc(var(--side) * 0.24%)) translateY(0.48%) rotate(calc(var(--side) * -0.032deg)) rotateX(0.48deg) skewX(calc(var(--side) * 0.096deg)); opacity: 0.994; }
+  45% { transform: translateX(calc(var(--side) * 0.03%)) translateY(0.06%) rotate(calc(var(--side) * -0.004deg)) rotateX(0.06deg) skewX(calc(var(--side) * 0.012deg)); opacity: 0.999; }
+  50% { transform: translateX(calc(var(--side) * 0%)) translateY(0%) rotate(calc(var(--side) * 0deg)) rotateX(0deg) skewX(calc(var(--side) * 0deg)); opacity: 1; }
+  55% { transform: translateX(calc(var(--side) * 0.03%)) translateY(-0.06%) rotate(calc(var(--side) * 0.004deg)) rotateX(-0.06deg) skewX(calc(var(--side) * -0.012deg)); opacity: 0.999; }
+  60% { transform: translateX(calc(var(--side) * 0.24%)) translateY(-0.48%) rotate(calc(var(--side) * 0.032deg)) rotateX(-0.48deg) skewX(calc(var(--side) * -0.096deg)); opacity: 0.994; }
+  65% { transform: translateX(calc(var(--side) * 0.81%)) translateY(-1.62%) rotate(calc(var(--side) * 0.108deg)) rotateX(-1.62deg) skewX(calc(var(--side) * -0.324deg)); opacity: 0.98; }
+  70% { transform: translateX(calc(var(--side) * 1.92%)) translateY(-3.84%) rotate(calc(var(--side) * 0.256deg)) rotateX(-3.84deg) skewX(calc(var(--side) * -0.768deg)); opacity: 0.952; }
+  75% { transform: translateX(calc(var(--side) * 3.75%)) translateY(-7.5%) rotate(calc(var(--side) * 0.5deg)) rotateX(-7.5deg) skewX(calc(var(--side) * -1.5deg)); opacity: 0.906; }
+  80% { transform: translateX(calc(var(--side) * 6.48%)) translateY(-12.96%) rotate(calc(var(--side) * 0.864deg)) rotateX(-12.96deg) skewX(calc(var(--side) * -2.592deg)); opacity: 0.838; }
+  85% { transform: translateX(calc(var(--side) * 10.29%)) translateY(-20.58%) rotate(calc(var(--side) * 1.372deg)) rotateX(-20.58deg) skewX(calc(var(--side) * -4.116deg)); opacity: 0.743; }
+  90% { transform: translateX(calc(var(--side) * 15.36%)) translateY(-30.72%) rotate(calc(var(--side) * 2.048deg)) rotateX(-30.72deg) skewX(calc(var(--side) * -6.144deg)); opacity: 0.616; }
+  95% { transform: translateX(calc(var(--side) * 21.87%)) translateY(-43.74%) rotate(calc(var(--side) * 2.916deg)) rotateX(-43.74deg) skewX(calc(var(--side) * -8.748deg)); opacity: 0.453; }
+  100% { transform: translateX(calc(var(--side) * 30%)) translateY(-60%) rotate(calc(var(--side) * 4deg)) rotateX(-60deg) skewX(calc(var(--side) * -12deg)); opacity: 0.25; }
+}
+
+/* Why B Boutique on phones: the row slides across while its frame is held.
+   The track is the timeline; the range starts when the frame sticks under
+   the header and ends one row-width later (ScrollAcross sets the lengths). */
+@supports (animation-timeline: view()) {
+  @media (max-width: 1023px) {
+    [data-across-track][data-css] { view-timeline: --across block; }
+    [data-across-track][data-css] .why-list {
+      animation: across linear both; animation-timeline: --across;
+      animation-range: cover var(--across-from) cover var(--across-to);
+    }
+  }
+}
+@keyframes across { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(calc(-1 * var(--across-dist)), 0, 0); } }

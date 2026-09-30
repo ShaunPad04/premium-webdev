@@ -1455,3 +1455,14 @@ pushed live on his instruction.
   - `experimental.inlineCss` re-measured and still worse (next.config.ts).
 - Tests updated for the new sections (#collection); the contrast test waits
   for finite fades before checking. 105 pass, 15 skip by design.
+- **Follow-up, 2026-09-30 (Brad on an iPhone in Low Power Mode).** Size
+  guide link sits on a wrapper round the size fieldset (`.atb-sizes-wrap`):
+  pinned to the fieldset, Safari measured from below the legend and the link
+  landed on the size buttons. Hero video: `autoPlay` attribute plus a
+  scripted start, and if the phone refuses (Low Power Mode blocks autoplay)
+  the first tap, click or key starts it; the photo stays until then. Up
+  close's tilt and Why's slide across run as CSS scroll-driven animations
+  (`uct-tilt`, `across` in globals.css) where supported, so they keep pace
+  with the scroll when a phone throttles scripts to 30fps; the motion/JS
+  paths remain the fallback. Both verified equal to the script maths in
+  Chromium and WebKit.

@@ -208,12 +208,16 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
       ) : null}
 
       {!singleSize ? (
+        /* The size guide sits outside the fieldset, on a wrapper
+           (2026-09-30): pinned to the fieldset itself, Safari measured from
+           below the legend and the link landed on the size buttons. */
+        <div className="atb-sizes-wrap">
+        {compact ? null : <SizeGuide product={product} />}
         <fieldset
           className="atb-sizes"
           aria-describedby={error ? `${uid}-err` : undefined}
         >
           <legend className="cf-label">Size</legend>
-          {compact ? null : <SizeGuide product={product} />}
           <div className="atb-size-row">
             {product.sizes.map((s) => {
               const out = sizeOut(s);
@@ -242,6 +246,7 @@ export function AddToBag({ product, compact = false }: { product: Product; compa
             })}
           </div>
         </fieldset>
+        </div>
       ) : (
         /* "One size" on its own answers nothing — one size to WHAT? The
            client asked, and the qualifier was already in the data: the stock

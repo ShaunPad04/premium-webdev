@@ -44,6 +44,10 @@ export function UpCloseTilt({ items }: { items: Fabric[] }) {
   );
 }
 
+/* CSS scroll-driven animations: the browser runs them off the main thread.
+   Read only once the grid is near, which is always after hydration. */
+const CSS_SCROLL = typeof CSS !== "undefined" && CSS.supports("animation-timeline: view()");
+
 /* 0 at the screen's edges, 1 in its middle, eased out. */
 const focus = (v: number) => 1 - Math.pow(Math.min(1, Math.abs(v - 0.5) / 0.5), 3);
 /* +1 entering from below, 0 in focus, -1 leaving over the top. */
@@ -81,6 +85,10 @@ function Card({ f, side, near, still }: { f: Fabric; side: 1 | -1; near: boolean
     <Link ref={ref} href={`/shop/${f.slug}`} className="uct-tile">
       {still || !near ? (
         <span className="uct-card">{inner}</span>
+      ) : CSS_SCROLL ? (
+        /* The same motion as keyframes on a view timeline (globals.css,
+           uct-tilt), run by the compositor, 2026-09-30. */
+        <span className="uct-card uct-card--css" style={{ "--side": side } as React.CSSProperties}>{inner}</span>
       ) : (
         <motion.span className="uct-card" style={{ y, x, rotateX, rotate, skewX, opacity }}>{inner}</motion.span>
       )}

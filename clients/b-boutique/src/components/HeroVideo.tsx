@@ -51,47 +51,65 @@ export function HeroVideo() {
 function Clip({ src }: { src: string }) {
   const [playing, setPlaying] = useState(false);
   const ref = useRef<HTMLVideoElement>(null);
-  /* The hero stays pinned while the page slides over it (2026-09-29), so it
-     never leaves the viewport and would play under the whole page. Pause it
-     once the page has covered it; play again on the way back up. */
   useEffect(() => {
     const v = ref.current;
     const hero = v?.closest("section");
     const sheet = hero?.nextElementSibling;
     if (!v || !hero || !sheet) return;
+
+    /* The hero stays pinned while the page slides over it (2026-09-29), so
+       it never leaves the viewport and would play under the whole page.
+       Covered once the sheet after it has reached its top: pause then, play
+       again on the way back up. */
+    const covered = () => sheet.getBoundingClientRect().top <= hero.getBoundingClientRect().top + 1;
+
+    /* iOS refuses to start a video by itself in Low Power Mode (and some
+       browsers with data or autoplay limits). The photograph stays, and the
+       first tap, click or key anywhere starts the video instead: a video
+       started by a person is allowed (2026-09-30, Brad: "the video doesn't
+       play on mobile sometimes", on an iPhone in Low Power Mode). */
+    const gestures = ["touchend", "click", "keydown"] as const;
+    const onGesture = () => { if (!covered()) void tryPlay(); };
+    const arm = () => gestures.forEach((t) => window.addEventListener(t, onGesture, { passive: true, capture: true }));
+    const disarm = () => gestures.forEach((t) => window.removeEventListener(t, onGesture, { capture: true }));
+    const tryPlay = () =>
+      v.play().then(disarm, () => arm());
+
+    v.muted = true;
+    void tryPlay();
+
     let frame = 0;
     const check = () => {
       frame = 0;
-      /* Covered once the sheet after the hero has reached the hero's top. */
-      const covered = sheet.getBoundingClientRect().top <= hero.getBoundingClientRect().top + 1;
-      if (covered && !v.paused) v.pause();
-      else if (!covered && v.paused && v.dataset.started) v.play().catch(() => {});
+      if (covered()) { if (!v.paused) v.pause(); }
+      else if (v.paused) void tryPlay();
     };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(check); };
+    /* Back from another tab or app: iOS pauses a background video. */
+    const onVisible = () => { if (document.visibilityState === "visible") check(); };
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { window.removeEventListener("scroll", onScroll); if (frame) cancelAnimationFrame(frame); };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      disarm();
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("visibilitychange", onVisible);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
   return (
     <video
+      ref={ref}
       className="hx-c-video"
       data-playing={playing ? "" : undefined}
       src={src}
       muted
+      autoPlay
       loop
       playsInline
       preload="auto"
       aria-hidden="true"
       tabIndex={-1}
       onPlaying={() => setPlaying(true)}
-      ref={(el) => {
-        ref.current = el;
-        /* React sets `muted` as a property, after the element exists; set it
-           first and start playback by hand so autoplay is never refused. */
-        if (!el || el.dataset.started) return;
-        el.dataset.started = "1";
-        el.muted = true;
-        el.play().catch(() => {});
-      }}
     />
   );
 }
