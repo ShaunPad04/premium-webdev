@@ -255,7 +255,9 @@ export function ProductSlides({ slides, label, loop = true, initial = 0, ctaLabe
                           className="ps-model"
                           aria-label={s.title}
                           draggable={false}
-                          onClick={(e) => { swallow(e); }}
+                          // Only runs on a click (Link passes it to its <a>); the rule cannot see through a component prop.
+                          // eslint-disable-next-line react-hooks/refs
+                          onClick={swallow}
                         >
                           {inner}
                         </Link>

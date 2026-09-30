@@ -27,8 +27,9 @@ import { ScrollAcross } from "@/components/ScrollAcross";
  * Scrolling down through the section moves the four across, right to left,
  * while the section holds still (2026-09-27, Brad; ScrollAcross). */
 const POINTS = [
-  /* The first four are the desktop row (2026-09-29, Brad: one screen, no
-     pin); phones scroll across all seven. */
+  /* All seven scroll across on every screen again (2026-09-30, Brad: "it
+     used to scroll and pan right"). The desktop still row of four, 09-29,
+     is gone; the order still puts the strongest four first. */
   { img: "hand", title: "Chosen by hand", text: "Every piece on the rails is chosen by hand, one at a time." },
   { img: "try", title: "Try it on in the shop", text: "Everything online is on the rail in Cleethorpes, so you can see it first." },
   { img: "parcel", title: `Free UK delivery over ${formatPriceShort(FREE_DELIVERY_OVER_P)}`, text: "Sent by Royal Mail, packed by hand." },
@@ -43,7 +44,7 @@ const set = (n: string, ext: string) => `/img/why/${n}-640.${ext} 640w, /img/why
 export function WhyUs() {
   return (
     <section className="why" aria-labelledby="why-h">
-      <ScrollAcross className="why-track" upTo="(max-width: 1023px)">
+      <ScrollAcross className="why-track">
       <div className="why-inner">
         <div className="why-head">
           <h2 id="why-h" className="why-h">

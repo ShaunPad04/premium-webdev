@@ -4368,11 +4368,10 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
    for exactly as long as the row takes to cross. Cards are sized to the
    screen's height as well as its width, so a card and its words always
    fit inside the held screen. */
-/* Phones and tablets only since 2026-09-29 (Brad: desktop is one still
-   row). Chosen by CSS, not by script, so the page the server sends and the
-   page after load agree: a script switch moved the row after load and
-   Lighthouse measured it as a 0.84 layout shift on desktop. */
-@media (max-width: 1023px) {
+/* Every screen (2026-09-30, Brad wanted the desktop pan back; it was phones
+   only from 09-29). Never switch this layout by script: the page the server
+   sends and the page after load must agree, and a script switch measured a
+   0.84 layout shift on desktop. */
 .why:has([data-across-track]) { padding-block: 0; }
 [data-across-track] .across-pin {
   position: sticky; top: 0; height: 100svh; overflow: hidden;
@@ -4387,7 +4386,6 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
   display: flex; flex-wrap: nowrap; gap: 16px; will-change: transform;
 }
 [data-across-track] .why-item { flex: 0 0 var(--why-card); }
-}
 
 /* Up close: the eyebrow in ink, not red (2026-09-27, the specimen plan:
    no accent colour in the editorial sections). */
@@ -5485,7 +5483,12 @@ main.home-rise ~ .sfq .sfq-more-cta:hover { background: #F1EFED; }
 @media (max-width: 1023px) { .ccard-grid > li:nth-child(n + 5) { display: none; } }
 .ccard { display: block; color: inherit; text-decoration: none; }
 .ccard:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 12px; }
-.ccard-media { position: relative; display: block; aspect-ratio: 4 / 5; border-radius: 12px; overflow: hidden; background: #F4F4F4; }
+/* isolation (2026-09-30, Brad: a card photo flickered on an iPhone while it
+   loaded mid-scroll): the multiply below blended against the whole sliding
+   sheet, over the pinned hero and its video, so Safari re-rendered that
+   blend as the photo decoded. Isolated, it blends with the card's grey
+   only: the same pixels, nothing behind the card to redo. */
+.ccard-media { position: relative; display: block; aspect-ratio: 4 / 5; border-radius: 12px; overflow: hidden; background: #F4F4F4; isolation: isolate; }
 .ccard-media picture { display: block; width: 100%; height: 100%; }
 .ccard-img { display: block; width: 100%; height: 100%; object-fit: contain; padding: 6%; box-sizing: border-box; mix-blend-mode: multiply; transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1), opacity 400ms cubic-bezier(0.16, 1, 0.3, 1); }
 /* The model photograph over the packshot on hover (HoverPhoto: hover
@@ -5540,9 +5543,6 @@ main.home-rise ~ .sfq .sfq-more-cta:hover { background: #F1EFED; }
 }
 @media (prefers-reduced-motion: reduce) { .rv-row-card { transition: none; } }
 
-/* Why B Boutique on a desktop: the first four reasons in one row, no pin
-   (ScrollAcross upTo). Phones scroll across all seven. */
-@media (min-width: 1024px) { .why-list > .why-item:nth-child(n + 5) { display: none; } }
 
 /* Every section heading centred, no small grey label above it (Brad,
    2026-09-29), to match New arrivals and Shop the collection. */
@@ -5553,7 +5553,7 @@ main.home-rise ~ .sfq .sfq-more-cta:hover { background: #F1EFED; }
    is as tall as its content and sticks under the header, rather than a
    full screen with the content at the top; the review pile sits near the
    top of its frame instead of in the middle of it. */
-@media (max-width: 1023px) { [data-across-track] .across-pin { top: var(--header-h); height: auto; padding-top: 16px; padding-bottom: 24px; } }
+[data-across-track] .across-pin { top: var(--header-h); height: auto; padding-top: 16px; padding-bottom: 24px; }
 @media (max-width: 1023px) { .rv-stack-stage { place-items: start center; padding-top: calc(var(--header-h) + 32px); } }
 .ss2 .ss2-h { text-align: center; }
 @media (min-width: 1024px) { .rv-row { max-width: calc(var(--container, 1280px) + 2 * var(--gutter, 40px)); box-sizing: border-box; } }
@@ -5617,16 +5617,14 @@ main.home-rise ~ .sfq .sfq-more-cta:hover { background: #F1EFED; }
   100% { transform: translateX(calc(var(--side) * 30%)) translateY(-60%) rotate(calc(var(--side) * 4deg)) rotateX(-60deg) skewX(calc(var(--side) * -12deg)); opacity: 0.25; }
 }
 
-/* Why B Boutique on phones: the row slides across while its frame is held.
+/* Why B Boutique: the row slides across while its frame is held.
    The track is the timeline; the range starts when the frame sticks under
    the header and ends one row-width later (ScrollAcross sets the lengths). */
 @supports (animation-timeline: view()) {
-  @media (max-width: 1023px) {
-    [data-across-track][data-css] { view-timeline: --across block; }
-    [data-across-track][data-css] .why-list {
-      animation: across linear both; animation-timeline: --across;
-      animation-range: cover var(--across-from) cover var(--across-to);
-    }
+  [data-across-track][data-css] { view-timeline: --across block; }
+  [data-across-track][data-css] .why-list {
+    animation: across linear both; animation-timeline: --across;
+    animation-range: cover var(--across-from) cover var(--across-to);
   }
 }
 @keyframes across { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(calc(-1 * var(--across-dist)), 0, 0); } }
