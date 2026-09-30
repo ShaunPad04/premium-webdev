@@ -1466,3 +1466,13 @@ pushed live on his instruction.
   with the scroll when a phone throttles scripts to 30fps; the motion/JS
   paths remain the fallback. Both verified equal to the script maths in
   Chromium and WebKit.
+- **Desktop hero video is Brad's Topaz 4K upscale, 2026-09-30.** Same cut
+  and cross-fade as before, 30fps (not 24: Topaz's in-between frames come in
+  a five-frame cadence and dropping frames made the gallop uneven). The field
+  is dense fine detail, so each screen gets a file sized to it
+  (`HeroVideo.tsx`, by device pixels across): 1080p up to 1920, 2880x1620 up
+  to 3200 (13-14" MacBooks), 4K beyond; AV1 first, HEVC for Safari without
+  AV1 hardware, H.264 last. 5.3 / 9.6 / 13.5 MB (HEVC 11.8 MB), each VMAF
+  93-95 against the lossless master, identical at 100%. Desktop Lighthouse
+  unchanged (97): the video starts after the first paint. Phones keep the
+  9:16 clip. The masters are not in the repo; re-encode from Brad's file.
