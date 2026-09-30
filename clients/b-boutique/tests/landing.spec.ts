@@ -123,3 +123,21 @@ test('a section link from another page lands on the section', async ({ page }) =
   expect(top).toBeGreaterThanOrEqual(-5);
   expect(top).toBeLessThanOrEqual(160);
 });
+
+/* Brad, 2026-09-30: the logo on a product page, scrolled down, opened the
+   home page at Visit. #top is the hero, and the hero is sticky: measured
+   while stuck it reports the header's line, not the page top, so the
+   landing kept the product page's offset. */
+test('the logo from a scrolled product page opens the home page at the top', async ({ page }) => {
+  await page.goto('/shop/fair-isle-jumper', { waitUntil: 'networkidle' });
+  await page.evaluate(() => window.scrollTo(0, 1600));
+  await page.waitForTimeout(250);
+  await page.click('header a[href="/#top"]');
+  await page.waitForURL('**/#top');
+  expect(await settle(page)).toBe(0);
+
+  await page.evaluate(() => window.scrollTo(0, 2500));
+  await page.waitForTimeout(250);
+  await page.click('header a[href="/#top"]');
+  expect(await settle(page)).toBe(0);
+});

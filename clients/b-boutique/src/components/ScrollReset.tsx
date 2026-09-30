@@ -94,6 +94,11 @@ function jumpTo(y: number) {
    scroll-margin-top, so a section lands BELOW the fixed header rather than
    under it — which is what the CSS already asks of a native jump. */
 function yFor(el: Element) {
+  /* #top is the hero, which starts at the page top. It is sticky since
+     2026-09-29, so while stuck its box reports the header's line at
+     whatever scroll the last page left, and the logo from a scrolled
+     product page opened the home page at Visit (Brad, 2026-09-30). */
+  if (el.id === "top") return 0;
   const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
   return Math.max(0, el.getBoundingClientRect().top + window.scrollY - margin);
 }
