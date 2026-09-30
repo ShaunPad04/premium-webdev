@@ -4368,6 +4368,11 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
    for exactly as long as the row takes to cross. Cards are sized to the
    screen's height as well as its width, so a card and its words always
    fit inside the held screen. */
+/* Phones and tablets only since 2026-09-29 (Brad: desktop is one still
+   row). Chosen by CSS, not by script, so the page the server sends and the
+   page after load agree: a script switch moved the row after load and
+   Lighthouse measured it as a 0.84 layout shift on desktop. */
+@media (max-width: 1023px) {
 .why:has([data-across-track]) { padding-block: 0; }
 [data-across-track] .across-pin {
   position: sticky; top: 0; height: 100svh; overflow: hidden;
@@ -4381,10 +4386,8 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
   --why-card: min(76vw, calc((100svh - 340px) * 0.8));
   display: flex; flex-wrap: nowrap; gap: 16px; will-change: transform;
 }
-@media (min-width: 1024px) {
-  [data-across-track] .why-list { --why-card: min(34vw, calc((100svh - 380px) * 0.8)); gap: clamp(20px, 2vw, 32px); }
-}
 [data-across-track] .why-item { flex: 0 0 var(--why-card); }
+}
 
 /* Up close: the eyebrow in ink, not red (2026-09-27, the specimen plan:
    no accent colour in the editorial sections). */
@@ -4539,17 +4542,15 @@ main.home-rise ~ .sfq { border-top: 1px solid rgba(14, 11, 12, 0.1); }
 .ifn-links li > * { transition: opacity 300ms ease; }
 .ifn-links li[data-dim] > * { opacity: 0.4; }
 
-/* Menu links centred on desktop (2026-09-27, Brad), now the two standing
-   photos are gone. The number sits to the left of each word as before. */
-@media (min-width: 1024px) {
-  .ifn-main { justify-content: center; }
-  .ifn-links { align-items: center; }
-  /* No 01-07 numbers beside centred words, and the foot centred to match. */
-  .ifn-n { display: none; }
-  .ifn-foot { align-items: center; text-align: center; }
-  .ifn-foot-col { align-items: center; }
-  .ifn-socials { margin-left: 0; justify-content: center; }
-}
+/* Menu links centred (2026-09-27, Brad, desktop; phones the same since
+   2026-09-29, his request): no 01-07 numbers beside centred words, and the
+   foot centred to match. */
+.ifn-main { justify-content: center; }
+.ifn-links { align-items: center; }
+.ifn-n { display: none; }
+.ifn-foot { align-items: center; text-align: center; }
+.ifn-foot-col { align-items: center; }
+.ifn-socials { margin-left: 0; justify-content: center; }
 
 /* Shop by category (CategoryTabs.tsx). The heading takes the site's h2
    style from type.css.
@@ -4734,7 +4735,7 @@ h2.uc3-h em { font-style: normal; }
    type.css sets every h3 in the serif with !important, hence the same here. */
 @media (max-width: 767px) {
   /* #new-in: product-slides.css loads after this file and hides it. */
-  #new-in .ps-caption { display: block; margin: 0 0 10px; }
+  .nis .ps-caption { display: block; margin: 0 0 10px; }
   .nis h3.ps-title:not(.sr-only) {
     font-family: var(--font-body), system-ui, sans-serif !important;
     font-weight: 400 !important;
@@ -4742,7 +4743,7 @@ h2.uc3-h em { font-style: normal; }
     font-size: 22px;
     line-height: 1.25;
   }
-  #new-in .ps-price { margin-top: 12px; }
+  .nis .ps-price { margin-top: 12px; }
 }
 
 /* Shop by category on desktop after the 21st.dev Elastic Gallery (2026-09-27,
@@ -4896,7 +4897,7 @@ h2.uc3-h em { font-style: normal; }
 @media (min-width: 1024px) { :root { --sec-pad: 96px; --gutter: 40px; } }
 
 /* Spacing: the section boxes carry the padding, their first wrappers none. */
-.home-rise #rails.ctab, .home-rise #new-in, .home-rise #owner, .home-rise #up-close,
+.home-rise #rails.ctab, .home-rise #new-in, .home-rise .nis, .home-rise #owner, .home-rise #up-close,
 .home-rise #rv, .home-rise #visit, .ss2, .sfq { padding-top: var(--sec-pad) !important; padding-bottom: var(--sec-pad) !important; }
 /* (was padding-top: var(--sec-pad) !important; the held screen now sets its own, clear of the header) */
 .home-rise #why { padding-bottom: var(--sec-pad) !important; }
@@ -5000,9 +5001,9 @@ h2.uc3-h em { font-style: normal; }
 @media (max-width: 1023px) { .home-rise .owner .owner-eyebrow { color: rgba(255, 255, 255, 0.85) !important; } }
 /* New arrivals: the details column starts on the container's left edge. */
 @media (min-width: 1024px) {
-  .home-rise #new-in .ps-grid { max-width: calc(var(--container) + 2 * var(--gutter)); margin-inline: auto; padding-left: var(--gutter); }
+  .home-rise .nis .ps-grid { max-width: calc(var(--container) + 2 * var(--gutter)); margin-inline: auto; padding-left: var(--gutter); }
 }
-.home-rise #new-in .ps { --ps-gutter: var(--gutter); }
+.home-rise .nis .ps { --ps-gutter: var(--gutter); }
 
 /* Up close as the 21st.dev "Scroll Gallery" (2026-09-27, Brad's pick of
    three; home/UpCloseGallery.tsx). The heading keeps the section's padding;
@@ -5183,3 +5184,397 @@ h2.uc3-h em { font-style: normal; }
 @media (prefers-reduced-motion: reduce) { .uct-card { transform: none !important; opacity: 1 !important; } }
 .uct-tile:focus-visible { outline: none; }
 .uct-tile:focus-visible .uct-card { outline: 2px solid currentColor; outline-offset: 4px; }
+
+/* ══ Light header, hero as an inset card, marquee without its band ══════════
+   2026-09-29, Brad, after the Thought Bulb reference. Home page only for now
+   (<Nav light /> in app/page.tsx): the header sits on the white page with no
+   bar, no announcement strip and ink type; the horses sit in a rounded card
+   inset to the header's own edge, the name, the opening line and Shop all
+   centred near its foot; the marquee is ink type on the page, no black band. */
+header[data-tone="light"],
+header[data-tone="light"] .navbar-mark,
+header[data-tone="light"] .navbar .nav-link,
+header[data-tone="light"] .sdock-trigger,
+header[data-tone="light"] .navbar-menu > button { color: var(--bb-black); }
+header[data-tone="light"] .sdock-trigger:hover { background: rgba(14, 11, 12, 0.06); }
+/* A step heavier than the 500 they had over the photograph (Brad: "very
+   thin" in ink on white). 600 is already loaded, so no new file. */
+header[data-tone="light"] .navbar .nav-link { font-weight: 600; }
+header[data-tone="light"] .navbar .nav-link[aria-current="page"]::after { background: currentColor; }
+/* The open search field: ink type and an ink hairline on the white. */
+header[data-tone="light"] .sdock-form { color: var(--bb-black); border-color: rgba(14, 11, 12, 0.28); }
+header[data-tone="light"] .sdock-form:focus-within { border-color: var(--bb-black); }
+header[data-tone="light"] .sdock-icon,
+header[data-tone="light"] .sdock-close,
+header[data-tone="light"] .sdock-input::placeholder { color: rgba(14, 11, 12, 0.64); }
+header[data-tone="light"] .sdock-close:hover { color: var(--bb-black); }
+/* The menu with the light header (2026-09-29, Brad): white, ink type, so
+   the header and the panel read as one surface. While it is open a soft
+   shadow under the header separates it from the panel, and only then. The panel
+   is portalled to <body>, hence :has() on the page. */
+html:has(header[data-tone="light"]) .ifn { background: #FFFFFF; color: var(--bb-black); }
+html:has(header[data-tone="light"]) .ifn-link,
+html:has(header[data-tone="light"]) .ifn-social { color: var(--bb-black); }
+html:has(header[data-tone="light"]) .ifn-link:focus-visible,
+html:has(header[data-tone="light"]) .ifn-social:focus-visible { outline-color: var(--bb-black); }
+html:has(header[data-tone="light"]) .ifn-n { color: rgba(14, 11, 12, 0.64); }
+html:has(header[data-tone="light"]) .ifn-meta { color: rgba(14, 11, 12, 0.72); }
+html:has(header[data-tone="light"]) .ifn-foot { border-top-color: rgba(14, 11, 12, 0.12); }
+html:has(header[data-tone="light"]) .ifn-float img { box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.35); }
+header[data-tone="light"]:has(.navbar-menu > button[aria-expanded="true"]) {
+  box-shadow: 0 1px 0 rgba(14, 11, 12, 0.07), 0 8px 18px -8px rgba(14, 11, 12, 0.22);
+}
+
+.home-rise .hx-c {
+  --hx-inset: 10px; /* 2026-09-29, Brad: fill the frame more (was 18/24/32) */
+  height: calc(100svh - var(--header-h) - var(--hx-inset));
+  min-height: 560px;
+  max-height: 1050px;
+  margin: var(--header-h) var(--hx-inset) var(--hx-inset);
+  border-radius: var(--radius);
+}
+@media (min-width: 640px) { .home-rise .hx-c { --hx-inset: 12px; } }
+/* No header over the photograph any more, so no top shadow: a soft oval of
+   shade behind the centred type and a light veil over the rest. Measured
+   with the text hidden, over the still photograph (2026-09-29): the name
+   >= 3.65:1 everywhere (large text); the opening line >= 5.8:1 on desktop
+   and tablet, and on a phone 5.8:1 for 99.5% of it, 2.9:1 at its worst
+   where it crosses the white horse (its text halo carries that). */
+.home-rise .hx-c-frame::after {
+  background:
+    radial-gradient(ellipse 72% 40% at 50% 50%, rgba(14, 11, 12, 0.72), rgba(14, 11, 12, 0.4) 55%, rgba(14, 11, 12, 0) 100%),
+    linear-gradient(rgba(14, 11, 12, 0.12), rgba(14, 11, 12, 0.12));
+}
+/* The name, the opening line and Shop all, centred in the card (Brad,
+   2026-09-29, third look; it sat near the foot). */
+.home-rise .hx-c-mid {
+  align-items: center; justify-content: center; text-align: center;
+  gap: 18px;
+  padding: 0 20px;
+}
+@media (min-width: 1024px) { .home-rise .hx-c-mid { gap: 22px; } }
+.home-rise .hx-name { font-size: clamp(52px, 15vw, 170px); }
+/* Desktop: 150px at most. */
+@media (min-width: 1024px) { .home-rise .hx-name { font-size: clamp(52px, 11vw, 150px); } }
+.home-rise .hx-c-mid .hero-open {
+  position: static; padding: 0; text-align: center; letter-spacing: 0.12em;
+}
+.home-rise .hx-c-mid .hero-open::before { content: none; }
+/* Phones: a good step smaller (Brad, 2026-09-29: "far too big"). */
+@media (max-width: 767px) {
+  .home-rise .hx-c-mid .hero-open { font-size: 10px !important; letter-spacing: 0.1em !important; line-height: 1.7; }
+  /* The dot becomes the line break: the hours on one line, the address on
+     the next, rather than "Cleethorpes" left alone. */
+  .home-rise .hx-c-mid .hero-open > span[aria-hidden="true"] { display: block; height: 0; overflow: hidden; }
+}
+.home-rise .hx-c-mid .hero-cta { margin-top: 6px; }
+
+/* The horses in motion (HeroVideo.tsx): over the photograph, under the
+   wash and the type, faded in once it is playing. */
+.hx-c-video {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hx-c-video[data-playing] { opacity: 1; }
+
+.home-rise .arr-rail { background: transparent; }
+.home-rise .arr-rail .stmt-text { color: var(--bb-black); }
+.home-rise .arr-rail .arr-dot { background: rgba(14, 11, 12, 0.35); }
+/* Set like the category card's title (Brad, 2026-09-29: "use that font"):
+   Hanken 500 in capitals, tight rather than tracked out, a size up. And not
+   edge to edge: held to the page's container with a longer fade at each end. */
+.home-rise .arr-rail {
+  width: min(var(--container), calc(100% - 2 * var(--gutter)));
+  margin-inline: auto;
+}
+.home-rise .arr-rail .stmt-viewport {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+}
+.home-rise .arr-rail .stmt-text {
+  font-weight: 500;
+  font-size: clamp(20px, 2.4vw, 32px) !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* ══ Shop by category on phones and tablets: folding strips ════════════════
+   2026-09-29, Brad's pick C (CategoryTabs.tsx). Four strips stacked, each
+   its name in capitals over a dimmed slice of the photograph; the open one
+   shows the whole photograph with the desktop's glass tag, name and "Shop
+   <category>" line. The height animates (layout), accepted for four boxes
+   as on desktop; reduced motion drops the transition. */
+@media (max-width: 1023px) {
+  .home-rise .ctab-row {
+    display: flex; flex-direction: column; gap: 8px;
+    overflow: visible; scroll-snap-type: none; margin: 0; padding: 0;
+  }
+  .ctab-panel {
+    flex: none; width: 100%; aspect-ratio: auto; height: 76px; scroll-snap-align: none;
+    transition: height 650ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ctab-panel[data-on] { height: min(118vw, 62svh); }
+  .ctab-pic img { object-position: 50% 25%; }
+  .ctab-label, .ctab-cta { display: none; }
+  .ctab-link::before {
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: #000; opacity: 0.45; transition: opacity 500ms ease;
+  }
+  .ctab-panel[data-on] .ctab-link::before { opacity: 0; }
+  .ctab-link::after { background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.15) 45%, rgba(0, 0, 0, 0) 70%); }
+  .ctab-v {
+    display: block; position: absolute; z-index: 2; left: 20px; top: 50%; transform: translateY(-50%);
+    color: #FFFFFF; font: 500 22px/1 var(--font-body), sans-serif; letter-spacing: -0.01em !important;
+    font-size: 22px !important; text-transform: uppercase; white-space: nowrap;
+    transition: opacity 300ms ease;
+  }
+  .ctab-panel[data-on] .ctab-v { opacity: 0; }
+  .ctab-d {
+    display: flex; position: absolute; z-index: 2; left: 20px; right: 20px; bottom: 20px;
+    flex-direction: column; align-items: flex-start; gap: 8px;
+    opacity: 0; transition: opacity 400ms ease;
+  }
+  .ctab-panel[data-on] .ctab-d { opacity: 1; transition-delay: 200ms; }
+  .ctab-d-tag {
+    padding: 5px 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 999px; background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    font: 600 11px/1.2 var(--font-body), sans-serif; text-transform: uppercase; color: #FFFFFF;
+  }
+  .ctab-panel .ctab-d-title {
+    font-family: var(--font-body), sans-serif; font-weight: 500; font-size: 40px !important; line-height: 1;
+    letter-spacing: -0.01em; text-transform: uppercase; color: #FFFFFF; white-space: nowrap;
+  }
+  .ctab-d-go {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 4px;
+    font: 600 12px/1 var(--font-body), sans-serif; font-size: 12px !important; text-transform: uppercase; color: rgba(255, 255, 255, 0.85);
+  }
+  .ctab-d-go svg { width: 12px; height: 12px; }
+}
+@media (max-width: 1023px) and (prefers-reduced-motion: reduce) {
+  .ctab-panel, .ctab-link::before, .ctab-v, .ctab-d { transition: none; }
+}
+
+/* ══ Home, 2026-09-29 (Brad), with the light header trial ══════════════════
+   Shop by category sits closer under the hero now the marquee is gone. */
+.home-rise #rails.ctab { padding-top: clamp(24px, 3vw, 40px) !important; }
+
+/* Shop owner on phones and tablets: her words set as her quote, with her
+   name under them, and a round arrow on her photograph to /contact in place
+   of the Get in touch button. */
+.owner-photo-cta { display: none; }
+.owner-bio-cite { display: none; }
+@media (max-width: 1023px) {
+  .owner-details .owner-cta { display: none; }
+  .owner-photo-cta {
+    position: absolute; z-index: 3; right: 16px; bottom: 16px;
+    display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
+    background: #FFFFFF; color: var(--bb-black);
+    box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.45);
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .owner-photo-cta:active { transform: scale(0.94); }
+  /* Her name is drawn over the photograph and its box covered the arrow's
+     middle, so taps landed on the heading. It has nothing to click. */
+  .owner .owner-name { pointer-events: none; }
+  .owner-photo-cta:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+  .owner-bio-text { font-size: 18px !important; line-height: 1.6; color: var(--bb-black); }
+  .owner-bio-cite { padding-left: 20px; }
+}
+/* Her words set as her quote at every width (phones 2026-09-29, desktop the
+   same day, Brad): a big serif opening mark, a closing one, and her name
+   under them. The marks hang on the paragraph itself: .owner-bio is
+   display: contents, so it has no box of its own to hang one on. */
+.owner-bio-text:first-child::before {
+  content: "“"; display: block; height: 36px; margin: 0 0 2px -2px;
+  /* A serif mark: Hanken's own quote at this size reads as two slashes. */
+  font: 400 80px/1 Georgia, "Times New Roman", serif; color: var(--bb-black);
+}
+.owner-bio-text:has(+ .owner-bio-cite)::after { content: "”"; }
+.owner-bio-cite {
+  display: block; margin: 16px 0 0;
+  font: 600 12px/1 var(--font-body), sans-serif; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(14, 11, 12, 0.64);
+}
+.owner-bio-cite::before { content: "— "; }
+/* Desktop: the cite takes the row under her words in the right half. */
+@media (min-width: 1024px) {
+  .owner-bio-cite { grid-column: 2; grid-row: 5; }
+}
+@media (max-width: 1023px) and (prefers-reduced-motion: reduce) { .owner-photo-cta { transition: none; } }
+
+/* The FAQ on the home page (2026-09-29, Brad): the section stays white and
+   the question pills carry a chrome rim on a white face (below). "Ask us anything"
+   is white with ink type and an ink hairline. Other pages keep white pills. */
+/* After 21st.dev "Metallic Button" (starc007, 2026-09-29, Brad's pick for
+   the questions): a 2px chrome rim whose silver bands drift slowly, a light
+   that sweeps along the rim on hover, and the original's plain white face.
+   Rebuilt in CSS (the original is motion/react, one layer per span): the
+   rim is ::after, the face ::before, the sweep the summary's ::before, all
+   transform/opacity. The pill clips them (overflow hidden), so the focus
+   ring is drawn inside the face. */
+main.home-rise ~ .sfq .sfq-item {
+  --pill-fill: #FFFFFF; --pill-ink: var(--bb-black); --pill-sub: #3A3536;
+  isolation: isolate; overflow: hidden;
+  border: 2px solid transparent; background: none;
+  box-shadow: 0 8px 22px rgba(14, 11, 12, 0.22);
+}
+main.home-rise ~ .sfq .sfq-item::after {
+  content: ""; position: absolute; z-index: -3; pointer-events: none;
+  top: -2px; bottom: -2px; left: -18%; width: 136%;
+  background: linear-gradient(105deg, #111 0%, #737373 14%, #FAFAFA 26%, #525252 38%, #0A0A0A 50%, #A3A3A3 64%, #FFF 75%, #404040 87%, #111 100%);
+  animation: sfq-rim 8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+main.home-rise ~ .sfq .sfq-item::before {
+  inset: 0; z-index: -1; border: 0; border-radius: 26px; opacity: 1;
+  -webkit-mask: none; mask: none;
+  /* A plain white face, as the original has (Brad: "lets not use black");
+     the metal is the rim. */
+  background: #FFFFFF;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(14, 11, 12, 0.06);
+  transition: none;
+}
+main.home-rise ~ .sfq .sfq-q::before {
+  content: ""; position: absolute; z-index: -2; pointer-events: none;
+  top: 0; bottom: 0; left: -58%; width: 52%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55) 48%, transparent);
+  opacity: 0.6; filter: blur(3px);
+  transform: skewX(-12deg);
+  transition: transform 2.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+main.home-rise ~ .sfq .sfq-item:hover .sfq-q::before,
+main.home-rise ~ .sfq .sfq-item:has(.sfq-q:focus-visible) .sfq-q::before { transform: translateX(310%) skewX(-12deg); }
+main.home-rise ~ .sfq .sfq-q:focus-visible { outline: 2px solid var(--bb-black); outline-offset: -6px; }
+@keyframes sfq-rim { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(13%); } }
+@media (prefers-reduced-motion: reduce) {
+  main.home-rise ~ .sfq .sfq-item::after { animation: none; }
+  main.home-rise ~ .sfq .sfq-q::before { transition: none; }
+}
+main.home-rise ~ .sfq .sfq-more-cta { background: #FFFFFF; color: var(--bb-black); box-shadow: inset 0 0 0 1px var(--bb-black); }
+main.home-rise ~ .sfq .sfq-more-cta:hover { background: #F1EFED; }
+
+/* The hero no longer recedes on scroll, and the header over it is plain
+   white (a recede and a frosted header were both tried 2026-09-29 and
+   taken off the same day, Brad). */
+
+/* "Follow us" on phones (2026-09-29, Brad): centred and much smaller, a
+   label over the two tiles rather than a section heading. */
+@media (max-width: 767px) {
+  .ss2 .ss2-h { text-align: center; font-size: 14px !important; letter-spacing: 0.12em !important; margin-bottom: 16px; }
+}
+/* "Visit B Boutique / Come in and see it" centred on phones (Brad, same day). */
+@media (max-width: 767px) {
+  .vsc .vsc-eyebrow, .vsc .vsc-h { text-align: center !important; }
+}
+/* Phones (Brad, same day): the FAQ heading centred; "Come in and see it"
+   a size down. */
+@media (max-width: 767px) {
+  main.home-rise ~ .sfq .sfq-eyebrow, main.home-rise ~ .sfq h2.sfq-title { text-align: center; }
+  .vsc .vsc-h { font-size: 22px !important; }
+}
+
+
+/* New arrivals as product cards (NewArrivals.tsx, 2026-09-29, after the
+   Sabina template): 2 x 2 on phones, four across from 1024px. The
+   packshot's white multiplies into the card grey. */
+.na { background: #FFFFFF; color: #0E0B0C; }
+/* Heading centred (Brad, 2026-09-29); its small "Shop all" came off on 2026-09-30. */
+.home-rise .na .ctab-head { flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; margin-bottom: clamp(28px, 3vw, 40px); }
+.ccard-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }
+@media (min-width: 1024px) { .ccard-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 16px; } }
+/* Four on phones and tablets, a 2 x 2 (Brad, 2026-09-29). display:none, so
+   the two hidden cards' lazy photos never download. */
+@media (max-width: 1023px) { .ccard-grid > li:nth-child(n + 5) { display: none; } }
+.ccard { display: block; color: inherit; text-decoration: none; }
+.ccard:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 12px; }
+.ccard-media { position: relative; display: block; aspect-ratio: 4 / 5; border-radius: 12px; overflow: hidden; background: #F4F4F4; }
+.ccard-media picture { display: block; width: 100%; height: 100%; }
+.ccard-img { display: block; width: 100%; height: 100%; object-fit: contain; padding: 6%; box-sizing: border-box; mix-blend-mode: multiply; transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1), opacity 400ms cubic-bezier(0.16, 1, 0.3, 1); }
+/* The model photograph over the packshot on hover (HoverPhoto: hover
+   screens only, after the first paint). Both are 4:5, so it fills the card. */
+.ccard .prod-photo--alt { mix-blend-mode: multiply; opacity: 0; transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1); }
+.ccard:hover .prod-photo--alt, .ccard:focus-visible .prod-photo--alt { opacity: 1; }
+.ccard:is(:hover, :focus-visible) .ccard-media:has(.prod-photo--alt) .ccard-img { opacity: 0; }
+/* True only while her sale runs (wasPriceP in lib/catalogue.ts). */
+.ccard-tag { position: absolute; z-index: 3; top: 14px; left: 14px; padding: 5px 10px; border-radius: 6px; background: var(--bb-red, #6E0A10); color: #FFFFFF; font: 600 12px/1.2 var(--font-body), sans-serif; letter-spacing: 0.04em; }
+.ccard-name { display: block; margin-top: 12px; font: 400 16px/1.3 var(--font-body), sans-serif; }
+.ccard-price { display: block; margin-top: 4px; font: 600 15px/1.3 var(--font-body), sans-serif; }
+@media (min-width: 1024px) { .ccard-name { font-size: 18px; } .ccard-price { font-size: 17px; } }
+@media (prefers-reduced-motion: reduce) { .ccard-img, .ccard .prod-photo--alt { transition: none; } }
+
+/* The page slides up over the hero (2026-09-29, Brad, after the Veon
+   template): the hero card stays where it sits, under the header, and
+   everything after it scrolls over it on a white sheet. Plain scrolling,
+   nothing animates, so reduced motion is unaffected. The hero does not
+   shrink or move (locked decision 8 is about that, and still holds). */
+.home-rise .hx-c { position: sticky; top: var(--header-h); z-index: 0; }
+.home-rise > .rise { position: relative; z-index: 1; background: #FFFFFF; }
+
+/* Shop the collection's heading (2026-09-29, Brad): centred, and a step
+   smaller than the other section headings, with no eyebrow. */
+.home-rise .nis .cf-head { text-align: center; align-items: center; }
+.home-rise .nis .cf-h2 { font-size: clamp(18px, 1.7vw, 24px) !important; }
+
+/* Add to bag and Buy now labels on the same centre line (Brad, 2026-09-29):
+   the arrow sat beside "Add to bag" and pushed it off centre, so it is
+   pinned to the button's right edge instead. */
+.atb .atb-add .cf-submit-arrow { position: absolute; right: 22px; top: 50%; margin: 0; line-height: 0; transform: translateY(-50%); }
+.atb .atb-add:is(:hover, :focus-visible):not(:disabled) .cf-submit-arrow { transform: translate(4px, -50%); }
+@media (prefers-reduced-motion: reduce) { .atb .atb-add:hover:not(:disabled) .cf-submit-arrow { transform: translateY(-50%); } }
+
+/* Reviews on a desktop: the cards side by side, slightly fanned, on one
+   screen (Brad, 2026-09-29). Phones and tablets keep the scroll pile. */
+.rv-row { display: none; }
+@media (min-width: 1024px) {
+  .rv--stack .rv-stack-scroll { display: none; }
+  .rv-row { display: flex; justify-content: center; gap: 28px; list-style: none; margin: clamp(40px, 4vw, 56px) auto 0; padding: 0 var(--gutter, 40px) 12px; }
+  .rv-row-card {
+    flex: 0 1 360px; min-height: 340px;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 24px;
+    padding: 28px; text-align: center; background: #FFFFFF;
+    border: 1px solid rgba(14, 11, 12, 0.1); border-radius: 16px;
+    box-shadow: 0 28px 56px -32px rgba(14, 11, 12, 0.35);
+    transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .rv-row-card:first-child:not(:only-child) { transform: rotate(-3deg) translateY(14px); }
+  .rv-row-card:last-child:not(:only-child) { transform: rotate(3deg) translateY(14px); }
+  .rv-row-card:hover { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .rv-row-card { transition: none; } }
+
+/* Why B Boutique on a desktop: the first four reasons in one row, no pin
+   (ScrollAcross upTo). Phones scroll across all seven. */
+@media (min-width: 1024px) { .why-list > .why-item:nth-child(n + 5) { display: none; } }
+
+/* Every section heading centred, no small grey label above it (Brad,
+   2026-09-29), to match New arrivals and Shop the collection. */
+.home-rise .uc3-head, .home-rise .why-head { text-align: center; align-items: center; justify-content: center; }
+.vsc-h, .ss2-h, .sfq-title, .rv-h { text-align: center; }
+
+/* Phones (2026-09-29, Brad: "a massive gap"). Why B Boutique's held frame
+   is as tall as its content and sticks under the header, rather than a
+   full screen with the content at the top; the review pile sits near the
+   top of its frame instead of in the middle of it. */
+@media (max-width: 1023px) { [data-across-track] .across-pin { top: var(--header-h); height: auto; padding-top: 16px; padding-bottom: 24px; } }
+@media (max-width: 1023px) { .rv-stack-stage { place-items: start center; padding-top: calc(var(--header-h) + 32px); } }
+.ss2 .ss2-h { text-align: center; }
+@media (min-width: 1024px) { .rv-row { max-width: calc(var(--container, 1280px) + 2 * var(--gutter, 40px)); box-sizing: border-box; } }
+
+/* The review pile's held frame is a full screen, and once the last card
+   settles its lower part is empty (Brad, 2026-09-29: "a big gap"). The
+   next section is pulled up over that empty part, so Visit arrives just
+   under the cards as the pile finishes. Nothing in the pile moves
+   differently. 380px is .rv-stack-cards' height, plus 56px of air. */
+@media (max-width: 1023px) {
+  .rv--stack .rv-stack-scroll { margin-bottom: calc(-1 * max(0px, 100svh - var(--header-h) - 32px - 380px - 56px)); }
+  .rv--stack + * { position: relative; z-index: 1; }
+}
+
+/* Phones and tablets: the hero fills the screen, edge to edge and under the
+   white header, not an inset card (Brad, 2026-09-30; desktop keeps the card).
+   It is also a speed fix: browsers do not count an image that covers the
+   whole screen as the page's main content (LCP), so the phone's LCP becomes
+   the hero's text, which paints at once. The text is centred in the part
+   below the header. */
+@media (max-width: 1023px) {
+  .home-rise .hx-c { margin: 0; height: 100svh; min-height: 0; max-height: none; border-radius: 0; top: 0; }
+  .home-rise .hx-c-mid { padding-top: var(--header-h); }
+}

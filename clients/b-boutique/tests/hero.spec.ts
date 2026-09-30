@@ -37,7 +37,11 @@ test('the campaign hero survives a swipe and shows one frame, one h1, one button
   const img = hero.locator('.hx-c-photo img');
   await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   expect(await img.evaluate((el: HTMLImageElement) => el.currentSrc)).toMatch(/horses-d/);
-  /* The header starts see-through over the photograph. */
+  /* The header sits white on the white page above the card, in ink, with no
+     announcement strip (2026-09-29). */
   await page.evaluate(() => window.scrollTo(0, 0));
-  await expect(page.locator('header').first()).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  const header = page.locator('header').first();
+  await expect(header).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(header.locator('.navbar-mark')).not.toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(page.locator('.announce')).toHaveCount(0);
 });

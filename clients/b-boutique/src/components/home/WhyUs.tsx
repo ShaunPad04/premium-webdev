@@ -27,11 +27,13 @@ import { ScrollAcross } from "@/components/ScrollAcross";
  * Scrolling down through the section moves the four across, right to left,
  * while the section holds still (2026-09-27, Brad; ScrollAcross). */
 const POINTS = [
+  /* The first four are the desktop row (2026-09-29, Brad: one screen, no
+     pin); phones scroll across all seven. */
   { img: "hand", title: "Chosen by hand", text: "Every piece on the rails is chosen by hand, one at a time." },
-  { img: "one", title: "Mostly one of one", text: "Most pieces here are one of one, so yours won't be on everyone else." },
   { img: "try", title: "Try it on in the shop", text: "Everything online is on the rail in Cleethorpes, so you can see it first." },
   { img: "parcel", title: `Free UK delivery over ${formatPriceShort(FREE_DELIVERY_OVER_P)}`, text: "Sent by Royal Mail, packed by hand." },
   { img: "return", title: "14 days to change your mind", text: "Bought online? Send it back within 14 days for a refund." },
+  { img: "one", title: "Mostly one of one", text: "Most pieces here are one of one, so yours won't be on everyone else." },
   { img: "hold", title: "We'll hold it for you", text: "We keep a piece for four days with a deposit paid." },
   { img: "gift", title: "Gift cards in any amount", text: "Bought and used in the shop, against anything on the rails." },
 ] as const;
@@ -41,10 +43,9 @@ const set = (n: string, ext: string) => `/img/why/${n}-640.${ext} 640w, /img/why
 export function WhyUs() {
   return (
     <section className="why" aria-labelledby="why-h">
-      <ScrollAcross className="why-track">
+      <ScrollAcross className="why-track" upTo="(max-width: 1023px)">
       <div className="why-inner">
         <div className="why-head">
-          <p className="label why-eyebrow">Why B Boutique</p>
           <h2 id="why-h" className="why-h">
             A shop, <em>not a warehouse</em>
           </h2>

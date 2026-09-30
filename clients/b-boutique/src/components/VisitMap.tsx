@@ -1,29 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /* The map at the top of the Visit card (2026-09-28, after 21st.dev
-   "Expanded Map" by dev.shejanmahamud, set into one listing card). On a
-   desktop the Google embed loads only when opened, as /privacy says; on a
-   phone it starts open and the lazy iframe loads as Visit nears the screen.
-   Nothing reaches Google before either. The server renders it closed; a
-   phone opens it once hydrated (a media query store, not setState in an
-   effect).
+   "Expanded Map" by dev.shejanmahamud, set into one listing card).
 
-   On a phone the embed's src is set only once the map is within ~600px of
-   the screen (2026-09-28). loading="lazy" alone uses Chrome's own distance,
-   which on a slow connection is thousands of pixels: on /about the embed
-   started while the page was still painting. */
-const PHONE = "(max-width: 1023px)";
-const subscribe = (cb: () => void) => {
-  const m = window.matchMedia(PHONE);
-  m.addEventListener("change", cb);
-  return () => m.removeEventListener("change", cb);
-};
-
+   Open on every screen since 2026-09-29 (Brad: the closed map looked
+   unfinished on a desktop; it had waited for a click there, and phones
+   already had it open). The Google embed's src is set only once the map is
+   within ~600px of the screen, so nothing reaches Google before Visit is
+   nearly in view, as /privacy says (lib/policies.ts). loading="lazy" alone
+   uses Chrome's own distance, which on a slow connection is thousands of
+   pixels: on /about the embed started while the page was still painting. */
 export function VisitMap({ src, label }: { src: string; label: string }) {
-  const [clicked, setClicked] = useState(false);
-  const phone = useSyncExternalStore(subscribe, () => window.matchMedia(PHONE).matches, () => false);
   const frame = useRef<HTMLIFrameElement>(null);
   const [near, setNear] = useState(false);
   useEffect(() => {
@@ -32,18 +21,6 @@ export function VisitMap({ src, label }: { src: string; label: string }) {
     const io = new IntersectionObserver(([e]) => e.isIntersecting && setNear(true), { rootMargin: "600px 0px" });
     io.observe(el);
     return () => io.disconnect();
-  }, [near, phone]);
-  return clicked || phone ? (
-    <iframe ref={frame} className="vsc-map" src={clicked || near ? src : undefined} title={`Map of ${label}`} referrerPolicy="no-referrer-when-downgrade" />
-  ) : (
-    <button type="button" className="vsc-map vsc-map--closed" onClick={() => setClicked(true)}>
-      <span className="vsc-pin" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="22" height="22">
-          <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" fill="none" stroke="currentColor" strokeWidth="1.6" />
-          <circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" strokeWidth="1.6" />
-        </svg>
-      </span>
-      <span>Show the map</span>
-    </button>
-  );
+  }, [near]);
+  return <iframe ref={frame} className="vsc-map" src={near ? src : undefined} title={`Map of ${label}`} referrerPolicy="no-referrer-when-downgrade" />;
 }

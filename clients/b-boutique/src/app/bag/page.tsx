@@ -18,7 +18,7 @@ export default function BagPage() {
       <MotionLayer />
       {/* Solid, because the route no longer opens on a dark masthead.
           See the `solid` note in Nav.tsx. */}
-      <Nav solid />
+      <Nav solid light />
       <main id="main" className="flex-1">
         {/* No PageMasthead. It was a full dark band reading "Your bag." with
             a lede under it — on a 390px phone the first piece in the bag did

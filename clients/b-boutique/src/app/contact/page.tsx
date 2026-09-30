@@ -6,7 +6,6 @@ import { pageMeta } from "@/lib/site";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { ContactForm } from "@/components/ContactForm";
-import { RibbonBand } from "@/components/RibbonBand";
 import { Visit } from "@/components/Visit";
 import { addressLines, openingPhrase, shop } from "@/lib/shop";
 import { socials } from "@/lib/nav";
@@ -36,7 +35,7 @@ export const metadata: Metadata = pageMeta({
 export default function ContactPage() {
   return (
     <>
-      <Nav solid />
+      <Nav solid light />
       <main id="main" className="flex-1">
         <section className="ct" aria-labelledby="ct-title">
           <div className="ct-photo">
@@ -80,8 +79,8 @@ export default function ContactPage() {
           </div>
         </section>
 
-        <RibbonBand />
-
+        {/* No moving band between the form and Visit (2026-09-29, Brad: "dont
+            have a marquee"). RibbonBand and its three versions are kept. */}
         <Visit />
       </main>
       <Footer />

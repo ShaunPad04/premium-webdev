@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <>
-      <Nav solid />
+      <Nav solid light />
       <main id="main" className="flex-1">
         <section className="nf404">
           <h1 className="nf404-h" aria-label="Page not found">

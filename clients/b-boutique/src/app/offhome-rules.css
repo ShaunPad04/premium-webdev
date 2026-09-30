@@ -5665,3 +5665,35 @@ h3.csr-grid-title { margin: 10px 0 0; text-align: center; font-size: 24px !impor
 @media (hover: none), (pointer: coarse) {
   .qa { border-top: 1px solid rgba(14, 11, 12, 0.12); }
 }
+
+/* Perspective Marquee (ui/perspective-marquee.tsx), the /contact band. On
+   the site's white: ink words, white fades. */
+.pm {
+  position: relative; overflow: hidden; background: #FFFFFF;
+  height: clamp(200px, 24vw, 340px);
+  display: flex; align-items: center;
+  perspective: 1200px;
+}
+.pm-tilt { width: 100%; transform: rotateX(8deg) rotateY(-28deg); transform-style: preserve-3d; }
+.pm-track { display: flex; width: max-content; animation: pm-run 60s linear infinite; }
+.pm-copy { display: flex; white-space: nowrap; }
+.pm-item {
+  padding-right: 0.9em;
+  font: 600 clamp(44px, 6.4vw, 92px)/1 var(--font-body), sans-serif;
+  letter-spacing: -0.03em; color: var(--bb-black);
+}
+@keyframes pm-run { to { transform: translateX(-50%); } }
+.pm-blur { position: absolute; top: 0; bottom: 0; width: 34%; pointer-events: none; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.pm-blur--l { left: 0; -webkit-mask-image: linear-gradient(to right, #000, transparent); mask-image: linear-gradient(to right, #000, transparent); }
+.pm-blur--r { right: 0; -webkit-mask-image: linear-gradient(to left, #000, transparent); mask-image: linear-gradient(to left, #000, transparent); }
+.pm-fade {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0) 82%, #FFFFFF 100%),
+    linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 0) 75%, #FFFFFF 100%);
+}
+@media (prefers-reduced-motion: reduce) { .pm-track { animation: none; } }
+
+/* Curved Text Loop on /contact (ui/curved-text-loop.tsx): ink on white. */
+.rb-curve { background: #FFFFFF; padding: clamp(8px, 2vw, 32px) 0 clamp(24px, 4vw, 56px); overflow: hidden; }
+.rb-curve-text { fill: var(--bb-black); font-family: var(--font-body), sans-serif; font-weight: 600; letter-spacing: -0.01em; }

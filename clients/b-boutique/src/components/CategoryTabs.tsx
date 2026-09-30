@@ -10,15 +10,19 @@ import { featured } from "@/lib/shop";
  * or keyboard-focused opens to the whole portrait with a "Shop <category>"
  * pill, the others narrow to strips with the name running up them, and on a
  * touch screen of that width the first tap opens a panel, the second shops.
- * Phones and tablets: swipe cards, his pick B of three phone layouts: one
- * 3:4 portrait at a time with the next peeking in (CSS scroll-snap), each a
- * plain link with its name and a Shop pill. It replaced pill tabs over one
- * widened 16:9 photo. Her four real 3:4 portraits throughout.
+ * Phones and tablets since 2026-09-29: folding strips, Brad's pick C of three
+ * (A swipe cards without the Shop pill, B cards stacking on scroll). Four
+ * strips stacked with their names; the open one shows the whole photograph
+ * with the desktop's tag, name and "Shop <category>" line. The first tap on
+ * a closed strip opens it, a tap on the open one shops. (It replaced swipe
+ * cards with a Shop pill, which replaced pill tabs over one 16:9 photo.)
+ * Her four real 3:4 portraits throughout.
  *
  * Stays at #rails, so every "/#rails" link still lands here. */
 
-/* The open-first tap belongs to the desktop panels only; on a phone each
-   card is a plain link. */
+/* Wide enough for the side-by-side panels, where a mouse opens one by
+   hovering. Below it the strips stack, and hovering down them would move
+   them under the pointer, so there a click opens a strip too. */
 const desk = () => window.matchMedia("(min-width: 1024px)").matches;
 
 const UpRight = () => (
@@ -52,18 +56,19 @@ export function CategoryTabs() {
       <div className="ctab-inner">
         <div className="ctab-head">
           <h2 id="rails-heading" className="ctab-h">Shop by category</h2>
-          <Link href="/clothing" className="ctab-all">Shop all <Arrow /></Link>
+          {/* No "Shop all" here (2026-09-29, Brad): the hero's Shop all is
+              directly above. */}
         </div>
         <ul className="ctab-row">
           {featured.map((c, i) => (
-            <li key={c.slug} className="ctab-panel" data-on={i === on ? "" : undefined} onPointerEnter={(e) => { if (e.pointerType === "mouse") setOn(i); }}>
+            <li key={c.slug} className="ctab-panel" data-on={i === on ? "" : undefined} onPointerEnter={(e) => { if (e.pointerType === "mouse" && desk()) setOn(i); }}>
               <Link
                 href={c.href}
                 className="ctab-link"
                 onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) setOn(i); }}
                 onPointerDown={(e) => { touch.current = e.pointerType !== "mouse"; }}
                 onClick={(e) => {
-                  if (touch.current && i !== on && desk()) { e.preventDefault(); setOn(i); }
+                  if (i !== on && (touch.current || !desk())) { e.preventDefault(); setOn(i); }
                 }}
               >
                 {pics ? (

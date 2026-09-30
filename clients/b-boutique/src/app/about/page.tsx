@@ -48,7 +48,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <Nav solid />
+      <Nav solid light />
       <main id="main" className="flex-1">
         <div className="hs">
           <section className="hs-hero" aria-labelledby="hs-title">

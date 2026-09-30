@@ -7,7 +7,7 @@ import { Arrow } from "./Arrow";
 /* Visit B Boutique (2026-09-28). Brad picked C of three 21st.dev directions
  * (A "Location Card" with her shopfront, B "Contact Page" boxes): the
  * "Expanded Map" set into one listing card, like a shop in Google Maps. The
- * map on top (open on phones, click-to-load on a desktop), then the address
+ * map on top (open on every screen, loading as Visit nears the screen), then the address
  * with open-now, the hours / parking / email as one-line rows, and Get
  * directions across the foot. It replaced a framed details box beside a
  * separate map card, which repeated the address and wrapped awkwardly on
@@ -21,7 +21,6 @@ export function Visit() {
   const hours = openingSummary().replace(/\.$/, "");
   return (
     <section id="visit" aria-labelledby="visit-heading" className="vsc">
-      <p className="vsc-eyebrow">Visit B Boutique</p>
       <h2 id="visit-heading" className="vsc-h">Come in and see it</h2>
       <div className="vsc-card">
         <VisitMap src={mapEmbedSrc} label={shop.name} />

@@ -54,7 +54,6 @@ export function UpClose() {
   return (
     <section id="up-close" className="uc3" aria-labelledby="uc-h">
       <div className="uc3-head">
-        <p className="label uc3-eyebrow">Up close</p>
         <h2 id="uc-h" className="uc3-h">Made to be <em>touched</em></h2>
       </div>
       <UpCloseTilt items={ITEMS} />

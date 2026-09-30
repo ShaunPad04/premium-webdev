@@ -108,6 +108,14 @@ export function OwnerCard() {
                 </span>
               </div>
             )}
+            {/* Phones and tablets (2026-09-29, Brad): a round arrow on her
+                photograph instead of the Get in touch button under her
+                words. Desktop keeps the button. */}
+            <Link href="/contact" aria-label={`Get in touch with ${fullName}`} className="owner-photo-cta">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M4 10h12M11.5 5.5L16 10l-4.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
           </div>
 
           {/* Overlaps the portrait, which is the whole gesture of the card
@@ -153,11 +161,16 @@ export function OwnerCard() {
                     it is still on /about and in each product's "Our
                     commitment". */}
                 {owner.bio.length > 1 ? (
-                  owner.bio.slice(1).map((para) => (
-                    <p key={para.slice(0, 32)} className="owner-bio-text">
-                      {para}
-                    </p>
-                  ))
+                  <>
+                    {owner.bio.slice(1).map((para) => (
+                      <p key={para.slice(0, 32)} className="owner-bio-text">
+                        {para}
+                      </p>
+                    ))}
+                    {/* Set as her quote on phones and tablets (2026-09-29,
+                        Brad: "look a bit more like it came from her"). */}
+                    <p className="owner-bio-cite">{owner.firstName}, {owner.role.toLowerCase()}</p>
+                  </>
                 ) : (
                   <p className="owner-bio-ask">
                     A line or two from Hayley about the shop — in her own

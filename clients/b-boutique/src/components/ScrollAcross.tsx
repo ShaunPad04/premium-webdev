@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
@@ -17,29 +17,45 @@ import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
  * and the last card arrives as the section lets go.
  *
  * The row to move is the child marked [data-across]. Reduced motion: no
- * track, no pin, nothing moves; the CSS lays the row out as a grid. */
-export function ScrollAcross({ className, children }: { className?: string; children: ReactNode }) {
+ * track, no pin, nothing moves; the CSS lays the row out as a grid.
+ * `upTo` (a media query) limits the movement to screens that match it; the
+ * CSS must scope the pinned layout to the same query (2026-09-29, Brad:
+ * desktop off, phones keep it). */
+const never = () => () => {};
+export function ScrollAcross({ className, children, upTo }: { className?: string; children: ReactNode; upTo?: string }) {
   const track = useRef<HTMLDivElement>(null);
   const pin = useRef<HTMLDivElement>(null);
-  const reduced = usePrefersReducedMotion();
+  const reducedMotion = usePrefersReducedMotion();
+  const fits = useSyncExternalStore(
+    upTo ? (cb) => { const m = window.matchMedia(upTo); m.addEventListener("change", cb); return () => m.removeEventListener("change", cb); } : never,
+    () => (upTo ? window.matchMedia(upTo).matches : true),
+    () => true,
+  );
+  const reduced = reducedMotion || !fits;
 
   useEffect(() => {
     const t = track.current;
     const p = pin.current;
     const row = p?.querySelector<HTMLElement>("[data-across]");
-    if (!t || !p || !row || reduced) return;
+    if (!t || !p || !row || reduced || (upTo && !window.matchMedia(upTo).matches)) return;
 
+    /* The held frame is only as tall as what it holds (2026-09-29, Brad: a
+       full-screen frame left a third of a phone screen empty at its foot),
+       so the track is the frame's height plus the distance across, and
+       progress counts from where the frame sticks (its CSS `top`). */
     let distance = 0;
+    let stick = 0;
     let frame = 0;
     const measure = () => {
       distance = Math.max(0, row.scrollWidth - row.clientWidth);
-      t.style.height = `calc(100svh + ${distance}px)`;
+      stick = parseFloat(getComputedStyle(p).top) || 0;
+      t.style.height = `${p.offsetHeight + distance}px`;
     };
     const move = () => {
       frame = 0;
       const r = t.getBoundingClientRect();
-      const travel = r.height - window.innerHeight;
-      const progress = travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 0;
+      const travel = r.height - p.offsetHeight;
+      const progress = travel > 0 ? Math.min(1, Math.max(0, (stick - r.top) / travel)) : 0;
       row.style.transform = `translate3d(${-progress * distance}px, 0, 0)`;
     };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(move); };
@@ -59,10 +75,13 @@ export function ScrollAcross({ className, children }: { className?: string; chil
       t.style.height = "";
       row.style.transform = "";
     };
-  }, [reduced]);
+  }, [reduced, upTo]);
 
   return (
-    <div ref={track} className={className} data-across-track={reduced ? undefined : ""}>
+    /* The attribute follows reduced motion only, never `upTo`: the server
+       cannot know the screen, so the layout for `upTo` lives in CSS media
+       queries and the script just does not move anything where it fails. */
+    <div ref={track} className={className} data-across-track={reducedMotion ? undefined : ""}>
       <div ref={pin} className="across-pin">
         {children}
       </div>

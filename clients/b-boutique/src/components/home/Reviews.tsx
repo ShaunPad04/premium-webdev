@@ -15,7 +15,10 @@ import { googleSummary, reviews, type Review } from "@/lib/reviews";
  * stars, the words. No date ("2 hours ago" is true for two hours) and no
  * review count (it went stale with every new review); the link goes to the
  * listing, which always has both. With reduced motion there is no pile:
- * the cards sit in a plain grid. */
+ * the cards sit in a plain grid. On a desktop (2026-09-29, Brad: the pile
+ * took three screens for three short reviews) the cards sit side by side,
+ * slightly fanned, on one screen; the pile is phones and tablets only. Both
+ * are in the page and CSS shows one, so nothing swaps after load. */
 
 /* The avatar's colour is picked from the name, so it stays the same on
    every visit, as Google's does. Each has white text at 4.5:1 or better. */
@@ -49,7 +52,6 @@ export function Reviews({ items = reviews }: { items?: Review[] }) {
   return (
     <section className="rv rv--stack" aria-labelledby="rv-h">
       <div className="rv-inner">
-        <p className="label rv-eyebrow">Reviews</p>
         <h2 id="rv-h" className="rv-h">In their <em>words</em></h2>
         <p className="rv-summary">
           <ReviewStars rating={5} className="rv-stack-stars" />
@@ -70,6 +72,14 @@ export function Reviews({ items = reviews }: { items?: Review[] }) {
           ))}
         </ul>
       ) : (
+        <>
+        <ul className="rv-row">
+          {items.map((r, i) => (
+            <li key={r.name} className="rv-row-card" aria-labelledby={`rvd${i}-n`}>
+              <Card r={r} id={`rvd${i}`} />
+            </li>
+          ))}
+        </ul>
         <ContainerScroll className="rv-stack-scroll" style={{ height: `${Math.max(2, items.length) * 75}svh` }}>
           <div className="rv-stack-stage">
             <CardsContainer className="rv-stack-cards">
@@ -89,6 +99,7 @@ export function Reviews({ items = reviews }: { items?: Review[] }) {
             </CardsContainer>
           </div>
         </ContainerScroll>
+        </>
       )}
     </section>
   );

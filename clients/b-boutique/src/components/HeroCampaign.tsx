@@ -2,6 +2,7 @@ import { shop } from "@/lib/shop";
 import { Cta, sources, Where } from "./HeroStrips";
 import { HeroName } from "./HeroName";
 import { HeroPhoto } from "./HeroPhoto";
+import { HeroVideo } from "./HeroVideo";
 
 /* The home hero since 2026-09-27: "C, the Campaign", Brad's pick of three
  * directions (A framed shop interior, B new-in piece beside the brand, C one
@@ -29,12 +30,13 @@ export function HeroCampaign() {
     <section id="top" className="hx hx-c" aria-labelledby="hx-h">
       <h1 id="hx-h" className="sr-only">{heading}</h1>
       <div className="hx-c-frame">
-        <HeroPhoto sources={sources("horses")} fallback="/img/hero/horses-m.jpg" />
+        <HeroPhoto sources={sources("horses")} />
+        <HeroVideo />
         <div className="hx-c-mid">
           <HeroName />
+          <Where />
           <Cta />
         </div>
-        <Where />
       </div>
     </section>
   );

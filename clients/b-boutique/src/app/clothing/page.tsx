@@ -48,7 +48,7 @@ export default function ClothingPage() {
       {/* No PageMasthead (2026-09-26, Brad): the photograph band above the
           rails is gone and the header is solid, as on the bag. The page's one
           h1 is the category name, over the pieces. */}
-      <Nav solid />
+      <Nav solid light />
       <main id="main" className="flex-1">
 
         <ClothingShelf title="Clothing" current="all" count={items.length}>

@@ -1393,3 +1393,65 @@ original's scrubbed blur/brightness filter is left out). The Scroll Gallery
   it measures 95 again. Keep it that way.
 - Reduced motion: a still grid, enforced in CSS as well. `.uc3` clips
   sideways overflow (the cards slide in from 30% to the side).
+
+## Home rebuild and speed pass — 2026-09-29/30 (Brad; live 2026-09-30)
+
+Everything below was a local trial first, reviewed by Brad in videos, then
+pushed live on his instruction.
+
+- **Header and hero.** The header is white with black logo and links on the
+  home page (`<Nav light />`), no announcement strip. The hero is the horses
+  with the Higgsfield Seedance loop over it (`HeroVideo.tsx`: after the first
+  paint, never under reduced motion or Save-Data, paused once the page has
+  covered it). **Desktop:** an inset card, 12px from the sides, rounded.
+  **Phones and tablets:** full screen under the header (2026-09-30), which is
+  also a speed fix, see below. The page slides up over the pinned hero on a
+  white sheet (`.home-rise .hx-c` sticky, `.rise` above it); the hero does
+  not shrink or move, so locked decision 8 still holds.
+- **Home order:** hero, New arrivals, Shop the collection, Hayley, Up close,
+  Why B Boutique, Reviews, Visit, Follow us, FAQ. **Shop by category came
+  off** (Brad: three product sections was too many); `CategoryTabs.tsx` is
+  kept. Every section heading is centred with no small grey label above it.
+- **New arrivals** (`NewArrivals.tsx`, owns `#new-in`): the first six
+  `newIn` pieces as grey cards after the Sabina/Veon templates, three across
+  on a desktop, four (2x2) on phones and tablets. Her packshot on the card,
+  the model photo on hover (desktop), name and price. The badge says "£10
+  off" only where the piece is really in her sale (`wasPriceP`); **never
+  "Best seller"**, which nobody has measured. No "Shop all" (the hero's is
+  above).
+- **Shop the collection** (`NewInSlides.tsx` + `NewInSlidesView.tsx`,
+  `#collection`): the swipe slides, the next ten `newIn` pieces on the model,
+  heading centred and small. The server sends photo NAMES and the browser
+  builds the pictures: sending the built tags was 152 KB of the home page's
+  241 KB of HTML, ahead of the phone's LCP.
+- **Packshots**: 40 clothing pieces have a garment-only photo on white
+  (`lib/packshots.ts`, `assets/packshot`, `scripts/build-packshot.mjs`),
+  each checked against her photo. Product cards: model first, the piece on
+  its own on hover. No quick "Add to bag" on product cards (`QuickAdd.tsx`
+  kept). Add to bag / Buy now labels share one centre line.
+- **Why B Boutique**: desktop is one still row of the four strongest reasons
+  (no pin); phones scroll across all seven. The pinned layout is scoped by
+  CSS media query, NOT by script: a script switch moved the row after load
+  and measured a 0.84 layout shift on desktop.
+- **Reviews**: desktop shows all four cards side by side, slightly fanned;
+  phones keep the scroll pile. The empty lower half of the pile's frame is
+  covered by pulling Visit up over it (phones).
+- **Visit map** now loads by itself on every screen as Visit nears the view
+  (a desktop click was needed before); /privacy says exactly this.
+- **Speed (Lighthouse, n=3 medians, local production build).** Home phone
+  76 -> 91, desktop 68 -> 97; every other page 90-94 phone, 100 desktop.
+  What mattered:
+  - The phone LCP: browsers do not time a full-screen image as the main
+    content, so on the full-screen phone hero the LCP is the hero text
+    (1.56s in a real throttled browser) and the phone photo is added only
+    after the first paint (`HeroPhoto.tsx`). Loaded with the page it was
+    85: Lighthouse charges every request made before the LCP to the LCP.
+    On the desktop card the photo IS the LCP and loads with the page.
+  - Phone hero photo capped at about 2x sharpness (`PHONE_SIZES` in
+    `HeroStrips.tsx`) and the phone steps softened by a 0.8px blur before
+    encoding (`build-hero.mjs`): 355 KB -> 131 KB for a 2.6x phone.
+  - Hero videos re-encoded CRF 29/31: 4.6/4.2 MB -> 2.4/2.1 MB, SSIM ~0.96.
+  - Hover photos load only when their card is within ~400px.
+  - `experimental.inlineCss` re-measured and still worse (next.config.ts).
+- Tests updated for the new sections (#collection); the contrast test waits
+  for finite fades before checking. 105 pass, 15 skip by design.

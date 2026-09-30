@@ -52,7 +52,6 @@ export function ShortFaq({ all = false }: { all?: boolean }) {
 
   return (
     <section id={all ? "faq" : undefined} className="sfq" aria-labelledby="sfq-h">
-      <p className="sfq-eyebrow">Need help?</p>
       <h2 id="sfq-h" className="sfq-title">Frequently asked questions</h2>
       {/* The same questions as structured data, once (home page only), so
           search and AI answers can quote them word for word. */}

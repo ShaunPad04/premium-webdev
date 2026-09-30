@@ -8,6 +8,15 @@ import { LuminaInteractiveList, LuminaTitle, type LuminaSlide } from "@/componen
  * pick from 21st.dev, in its centred layout). The photographs are
  * pre-encoded by scripts/build-hero.mjs from assets/hero. */
 
+/* The phone frame is as wide as the screen or 0.56 of its height, whichever
+   is larger. On screens sharper than ~2.2x the size is scaled down so the
+   pick stops at about 2x (2026-09-29, Brad: "get the phone performance
+   higher"): a 2.6x phone took the 1200 file (230 KB) and now takes the 900
+   (131 KB). It is the phone's LCP image and the looping video covers it once
+   playing, so the extra sharpness above 2x was bytes on the critical path. */
+const PHONE_SIZES =
+  "(min-resolution: 2.8dppx) calc(max(100vw, 56svh) * 0.65), (min-resolution: 2.2dppx) calc(max(100vw, 56svh) * 0.75), max(100vw, 56svh)";
+
 export const sources = (file: string) => [
   /* 1920 / 2560 / 3840 (the 4K frame): a laptop takes 1920, retina and 4K
      screens take the larger steps. The frame is full-bleed, so 100vw. */
@@ -17,8 +26,8 @@ export const sources = (file: string) => [
   /* Cover-cropped from a 9:16 portrait, so on a phone the frame is as wide
      as the screen or 0.56 of its height, whichever is larger. */
   /* 720 step (2026-09-28): the common 412px phone at 1.75x needs ~721px. */
-  { type: "image/avif", srcSet: `/img/hero/${file}-s720.avif 720w, /img/hero/${file}-s.avif 900w, /img/hero/${file}-s1200.avif 1200w, /img/hero/${file}-m.avif 1536w, /img/hero/${file}-s1800.avif 1800w`, sizes: "max(100vw, 56svh)" },
-  { type: "image/webp", srcSet: `/img/hero/${file}-s720.webp 720w, /img/hero/${file}-s.webp 900w, /img/hero/${file}-s1200.webp 1200w, /img/hero/${file}-m.webp 1536w, /img/hero/${file}-s1800.webp 1800w`, sizes: "max(100vw, 56svh)" },
+  { type: "image/avif", srcSet: `/img/hero/${file}-s720.avif 720w, /img/hero/${file}-s.avif 900w, /img/hero/${file}-s1200.avif 1200w, /img/hero/${file}-m.avif 1536w, /img/hero/${file}-s1800.avif 1800w`, sizes: PHONE_SIZES },
+  { type: "image/webp", srcSet: `/img/hero/${file}-s720.webp 720w, /img/hero/${file}-s.webp 900w, /img/hero/${file}-s1200.webp 1200w, /img/hero/${file}-m.webp 1536w, /img/hero/${file}-s1800.webp 1800w`, sizes: PHONE_SIZES },
 ];
 
 const SLIDES: LuminaSlide[] = [

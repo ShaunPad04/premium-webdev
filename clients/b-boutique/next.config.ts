@@ -5,7 +5,9 @@ const nextConfig: NextConfig = {
      and measured worse: performance 94 -> 89 and LCP 3.0s -> 3.7s. The
      stylesheet is render-blocking but it is also cached and parallel-fetched,
      and folding 13.7 KB into the document delays the document itself, which is
-     strictly upstream of the LCP text. Do not re-enable without re-measuring. */
+     strictly upstream of the LCP text. Do not re-enable without re-measuring.
+     Re-measured 2026-09-29 (LCP now the hero photo, CSS 29 KB), n=3 phone:
+     home 85 -> 84, /clothing 93 -> 89, a product 91 -> 88. Still worse. */
   images: {
     // AVIF first: the hero is a 2.8 MB PNG and it is the LCP element, so the
     // encoding choice is the single biggest lever on that metric.

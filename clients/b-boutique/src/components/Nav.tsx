@@ -47,7 +47,7 @@ import { NavSearch } from "./NavSearch";
  * Collapsing them into one would put the strip away before the product page
  * had been scrolled at all, which is a visible regression on a route that
  * currently shows it. */
-export function Nav({ solid = false }: { solid?: boolean } = {}) {
+export function Nav({ solid = false, light = false }: { solid?: boolean; light?: boolean } = {}) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -74,11 +74,18 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
   const opaque = solid || scrolled;
   const pathname = usePathname();
 
+  /* `light` (2026-09-29, Brad, after the Thought Bulb reference; home page
+     first, local trial): the header sits on the white page with no bar, no
+     announcement strip and no scrim, and everything in it is ink. The
+     colours live in globals.css under header[data-tone="light"]. */
+  const bar = light ? "#FFFFFF" : opaque ? "#0A0A0A" : "transparent";
+
   return (
     <header
       /* z-[60] keeps the Menu trigger above the panel it opens (z-50); the
          panel reserves top padding for exactly this. */
       className="fixed inset-x-0 top-0 z-[60] text-bb-white"
+      data-tone={light ? "light" : undefined}
       style={{
         /* The scrollbar's width while the menu locks the page; see
            CornerMenu. 0 the rest of the time. */
@@ -91,17 +98,18 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
            showed through and turned the bar a muddy grey-brown sitting
            under a strip of the true ink. Two shades of "dark" stacked on
            top of each other read as a mistake. One colour, one band. */
-        background: opaque ? "#0A0A0A" : "transparent",
-        borderBottom: `1px solid ${opaque ? "rgba(255,255,255,.10)" : "transparent"}`,
+        background: bar,
+
+        borderBottom: `1px solid ${opaque && !light ? "rgba(255,255,255,.10)" : "transparent"}`,
         transition:
-          "background 480ms var(--bb-ease), border-color 480ms var(--bb-ease)",
+          "background 320ms var(--bb-ease), border-color 480ms var(--bb-ease), box-shadow 400ms var(--bb-ease)",
       }}
     >
       {/* A light scrim, only while see-through, so the small type stays
           legible over a bright photograph. Neutral black, not the site ink:
           the warm #0E0B0C scrim over the warm masthead photographs is what
           read as maroon (Brad, 2026-09-25). */}
-      {!opaque ? (
+      {!opaque && !light ? (
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-0 h-[150px]"
@@ -138,13 +146,15 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
        * found by auditing a filled-in bag after scrolling to its form.
        * `inert` removes the subtree from the accessibility tree AND from
        * focus, which is the whole of what this needed. */}
-      <div
-        className="announce-shell"
-        data-collapsed={scrolled ? "" : undefined}
-        inert={scrolled || undefined}
-      >
-        <AnnounceBar />
-      </div>
+      {light ? null : (
+        <div
+          className="announce-shell"
+          data-collapsed={scrolled ? "" : undefined}
+          inert={scrolled || undefined}
+        >
+          <AnnounceBar />
+        </div>
+      )}
 
       {/* Centred wordmark (2026-09-23, client's reference). One instance of
           each control, placed per width with `order` in globals.css
@@ -207,8 +217,8 @@ export function Nav({ solid = false }: { solid?: boolean } = {}) {
               ~19px at 1024, ~27px at 1280, ~33px at 1440. */}
           <ul className="flex items-center" style={{ gap: "clamp(14px, calc(3.4vw - 16px), 44px)" }}>
             {PRIMARY.map((item) =>
-              "menu" in item && item.menu ? (
-                <NavMenuItem key={item.label} item={item} />
+              item.menu ? (
+                <NavMenuItem key={item.label} item={{ ...item, menu: item.menu }} />
               ) : (
                 <li key={item.label} className="nav-item">
                   <Link

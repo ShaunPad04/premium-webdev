@@ -45,7 +45,7 @@ export function PolicyPage({ policy }: { policy: Policy }) {
      title. */
   return (
     <>
-      <Nav solid />
+      <Nav solid light />
       <main id="main" className="flex-1">
         <div className="pol-page">
           <header>

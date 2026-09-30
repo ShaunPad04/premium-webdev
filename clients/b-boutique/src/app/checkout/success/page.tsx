@@ -113,7 +113,7 @@ export default async function CheckoutSuccessPage({
 
   return (
     <>
-      <Nav solid />
+      <Nav solid light />
       {/* Only on a confirmed payment. */}
       {paid ? <ClearBag /> : null}
       <main id="main" className="flex-1">

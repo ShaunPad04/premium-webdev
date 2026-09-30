@@ -403,7 +403,9 @@ export const newIn = (() => {
     if (first) push(first);
   }
   for (const p of stocklist) {
-    if (out.length >= 10) break;
+    /* 16 (2026-09-29): the first six are the home New arrivals grid,
+       the other ten the Shop the collection slides. */
+    if (out.length >= 16) break;
     if (p.category !== "Homeware") push(p);
   }
   return out;

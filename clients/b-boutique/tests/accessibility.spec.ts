@@ -33,7 +33,15 @@ const ROUTES = [
 
 for (const route of ROUTES) {
   test(`${route} has no WCAG A/AA violations`, async ({ page }) => {
-    await page.goto(route);
+    await page.goto(route, { waitUntil: 'networkidle' });
+    /* Contrast is judged on the settled page: a style sheet that arrives
+       late (the home slides') fades a button's ground in over ~150ms, and
+       axe sampled it mid-fade on some runs (2026-09-29). Finite animations
+       and transitions only; anything looping is left alone. */
+    await page.evaluate(() => Promise.race([
+      Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished.catch(() => {}))),
+      new Promise((r) => setTimeout(r, 3000)),
+    ]));
 
     const { violations } = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

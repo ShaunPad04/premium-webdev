@@ -95,7 +95,7 @@ export default async function ProductPage({
       {/* The one route with no PageMasthead — it opens on the split layout,
           and the nav sits over the white column. See the `solid` note in
           Nav.tsx. */}
-      <Nav solid />
+      <Nav solid light />
       <main id="main" className="flex-1">
         {/* The provider spans BOTH columns, which is the whole reason it is
             context rather than a prop: everything between it and its two

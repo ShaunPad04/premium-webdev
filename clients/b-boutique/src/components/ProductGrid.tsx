@@ -2,11 +2,11 @@ import { ViewTransition } from "react";
 import Link from "@/components/Link";
 
 import type { Product } from "@/lib/catalogue";
-import { canQuickAdd, isBuyable } from "@/lib/catalogue";
+import { isBuyable } from "@/lib/catalogue";
+import { packshotFor } from "@/lib/packshots";
 import { AfterPaint } from "./AfterPaint";
 import { HoverPhoto } from "./HoverPhoto";
 import { ProductPhoto } from "./ProductPhoto";
-import { QuickAdd } from "./QuickAdd";
 import { Price } from "@/components/Price";
 
 /* The shop's product grid.
@@ -78,8 +78,9 @@ export function ProductGrid({
       {items.map((p, i) => {
         const square = p.category === "Homeware";
         const sizes = "(min-width: 1024px) 23vw, (min-width: 640px) 31vw, 44vw";
-        /* The next colourway along, where there is one. */
-        const alt = p.colourways.length > 1 ? p.colourways[1] : null;
+        /* On hover: the piece on its own on white where it has a packshot
+           (lib/packshots.ts), otherwise the next colourway along. */
+        const hover = packshotFor(p.photo) ?? (p.colourways.length > 1 ? p.colourways[1].image : null);
 
         /* The first screen's cards load with the page; the rest once it has
            painted (AfterPaint). Inside Chrome's lazy-load distance they all
@@ -104,8 +105,9 @@ export function ProductGrid({
           <span className="prod-media">
               {eager ? photo : <AfterPaint>{photo}</AfterPaint>}
               {/* Hover screens only, after the first paint (HoverPhoto.tsx). */}
-              {alt ? <HoverPhoto photo={alt.image} square={square} sizes={sizes} /> : null}
-              {canQuickAdd(p) ? <QuickAdd product={p} /> : null}
+              {hover ? <HoverPhoto photo={hover} square={square} sizes={sizes} /> : null}
+              {/* No quick "Add to bag" on the cards (Brad, 2026-09-29): the
+                  card opens the piece. QuickAdd.tsx is kept. */}
           </span>
         );
 

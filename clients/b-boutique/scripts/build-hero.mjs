@@ -83,6 +83,13 @@ const slides = ["horses"];
 const DESKTOP_W = 3840;
 const MOBILE_W = 1536;
 const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
+/* The phone steps (720 / 900 / 1200) are softened by a 0.8px blur before
+   encoding (2026-09-29). The heather is noise-like detail an encoder cannot
+   shrink: q46 -> q36 only took the 1200 from 355 to 236 KB and looked worse.
+   Softened at q46 it is 230 KB and indistinguishable at a phone's scale
+   (compared at 100% on the horses). It is the phone's LCP image since the
+   hero became an inset card, so its bytes are the phone's LCP. */
+const SOFT = 0.8;
 
 for (const name of slides) {
   const land = `assets/hero/${name}.png`;
@@ -139,7 +146,7 @@ for (const name of slides) {
      every phone; a 412px screen at 1.75x shows ~805 device pixels across
      the cover crop, so most phones get this 900px one via srcset and only
      3x screens still ask for 1536. Measured, not assumed: see CLAUDE.md. */
-  const small = sharp(port).resize({ width: 900, withoutEnlargement: true });
+  const small = sharp(port).resize({ width: 900, withoutEnlargement: true }).blur(SOFT);
   await Promise.all([
     /* 46, not 54 (2026-09-23): the MADRID frame is a dense red texture
        and cost 154 KB at 54, which measured as a later simulated LCP than
@@ -155,7 +162,7 @@ for (const name of slides) {
 
   /* A 720 step (2026-09-28): a 412px phone at 1.75x needs ~721px, and got
      the 900. Same encoder settings as the 900. */
-  const s720 = sharp(port).resize({ width: 720, withoutEnlargement: true });
+  const s720 = sharp(port).resize({ width: 720, withoutEnlargement: true }).blur(SOFT);
   await Promise.all([
     s720.clone().avif({ quality: 46, effort: 6 }).toFile(`public/img/hero/${name}-s720.avif`),
     s720.clone().webp({ quality: 74 }).toFile(`public/img/hero/${name}-s720.webp`),
@@ -165,7 +172,7 @@ for (const name of slides) {
      is ~460 KB, and a DPR 2.6-3 phone (1071-1170 device px) was being sent
      it. 1200 at q46 covers those screens at a fraction of the weight. */
   {
-    const mid = sharp(port).resize({ width: 1200, withoutEnlargement: true });
+    const mid = sharp(port).resize({ width: 1200, withoutEnlargement: true }).blur(SOFT);
     await Promise.all([
       /* 46 again since 2026-09-27, with the -s step above: 450 -> 355 KB. */
       mid.clone().avif({ quality: 46, effort: 6 }).toFile(`public/img/hero/${name}-s1200.avif`),

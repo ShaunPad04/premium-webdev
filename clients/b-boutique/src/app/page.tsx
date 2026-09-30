@@ -3,8 +3,7 @@ import { pageMeta, siteDescription } from "@/lib/site";
 import { Nav } from "@/components/Nav";
 
 import { HeroCampaign } from "@/components/HeroCampaign";
-import { NewArrivalRail } from "@/components/NewArrivalRail";
-import { CategoryTabs } from "@/components/CategoryTabs";
+import { NewArrivals } from "@/components/NewArrivals";
 import { NewInSlides } from "@/components/NewInSlides";
 import { WhyUs } from "@/components/home/WhyUs";
 import { UpClose } from "@/components/home/UpClose";
@@ -45,7 +44,7 @@ export default function Home() {
     <>
       <MotionLayer />
       {/* See-through over the hero photograph, solid once the reader scrolls. */}
-      <Nav />
+      <Nav light />
       {/* home-rise is only a hook for the home page's section rules now; the
           hero scrolls normally (2026-09-27, Brad). */}
       <main id="main" className="flex-1 home-rise">
@@ -54,15 +53,17 @@ export default function Home() {
             Inter word-ring font. */}
         <HeroCampaign />
         <div className="rise">
-        {/* The marquee is the first thing up over the hero (2026-09-26,
-            Brad): white, carrying the philosophy sentence. The quote section
-            (PointOfView) came off the home page; the component is kept. */}
-        <NewArrivalRail />
-        {/* Four category panels since 2026-09-27 (Brad picked C of three). */}
-        <CategoryTabs />
+        {/* No marquee under the hero since 2026-09-29 (Brad): the horses in
+            the hero are the moving thing on the first screen now.
+            NewArrivalRail is kept. */}
+        {/* No Shop by category since 2026-09-29 (Brad: three product
+            sections was too many). CategoryTabs.tsx is kept. */}
         {/* New arrivals straight after the categories, then the shop owner
             (2026-09-27, Brad: Hayley came "too soon" right under the
             categories). Up close follows her. */}
+        {/* New arrivals as a grid of four, then the next ten on the model
+            as "Shop the collection" (2026-09-29, Brad). */}
+        <NewArrivals />
         <NewInSlides />
         <OwnerCard />
         {/* Shop the look ("Straight from the window") came off the home

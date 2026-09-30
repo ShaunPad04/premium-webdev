@@ -350,7 +350,14 @@ export function ScrollReset() {
           const el = target;
           land(() => yFor(el));
         }
+        return;
       }
+      /* No section named: a load or a refresh starts at the top
+         (2026-09-29, Brad). The browser's own restore put a refresh back
+         part-way down, so the home hero came up already shrunk and
+         dimmed by its scroll timeline. */
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+      land(() => 0);
       return;
     }
     if (traversed.current) {
