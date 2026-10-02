@@ -2,6 +2,7 @@ import "@/app/offhome.css";
 import type { Metadata } from "next";
 import { products } from "@/lib/catalogue";
 import { openingPlan } from "@/lib/opening-stock";
+import { priceRebuildIsConfigured, readPrices } from "@/lib/prices";
 import { readStock, stockIsConfigured } from "@/lib/stock";
 import { isSignedIn, stockAuthIsConfigured } from "@/lib/stock-auth";
 import { listOrders } from "@/lib/orders";
@@ -56,7 +57,14 @@ export default async function StockPage() {
     console.error("stock: order sweep failed", err),
   );
 
-  const [rows, orders] = await Promise.all([readStock(), listOrders()]);
+  const [rows, orders, prices] = await Promise.all([
+    readStock(),
+    listOrders(),
+    readPrices().catch((err) => {
+      console.error("stock: prices unreadable", err);
+      return {} as Record<string, number>;
+    }),
+  ]);
   if (!rows) return <StockNotReady database={false} passphrase />;
 
   /* Grouped by piece, because that is how she thinks about the rail: find the
@@ -82,6 +90,9 @@ export default async function StockPage() {
          garment (2026-09-23: easier to find the piece that sold). */
       colourPhotos: Object.fromEntries(product.colourways.map((c) => [c.colour, c.image])),
       listTotals: listTotals.get(product.slug) ?? {},
+      /* `live` is what this build of the website shows; `saved` what she
+         last set here. They differ for the few minutes a rebuild takes. */
+      price: { live: product.priceP, saved: prices[product.slug] ?? product.priceP },
       variants: [],
     });
   }
@@ -102,7 +113,7 @@ export default async function StockPage() {
           rail does not. Renders nothing at all when there is nothing to
           post. */}
       {orders ? <OrdersPanel orders={orders} /> : null}
-      <StockBoard pieces={pieces} />
+      <StockBoard pieces={pieces} autoUpdate={priceRebuildIsConfigured()} />
     </>
   );
 }

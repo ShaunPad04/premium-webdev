@@ -1,4 +1,6 @@
 import type { NextRequest } from "next/server";
+import { productBySlug } from "@/lib/catalogue";
+import { PRICE_MAX_P, PRICE_MIN_P, readPrices, setPrice } from "@/lib/prices";
 import { adjust, setCount, setRestockable, stockIsConfigured } from "@/lib/stock";
 import { isSignedIn, signIn, signOut, stockAuthIsConfigured, tooManyAttempts } from "@/lib/stock-auth";
 
@@ -93,6 +95,19 @@ export async function POST(request: NextRequest) {
         return json({ ok: false, code: "bad_request" }, 400);
       }
       return respond(await setCount(id, qty, note));
+    }
+
+    /* A piece's price (2026-10-02). `id` is the piece's slug; `qty` the new
+       price in pence. Whole pence, within bounds, for a piece the shop sells. */
+    case "price": {
+      const product = productBySlug(id);
+      const priceP = typeof body.qty === "number" ? body.qty : Number.NaN;
+      if (!product || !Number.isInteger(priceP) || priceP < PRICE_MIN_P || priceP > PRICE_MAX_P) {
+        return json({ ok: false, code: "bad_request" }, 400);
+      }
+      const oldP = (await readPrices())[id] ?? product.priceP;
+      const result = await setPrice(id, priceP, oldP);
+      return json(result, result.ok ? 200 : 503);
     }
 
     case "restockable": {

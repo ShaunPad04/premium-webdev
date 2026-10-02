@@ -76,6 +76,8 @@
  *  scripts/import-stock.mjs with the rule that made each one safe.
  */
 
+import shopPrices from "@/data/prices.json";
+
 export type StockColourway = {
   /** B Boutique's own code. Stable, and the key photography is named after. */
   sku: string;
@@ -113,7 +115,7 @@ export type StockPiece = {
   colourways: readonly StockColourway[];
 };
 
-export const stocklist: readonly StockPiece[] = [
+const baseStocklist: readonly StockPiece[] = [
   {
     slug: "fair-isle-jumper",
     name: "Fair Isle Jumper",
@@ -1040,6 +1042,17 @@ export const stocklist: readonly StockPiece[] = [
     ],
   },
 ];
+
+/** The stock list as sold, with the prices Hayley has set on /stock.
+ *  src/data/prices.json is written by scripts/fetch-prices.mjs at build time
+ *  (empty in the repo and on a local build); a price there replaces the
+ *  piece's price on every colour, so one-price-per-piece still holds. A
+ *  price set on /stock wins over the one written above: when a price in this
+ *  file changes for a piece she has priced, check /stock first. */
+export const stocklist: readonly StockPiece[] = baseStocklist.map((piece) => {
+  const p = (shopPrices as Record<string, number>)[piece.slug];
+  return p ? { ...piece, colourways: piece.colourways.map((c) => ({ ...c, priceP: p })) } : piece;
+});
 
 /** Every colourway whose price the client has not confirmed. Read by
  *  launch-check, and by the shop, which must not sell any of them. */

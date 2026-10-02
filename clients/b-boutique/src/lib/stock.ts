@@ -47,7 +47,8 @@ export function stockIsConfigured(): boolean {
   return connectionString() !== null;
 }
 
-function sql() {
+/* Exported for lib/prices.ts, the one other table on the same database. */
+export function sql() {
   const url = connectionString();
   if (!url) return null;
   return neon(url);

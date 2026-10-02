@@ -1507,3 +1507,27 @@ pushed live on his instruction.
   contact shadow, on pure white 1856x2304. Thigh-length shots were extended
   below the garment with FLUX.2 Pro Outpaint (Higgsfield, ~5 credits each).
   The compose script lived in the session scratchpad.
+
+## Hayley sets prices on /stock — 2026-10-02 (Brad)
+
+- Each piece's sheet on /stock has a **Price** row: Change price, type it
+  (45 or 44.99, parsed as text into pence), confirm in words ("from £37 to
+  £40, on every colour"), with a red warning when it is under half or over
+  double the current price. £1-£999. Signed-in only, checked on the request
+  (`/stock/api`, action `price`, `id` = slug, `qty` = pence).
+- **One price per piece, all colours** (catalogue.ts refuses to build a
+  piece whose colours disagree).
+- Saved in the `price` table, every change in `price_log` (old, new, when)
+  (`lib/prices.ts`). Then baked into the next build: `npm run build` runs
+  `scripts/fetch-prices.mjs` first, which writes `src/data/prices.json`
+  (committed as `{}`), and `stocklist` applies it. So pages, the bag,
+  checkout, emails, JSON-LD and llms.txt change together; never live
+  per-request pricing. The script never fails a build (no DB, no table, or
+  DB down: the code prices stand).
+- A save POSTs `DEPLOY_HOOK_URL` (Vercel deploy hook on client/b-boutique,
+  set by Brad) to start that build: live in a few minutes. Without it the
+  price waits for the next deploy, and /stock says so.
+- The £10-off reference follows her price (Brad: keep it as a reference).
+- **Her price wins over stocklist.ts.** When we change a price in code for
+  a piece she has priced, the `price` row still overrides it: check /stock
+  (or delete the row) first.

@@ -42,6 +42,8 @@ export type BoardPiece = {
   colourPhotos: Record<string, string>;
   /** The master list's colour total, where it does not split by size. */
   listTotals: Record<string, string>;
+  /** In pence: what the website shows now, and what was last set here. */
+  price: { live: number; saved: number };
   variants: BoardVariant[];
 };
 
@@ -50,7 +52,17 @@ type Filter = "all" | "count" | "in" | "out";
 
 const img = (name: string) => `/img/product/${name}-640.jpg`;
 
-export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
+const pounds = (p: number) => `£${(p / 100).toFixed(p % 100 ? 2 : 0)}`;
+
+/** "45", "£45", "44.99" -> pence. Parsed as text, never through a float
+ *  (locked decision 12: money is integers in pence). */
+function toPence(v: string): number | null {
+  const m = /^\s*£?\s*(\d{1,3})(?:\.(\d{1,2}))?\s*$/.exec(v);
+  if (!m) return null;
+  return Number(m[1]) * 100 + Number((m[2] ?? "0").padEnd(2, "0"));
+}
+
+export function StockBoard({ pieces, autoUpdate }: { pieces: BoardPiece[]; autoUpdate: boolean }) {
   const [state, setState] = useState<Record<string, number | null>>(() =>
     Object.fromEntries(
       pieces.flatMap((p) => p.variants.map((v) => [v.id, v.qty] as const)),
@@ -63,6 +75,12 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
   const [category, setCategory] = useState<string>("");
   const [open, setOpen] = useState<string | null>(null);
   const [editing, setEditing] = useState<{ id: string; value: string } | null>(null);
+  /* Prices (2026-10-02): what she last saved, per piece, and the price
+     being changed: typing it, then confirming it in words. */
+  const [prices, setPrices] = useState<Record<string, number>>(() =>
+    Object.fromEntries(pieces.map((p) => [p.slug, p.price.saved])),
+  );
+  const [pricing, setPricing] = useState<{ value: string; confirm: number | null } | null>(null);
 
   const sheet = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLElement | null>(null);
@@ -115,11 +133,13 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
   function openPiece(slug: string, from: HTMLElement) {
     opener.current = from;
     setEditing(null);
+    setPricing(null);
     setOpen(slug);
   }
   function closePiece() {
     setOpen(null);
     setEditing(null);
+    setPricing(null);
     opener.current?.focus();
   }
 
@@ -167,6 +187,41 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
       return;
     }
     if (await send(id, "counted", { qty: n })) setEditing(null);
+  }
+
+  function checkPrice(value: string) {
+    const p = toPence(value);
+    if (p === null || p < 100 || p > 99900) {
+      setProblem("That needs to be a price between £1 and £999, like 45 or 44.99.");
+      return;
+    }
+    setProblem("");
+    setPricing({ value, confirm: p });
+  }
+
+  async function savePrice(slug: string, priceP: number) {
+    setBusy({ id: slug, action: "price" });
+    setProblem("");
+    try {
+      const res = await fetch("/stock/api", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "price", id: slug, qty: priceP }),
+      });
+      const data = (await res.json()) as { ok: boolean; code?: string };
+      if (data.ok) {
+        setPrices((s) => ({ ...s, [slug]: priceP }));
+        setPricing(null);
+      } else if (data.code === "not_signed_in") {
+        setProblem("Signed out. Reload the page and put the passcode in again.");
+      } else {
+        setProblem("That did not save. Try again — the price has not changed.");
+      }
+    } catch {
+      setProblem("No connection. Nothing was saved — try again in a moment.");
+    } finally {
+      setBusy(null);
+    }
   }
 
   const problemBar = problem ? (
@@ -334,6 +389,20 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
 
             {problemBar}
 
+            <PriceRow
+              name={piece.name}
+              live={piece.price.live}
+              saved={prices[piece.slug] ?? piece.price.saved}
+              autoUpdate={autoUpdate}
+              pricing={pricing}
+              working={busy?.id === piece.slug}
+              onStart={() => setPricing({ value: String((prices[piece.slug] ?? piece.price.saved) / 100), confirm: null })}
+              onType={(value) => setPricing({ value, confirm: null })}
+              onCheck={checkPrice}
+              onSave={(p) => void savePrice(piece.slug, p)}
+              onCancel={() => { setPricing(null); setProblem(""); }}
+            />
+
             {groups.map((g) => (
               <section key={g.colour || "none"} className="st-colour-group" aria-label={g.colour || "Colour not set"}>
                 <div className="st-colour-head">
@@ -447,5 +516,78 @@ export function StockBoard({ pieces }: { pieces: BoardPiece[] }) {
         ) : null}
       </dialog>
     </main>
+  );
+}
+
+/** The piece's price, and changing it. One price for every colour. */
+function PriceRow(props: {
+  name: string;
+  live: number;
+  saved: number;
+  autoUpdate: boolean;
+  pricing: { value: string; confirm: number | null } | null;
+  working: boolean;
+  onStart: () => void;
+  onType: (value: string) => void;
+  onCheck: (value: string) => void;
+  onSave: (priceP: number) => void;
+  onCancel: () => void;
+}) {
+  const { name, live, saved, autoUpdate, pricing, working } = props;
+  return (
+    <section className="st-price" aria-label="Price">
+      {!pricing ? (
+        <div className="st-price-row">
+          <span className="st-price-now">
+            Price <b>{pounds(saved)}</b> <span className="st-price-all">every colour</span>
+          </span>
+          <button type="button" className="st-minor" onClick={props.onStart}>
+            Change price
+          </button>
+        </div>
+      ) : pricing.confirm === null ? (
+        <form className="st-count" onSubmit={(e) => { e.preventDefault(); props.onCheck(pricing.value); }}>
+          <label className="st-price-input">
+            <span aria-hidden="true">£</span>
+            <input
+              type="text"
+              inputMode="decimal"
+              value={pricing.value}
+              onChange={(e) => props.onType(e.target.value)}
+              aria-label={`New price for ${name}, in pounds`}
+              autoFocus
+            />
+          </label>
+          <button type="submit" className="st-save">Next</button>
+          <button type="button" className="st-minor" onClick={props.onCancel}>Cancel</button>
+        </form>
+      ) : (
+        <div className="st-price-confirm" role="group" aria-label="Confirm the new price">
+          <p>
+            Change <b>{name}</b> from <b>{pounds(saved)}</b> to <b>{pounds(pricing.confirm)}</b>, on
+            every colour? Customers will pay {pounds(pricing.confirm)}.
+          </p>
+          {/* A dropped or extra digit (£4 for £40) is still a valid price. */}
+          {pricing.confirm < saved / 2 || pricing.confirm > saved * 2 ? (
+            <p className="st-price-warn">
+              That is a big change from {pounds(saved)}. Check the price before you save.
+            </p>
+          ) : null}
+          <div className="st-acts">
+            <button type="button" className="st-sold" disabled={working} onClick={() => props.onSave(pricing.confirm as number)}>
+              {working ? "Saving…" : "Yes, change the price"}
+            </button>
+            <button type="button" className="st-minor" disabled={working} onClick={props.onCancel}>Back</button>
+          </div>
+        </div>
+      )}
+      {saved !== live && !pricing ? (
+        <p className="st-price-note" role="status">
+          {autoUpdate
+            ? `Saved. The website is updating and shows ${pounds(saved)} in a few minutes.`
+            : `Saved. The website still shows ${pounds(live)} until its next update.`}
+        </p>
+      ) : null}
+    </section>
   );
 }
