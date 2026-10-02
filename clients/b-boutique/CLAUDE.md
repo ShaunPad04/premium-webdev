@@ -1531,3 +1531,9 @@ pushed live on his instruction.
 - **Her price wins over stocklist.ts.** When we change a price in code for
   a piece she has priced, the `price` row still overrides it: check /stock
   (or delete the row) first.
+
+## Price changes reach search engines — 2026-10-02 (Brad)
+
+- `scripts/fetch-prices.mjs` also writes `src/data/price-dates.json` (slug -> last change on /stock). The sitemap puts it on that product as `lastModified`; every other URL has no date on purpose (a fake date on every URL makes Google ignore them all).
+- IndexNow (`src/lib/indexnow.ts`): pings Bing (feeds ChatGPT search, Copilot) with the changed product URLs, from `/api/availability` via `after()`, production only, so it only runs once the new build is live. `price_ping` table records what was announced: each change pinged once. Key file `public/7f82ae78d90d188c480fc520ed6ce869.txt` (public by design). Google ignores IndexNow; the sitemap date is the Google lever.
+- Google Merchant Center feed: `/feeds/google.xml` (RSS, one item per piece/colour/size, live stock). No brand (supplier is not a brand, identifier_exists=no), no sale_price (the "was" is a reference, not a real former price), skips unconfirmed prices and uncounted sizes. Merchant Center account is Hayley's; add this URL as a scheduled feed, set shipping (Royal Mail £4.35, free over £120) and returns (14 days, by post, customer pays) in its settings to match the site.

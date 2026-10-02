@@ -10,12 +10,17 @@
  * charges £45. A save on /stock triggers this build through the Vercel deploy
  * hook (lib/prices.ts), so a change is live in a few minutes.
  *
+ * Also writes src/data/price-dates.json (slug -> when she last changed it):
+ * the sitemap's lastmod for that product, and what lib/indexnow.ts tells
+ * Bing about once the new build is live.
+ *
  * Never fails the build. No database (a local build), no table yet, or a
  * database that is down: the prices in the code stand, and it says so. */
 import { writeFileSync } from "node:fs";
 import { neon } from "@neondatabase/serverless";
 
 const out = new URL("../src/data/prices.json", import.meta.url);
+const outDates = new URL("../src/data/price-dates.json", import.meta.url);
 const url = process.env.DATABASE_URL ?? process.env.POSTGRES_URL ?? process.env.NEON_DATABASE_URL;
 
 if (!url) {
@@ -24,9 +29,11 @@ if (!url) {
 }
 
 try {
-  const rows = await neon(url)`SELECT slug, price_p FROM price ORDER BY slug`;
+  const rows = await neon(url)`SELECT slug, price_p, updated_at FROM price ORDER BY slug`;
   const prices = Object.fromEntries(rows.map((r) => [r.slug, Number(r.price_p)]));
+  const dates = Object.fromEntries(rows.map((r) => [r.slug, new Date(r.updated_at).toISOString()]));
   writeFileSync(out, JSON.stringify(prices, null, 2) + "\n");
+  writeFileSync(outDates, JSON.stringify(dates, null, 2) + "\n");
   console.log(`prices: ${rows.length} set on /stock`);
 } catch (err) {
   /* 42P01: the table does not exist until the first price is saved. */

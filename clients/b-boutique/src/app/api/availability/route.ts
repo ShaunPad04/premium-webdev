@@ -1,7 +1,8 @@
-import type { NextRequest } from "next/server";
+import { after, type NextRequest } from "next/server";
 
 import { productBySlug } from "@/lib/catalogue";
 import { listedTotal } from "@/lib/opening-stock";
+import { pingChangedPrices } from "@/lib/indexnow";
 import { availabilityForSlug, stockIsConfigured } from "@/lib/stock";
 import { variantsFor } from "@/lib/variants";
 
@@ -50,6 +51,9 @@ const MAX_QTY = 6;
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
+  /* After the response, once per instance: announce price changes this live
+     build carries (lib/indexnow.ts says why it lives here). */
+  after(() => pingChangedPrices().catch(() => {}));
   const slug = request.nextUrl.searchParams.get("slug") ?? "";
   if (!productBySlug(slug)) {
     return Response.json({ ok: false, error: "Unknown piece." }, { status: 404 });
