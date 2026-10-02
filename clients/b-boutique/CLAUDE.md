@@ -1482,3 +1482,28 @@ pushed live on his instruction.
   blended against the whole sliding sheet over the pinned hero video.
   `.ccard-media` has `isolation: isolate`, so it blends with the card's
   grey only. Keep it if the cards change.
+
+## New stock — 2026-10-02 (Hayley's WhatsApp, Babez London)
+
+- **Live:** Fitted Striped Full Zip Cardigan (Chocolate 3, Blue 2, £35),
+  Pink Longline Cardigan With Faux Fur Detail (5, £55), Plaid Check Balloon
+  Sleeve Jacket (Beige 3, £46), Wide Leg Trousers with Matching Belt
+  (Burgundy 7, £26, S-XXL as the supplier's 7-pack 1/2/2/1/1), Navy on the
+  Plaid Check Hooded Jacket (3, £49), Navy on the Pinstripe Pleated Shirt
+  (= the supplier's Pinstripe Ruched Waist Blouse 9781; all colours £43,
+  Brad). Counts in data/opening-stock.json, seeded on /stock by themselves.
+- **Not on New arrivals or Shop the collection** (Brad: the new photos do
+  not fit those yet). They sit LAST in stocklist, which keeps both exactly
+  as before; product pages, Clothing and search only. Do not move them up
+  without asking. They are also out of the £10-off display (NOT_IN_SALE).
+- **Waiting:** Gingham Padded Jacket (Pink 2, £59) in awaitingPhotos and
+  the Burgundy pinstripe (4) commented out, both for full-length photos
+  (Higgsfield credits ran out); Leopard Print Full Zip Cardigan (M1258, 2,
+  £48) until Hayley says Brown or Beige.
+- **Photos:** the supplier's own, in her colours. Cut out (rembg
+  birefnet-portrait mask, faint haze dropped with a smoothstep 0.18-0.85,
+  edge colour recovered with pymatting estimate_foreground_ml so no wall
+  shows grey on white), set at head y=173 / feet y=2154, centred, faint
+  contact shadow, on pure white 1856x2304. Thigh-length shots were extended
+  below the garment with FLUX.2 Pro Outpaint (Higgsfield, ~5 credits each).
+  The compose script lived in the session scratchpad.

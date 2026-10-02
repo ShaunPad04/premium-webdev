@@ -238,7 +238,12 @@ export const SALE = { active: true, offP: 1000 } as const;
  *  prices for these (2026-09-25) came with no "usual" price, so showing one
  *  £10 higher struck through would be a reference price nobody has stated.
  *  Remove a slug here only once she confirms it is part of the sale. */
-const NOT_IN_SALE = new Set(["tartan-check-tie-skirt", "tartan-check-blouse", "tailored-barrel-fit-trousers"]);
+const NOT_IN_SALE = new Set([
+  "tartan-check-tie-skirt", "tartan-check-blouse", "tailored-barrel-fit-trousers",
+  /* 2026-10-02, same reason: prices from Hayley with no usual price. */
+  "gingham-padded-jacket", "fitted-striped-full-zip-cardigan", "pink-longline-cardigan-with-faux-fur-detail",
+  "plaid-check-balloon-sleeve-jacket", "wide-leg-trousers-with-matching-belt",
+]);
 
 export function wasPriceP(priceP: number, slug?: string): number | null {
   if (slug && NOT_IN_SALE.has(slug)) return null;

@@ -29,7 +29,8 @@
       "Red / Pink": 3
     },
     "plaid-check-hooded-jacket": {
-      "Beige": 3
+      "Beige": 3,
+      "Navy": 3
     },
     "balloon-sleeve-longline-coat": {
       "Burgundy": 2,
@@ -133,7 +134,8 @@
       "Burgundy": 3
     },
     "pinstripe-pleated-shirt": {
-      "Chocolate": 4
+      "Chocolate": 4,
+      "Navy": 4
     },
     "check-tweed-shirt": {
       "Camel": 4
@@ -157,6 +159,19 @@
     },
     "tailored-barrel-fit-trousers": {
       "Black": 3
+    },
+    "fitted-striped-full-zip-cardigan": {
+      "Chocolate": 3,
+      "Blue": 2
+    },
+    "pink-longline-cardigan-with-faux-fur-detail": {
+      "Pink": 5
+    },
+    "plaid-check-balloon-sleeve-jacket": {
+      "Beige": 3
+    },
+    "wide-leg-trousers-with-matching-belt": {
+      "Burgundy": 7
     }
   },
   "statedSplit": {
@@ -182,6 +197,13 @@
       "S": 1,
       "M": 1,
       "L": 1
+    },
+    "wide-leg-trousers-with-matching-belt": {
+      "S": 1,
+      "M": 2,
+      "L": 2,
+      "XL": 1,
+      "XXL": 1
     }
   }
 }

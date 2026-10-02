@@ -274,6 +274,8 @@ export const stocklist: readonly StockPiece[] = [
     supplierCode: "2866",
     colourways: [
       { sku: "BB-PLAIDJKT-BEI", supplierRef: "2866-BEI", colour: "Beige", priceP: 4900, priceConfirmed: true, image: "bb-plaidjkt-bei" },
+      /* Navy, 2026-10-02: Hayley, 3 in stock at £49. */
+      { sku: "BB-PLAIDJKT-NAV", supplierRef: "2866-NAV", colour: "Navy", priceP: 4900, priceConfirmed: true, image: "bb-plaidjkt-nav" },
     ],
   },
   {
@@ -744,18 +746,25 @@ export const stocklist: readonly StockPiece[] = [
     slug: "pinstripe-pleated-shirt",
     name: "Pinstripe Pleated Shirt",
     category: "Tops",
-    short: "An oversized chocolate pinstripe shirt with a deep V neck and pleated waist.",
-    full: "A relaxed shirt in rich chocolate brown with a fine pale pinstripe. The open collar drops into a deep V, and the front is gathered into soft pleats at the waist before falling loose over the hips with a curved hem. Wide dropped sleeves finish in buttoned cuffs. Looks sharp tucked in or left out.",
+    short: "An oversized pinstripe shirt with a deep V neck and pleated waist.",
+    full: "A relaxed shirt with a fine pale pinstripe. The open collar drops into a deep V, and the front is gathered into soft pleats at the waist before falling loose over the hips with a curved hem. Wide dropped sleeves finish in buttoned cuffs. Looks sharp tucked in or left out.",
     features: ["Fine pinstripe", "Open collar with deep V neck", "Pleated waist detail", "Dropped shoulders, buttoned cuffs", "Curved shirttail hem"],
-    fabric: "Smooth woven pinstripe shirting",
-    fabricPublished: false,
+    /* The supplier's Pinstripe Ruched Waist Blouse (Babez London 9781), so
+       its published composition, 2026-10-02. Navy added the same day
+       (Hayley: 4 navy, 4 burgundy, £43; burgundy waits for its photo); Brad set all three at £43, so the
+       chocolate came down from £44. */
+    fabric: "90% Polyester, 7% Rayon, 3% Spandex",
+    fabricPublished: true,
     care: "Machine wash 30°C. Do not tumble dry. Warm iron.",
     sizes: ["S/M", "M/L"],
     sizeNote: "2 of each",
-    supplier: "",
-    supplierCode: "",
+    supplier: "Babez London",
+    supplierCode: "9781",
     colourways: [
-      { sku: "BB-PINSHIRT-CHO", supplierRef: "", colour: "Chocolate", priceP: 4400, priceConfirmed: true, image: "bb-pinshirt-cho" },
+      { sku: "BB-PINSHIRT-CHO", supplierRef: "9781-BRN", colour: "Chocolate", priceP: 4300, priceConfirmed: true, image: "bb-pinshirt-cho" },
+      { sku: "BB-PINSHIRT-NAV", supplierRef: "9781-NAV", colour: "Navy", priceP: 4300, priceConfirmed: true, image: "bb-pinshirt-nav" },
+      /* Burgundy (9781-BUR, 4 in stock, £43) goes back in with its photograph:
+         { sku: "BB-PINSHIRT-BUR", supplierRef: "9781-BUR", colour: "Burgundy", priceP: 4300, priceConfirmed: true, image: "bb-pinshirt-bur" }, */
     ],
   },
   {
@@ -944,6 +953,92 @@ export const stocklist: readonly StockPiece[] = [
       { sku: "BB-BARRELTAIL-BLK", supplierRef: "16012-3-BLK", colour: "Black", priceP: 4600, priceConfirmed: true, image: "bb-barreltail-blk" },
     ],
   },
+  /* Added 2026-10-02 from Hayley's WhatsApp (colours, counts, prices) and the
+     supplier's own pages on babezlondon.com (style number, fabric with
+     percentages, size ratio). Last in the list ON PURPOSE: New arrivals and
+     Shop the collection read from the top, and Brad wants those left as
+     they were (2026-10-02: the new photos do not fit them yet), so these
+     are on their product pages, Clothing and search only. Photographs: the
+     supplier's, in her colours, cut out onto the same white at the same
+     head/feet line as the rest; the ones the supplier shot to the thigh were
+     extended to full length below the garment (FLUX.2 outpaint, the garment
+     itself untouched). The Gingham Padded Jacket waits in awaitingPhotos
+     below for its photograph. The Leopard Print Full Zip Cardigan (M1258, £48, 2 in
+     stock) is held back until she says which colour, Brown or Beige. */
+  {
+    slug: "fitted-striped-full-zip-cardigan",
+    name: "Fitted Striped Full Zip Cardigan",
+    category: "Knitwear",
+    short: "A fitted stripe knit with a two-way zip and a high neck.",
+    full: "Bold stripes across a close, fitted knit, with a contrast placket and a two-way zip from hem to neck, so it works zipped up, open, or unzipped from the bottom over a waistband.",
+    features: ["Bold stripes", "Fitted shape", "Full two-way zip", "High neck"],
+    fabric: "45% Viscose, 28% Polyamide, 27% Elastane",
+    fabricPublished: true,
+    care: "",
+    sizes: ["One size"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "PL16121",
+    colourways: [
+      /* "Chocolate" is Hayley's name; the supplier calls it Brown. */
+      { sku: "BB-STRIPECARDI-CHO", supplierRef: "PL16121-BRN", colour: "Chocolate", priceP: 3500, priceConfirmed: true, image: "bb-stripecardi-cho" },
+      { sku: "BB-STRIPECARDI-BLU", supplierRef: "PL16121-BLU", colour: "Blue", priceP: 3500, priceConfirmed: true, image: "bb-stripecardi-blu" },
+    ],
+  },
+  {
+    slug: "pink-longline-cardigan-with-faux-fur-detail",
+    name: "Pink Longline Cardigan With Faux Fur Detail",
+    category: "Knitwear",
+    short: "A fluffy pink cardigan with a bold knitted-in print and brown edging.",
+    full: "Long and oversized in a fluffy pink knit, with a bold print knitted into the yoke and body and a brown edge round the neck, front and cuffs. Faux fur detail gives it its texture. Wear it open over jeans.",
+    features: ["Faux fur detail", "Bold knitted-in print", "Brown edging", "Longline, oversized"],
+    fabric: "78% Polyester, 12% Nylon, 8% Wool, 2% Spandex",
+    fabricPublished: true,
+    care: "",
+    sizes: ["One size"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "PL12032",
+    colourways: [
+      { sku: "BB-PINKCARDI-PNK", supplierRef: "PL12032-PNK", colour: "Pink", priceP: 5500, priceConfirmed: true, image: "bb-pinkcardi-pnk" },
+    ],
+  },
+  {
+    slug: "plaid-check-balloon-sleeve-jacket",
+    name: "Plaid Check Balloon Sleeve Jacket",
+    category: "Coats & Jackets",
+    short: "A plaid check jacket with full balloon sleeves and a funnel neck.",
+    full: "A light, roomy jacket in a large plaid check. The funnel neck zips up the front, and the full balloon sleeves gather into the cuffs, as does the hem.",
+    features: ["Large plaid check", "Balloon sleeves", "Funnel neck", "Front zip"],
+    fabric: "93% Polyester, 7% Elastane",
+    fabricPublished: true,
+    care: "",
+    sizes: ["One size"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "IT9697",
+    colourways: [
+      { sku: "BB-BALLOONJKT-BEI", supplierRef: "IT9697-BEI", colour: "Beige", priceP: 4600, priceConfirmed: true, image: "bb-balloonjkt-bei" },
+    ],
+  },
+  {
+    slug: "wide-leg-trousers-with-matching-belt",
+    name: "Wide Leg Trousers with Matching Belt",
+    category: "Trousers",
+    short: "Tailored wide-leg trousers that come with a matching belt.",
+    full: "Tailored trousers with a pressed crease and a straight, wide leg, fastening with a button and zip at the front. They come with a belt in the same colour.",
+    features: ["Tailored", "Wide leg", "Matching belt", "Front button and zip"],
+    fabric: "67% Cotton, 31% Polyester, 2% Elastane",
+    fabricPublished: true,
+    care: "",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "3312-87",
+    colourways: [
+      { sku: "BB-BELTTROUSER-BUR", supplierRef: "3312-87-BUR", colour: "Burgundy", priceP: 2600, priceConfirmed: true, image: "bb-belttrouser-bur" },
+    ],
+  },
 ];
 
 /** Every colourway whose price the client has not confirmed. Read by
@@ -1041,4 +1136,24 @@ export function sizeSummary(): string {
  *  a stand-in or generated photograph: it would be a picture of something
  *  that is not the garment. */
 export const awaitingPhotos: readonly StockPiece[] = [
+  /* 2026-10-02: the supplier shot it to the thigh; waiting on its
+     full-length photograph (Higgsfield credits ran out). */
+  {
+    slug: "gingham-padded-jacket",
+    name: "Gingham Padded Jacket",
+    category: "Coats & Jackets",
+    short: "A padded jacket in a small gingham check, with a funnel neck.",
+    full: "Padded all over for warmth and cut short and boxy, in a small gingham check. The funnel neck zips right up, and the full sleeves gather into the cuff. Easy over jeans on a cold day.",
+    features: ["Small gingham check", "Padded throughout", "Funnel neck", "Front zip"],
+    fabric: "100% Polyester",
+    fabricPublished: true,
+    care: "",
+    sizes: ["One size"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "22698",
+    colourways: [
+      { sku: "BB-GINGHAMJKT-PNK", supplierRef: "22698-PNK", colour: "Pink", priceP: 5900, priceConfirmed: true, image: "bb-ginghamjkt-pnk" },
+    ],
+  },
 ];

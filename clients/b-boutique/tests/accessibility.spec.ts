@@ -85,8 +85,9 @@ async function openSearch(page: import('@playwright/test').Page, q: string) {
 test('search: the list of matches has no WCAG A/AA violations', async ({ page }) => {
   await openSearch(page, 'coat');
   /* An exact count, not toBeGreaterThan(0): it proves the filter ran before
-     axe looks. Seven Coats & Jackets match "coat" in the client's stock. */
-  await expect(page.locator('.navsearch-hit')).toHaveCount(7);
+     axe looks. Eight Coats & Jackets match "coat" in the client's stock
+     (the Plaid Check Balloon Sleeve Jacket made it eight, 2026-10-02). */
+  await expect(page.locator('.navsearch-hit')).toHaveCount(8);
 
   const { violations } = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
