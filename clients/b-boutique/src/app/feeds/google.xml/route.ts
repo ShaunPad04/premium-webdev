@@ -34,7 +34,9 @@ export async function GET() {
     const cw = p.colourways.find((c) => c.colour === v.colour) ?? p.colourways[0];
     const apparel = p.category !== "Homeware";
     const tags = [
-      ["g:id", v.id],
+      /* Her SKU plus the size: plain ASCII and under Google's 50 characters,
+         which the variant id (middle dots, up to 57) is not. */
+      ["g:id", `${cw.sku}-${v.size.toUpperCase().replace(/[^A-Z0-9]+/g, "")}`],
       ["g:item_group_id", p.slug],
       ["g:title", cw.colour ? `${p.name} - ${cw.colour}` : p.name],
       ["g:description", p.full || p.short],
