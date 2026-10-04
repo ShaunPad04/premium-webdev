@@ -126,11 +126,16 @@ export const metadata: Metadata = {
     template: "%s | B Boutique Cleethorpes",
   },
   description,
-  /* Google Search Console's HTML-tag ownership check. The token is Search
-     Console's, pasted into Vercel; with nothing set, no tag is emitted. */
-  verification: process.env.GOOGLE_SITE_VERIFICATION
-    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
-    : undefined,
+  /* Google's HTML-tag ownership checks. The first is Merchant Center's
+     (Hayley's account 5868121065, 2026-10-04); it is public in the page by
+     design, and removing it un-verifies the shop. A Search Console token
+     pasted into Vercel as GOOGLE_SITE_VERIFICATION is emitted beside it. */
+  verification: {
+    google: [
+      "DN0ExUFsUf5dV7Rugg4tapPN3f3Lczfu5ji8Q1uxZmM",
+      ...(process.env.GOOGLE_SITE_VERIFICATION ? [process.env.GOOGLE_SITE_VERIFICATION] : []),
+    ],
+  },
   keywords: [
     "boutique Cleethorpes",
     "women's clothing Cleethorpes",
