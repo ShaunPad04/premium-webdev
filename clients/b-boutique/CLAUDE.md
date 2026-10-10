@@ -1581,3 +1581,19 @@ gap was caching: everything under /img and /video left Vercel with
 visits do not re-check every photo. Not immutable, because the filenames are
 not hashed: a photo replaced under the same name shows to returning visitors
 within a day; rename it instead if it must be instant.
+
+## The stock book on the site — 2026-10-10 (Brad)
+
+`/stock/book`, behind the stock list's PIN: where Hayley logs each new piece
+(supplier link, price as it will show, colours with counts and sizes, a
+note). Three lists: Waiting for us, Needs your answer, On the website. Table
+`stock_book` (`lib/stock-book.ts`, created on demand like the others);
+endpoint `/stock/api/book` (GET list, POST add / edit / remove / answer for
+her, question / done for us), every call checked against the cookie. Our
+side is `scripts/stock-book.mjs` (`waiting`, `ask`, `done`), signing in with
+`STOCK_PASSPHRASE` from `.env.local`; the `b-boutique-new-stock` skill reads
+and closes entries through it. A "New stock" link sits in the stock list's
+header. The claude.ai artifact version
+(https://claude.ai/artifact/Bu51nWcdC7QeRtQgXEKUce) is retired: an outside
+visitor on a public link cannot write to an artifact, and the link opened
+from WhatsApp landed signed-out on "Page not found".

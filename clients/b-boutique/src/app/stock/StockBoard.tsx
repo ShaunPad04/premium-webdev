@@ -252,6 +252,8 @@ export function StockBoard({ pieces, autoUpdate }: { pieces: BoardPiece[]; autoU
       <header className="st-top">
         <div className="st-top-row">
           <h1 className="st-title">Stock</h1>
+          {/* The stock book (2026-10-10): where she logs new pieces. */}
+          <a href="/stock/book" className="st-out">New stock</a>
           <form action="/stock/api" method="post" onSubmit={(e) => {
             e.preventDefault();
             void fetch("/stock/api", {

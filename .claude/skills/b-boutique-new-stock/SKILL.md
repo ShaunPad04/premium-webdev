@@ -18,22 +18,29 @@ skill makes it repeatable. Work in `clients/b-boutique`.
 
 ## 1. Read the book
 
-The Stock Book is the artifact at https://claude.ai/artifact/Bu51nWcdC7QeRtQgXEKUce
-(db collection `pieces`). With the `ArtifactData` tool:
+The Stock Book is a page on the site, `/stock/book`, behind the same PIN as
+the stock list (the Claude artifact that came first is retired: it could
+not be used from a public link). Read it with the script, which signs in
+with `STOCK_PASSPHRASE` from the environment or `.env.local` (never
+committed; ask Brad for the PIN if neither has it):
 
 ```
-query  url=<artifact url>  collection=pieces  query={"where":[["status","==","new"]]}
+node scripts/stock-book.mjs waiting      # entries with status "new"
 ```
 
-Each doc: `url` (supplier page), `name` (optional), `pricePence`,
+Each entry: `id`, `url` (supplier page), `name` (optional), `priceP`,
 `colours: [{colour, qty, sizes}]`, `notes`, `answer` (her reply to an
-earlier question), `createdAt`, `status`.
+earlier question), `createdAt`.
 
 If something is missing or contradictory (no sizes on a sized run, a colour
 the supplier does not list, a price that is clearly a typo), do NOT guess:
-`update` the doc with `status: "question"` and `reply: "<the question in
-plain words>"`, and move on to the next piece. Her answer comes back as
-`answer` with `status: "new"`.
+
+```
+node scripts/stock-book.mjs ask <id> "The question, in plain words"
+```
+
+That moves it to "Needs your answer" on her page; her answer comes back as
+`answer` with status `new`. Move on to the next piece meanwhile.
 
 ## 2. The supplier page
 
@@ -104,7 +111,12 @@ counts. STOP and wait for his go.
 
 On his go: commit (message in the 2026-10-10 shape, Co-Authored-By line),
 `git push origin client/b-boutique`, wait for the product pages to answer
-200 on bboutiqueclee.com, then for each piece `update` its book doc:
-`status: "done"`, `productUrl: "https://bboutiqueclee.com/shop/<slug>"`,
-`updatedAt`. If Vercel reports `git_info_fail`, the deploy died before
-building: ask Brad to press Redeploy in the dashboard.
+200 on bboutiqueclee.com, then for each piece:
+
+```
+node scripts/stock-book.mjs done <id> https://bboutiqueclee.com/shop/<slug>
+```
+
+so it moves to "On the website" on her page with the link. If Vercel
+reports `git_info_fail`, the deploy died before building: ask Brad to press
+Redeploy in the dashboard.
