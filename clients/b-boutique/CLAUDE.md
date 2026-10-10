@@ -1538,3 +1538,32 @@ pushed live on his instruction.
 - IndexNow (`src/lib/indexnow.ts`): pings Bing (feeds ChatGPT search, Copilot) with the changed product URLs, from `/api/availability` via `after()`, production only, so it only runs once the new build is live. `price_ping` table records what was announced: each change pinged once. Key file `public/7f82ae78d90d188c480fc520ed6ce869.txt` (public by design). Google ignores IndexNow; the sitemap date is the Google lever.
 - Google Merchant Center feed: `/feeds/google.xml` (RSS, one item per piece/colour/size, live stock). No brand (supplier is not a brand, identifier_exists=no), no sale_price (the "was" is a reference, not a real former price), skips unconfirmed prices and uncounted sizes. Merchant Center account is Hayley's; add this URL as a scheduled feed, set shipping (Royal Mail £4.35, free over £120) and returns (14 days, by post, customer pays) in its settings to match the site.
 - **Merchant Center set up 2026-10-04** (Hayley's Google account, Merchant ID 5868121065; Brad signed in and created it). Verified by the HTML tag in `layout.tsx` (`verification.google`, do not remove). UK only; feed fetched daily at midnight; free listings only, no ads. Shipping: handling 1 day Mon-Fri, Royal Mail 1-3 days, £4.35 flat, free over £120. Returns: 14 days, new only, by mail, customer's label, no restocking fee, no exchanges, policy URL /returns (Google reviews it against the page, up to 10 days). Linked the same day (Brad's OK): Merchant Center was added to her existing Business Manager "B Boutique Cleethorpes" (om-3686580808049807584), which holds her Google Business Profile, so products can show on her Maps/Search listing. A profile can sit in only one Business Manager; link from there, not from Merchant Center.
+
+## New stock — 2026-10-10 (Hayley's WhatsApp via Brad, Babez London)
+
+- **Live (pending Brad's green light on the video preview):** Gingham
+  Padded Jacket (22698) Brown 2 / Pink 1 at **£26** (it had waited in
+  `awaitingPhotos` at £59; Brad: £26 is the price, do not question it);
+  Check Barrel Pleated Trousers (16092-2, £48) Brown S2 M2 L3, Blue S1 M1;
+  Camouflage Wide Fit Trousers (3003, £45, One size) Green 3, Camel 3 (the
+  supplier files the green photo as "Khaki"); V Neck Bat Wing Knit Jumper
+  (7738, £36) Beige 3, Chocolate 6 (supplier "Brown"; Brad reconfirmed 6 the
+  same day), split by the supplier's 1xS/1xM/1xL pack: one pack of beige,
+  two of chocolate.
+- The Wide Leg Trousers with Matching Belt message (Burgundy 7, £26) was a
+  re-send of 2026-10-02; already live, nothing changed.
+- `opening-stock.json` gained `statedSizesByColour` for runs whose split
+  differs per colour (the barrel trousers have no Blue L); a size the colour
+  does not list seeds as 0. `lib/opening-stock.ts` reads it first.
+- Last in `stocklist` like the 2026-10-02 batch (New arrivals and Shop the
+  collection unchanged); in `NOT_IN_SALE` (no usual price given).
+- **Photos, all through Higgsfield:** supplier shots in her colours.
+  Upscaled 2x (bytedance) where the file was under 1100px wide; thigh-length
+  shots (gingham, knit) outpainted to 9:16 for the legs; background removed;
+  then `scripts/compose-product.py` (kept in the repo this time) scales the
+  cutout to the catalogue's head/feet line (172 / 2188) on white 1856x2304
+  with the measured faint contact shadow. `build-product.mjs` and
+  `build-product-zoom.mjs` now take source names as arguments so a batch
+  does not re-encode all 80. The outpaint model tends to put the shoes on
+  the bottom edge: if the cutout's bottom row has solid pixels, crop the
+  source to just below the garment and outpaint again.

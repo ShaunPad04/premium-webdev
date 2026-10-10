@@ -69,7 +69,13 @@ async function main() {
   }
   await mkdir(OUT, { recursive: true });
 
-  const files = (await readdir(SRC)).filter((f) => f.endsWith(".webp")).sort();
+  /* Optional: names of sources to build (without .webp), so a new batch
+     does not re-encode the whole catalogue (2026-10-10). No names = all. */
+  const only = new Set(process.argv.slice(2));
+  const files = (await readdir(SRC))
+    .filter((f) => f.endsWith(".webp"))
+    .filter((f) => only.size === 0 || only.has(path.basename(f, ".webp")))
+    .sort();
   if (files.length === 0) throw new Error(`no .webp sources in ${SRC}`);
 
   let written = 0;

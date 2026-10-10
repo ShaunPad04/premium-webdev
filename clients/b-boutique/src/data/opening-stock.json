@@ -1,5 +1,5 @@
 {
-  "_source": "Brad's master stock list, 2026-09-22. Counts are per COLOURWAY; only one-size runs and runs whose per-size split the list states are importable (see src/lib/opening-stock.ts).",
+  "_source": "Brad's master stock list, 2026-09-22. Counts are per COLOURWAY; only one-size runs and runs whose per-size split the list states are importable (see src/lib/opening-stock.ts). 2026-10-10: statedSizesByColour added for runs whose split differs per colour (Hayley's message, or the supplier's pack ratio where the colour total is whole packs).",
   "opening": {
     "fair-isle-jumper": {
       "Beige": 2,
@@ -172,6 +172,22 @@
     },
     "wide-leg-trousers-with-matching-belt": {
       "Burgundy": 7
+    },
+    "gingham-padded-jacket": {
+      "Brown": 2,
+      "Pink": 1
+    },
+    "check-barrel-pleated-trousers": {
+      "Brown": 7,
+      "Blue": 2
+    },
+    "camouflage-wide-fit-trousers": {
+      "Green": 3,
+      "Camel": 3
+    },
+    "v-neck-bat-wing-knit-jumper": {
+      "Beige": 3,
+      "Chocolate": 6
     }
   },
   "statedSplit": {
@@ -204,6 +220,31 @@
       "L": 2,
       "XL": 1,
       "XXL": 1
+    }
+  },
+  "statedSizesByColour": {
+    "check-barrel-pleated-trousers": {
+      "Brown": {
+        "S": 2,
+        "M": 2,
+        "L": 3
+      },
+      "Blue": {
+        "S": 1,
+        "M": 1
+      }
+    },
+    "v-neck-bat-wing-knit-jumper": {
+      "Beige": {
+        "S": 1,
+        "M": 1,
+        "L": 1
+      },
+      "Chocolate": {
+        "S": 2,
+        "M": 2,
+        "L": 2
+      }
     }
   }
 }

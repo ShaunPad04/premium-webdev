@@ -34,6 +34,10 @@ export function openingPlan(): { plan: OpeningCount[]; skipped: string[]; unspli
   const opening = data.opening as Record<string, Record<string, number>>;
   const split = data.statedSplit as Record<string, number>;
   const bySize = data.statedSizes as Record<string, Record<string, number>>;
+  /* 2026-10-10: a run whose split differs per colour (the check barrel
+     trousers: Brown 2/2/3, Blue 1/1/0). A size the colour does not list is
+     written as 0 — she said which sizes she has, so the others are none. */
+  const byColourSize = data.statedSizesByColour as Record<string, Record<string, Record<string, number>>>;
   const plan: OpeningCount[] = [];
   const skipped: string[] = [];
   const unsplit: Unsplit[] = [];
@@ -48,6 +52,8 @@ export function openingPlan(): { plan: OpeningCount[]; skipped: string[]; unspli
     for (const [colour, total] of Object.entries(byColour)) {
       if (run.length === 1) {
         plan.push({ id: variantId(slug, run[0], colour), qty: total });
+      } else if (byColourSize[slug]?.[colour]) {
+        for (const size of run) plan.push({ id: variantId(slug, size, colour), qty: byColourSize[slug][colour][size] ?? 0 });
       } else if (bySize[slug]) {
         for (const size of run) {
           const n = bySize[slug][size];
@@ -72,6 +78,8 @@ export function openingPlan(): { plan: OpeningCount[]; skipped: string[]; unspli
 export function listedTotal(slug: string, colour: string, size?: string): number | null {
   /* Where the list states the per-size split, that is the tighter, exact cap. */
   if (size !== undefined) {
+    const byColour = (data.statedSizesByColour as Record<string, Record<string, Record<string, number>>>)[slug]?.[colour];
+    if (byColour) return byColour[size] ?? 0;
     const bySize = (data.statedSizes as Record<string, Record<string, number>>)[slug]?.[size];
     if (typeof bySize === "number") return bySize;
     const each = (data.statedSplit as Record<string, number>)[slug];

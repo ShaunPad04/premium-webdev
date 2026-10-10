@@ -1041,6 +1041,99 @@ const baseStocklist: readonly StockPiece[] = [
       { sku: "BB-BELTTROUSER-BUR", supplierRef: "3312-87-BUR", colour: "Burgundy", priceP: 2600, priceConfirmed: true, image: "bb-belttrouser-bur" },
     ],
   },
+  /* Added 2026-10-10 from Hayley's WhatsApp (colours, counts, prices) and
+     the supplier's pages on babezlondon.com (style number, fabric, size
+     ratio). Last in the list for the same reason as the 2026-10-02 batch:
+     New arrivals and Shop the collection read from the top and stay as they
+     were. Photographs: the supplier's, in her colours, cut out (Higgsfield
+     background remover) and composed by scripts/compose-product.py onto the
+     same white at the same head/feet line as the rest. The ones the
+     supplier shot to the thigh (gingham jacket, knit jumper) were extended
+     to full length below the garment with Higgsfield's outpaint; the
+     garment pixels are the supplier's own. Small supplier files (barrel
+     trousers, camouflage trousers, knit) were upscaled 2x first. */
+  {
+    slug: "gingham-padded-jacket",
+    name: "Gingham Padded Jacket",
+    category: "Coats & Jackets",
+    short: "A padded jacket in a small gingham check, with a funnel neck.",
+    full: "Padded all over for warmth and cut short and boxy, in a small gingham check. The funnel neck zips right up, and the full sleeves gather into the cuff. Easy over jeans on a cold day.",
+    features: ["Small gingham check", "Padded throughout", "Funnel neck", "Front zip"],
+    fabric: "100% Polyester",
+    fabricPublished: true,
+    care: "",
+    sizes: ["One size"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "22698",
+    /* Waited in awaitingPhotos from 2026-10-02 (pink, then at £59). On
+       2026-10-10 Hayley gave Brown 2 and Pink 1 at £26 each; the £26 is the
+       price, on Brad's instruction. */
+    colourways: [
+      { sku: "BB-GINGHAMJKT-BRN", supplierRef: "22698-BRN", colour: "Brown", priceP: 2600, priceConfirmed: true, image: "bb-ginghamjkt-brn" },
+      { sku: "BB-GINGHAMJKT-PNK", supplierRef: "22698-PNK", colour: "Pink", priceP: 2600, priceConfirmed: true, image: "bb-ginghamjkt-pnk" },
+    ],
+  },
+  {
+    slug: "check-barrel-pleated-trousers",
+    name: "Check Barrel Pleated Trousers",
+    category: "Trousers",
+    short: "Pleated barrel-leg trousers in a small check.",
+    full: "A small check across pleated, high-waisted trousers that curve out through the leg and back in at the ankle. Side pockets, and a button and zip at the front.",
+    features: ["Small check", "Front pleats", "Barrel leg", "Side pockets"],
+    fabric: "76% Polyester, 22% Cotton, 2% Elastane",
+    fabricPublished: true,
+    care: "",
+    sizes: ["S", "M", "L"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "16092-2",
+    colourways: [
+      { sku: "BB-CHECKBARREL-BRN", supplierRef: "16092-2-BRN", colour: "Brown", priceP: 4800, priceConfirmed: true, image: "bb-checkbarrel-brn" },
+      { sku: "BB-CHECKBARREL-BLU", supplierRef: "16092-2-BLU", colour: "Blue", priceP: 4800, priceConfirmed: true, image: "bb-checkbarrel-blu" },
+    ],
+  },
+  {
+    slug: "camouflage-wide-fit-trousers",
+    name: "Camouflage Wide Fit Trousers",
+    category: "Trousers",
+    short: "Wide, pleated camouflage trousers with an elasticated waist.",
+    full: "A camouflage print on soft cotton, cut very wide through the leg with pleats falling from an elasticated waist, and side pockets. Pull on, and wear with a plain knit.",
+    features: ["Camouflage print", "Elasticated waist", "Pleated front", "Wide leg", "Side pockets"],
+    fabric: "100% Cotton",
+    fabricPublished: true,
+    care: "",
+    sizes: ["One size"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "3003",
+    colourways: [
+      /* "Green" is Hayley's name; the supplier's photograph is filed as Khaki. */
+      { sku: "BB-CAMOWIDE-GRN", supplierRef: "3003-GRN", colour: "Green", priceP: 4500, priceConfirmed: true, image: "bb-camowide-grn" },
+      { sku: "BB-CAMOWIDE-CAM", supplierRef: "3003-CAM", colour: "Camel", priceP: 4500, priceConfirmed: true, image: "bb-camowide-cam" },
+    ],
+  },
+  {
+    slug: "v-neck-bat-wing-knit-jumper",
+    name: "V Neck Bat Wing Knit Jumper",
+    category: "Knitwear",
+    short: "A soft V-neck knit with bat wing sleeves and a ribbed hem.",
+    full: "A soft, brushed knit with a deep V neck and wide bat wing sleeves that narrow into ribbed cuffs, finishing in a deep ribbed hem at the waist. Easy over tailored trousers.",
+    features: ["V neck", "Bat wing sleeves", "Ribbed cuffs and hem", "Soft brushed knit"],
+    /* The supplier publishes this composition; "Fibers" is their word. */
+    fabric: "45% PTT, 30% Fibers, 12% Polyamide, 5% Wool",
+    fabricPublished: true,
+    care: "",
+    sizes: ["S", "M", "L"],
+    sizeNote: "",
+    supplier: "Babez London",
+    supplierCode: "7738",
+    colourways: [
+      { sku: "BB-BATWINGKNIT-BEI", supplierRef: "7738-BEI", colour: "Beige", priceP: 3600, priceConfirmed: true, image: "bb-batwingknit-bei" },
+      /* "Chocolate" is Hayley's name; the supplier calls it Brown. */
+      { sku: "BB-BATWINGKNIT-CHO", supplierRef: "7738-BRN", colour: "Chocolate", priceP: 3600, priceConfirmed: true, image: "bb-batwingknit-cho" },
+    ],
+  },
 ];
 
 /** The stock list as sold, with the prices Hayley has set on /stock.
@@ -1149,24 +1242,4 @@ export function sizeSummary(): string {
  *  a stand-in or generated photograph: it would be a picture of something
  *  that is not the garment. */
 export const awaitingPhotos: readonly StockPiece[] = [
-  /* 2026-10-02: the supplier shot it to the thigh; waiting on its
-     full-length photograph (Higgsfield credits ran out). */
-  {
-    slug: "gingham-padded-jacket",
-    name: "Gingham Padded Jacket",
-    category: "Coats & Jackets",
-    short: "A padded jacket in a small gingham check, with a funnel neck.",
-    full: "Padded all over for warmth and cut short and boxy, in a small gingham check. The funnel neck zips right up, and the full sleeves gather into the cuff. Easy over jeans on a cold day.",
-    features: ["Small gingham check", "Padded throughout", "Funnel neck", "Front zip"],
-    fabric: "100% Polyester",
-    fabricPublished: true,
-    care: "",
-    sizes: ["One size"],
-    sizeNote: "",
-    supplier: "Babez London",
-    supplierCode: "22698",
-    colourways: [
-      { sku: "BB-GINGHAMJKT-PNK", supplierRef: "22698-PNK", colour: "Pink", priceP: 5900, priceConfirmed: true, image: "bb-ginghamjkt-pnk" },
-    ],
-  },
 ];

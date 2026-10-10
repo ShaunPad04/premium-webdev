@@ -15,7 +15,12 @@ const OUT = "public/img/product";
 const AVIF = { quality: 62, effort: 4 };
 const WEBP = { quality: 80, effort: 4 };
 
-const files = (await readdir(SRC)).filter((f) => f.endsWith(".webp")).sort();
+/* Optional: names of sources to build (without .webp); none = all. */
+const only = new Set(process.argv.slice(2));
+const files = (await readdir(SRC))
+  .filter((f) => f.endsWith(".webp"))
+  .filter((f) => only.size === 0 || only.has(path.basename(f, ".webp")))
+  .sort();
 let bytes = 0;
 const POOL = 4;
 let next = 0;

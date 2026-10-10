@@ -243,6 +243,8 @@ const NOT_IN_SALE = new Set([
   /* 2026-10-02, same reason: prices from Hayley with no usual price. */
   "gingham-padded-jacket", "fitted-striped-full-zip-cardigan", "pink-longline-cardigan-with-faux-fur-detail",
   "plaid-check-balloon-sleeve-jacket", "wide-leg-trousers-with-matching-belt",
+  /* 2026-10-10, same reason. */
+  "check-barrel-pleated-trousers", "camouflage-wide-fit-trousers", "v-neck-bat-wing-knit-jumper",
 ]);
 
 export function wasPriceP(priceP: number, slug?: string): number | null {
