@@ -228,7 +228,20 @@ export function StockBook({ entries }: { entries: BookEntry[] }) {
 
         {live.length ? (
           <Section title="On the website" items={live}>
-            {(x) => (x.productUrl ? <p className="sb-live"><a href={x.productUrl} target="_blank" rel="noopener">See it on the website ↗</a></p> : null)}
+            {(x) => (
+              <div className="sb-acts">
+                {x.productUrl ? <a className="sb-live" href={x.productUrl} target="_blank" rel="noopener">See it on the website ↗</a> : null}
+                {removing === x.id ? (
+                  <>
+                    <span>Clear it from the book? It stays on the website.</span>
+                    <button type="button" className="st-reset" onClick={() => remove(x.id)}>Yes, clear</button>
+                    <button type="button" className="st-reset" onClick={() => setRemoving(null)}>Keep it</button>
+                  </>
+                ) : (
+                  <button type="button" className="st-reset" onClick={() => setRemoving(x.id)}>Clear from the book</button>
+                )}
+              </div>
+            )}
           </Section>
         ) : null}
       </div>

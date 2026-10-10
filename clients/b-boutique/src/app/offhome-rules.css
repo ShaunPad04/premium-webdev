@@ -5772,5 +5772,5 @@ h3.csr-grid-title { margin: 10px 0 0; text-align: center; font-size: 24px !impor
 .sb-reply { display: grid; gap: 10px; padding: 14px; background: var(--bb-white); border: 1px solid var(--bb-light-border); border-left: 3px solid var(--red); border-radius: 10px; }
 .sb-reply p { margin: 0; font-size: 14.5px; line-height: 1.5; }
 .sb-reply textarea { width: 100%; min-height: 72px; padding: 11px 14px; font: inherit; font-size: 16px; border: 1px solid var(--bb-light-border); border-radius: 10px; background: var(--bb-white-pure); color: var(--bb-black); resize: vertical; }
-.sb-live { margin: 0; font-size: 14px; }
+.sb-live { margin: 0; font-size: 14px; font-weight: 600; }
 .sb-toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 12px 20px; background: var(--bb-black); color: var(--bb-white); border-radius: 999px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.18); z-index: 20; }

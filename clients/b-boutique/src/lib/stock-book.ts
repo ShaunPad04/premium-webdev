@@ -167,11 +167,14 @@ export async function editEntry(id: string, input: BookInput): Promise<BookEntry
   return one(q, id);
 }
 
+/** Any status: a live piece cleared from the book stays on the website,
+ *  because nothing on the shop reads this table. The book is her inbox to
+ *  us, and she can tidy it. */
 export async function removeEntry(id: string): Promise<boolean> {
   const q = sql();
   if (!q) return false;
   await ensure(q);
-  const rows = (await q`DELETE FROM stock_book WHERE id = ${id} AND status <> 'done' RETURNING id`) as { id: string }[];
+  const rows = (await q`DELETE FROM stock_book WHERE id = ${id} RETURNING id`) as { id: string }[];
   return rows.length > 0;
 }
 
