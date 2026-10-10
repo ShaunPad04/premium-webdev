@@ -1567,3 +1567,17 @@ pushed live on his instruction.
   does not re-encode all 80. The outpaint model tends to put the shoes on
   the bottom edge: if the cutout's bottom row has solid pixels, crop the
   source to just below the garment and outpaint again.
+
+## Image caching — 2026-10-10
+
+Brad asked for the images to be optimised without losing quality. Measured
+first: the browser already picks the right srcset step for every product
+slot (640 for a 468px phone card, 960 for a 594px desktop card, 1280 for the
+product hero), Lighthouse lists no image in the page weight (/clothing 93,
+a new product page 90, locally), so the files were left alone. The one real
+gap was caching: everything under /img and /video left Vercel with
+`max-age=0, must-revalidate`. `next.config.ts` now sends
+`public, max-age=86400, stale-while-revalidate=604800` for both, so repeat
+visits do not re-check every photo. Not immutable, because the filenames are
+not hashed: a photo replaced under the same name shows to returning visitors
+within a day; rename it instead if it must be instant.
