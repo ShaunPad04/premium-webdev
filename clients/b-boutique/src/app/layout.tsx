@@ -4,7 +4,7 @@ import { PageTransition } from "@/components/PageTransition";
 import { AddedToast } from "@/components/AddedToast";
 import { Hanken_Grotesk } from "next/font/google";
 import { ScrollReset } from "@/components/ScrollReset";
-import { directionsHref, socials } from "@/lib/nav";
+import { googleListingHref, socials } from "@/lib/nav";
 import { hours, shop } from "@/lib/shop";
 import { formatPriceShort, isBuyable, products } from "@/lib/catalogue";
 import { SHARE_IMAGE, SITE_ORIGIN, absolute, homeTitle, jsonLd, siteDescription } from "@/lib/site";
@@ -175,7 +175,7 @@ function localBusinessSchema() {
     image: [absolute(SHARE_IMAGE.url)],
     logo: absolute("/apple-icon.png"),
     email: shop.email || undefined,
-    sameAs: socials.map((s) => s.href),
+    sameAs: [...socials.map((s) => s.href), googleListingHref],
     /* Derived from the catalogue, so it follows the stock. */
     priceRange: priceRange(),
     address: {
@@ -195,7 +195,7 @@ function localBusinessSchema() {
       latitude: shop.lat,
       longitude: shop.lng,
     },
-    hasMap: directionsHref,
+    hasMap: googleListingHref,
     openingHoursSpecification: hours
       .filter((d) => d.hours !== null)
       .map((d) => ({

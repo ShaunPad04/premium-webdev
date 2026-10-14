@@ -1616,5 +1616,19 @@ people search.
   "Untitled") lists "B Boutique, 6 Market Street, DN35 8LY". Advised: correct
   Facebook, unpublish the SumUp store (the site's checkout uses
   api.sumup.com directly and does not depend on it).
-- **Still wanted:** her Business Profile's Maps share link, to go in
-  `sameAs` and `hasMap` in place of the Maps search URL.
+- **Her Google listing in the schema** (same day): `googleListingHref` in
+  `lib/nav.ts` (the cid of her profile, read off its Share link; the place
+  sits exactly on shop.lat/lng) is `hasMap` and the last `sameAs` entry.
+  "Get directions" still uses the address search, on purpose.
+- **Her Business Profile, checked the same day as her (Claude in Chrome):**
+  website https://bboutiqueclee.com/, hours every day 10-4, primary category
+  Boutique with Ladies' Clothes Shop and Clothing Shop; "Homewares Shop"
+  added. Description is still her own ("Affordable on trend ladies
+  fashion"). Google asks for a shopfront photo and interior photos: use her
+  own unedited ones, not the Higgsfield-edited shopfront on /about. Review
+  link https://g.page/r/Ccw3GKxQqFGjEBM/review (the counter QR card,
+  `print/review-card-A6.pdf`, points
+  here). Four review replies were posted by an interrupted browser run
+  without sign-off; read them before anything else is posted in her name.
+  Bing Places: listed, pending publish (7-12 days). Tripadvisor: submitted
+  2026-10-14 19:39, pending review.

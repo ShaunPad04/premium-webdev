@@ -91,6 +91,13 @@ export const mapsQuery = encodeURIComponent(
  *  decimal pair is not. */
 export const directionsHref = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
 
+/** Her Google Business Profile listing, from the profile's own Share link
+ *  (2026-10-14; the place sits exactly on shop.lat/lng). The store schema
+ *  names it as `hasMap` and in `sameAs`, which is what tells Google this
+ *  website and that listing are one business. The cid form, because the
+ *  share link is a redirect carrying session parameters. */
+export const googleListingHref = "https://www.google.com/maps?cid=11768372365733935052";
+
 /** The embedded map, pinned to the shop's own point rather than searched for
  *  by name. B Boutique is new and may not be listed yet — the client's own
  *  link was to the street address, not to a business — so a name search could
