@@ -1581,3 +1581,40 @@ gap was caching: everything under /img and /video left Vercel with
 visits do not re-check every photo. Not immutable, because the filenames are
 not hashed: a photo replaced under the same name shows to returning visitors
 within a day; rename it instead if it must be instant.
+
+## Local search — 2026-10-14
+
+Brad: "cleethorpes boutiques" and "boutiques near me" show her Business
+Profile in the map box (1st and 2nd) but not the website. The site ranks 1st
+for "b boutique" and Google already ties it to her profile (the result
+carries "Cleethorpes · Closed"); for the generic searches it is three weeks
+old with almost no links, and its own words never said "boutique" in the way
+people search.
+
+- **Homepage title** is `homeTitle` in `lib/site.ts`, "B Boutique | Women's
+  Clothing Boutique in Cleethorpes" (was "Womenswear & Homeware in
+  Cleethorpes"), used by the layout default, its share title and
+  `pageMeta()`'s fallback. /clothing's title is "Women's Clothing"; its
+  visible heading stays "Clothing".
+- **`siteDescription`** leads "An independent women's clothing boutique at"
+  and reads the street and town from `shop.ts` (it had them typed). 160
+  characters: keep it there or under.
+- **Hero foot line** (`Where`) leads "Women's clothing boutique": the name is
+  an SVG and the h1 is sr-only, so it was the first readable text on the page
+  and never said what the shop is. One line on a desktop, three on a phone
+  (each dot is a break). The sr-only h1 says the same.
+- **`WebSite` JSON-LD** beside the store schema (name "B Boutique",
+  alternateName "B Boutique Cleethorpes", publisher the store's @id): Google
+  was labelling the result with the bare domain.
+- **llms.txt** says "women's clothing and homeware boutique".
+- **Phone number: NOT restored.** Locked decision 10 (removed at her
+  instruction) stands, and her Business Profile's 01472 801580 is not the
+  07305 534342 she gave in September. Her call, and which number.
+- **Wrong details about her elsewhere on the web, found the same day (hers to
+  fix, not ours):** her Facebook page gives "18 Seaview Street, DN35 8HY";
+  an old SumUp online store (b-boutique-cleethorpes.sumupstore.com, titled
+  "Untitled") lists "B Boutique, 6 Market Street, DN35 8LY". Advised: correct
+  Facebook, unpublish the SumUp store (the site's checkout uses
+  api.sumup.com directly and does not depend on it).
+- **Still wanted:** her Business Profile's Maps share link, to go in
+  `sameAs` and `hasMap` in place of the Maps search URL.

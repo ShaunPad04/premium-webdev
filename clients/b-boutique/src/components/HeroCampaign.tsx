@@ -23,7 +23,7 @@ import { HeroVideo } from "./HeroVideo";
  * 2026-09-27, taking back the scroll-out to the category card's shape he
  * had asked for earlier that day). */
 
-const heading = `B Boutique — for every woman who walks in. Independent womenswear and homeware on ${shop.street}, ${shop.town}.`;
+const heading = `B Boutique — for every woman who walks in. An independent women's clothing and homeware boutique on ${shop.street}, ${shop.town}.`;
 
 export function HeroCampaign() {
   return (

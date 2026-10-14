@@ -42,11 +42,15 @@ const SLIDES: LuminaSlide[] = [
    used to appear first some thirteen screens down. Both halves derive from
    shop.ts, so this line cannot disagree with the Visit section. It sits at
    the foot of the frame, not in the centre: the client asked on 2026-09-22
-   for the middle to be the name and one button, nothing else. */
+   for the middle to be the name and one button, nothing else.
+   "Women's clothing boutique" leads it (2026-10-14): the name is drawn as an
+   SVG and the h1 is screen-reader only, so this was the first readable text
+   on the page and it never said what the shop is. On phones each dot is a
+   line break. */
 export function Where() {
   return (
     <p className="hero-open">
-      Open {openingPhrase()} <span aria-hidden="true">·</span> {shop.street}, {shop.town}
+      Women&rsquo;s clothing boutique <span aria-hidden="true">·</span> Open {openingPhrase()} <span aria-hidden="true">·</span> {shop.street}, {shop.town}
     </p>
   );
 }

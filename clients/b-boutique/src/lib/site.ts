@@ -1,10 +1,16 @@
-import { openingPhrase } from "./shop";
+import { openingPhrase, shop } from "./shop";
+
+/** The home page's title, also its share title and the layout default.
+ *  It names what people search for, "women's clothing", "boutique" and the
+ *  town, beside the name: "Womenswear & Homeware in Cleethorpes" matched none
+ *  of the searches she was missing from (2026-10-14). */
+export const homeTitle = "B Boutique | Women's Clothing Boutique in Cleethorpes";
 
 /** The site description: the home page, the layout default and the store
- *  JSON-LD. The hours are derived, never typed. */
+ *  JSON-LD. The hours and the address are derived, never typed. */
 export const siteDescription =
-  `An independent boutique at 18 Sea View Street, Cleethorpes. Womenswear ` +
-  `and homeware, chosen one piece at a time. Open ${openingPhrase()}.`;
+  `An independent women's clothing boutique at ${shop.street}, ${shop.town}. ` +
+  `Womenswear and homeware, chosen one piece at a time. Open ${openingPhrase()}.`;
 
 /** The origin every absolute URL on this site is built from.
  *
@@ -59,7 +65,7 @@ export function pageMeta({
   image?: { url: string; width?: number; height?: number; alt: string };
 }) {
   const name = typeof title === "object" ? title.absolute : title;
-  const shareTitle = name ? (typeof title === "object" ? name : `${name} | B Boutique Cleethorpes`) : "B Boutique | Womenswear & Homeware in Cleethorpes";
+  const shareTitle = name ? (typeof title === "object" ? name : `${name} | B Boutique Cleethorpes`) : homeTitle;
   return {
     ...(title ? { title } : {}),
     description,

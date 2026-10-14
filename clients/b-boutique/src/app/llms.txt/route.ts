@@ -27,7 +27,7 @@ export function GET() {
 
 > ${siteDescription}
 
-${shop.name} (trading as B Boutique Cleethorpes) is an independent womenswear and homeware shop at ${shop.street}, ${shop.town}, ${shop.postcode}, England, run by ${owner.firstName} ${owner.lastName}. It sells in the shop and online, with delivery anywhere in the UK.
+${shop.name} (trading as B Boutique Cleethorpes) is an independent women's clothing and homeware boutique at ${shop.street}, ${shop.town}, ${shop.postcode}, England, run by ${owner.firstName} ${owner.lastName}. It sells in the shop and online, with delivery anywhere in the UK.
 
 ## Key facts
 

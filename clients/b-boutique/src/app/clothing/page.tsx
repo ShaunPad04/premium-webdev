@@ -14,7 +14,8 @@ import { clothingProducts } from "@/lib/pages";
 
 export const metadata: Metadata = pageMeta({
   path: "/clothing",
-  title: "Clothing",
+  /* "Women's" is what people search with; the visible heading stays "Clothing". */
+  title: "Women's Clothing",
   description:
     "Womenswear from B Boutique, 18 Sea View Street, Cleethorpes: coats, knitwear, trousers, tops, co-ords and dresses. Buy online with UK delivery or in the shop.",
 });

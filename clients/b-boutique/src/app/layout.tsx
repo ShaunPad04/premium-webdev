@@ -7,7 +7,7 @@ import { ScrollReset } from "@/components/ScrollReset";
 import { directionsHref, socials } from "@/lib/nav";
 import { hours, shop } from "@/lib/shop";
 import { formatPriceShort, isBuyable, products } from "@/lib/catalogue";
-import { SHARE_IMAGE, SITE_ORIGIN, absolute, jsonLd, siteDescription } from "@/lib/site";
+import { SHARE_IMAGE, SITE_ORIGIN, absolute, homeTitle, jsonLd, siteDescription } from "@/lib/site";
 import "./globals.css";
 import "./type.css";
 
@@ -122,7 +122,7 @@ export const metadata: Metadata = {
      site is already a deliberate link where one is wanted. */
   formatDetection: { address: false, telephone: false, email: false, date: false },
   title: {
-    default: "B Boutique | Womenswear & Homeware in Cleethorpes",
+    default: homeTitle,
     template: "%s | B Boutique Cleethorpes",
   },
   description,
@@ -144,7 +144,7 @@ export const metadata: Metadata = {
     "homeware Cleethorpes",
   ],
   openGraph: {
-    title: "B Boutique | Womenswear & Homeware in Cleethorpes",
+    title: homeTitle,
     description,
     url: "/",
     type: "website",
@@ -208,6 +208,23 @@ function localBusinessSchema() {
   };
 }
 
+/* The site's name for Google's results. Without it Google labelled the
+   result with the bare domain, "bboutiqueclee.com" (seen 2026-10-14).
+   Google reads this from the home page; it sits on every page here because
+   the store schema above does, and Google ignores it elsewhere. */
+function websiteSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": absolute("/#website"),
+    name: shop.name,
+    alternateName: "B Boutique Cleethorpes",
+    url: absolute("/"),
+    inLanguage: "en-GB",
+    publisher: { "@id": absolute("/#store") },
+  };
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -229,6 +246,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLd(localBusinessSchema()) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLd(websiteSchema()) }}
         />
         {/* No skip link (2026-09-27, Brad asked for it gone). Keyboard and
             screen-reader users still reach the content through the page's
