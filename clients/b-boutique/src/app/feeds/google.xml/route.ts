@@ -1,7 +1,6 @@
-import { DELIVERY_P, FREE_DELIVERY_OVER_P, isBuyable, products } from "@/lib/catalogue";
-import { merchantItemId } from "@/lib/product-schema";
+import { DELIVERY_P, FREE_DELIVERY_OVER_P } from "@/lib/catalogue";
+import { feedVariants } from "@/lib/merchant-feed";
 import { absolute } from "@/lib/site";
-import { readStock } from "@/lib/stock";
 
 /* The product feed Google Merchant Center reads (2026-10-02, Brad), so her
  * pieces can show free in Google's Shopping tab. Merchant Center fetches it
@@ -26,36 +25,31 @@ const esc = (s: string) =>
 const gbp = (p: number) => `${(p / 100).toFixed(2)} GBP`;
 
 export async function GET() {
-  const stock = (await readStock().catch(() => null)) ?? [];
-  const bySlug = new Map(products.map((p) => [p.slug, p]));
-
-  const items = stock.flatMap((v) => {
-    const p = bySlug.get(v.slug);
-    if (!p || !isBuyable(p) || v.qty === null) return [];
-    const cw = p.colourways.find((c) => c.colour === v.colour) ?? p.colourways[0];
+  /* The same list the in-store feed reads (lib/merchant-feed.ts). */
+  const items = (await feedVariants()).map(({ product: p, colourway: cw, size, id, inStock }) => {
     const apparel = p.category !== "Homeware";
     const tags = [
       /* Her SKU plus the size. The product page's structured data uses the
          same id as each variant's sku, so Google can pair them. */
-      ["g:id", merchantItemId(cw.sku, v.size)],
+      ["g:id", id],
       ["g:item_group_id", p.slug],
       ["g:title", cw.colour ? `${p.name} - ${cw.colour}` : p.name],
       ["g:description", p.full || p.short],
       ["g:link", absolute(`/shop/${p.slug}`)],
       ["g:image_link", absolute(`/img/product/${cw.image}-1280.jpg`)],
-      ["g:availability", v.qty > 0 ? "in_stock" : "out_of_stock"],
+      ["g:availability", inStock ? "in_stock" : "out_of_stock"],
       ["g:price", gbp(p.priceP)],
       ["g:condition", "new"],
       ["g:identifier_exists", "no"],
       ["g:product_type", p.category],
       ...(cw.colour ? [["g:color", cw.colour]] : []),
-      ...(apparel ? [["g:size", v.size], ["g:gender", "female"], ["g:age_group", "adult"]] : []),
+      ...(apparel ? [["g:size", size], ["g:gender", "female"], ["g:age_group", "adult"]] : []),
     ];
     const shipping = p.priceP >= FREE_DELIVERY_OVER_P ? 0 : DELIVERY_P;
-    return [
+    return (
       `<item>${tags.map(([k, val]) => `<${k}>${esc(val)}</${k}>`).join("")}` +
-        `<g:shipping><g:country>GB</g:country><g:price>${gbp(shipping)}</g:price></g:shipping></item>`,
-    ];
+      `<g:shipping><g:country>GB</g:country><g:price>${gbp(shipping)}</g:price></g:shipping></item>`
+    );
   });
 
   const xml =
