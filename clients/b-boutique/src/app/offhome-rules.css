@@ -5570,6 +5570,10 @@ h3.csr-grid-title { margin: 10px 0 0; text-align: center; font-size: 24px !impor
 .cr-a-next { max-width: 440px; margin-top: 32px; font-size: 14px; line-height: 1.7; color: #52525B; }
 
 .cr-a-next p { margin: 0 0 10px; }
+
+/* The email and review links sat in the paragraph's own grey with no
+   underline, so neither read as a link (2026-10-16). */
+.cr-a-next a { color: #0E0B0C; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
  .cr-btn { transition: none; }
 }

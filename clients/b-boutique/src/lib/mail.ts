@@ -1,6 +1,7 @@
 import "server-only";
 
 import { formatPrice } from "./catalogue";
+import { googleReviewHref } from "./nav";
 import { openingPhrase, shop } from "./shop";
 import type { Order } from "./orders";
 
@@ -164,6 +165,13 @@ export async function confirmOrderToCustomer(order: Order): Promise<boolean> {
       ``,
       `Everything in the shop is picked one piece at a time, so your order is`,
       order.method === "collect" ? `set aside by hand for you.` : `packed by hand. It goes by Royal Mail.`,
+      ``,
+      /* Every paying customer, neutral words: see googleReviewHref. */
+      order.method === "collect"
+        ? `Once you have collected it, we would love to hear what you think.`
+        : `Once it has arrived, we would love to hear what you think.`,
+      `A Google review helps a small independent shop more than anything:`,
+      `  ${googleReviewHref}`,
       ``,
       /* The 14-day cancellation right has to be given in a durable medium —
          an email the customer keeps — not only on a web page they visited

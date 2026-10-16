@@ -1665,3 +1665,13 @@ All were non-critical warnings; the products were already valid.
   has no barcodes, and a supplier is not a brand; `identifier_exists=no` in
   the feed says so). Do not add them to quiet the report.
 - Product HTML grew by up to ~4.6KB gzipped (the largest, 10 variants).
+
+## Google review link for online buyers — 2026-10-16 (Brad)
+
+`googleReviewHref` in `lib/nav.ts` (the Business Profile's own review link,
+the same as the counter card's QR). Used in the customer's order email
+(`confirmOrderToCustomer`) and on the paid state of /checkout/success
+(`ResultCard`), worded for post or collect. Asked of EVERY paying customer
+in neutral words: never "if you loved it", never a reward; Google and the
+CMA forbid both. The email and review links in that page's "What happens
+next" block are now underlined (they were grey and read as plain text).

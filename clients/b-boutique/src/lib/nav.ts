@@ -98,6 +98,15 @@ export const directionsHref = `https://www.google.com/maps/search/?api=1&query=$
  *  share link is a redirect carrying session parameters. */
 export const googleListingHref = "https://www.google.com/maps?cid=11768372365733935052";
 
+/** "Write a review" on that listing, the link the Business Profile itself
+ *  hands out (2026-10-14; the counter card's QR code is the same link). Used
+ *  in the order email and on the paid checkout page (2026-10-16, Brad).
+ *
+ *  Asked of EVERY paying customer, in neutral words. Google forbids asking
+ *  only the happy ones ("if you loved it, review us") and any reward for a
+ *  review, and so does the CMA; keep both out of any copy that uses this. */
+export const googleReviewHref = "https://g.page/r/Ccw3GKxQqFGjEBM/review";
+
 /** The embedded map, pinned to the shop's own point rather than searched for
  *  by name. B Boutique is new and may not be listed yet — the client's own
  *  link was to the street address, not to a business — so a name search could

@@ -1,5 +1,6 @@
 import Link from "@/components/Link";
 
+import { googleReviewHref } from "@/lib/nav";
 import { openingPhrase, shop } from "@/lib/shop";
 
 export type CheckoutState = "paid" | "refused" | "unknown";
@@ -89,6 +90,17 @@ export function ResultCard({ state, reference, configured, collect = false }: { 
         <h2 id="cr-next" className="cr-small-h">{c.nextH}</h2>
         <p>{c.next}</p>
         <p>Email the shop at <Email reference={reference} />.</p>
+        {/* Paid only, and in the same neutral words as the order email: see
+            googleReviewHref. */}
+        {state === "paid" ? (
+          <p>
+            Once {collect ? "you have collected it" : "it has arrived"}, we would love to hear what you think:{" "}
+            <a href={googleReviewHref} target="_blank" rel="noopener noreferrer">
+              leave a Google review
+            </a>
+            .
+          </p>
+        ) : null}
       </section>
     </div>
   );
