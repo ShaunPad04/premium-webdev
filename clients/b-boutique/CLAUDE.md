@@ -1311,9 +1311,10 @@ untouched. What changed, and why it must not be undone:
   `email`, `sameAs` (Instagram, Facebook), `priceRange` (derived from the
   catalogue). Offers carry `shippingDetails` (from DELIVERY_P /
   FREE_DELIVERY_OVER_P, GB) and `hasMerchantReturnPolicy` (14 days, by post,
-  customer pays). No `deliveryTime`: she confirmed posting next business day,
-  not Royal Mail's transit. BreadcrumbList on product pages; FAQPage on the
-  home FAQ (the visible questions, word for word).
+  customer pays). `deliveryTime` since 2026-10-16, mirroring Merchant
+  Center (see "Search Console product warnings" below). BreadcrumbList on
+  product pages; FAQPage on the home FAQ (the visible questions, word for
+  word).
 - **GEO.** `/llms.txt` (route handler, static), built from shop.ts, the
   catalogue and the delivery constants: facts, pages, every piece with its
   current price. No was-prices, no stock.
@@ -1632,3 +1633,35 @@ people search.
   without sign-off; read them before anything else is posted in her name.
   Bing Places: listed, pending publish (7-12 days). Tripadvisor: submitted
   2026-10-14 19:39, pending review.
+
+## Search Console product warnings — 2026-10-16
+
+Search Console emailed two reports (Product snippets; Merchant listings).
+All were non-critical warnings; the products were already valid.
+
+- **Fixed in `lib/product-schema.ts`:**
+  - `availability`: a counted size says InStock / OutOfStock, the same rule
+    as `/feeds/google.xml`. An uncounted size still says nothing ("never
+    counted" is neither), so a warning remains for those until counted.
+  - Variants are now one per COLOUR AND SIZE (136 across 51 pieces), each
+    `sku` = its feed `g:id` via the shared `merchantItemId()`, so Google can
+    pair page and feed. A one-colour, one-size piece is a plain Product.
+  - `description` on every variant (`product.short`).
+  - `deliveryTime`: handling 1 business day, transit 1-3, Mon-Fri, the
+    values in her Merchant Center shipping settings. Change both together.
+- **How the page knows the stock:** `/shop/[slug]` reads `countsForSlug()`
+  (read-only, no `ensureSchema`, so `next build` never writes to her
+  database) when built, and `adjust` / `setCount` call
+  `refreshProductPage()`, which runs `revalidatePath` (or queues it with
+  `after` when called mid-render, as /checkout/success does). Verified in
+  `next start`: the page rebuilds on both paths. **No `export const
+  revalidate`**: an hourly one made product-link prefetches hang ~28s under
+  `next start` and timed out the landing test. A database error costs the
+  page its availability fields only (`unstable_rethrow` passes Next's own
+  errors through). The visible sold-out state is still `/api/availability`.
+- **Left as warnings on purpose:** `review` / `aggregateRating` (no
+  reviews of the products exist; marking up her Google reviews as product
+  reviews is against Google's rules) and `gtin` / `brand` (boutique stock
+  has no barcodes, and a supplier is not a brand; `identifier_exists=no` in
+  the feed says so). Do not add them to quiet the report.
+- Product HTML grew by up to ~4.6KB gzipped (the largest, 10 variants).

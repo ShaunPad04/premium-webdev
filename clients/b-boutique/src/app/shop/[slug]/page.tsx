@@ -23,8 +23,10 @@ import {
   relatedTo,
 } from "@/lib/catalogue";
 import { owner, shop } from "@/lib/shop";
+import { unstable_rethrow } from "next/navigation";
 import { breadcrumbSchema, productSchema } from "@/lib/product-schema";
 import { jsonLd, pageMeta } from "@/lib/site";
+import { countsForSlug } from "@/lib/stock";
 import { Price } from "@/components/Price";
 import { GalleryThumbs } from "@/components/GalleryThumbs";
 import { PaymentMarks } from "@/components/PaymentMarks";
@@ -36,6 +38,18 @@ import { clothingCards } from "@/lib/pages";
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
 }
+
+/* Still static, but no longer frozen (2026-10-16). The structured data now
+   says which sizes are in stock, read from the stock table when the page is
+   built, and every stock change rebuilds that one page on the spot
+   (lib/stock.ts, refreshProductPage). A change made outside the site, such
+   as a fix typed straight into the database, shows at the next deploy. The
+   visible sold-out state still comes from /api/availability on every view.
+
+   NO `export const revalidate`. An hourly one was tried first and, under
+   `next start`, made every prefetch of a product link hang for ~28s (the
+   landing test timed out; 29s to reload /clothing against 0.9s without it).
+   On-demand rebuilds need no timer. */
 
 export async function generateMetadata({
   params,
@@ -67,6 +81,14 @@ export default async function ProductPage({
   const product = productBySlug(slug);
   if (!product) notFound();
 
+  /* A database that is down, or a table not created yet, costs the page its
+     availability fields and nothing else. Next's own control-flow errors
+     are passed on rather than swallowed. */
+  const counts = await countsForSlug(product.slug).catch((err) => {
+    unstable_rethrow(err);
+    return null;
+  });
+
   const related = relatedTo(product);
   const cat = clothingCards.find((c) => c.name === product.category);
   const dept = cat ? { name: "Clothing", href: "/clothing" } : { name: "Homeware", href: "/homeware" };
@@ -83,7 +105,7 @@ export default async function ProductPage({
           one character JSON.stringify leaves alone. */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLd(productSchema(product)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(productSchema(product, counts)) }}
       />
       <script
         type="application/ld+json"

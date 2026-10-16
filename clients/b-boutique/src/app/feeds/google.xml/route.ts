@@ -1,4 +1,5 @@
 import { DELIVERY_P, FREE_DELIVERY_OVER_P, isBuyable, products } from "@/lib/catalogue";
+import { merchantItemId } from "@/lib/product-schema";
 import { absolute } from "@/lib/site";
 import { readStock } from "@/lib/stock";
 
@@ -34,9 +35,9 @@ export async function GET() {
     const cw = p.colourways.find((c) => c.colour === v.colour) ?? p.colourways[0];
     const apparel = p.category !== "Homeware";
     const tags = [
-      /* Her SKU plus the size: plain ASCII and under Google's 50 characters,
-         which the variant id (middle dots, up to 57) is not. */
-      ["g:id", `${cw.sku}-${v.size.toUpperCase().replace(/[^A-Z0-9]+/g, "")}`],
+      /* Her SKU plus the size. The product page's structured data uses the
+         same id as each variant's sku, so Google can pair them. */
+      ["g:id", merchantItemId(cw.sku, v.size)],
       ["g:item_group_id", p.slug],
       ["g:title", cw.colour ? `${p.name} - ${cw.colour}` : p.name],
       ["g:description", p.full || p.short],

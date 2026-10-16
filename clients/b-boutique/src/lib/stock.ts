@@ -1,4 +1,6 @@
 import "server-only";
+import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { neon } from "@neondatabase/serverless";
 import { allVariants, variantId, type Variant } from "./variants";
 import { openingPlan } from "./opening-stock";
@@ -203,6 +205,41 @@ export async function readStock(): Promise<StockView[] | null> {
   });
 }
 
+/** Counted stock for one piece, for its product page's structured data.
+ *
+ *  READ-ONLY on purpose: no `ensureSchema`, because this runs inside
+ *  `next build`, and a build must not write to the shop's database. A
+ *  variant with no row is absent, never 0. If the table is missing or the
+ *  database is unreachable the query throws and the page publishes no
+ *  availability, which is what it did before. */
+export async function countsForSlug(slug: string): Promise<Map<string, number> | null> {
+  const q = sql();
+  if (!q) return null;
+  const rows = (await q`SELECT id, qty FROM stock WHERE slug = ${slug}`) as { id: string; qty: number }[];
+  return new Map(rows.map((r) => [r.id, Number(r.qty)]));
+}
+
+/** Rebuild one product page after its stock changed, so its InStock /
+ *  OutOfStock (product-schema.ts) follows the rail. The page has no timer of
+ *  its own (see /shop/[slug]), so this is the only thing that refreshes it.
+ *
+ *  /checkout/success releases a failed order DURING its render, where Next
+ *  refuses revalidation; there it is queued with `after`, which runs once
+ *  the response is sent. Neither path may ever break the page a customer is
+ *  looking at, so a refusal of both is swallowed. */
+function refreshProductPage(slug: string) {
+  const path = `/shop/${slug}`;
+  try {
+    revalidatePath(path);
+  } catch {
+    try {
+      after(() => revalidatePath(path));
+    } catch {
+      /* outside a request: nothing to refresh */
+    }
+  }
+}
+
 /** How many of one variant are available to sell. `null` means not counted. */
 export async function availableFor(
   slug: string,
@@ -291,6 +328,7 @@ export async function adjust(
       INSERT INTO stock_log (variant_id, delta, qty_after, reason, note)
       VALUES (${id}, ${delta}, ${qty}, ${reason}, ${note ?? null})
     `;
+    refreshProductPage(v.slug);
     return { ok: true, qty };
   } catch (err) {
     /* The CHECK constraint firing is not an error to be logged and swallowed
@@ -336,6 +374,7 @@ export async function setCount(
     INSERT INTO stock_log (variant_id, delta, qty_after, reason, note)
     VALUES (${id}, ${qty - (before ?? 0)}, ${qty}, 'counted', ${note ?? null})
   `;
+  refreshProductPage(v.slug);
   return { ok: true, qty };
 }
 
