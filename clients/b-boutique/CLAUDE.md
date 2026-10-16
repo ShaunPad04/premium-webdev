@@ -1665,6 +1665,10 @@ All were non-critical warnings; the products were already valid.
   has no barcodes, and a supplier is not a brand; `identifier_exists=no` in
   the feed says so). Do not add them to quiet the report.
 - Product HTML grew by up to ~4.6KB gzipped (the largest, 10 variants).
+- **LIVE 2026-10-16** (Brad: "go live"), 3fa4254 on `client/b-boutique`,
+  dpl_4J9zsyBLhAcnGymjHbcMxAVn5icA. Every one of the 136 variants was counted
+  that day (feed: 118 in stock, 18 out), so every offer carries availability.
+  Brad's first "Validate fix" ran before the deploy and failed; re-run it.
 
 ## Google review link for online buyers — 2026-10-16 (Brad)
 
