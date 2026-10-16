@@ -1679,3 +1679,25 @@ the same as the counter card's QR). Used in the customer's order email
 in neutral words: never "if you loved it", never a reward; Google and the
 CMA forbid both. The email and review links in that page's "What happens
 next" block are now underlined (they were grey and read as plain text).
+
+## In-store stock for Google (free local listings) — 2026-10-16 (Brad)
+
+`/feeds/google-local.txt`: Merchant Center's local inventory data, one row
+per counted, priced size (`id`, `store_code`, `availability`), so pieces can
+show "In stock" at the shop on Maps and Search. Both feeds now read
+`feedVariants()` in `lib/merchant-feed.ts`, so the in-store ids always exist
+in the online feed (the online feed's output was compared before and after:
+identical, 136 items).
+- Google's spec (support.google.com/merchants/answer/14819809, read
+  2026-10-16): id, store_code, availability required; `quantity` optional.
+  **No quantity** (the shop front never publishes a count, and this URL is
+  public) and **no `limited_availability`** (it means 1-2 left).
+- **No pickup columns.** `pickup_sla` "same day" would promise collection the
+  same day as an evening order; she has it ready same day during opening
+  hours only. Add it only with her agreement to that wording.
+- `GOOGLE_STORE_CODE` = "BB-CLEETHORPES" must equal the Store code on her
+  Business Profile, case included. Google wants the code set (or changed)
+  24 hours before the inventory file is first uploaded.
+- Merchant Center side (her account 5868121065): Add-ons > Free local
+  listings (United Kingdom); Data sources > Supplemental > add local
+  inventory from a file URL, fetched daily.
