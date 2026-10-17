@@ -201,3 +201,20 @@ do not destroy intentional design to chase a synthetic score.
 
 Only your own repos, your own local apps, and explicitly authorised staging. Never third-party
 or client production without written authorisation. Strix never runs automatically.
+
+## Client preview access policy
+
+Client preview deployments must be publicly accessible to anyone with the URL while remaining
+noindex until launch. Vercel Authentication/SSO must not be enabled on client-facing preview
+links unless Brad explicitly requests restricted access. Each client project must have a stable
+preview URL, Git auto-deployment, and Claude must verify the public URL after deployment.
+
+In practice, per project:
+
+- On the Vercel project, disable **Vercel Authentication (SSO)** and leave **Password
+  Protection** off unless Brad explicitly asks for one of them.
+- Keep `noindex`/`robots.txt` disallow in place until the client is ready to launch — public
+  reachability and search-engine indexing are separate settings; do not conflate them.
+- Confirm the project's stable Git branch URL (`https://<project>-git-<branch>-<team>.vercel.app`)
+  loads without any login/SSO wall before handing it to the client.
+- Confirm Git auto-deploy is wired so pushing the client branch updates that URL automatically.
